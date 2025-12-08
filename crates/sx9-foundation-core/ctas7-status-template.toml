@@ -1,0 +1,29 @@
+[orchestration]
+timestamp = "2024-01-01T00:00:00Z"
+total_orchestrators = 0
+system_health = "Healthy"
+
+# Foundation crates status
+[foundation_crates]
+data_foundation = { available = false, version = "0.1.0", status = "stub" }
+interface_foundation = { available = false, version = "0.1.0", status = "stub" }
+tactical_foundation = { available = false, version = "0.1.0", status = "stub" }
+
+# Orchestrator instances
+[[orchestrators]]
+id = "example-orchestrator"
+type = "Service"
+state = "Running"
+health = "Healthy"
+operations = 0
+cpu_percent = 0.0
+memory_mb = 0
+xsd_valid = true
+last_updated = "2024-01-01T00:00:00Z"
+
+# Ontology integration status
+[ontology]
+frontend_connected = false
+entities_synced = 0
+last_sync = "2024-01-01T00:00:00Z"
+namespaces = ["ctas-core", "nist-csf", "mitre-attack", "cwe-cve"]

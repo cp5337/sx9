@@ -1,0 +1,53 @@
+[package]
+name = "sx9-foundation-manifold"
+version = "7.3.1"
+edition = "2021"
+license = "Apache-2.0"
+description = "CTAS-7 Foundation Manifold: Deterministic routing and elastic kernel execution."
+repository = "https://example.com/ctas7/foundation"
+
+[features]
+default = ["elastic"]
+elastic = ["tokio", "tracing", "tracing-subscriber", "sx9-foundation-math", "sx9-foundation-tactical", "sx9-foundation-data", "sx9-atlas-daemon"]
+l2_only = ["sx9-foundation-math"]
+tactical_only = ["sx9-foundation-tactical"]
+wasm_only = ["sx9-foundation-data"]
+
+[dependencies]
+murmur3 = "0.5"  # RFC-9001 trivariate hashing
+anyhow = "1.0"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+uuid = { version = "1.8", features = ["v4", "serde"] }
+chrono = { version = "0.4", features = ["serde"] }
+tracing = { version = "0.1", features = ["std"], optional = true }
+tracing-subscriber = { version = "0.3", features = ["fmt", "env-filter"], optional = true }
+tokio = { version = "1.39", features = ["rt-multi-thread", "macros"], optional = true }
+sx9-foundation-interface = { path = "../sx9-foundation-interface" }
+sx9-foundation-core = { path = "../sx9-foundation-core" }
+sx9-foundation-data = { path = "../sx9-foundation-data", optional = true }
+sx9-foundation-math = { path = "../sx9-foundation-math", optional = true }
+sx9-foundation-tactical = { path = "../sx9-foundation-tactical", optional = true }
+# ATLAS for orchestration
+sx9-atlas-daemon = { path = "../sx9-atlas-daemon", optional = true }
+reqwest = { version = "0.12", features = ["json"] }
+# Blake3 eliminated per v7.3.1 specification
+xxhash-rust = { version = "0.8", features = ["xxh3"] }
+base64 = "0.22"
+time = { version = "0.3", features = ["macros", "serde-human-readable"] }
+
+[profile.release]
+opt-level = "z"
+lto = true
+codegen-units = 1
+panic = "abort"
+
+[profile.dev]
+opt-level = 1
+debug = true
+incremental = true
+
+[[bin]]
+name = "manifold_runner"
+path = "src/main.rs"
+required-features = ["elastic"]

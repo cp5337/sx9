@@ -1,0 +1,47 @@
+[package]
+name = "ctas-foundation-manifold"
+version = "7.3.1"
+edition = "2021"
+license = "Apache-2.0"
+description = "CTAS-7 Foundation Manifold: Deterministic routing and elastic kernel execution."
+repository = "https://example.com/ctas7/foundation"
+
+[features]
+default = ["elastic"]
+elastic = ["tokio", "tracing", "tracing-subscriber", "foundation-math", "foundation-tactical", "foundation-data"]
+l2_only = ["foundation-math"]
+tactical_only = ["foundation-tactical"]
+wasm_only = ["foundation-data"]
+
+[dependencies]
+anyhow = "1.0"
+serde = { version = "1.0", features = ["derive"] }
+uuid = { version = "1.8", features = ["v4", "serde"] }
+tracing = { version = "0.1", features = ["std"], optional = true }
+tracing-subscriber = { version = "0.3", features = ["fmt", "env-filter"], optional = true }
+tokio = { version = "1.39", features = ["rt-multi-thread", "macros"], optional = true }
+foundation-interface = { path = "../foundation_interface" }
+foundation-core = { path = "../foundation_core" }
+foundation-data = { path = "../foundation_data", optional = true }
+foundation-math = { path = "../foundation_math", optional = true }
+foundation-tactical = { path = "../foundation_tactical", optional = true }
+blake3 = "1.5"
+xxhash-rust = { version = "0.8", features = ["xxh3"] }
+base64 = "0.22"
+time = { version = "0.3", features = ["macros", "serde-human-readable"] }
+
+[profile.release]
+opt-level = "z"
+lto = true
+codegen-units = 1
+panic = "abort"
+
+[profile.dev]
+opt-level = 1
+debug = true
+incremental = true
+
+[[bin]]
+name = "manifold_runner"
+path = "src/main.rs"
+required-features = ["elastic"]

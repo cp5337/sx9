@@ -1,0 +1,25 @@
+[package]
+name = "sx9-dsl-engine"
+version.workspace = true
+edition.workspace = true
+description = "DSL engine for symbolic control"
+license.workspace = true
+
+[dependencies]
+# Foundation crates
+sx9-foundation-core = { path = "../sx9-foundation-core" }
+sx9-atlas-bus = { path = "../sx9-atlas-bus", features = ["std"] }
+
+# Direct dependencies needed for derive macros
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+anyhow = "1.0"
+tokio = { version = "1.0", features = ["full"] }
+tracing = "0.1"
+
+# WASM runtime (not in foundation-core)
+wasmtime.workspace = true
+wasmtime-wasi = "20.0"
+
+# File watching for hot reload (not in foundation-core)
+notify = "6.0"

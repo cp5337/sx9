@@ -1,0 +1,165 @@
+//! Persona management for CTAS v7.0
+//!
+//! Handles persona configuration, routing, and lifecycle management
+
+use crate::data::{Deserialize, Serialize, Utc, DateTime};
+use std::time::Duration;
+
+/// Default gRPC port range for personas
+const DEFAULT_GRPC_PORT_START: u16 = 50051;
+
+/// Default TTL for personas (hours)
+const DEFAULT_TTL_HOURS: u64 = 48;
+
+/// Entropy symbol for visual identification
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub enum EntropySymbol {
+    Squid,
+    Vortex,
+    Spiral,
+    Wave,
+    Geometric,
+}
+
+impl Default for EntropySymbol {
+    fn default() -> Self {
+        EntropySymbol::Spiral
+    }
+}
+
+/// Trust level (1-5 scale)
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, PartialOrd)]
+pub enum TrustLevel {
+    One = 1,
+    Two = 2,
+    Three = 3,
+    Four = 4,
+    Five = 5,
+}
+
+impl Default for TrustLevel {
+    fn default() -> Self {
+        TrustLevel::Three
+    }
+}
+
+/// Individual persona configuration
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct Persona {
+    /// Collision-resistant unique identifier
+    pub cuid: String,
+
+    /// Human-readable persona name
+    pub persona: String,
+
+    /// gRPC endpoint for this persona
+    pub grpc_endpoint: String,
+
+    /// Time-to-live for this persona
+    pub ttl: String,
+
+    /// Entropy symbol for visual identification
+    pub entropy_symbol: EntropySymbol,
+
+    /// Trust level (1-5 scale)
+    pub trust_level: TrustLevel,
+
+    /// Additional metadata
+    pub metadata: Option<std::collections::HashMap<String, String>>,
+}
+
+impl Persona {
+    /// Create a new persona with default values
+    pub fn new(cuid: String, persona: String) -> Self {
+        Self {
+            grpc_endpoint: format!("localhost:{}", DEFAULT_GRPC_PORT_START),
+            ttl: format!("{}h", DEFAULT_TTL_HOURS),
+            entropy_symbol: EntropySymbol::default(),
+            trust_level: TrustLevel::default(),
+            metadata: None,
+            cuid,
+            persona,
+        }
+    }
+    
+    /// Parse TTL string into Duration
+    pub fn ttl_duration(&self) -> crate::diagnostics::Result<Duration> {
+        let ttl_str = self.ttl.trim_end_matches('h');
+        let hours: u64 = ttl_str.parse()?;
+        Ok(Duration::from_secs(hours * 3600))
+    }
+
+    /// Check if persona is expired
+    pub fn is_expired(&self, created_at: DateTime<Utc>) -> bool {
+        match self.ttl_duration() {
+            Ok(ttl) => {
+                let expires_at = created_at + crate::data::Duration::from_std(ttl).unwrap_or_default();
+                Utc::now() > expires_at
+            }
+            Err(_) => true, // If we can't parse TTL, consider expired
+        }
+    }
+}
+
+/// Configuration container for multiple personas
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct PersonaConfig {
+    pub personas: Vec<Persona>,
+}
+
+impl PersonaConfig {
+    /// Load configuration from YAML file
+    pub fn from_yaml_file(path: &str) -> crate::diagnostics::Result<Self> {
+        let content = std::fs::read_to_string(path)?;
+        let config: Self = crate::data::serde_yaml::from_str(&content)?;
+        Ok(config)
+    }
+
+    /// Save configuration to YAML file
+    pub fn to_yaml_file(&self, path: &str) -> crate::diagnostics::Result<()> {
+        let content = crate::data::serde_yaml::to_string(self)?;
+        std::fs::write(path, content)?;
+        Ok(())
+    }
+    
+    /// Find persona by CUID
+    pub fn find_persona(&self, cuid: &str) -> Option<&Persona> {
+        self.personas.iter().find(|p| p.cuid == cuid)
+    }
+    
+    /// Get all personas with trust level >= threshold
+    pub fn trusted_personas(&self, min_trust: TrustLevel) -> Vec<&Persona> {
+        self.personas
+            .iter()
+            .filter(|p| p.trust_level >= min_trust)
+            .collect()
+    }
+}
+
+impl Default for PersonaConfig {
+    fn default() -> Self {
+        Self {
+            personas: vec![
+                Persona {
+                    cuid: "cuid-devsecops-ctas".to_string(),
+                    persona: "CTAS DevSecOps Expert".to_string(),
+                    grpc_endpoint: "localhost:50051".to_string(),
+                    ttl: "48h".to_string(),
+                    entropy_symbol: EntropySymbol::Squid,
+                    trust_level: TrustLevel::Five,
+                    metadata: None,
+                },
+                Persona {
+                    cuid: "cuid-strategic-ops".to_string(),
+                    persona: "CTAS Ops Strategist".to_string(),
+                    grpc_endpoint: "localhost:50052".to_string(),
+                    ttl: "24h".to_string(),
+                    entropy_symbol: EntropySymbol::Vortex,
+                    trust_level: TrustLevel::Four,
+                    metadata: None,
+                },
+            ],
+        }
+    }
+}
+

@@ -1,0 +1,178 @@
+# [workspace] - removed to avoid conflicts with parent workspace
+[package]
+name = "sx9-foundation-core"
+version = "0.1.0"
+edition = "2021"
+authors = ["Synaptix9 Engineering Team"]
+description = "SX9 Foundation Core - Smart Unified Dependencies with Cannibalization Protection"
+license = "MIT"
+readme = "README.md"
+repository = "https://github.com/ctas7/foundation-core"
+keywords = ["ctas", "foundation", "dependencies", "unified"]
+categories = ["development-tools", "web-programming"]
+
+[dependencies]
+murmurhash3 = "0.0.5" # Legacy - being phased out
+murmur3 = "0.5"       # RFC-9001 canonical 64-bit hashing (via x64_128)
+# Blake3 eliminated per v7.3.1 specification - using trivariate hash only
+
+# Core async runtime - Version locked for consistency
+tokio = { version = "1.37.0", features = ["full"] }
+futures = { version = "0.3", features = ["std"] }
+async-trait = "0.1"
+
+# Serialization and data handling - Version locked
+serde = { version = "1.0.197", features = ["derive"] }
+serde_json = "1.0.115"
+serde_yaml = "0.9.32"
+toml = "0.8"
+uuid = { version = "1.8.0", features = ["v4", "serde"] }
+chrono = { version = "0.4.35", features = ["serde"] }
+
+# Error handling and logging - Tesla/SpaceX standards
+anyhow = "1.0.81"
+thiserror = "1.0.58"
+tracing = "0.1.40"
+tracing-subscriber = { version = "0.3.18", features = ["env-filter"] }
+
+# HTTP and networking - Version locked
+reqwest = { version = "0.12.1", features = ["json", "rustls-tls"] }
+axum = { version = "0.7", features = ["ws", "multipart"] }
+tower = { version = "0.4", features = ["util", "timeout", "load-shed", "limit"] }
+tower-http = { version = "0.5", features = ["fs", "trace", "cors"] }
+hyper = { version = "1.0", features = ["full"] }
+
+# CLI and configuration
+clap = { version = "4.5.2", features = ["derive", "env"] }
+config = "0.14.0"
+
+# Cryptography and security - Smart Crate v7.2 standards
+# Trivariate Hash System v7.2 (SCH + CUID + UUID = 48 chars, 15,240 MB/sec)
+sha3 = "0.10"  # Secure Hash Algorithm for SCH component
+cuid2 = "0.1" # CUID component
+hex = "0.4.3"
+crc32fast = "1.3"
+jsonwebtoken = "9.0"
+hmac = "0.12"
+
+# Progressive security framework
+rsa = "0.9"     # PGP foundation
+aes-gcm = "0.10" # Symmetric encryption
+argon2 = "0.5"  # Key derivation
+
+# Foundation dependency crates with fallback
+# ctas7-data-foundation = { path = "../ctas7-foundation-data", optional = true }
+# ctas7-interface-foundation = { path = "../ctas7-foundation-interface", optional = true }
+# ctas7-tactical-foundation = { path = "../ctas7-foundation-tactical", optional = true }
+
+# AI/ML inference for Phi and small models (temporarily disabled for testing)
+# candle-core = { version = "0.7", optional = true }
+# candle-nn = { version = "0.7", optional = true }
+# candle-transformers = { version = "0.7", optional = true }
+# hf-hub = { version = "0.3", optional = true }
+# tokenizers = { version = "0.20", optional = true }
+
+# GGUF/llama.cpp integration for quantized models (temporarily disabled for testing)
+# llama_cpp = { version = "0.3", optional = true }
+
+# Neural Mux and XSD Integration (internal deterministic connectors)
+postgres = { version = "0.19", features = ["with-serde_json-1", "with-chrono-0_4"], optional = true }
+deadpool-postgres = { version = "0.12", optional = true }
+
+# Database backends for CTAS-7 multi-database support
+sled = "0.34"
+
+# Unicode and Assembly Language support
+unicode-normalization = "0.1"
+unicode-segmentation = "1.10"
+base64 = "0.22"
+
+[features]
+default = ["foundation-core", "protection", "neural-mux", "database"]
+
+# Core foundation features (all dependencies are always available)
+foundation-core = []
+protection = []
+async-runtime = []
+networking = []
+security = []
+data-handling = []
+diagnostics = []
+interface = []
+
+# Smart Crate features
+neural-mux = []
+unified-neural-mux = ["neural-mux"]
+# phi-inference = ["candle-core", "candle-nn", "candle-transformers", "hf-hub", "tokenizers"] # Disabled for testing
+# phi-gguf = ["llama_cpp"] # Disabled for testing
+# neural-mux-ai = ["unified-neural-mux", "phi-inference"] # Disabled for testing
+# neural-mux-gguf = ["unified-neural-mux", "phi-gguf"] # Disabled for testing
+database = ["postgres", "deadpool-postgres"]
+unicode-assembly = []
+xsd-integration = []
+trivariate-hash = []
+emoji-status = []
+delta-tuner = []  # PLASMA Delta Operator Module
+
+# Full foundation integration
+full = ["foundation-core", "async-runtime", "networking", "security", "data-handling", "diagnostics", "interface", "neural-mux", "unified-neural-mux", "database", "unicode-assembly", "xsd-integration"]
+
+# Smart Crate System metadata
+[package.metadata.ctas7]
+crate_type = "foundation"
+mission = "DependencyUnification"
+security_level = "Production"
+orchestrator_compatible = true
+cannibalization_protected = true
+xsd_symbols = ["\\u{E500}", "\\u{E320}", "\\u{E000}"]
+assembly_language_version = "7.3.1"
+neural_mux_priority = "high"
+port_range_start = 18101
+port_range_end = 18120
+database_pool_size = 20
+
+# SLSA Provenance metadata (Smart Crate System)
+[package.metadata.slsa]
+build_type = "hermetic"
+builder_id = "ctas7-smart-crate-orchestrator"
+reproducible = true
+
+# Smart Crate System integration
+[package.metadata.smart_crate]
+template_version = "7.3.1"
+orchestrator_version = "7.3.1"
+autonomous_deployment = false
+threat_hunting_enabled = true
+neural_mux_integration = true
+unicode_compression_enabled = true
+trivariate_hash_support = true
+emoji_status_enabled = true
+database_connection_pool = true
+xsd_orchestrator_type = "crate"
+assembly_language_linkup = true
+
+# Clean up - these are already defined above
+
+# Tesla/SpaceX Engineering Standards - Profile Configuration
+[profile.release]
+# Tesla/SpaceX optimization standards
+lto = true
+codegen-units = 1
+panic = "abort"
+strip = "symbols"
+overflow-checks = true
+
+[profile.dev]
+# Development profile with comprehensive debugging
+debug = true
+incremental = true
+overflow-checks = true
+
+[profile.test]
+# Testing profile with enhanced debugging
+debug = true
+overflow-checks = true
+
+[build-dependencies]
+# Build-time validation and security checks
+cargo_metadata = "0.18.1"

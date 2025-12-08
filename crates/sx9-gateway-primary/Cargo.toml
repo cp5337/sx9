@@ -1,0 +1,72 @@
+[package]
+name = "sx9-gateway-primary"
+version = "0.1.0"
+edition = "2021"
+description = "SX9 Gateway Primary - Unified API gateway for all Synaptix9 operations"
+license = "MIT"
+
+[[bin]]
+name = "sx9-gateway-primary"
+path = "src/main.rs"
+
+[dependencies]
+# CLI
+clap = { version = "4.0", features = ["derive"] }
+# Core
+tokio = { version = "1.0", features = ["full", "macros", "rt-multi-thread"] }
+futures-util = { version = "0.3", features = ["sink"] }
+
+# WebSocket
+axum = { version = "0.7", features = ["ws"] }
+tower = "0.4"
+tower-http = { version = "0.5", features = ["cors", "trace"] }
+
+# Serialization
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+
+# SX9 ecosystem - all local, no cross-repo deps
+sx9-atlas-bus = { path = "../sx9-atlas-bus", features = ["std", "nats"] }
+sx9-foundation-core = { path = "../sx9-foundation-core" }
+sx9-port-manager = { path = "../sx9-port-manager" }
+sx9-neural-mux = { path = "../sx9-neural-mux" }
+# Note: sx9-hashing-engine is a microservice (port 8002/50051), not a library
+
+# Neural retrofit crates (optional, enabled via features)
+sx9-ann-engine = { path = "../sx9-ann-engine", optional = true }
+sx9-glaf-core = { path = "../sx9-glaf-core", optional = true }
+sx9-dsl-engine = { path = "../sx9-dsl-engine", optional = true }
+sx9-plasma-defender = { path = "../sx9-plasma-defender", optional = true }
+sx9-atlas-daemon = { path = "../sx9-atlas-daemon", optional = true }
+sx9-plasma-ecs = { path = "../sx9-plasma-ecs", optional = true }
+
+# Database clients
+surrealdb = { version = "2.0", features = ["protocol-ws"] }
+# supabase-rs = "0.3"  # TODO: Add when available
+
+# Messaging
+async-nats = "0.35"
+
+# HTTP client (for GLAFClient)
+reqwest = { version = "0.12", features = ["json"] }
+
+# Utilities
+uuid = { version = "1.0", features = ["v7", "serde"] }
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+anyhow = "1.0"
+thiserror = "1.0"
+
+[features]
+default = ["full"]
+full = []
+# Enable neural retrofit features
+neural-retrofit = [
+    "sx9-ann-engine",
+    "sx9-glaf-core",
+    "sx9-dsl-engine",
+    "sx9-plasma-defender",
+    "sx9-atlas-daemon",
+    "sx9-plasma-ecs"
+]
+

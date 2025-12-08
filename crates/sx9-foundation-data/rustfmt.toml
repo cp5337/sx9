@@ -1,0 +1,30 @@
+# Rustfmt configuration for CTAS Data Foundation Service
+
+# Basic formatting
+edition = "2021"
+max_width = 100
+tab_spaces = 4
+newline_style = "Unix"
+
+# Import formatting
+imports_granularity = "Crate"
+group_imports = "StdExternalCrate"
+reorder_imports = true
+
+# Function formatting
+fn_single_line = false
+brace_style = "SameLineWhere"
+
+# Control flow formatting
+control_brace_style = "AlwaysSameLine"
+match_arm_blocks = true
+match_arm_leading_pipes = "Never"
+
+# Other formatting options
+use_field_init_shorthand = true
+use_try_shorthand = true
+force_explicit_abi = true
+empty_item_single_line = true
+struct_lit_single_line = true
+fn_args_layout = "Tall"
+where_single_line = false

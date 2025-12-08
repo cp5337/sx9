@@ -1,0 +1,76 @@
+# 🚀 CTAS-7 Minimal Foundation Daemon on OrbStack
+# Basic deployment with core Foundation Daemon functionality
+
+services:
+  # Foundation Daemon Core
+  foundation-daemon:
+    build:
+      context: .
+      dockerfile: Dockerfile.foundation-daemon
+    container_name: ctas7-foundation-daemon
+    ports:
+      - "18500:18500"  # Foundation API
+      - "18103:18103"  # Port Manager
+      - "18105:18105"  # Hash Engine
+    environment:
+      - RUST_LOG=info
+      - FOUNDATION_MODE=multi_modal
+      - PORT_MANAGER_ENABLED=true
+      - HASH_ENGINE_ENABLED=true
+      - HFT_OPTIMIZATION=true
+      - ORBSTACK_NATIVE=true
+      - PM2_REPLACEMENT=true
+    volumes:
+      - foundation-data:/data
+      - port-registry:/port_registry
+      - hash-engine-data:/hash_data
+    networks:
+      - ctas7-foundation-network
+    restart: unless-stopped
+    privileged: false  # OrbStack doesn't require privileged mode
+
+networks:
+  # Main foundation network - Secure obscure addressing
+  ctas7-foundation-network:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 10.133.247.0/24
+          gateway: 10.133.247.1
+    driver_opts:
+      com.docker.network.bridge.name: ctas7-fd
+      com.docker.network.bridge.enable_icc: "true"
+
+volumes:
+  # Foundation daemon
+  foundation-data:
+    driver: local
+  port-registry:
+    driver: local
+  hash-engine-data:
+    driver: local
+
+# 🚀 ORBSTACK DEPLOYMENT INSTRUCTIONS:
+#
+# 1. Ensure OrbStack is running and Docker context is set:
+#    docker context use orbstack
+#
+# 2. Deploy minimal Foundation Daemon:
+#    docker-compose -f docker-compose.minimal.yml up -d
+#
+# 3. Verify deployment:
+#    curl http://localhost:18500/health    # Foundation Daemon
+#
+# 4. Check Foundation Daemon modes:
+#    docker exec ctas7-foundation-daemon foundation-daemon coordinator
+#    docker exec ctas7-foundation-daemon foundation-daemon bare-metal
+#    docker exec ctas7-foundation-daemon foundation-daemon embedded
+#
+# Foundation Daemon Features:
+# ✅ Multi-modal execution (coordinator/embedded/bare-metal)
+# ✅ Port Manager (18103) - Prevents port conflicts
+# ✅ Hash Engine (18105) - MurmurHash3 optimization
+# ✅ HFT optimization enabled
+# ✅ PM2 replacement architecture
+# ✅ OrbStack native performance

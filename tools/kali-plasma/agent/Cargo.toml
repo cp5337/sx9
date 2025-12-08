@@ -1,0 +1,34 @@
+[package]
+name = "plasma-agent"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+description = "Kali Plasma operator agent - single userspace process"
+
+[[bin]]
+name = "plasma-agent"
+path = "src/main.rs"
+
+[dependencies]
+sx9-atlas-bus.workspace = true
+tokio.workspace = true
+anyhow.workspace = true
+tracing.workspace = true
+tracing-subscriber.workspace = true
+async-nats.workspace = true
+# aya.workspace = true  # Disabled - requires Linux
+ring.workspace = true
+sha2.workspace = true
+blake3.workspace = true
+hex = "0.4"
+futures-util = "0.3"
+base64 = "0.21"
+
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+toml = "0.8"
+
+[target.'cfg(target_os = "linux")'.dependencies]
+aya = "0.12"
+

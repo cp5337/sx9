@@ -1,0 +1,18 @@
+[package]
+name = "masscan-ebpf"
+version.workspace = true
+edition.workspace = true
+description = "masscan eBPF implementation for Kali Plasma"
+
+[dependencies]
+plasma-ebpf-common = { path = "../common" }
+
+[lib]
+crate-type = ["cdylib"]
+
+[features]
+default = []
+
+
+
+

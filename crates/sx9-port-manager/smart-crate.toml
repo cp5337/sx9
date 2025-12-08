@@ -1,0 +1,29 @@
+[smart-crate]
+name = "sx9-port-manager"
+version = "0.1.0"
+foundation = "sx9-foundation-core"
+retrofit_timestamp = "20251208-120000"
+
+[integration]
+gold_disk_compatible = true
+neural_mux_enabled = true
+hash_engine_integrated = true
+unicode_assembly_support = true
+
+[metadata]
+ctas_version = "7.3.1"
+sx9_version = "0.1.0"
+smart_crate_type = "infrastructure"
+original_crate = false
+cloned_from = "ctas7-real-port-manager"
+tesla_grade = true
+
+[service]
+ports = ["18103"]
+protocols = ["rest"]
+capabilities = ["port-allocation", "orbital-blocks", "cdn-blocks", "neural-mesh-blocks"]
+rfc_reference = "RFC-9001"
+
+[features]
+default = ["foundation", "orbital", "cdn", "neural"]
+optional = ["standalone"]

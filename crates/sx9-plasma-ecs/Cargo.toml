@@ -1,0 +1,20 @@
+[package]
+name = "sx9-plasma-ecs"
+version.workspace = true
+edition.workspace = true
+description = "PLASMA-ECS unified architecture (Legion + apecs + ATLAS)"
+license.workspace = true
+
+[dependencies]
+# Foundation crates
+sx9-foundation-core = { path = "../sx9-foundation-core" }
+sx9-atlas-bus = { path = "../sx9-atlas-bus", features = ["std"] }
+
+# Direct dependencies needed for derive macros
+serde = { version = "1.0", features = ["derive"] }
+anyhow = "1.0"
+tokio = { version = "1.0", features = ["full"] }
+
+# ECS Layers
+legion.workspace = true  # Layer 2: Deterministic batch processing
+# Note: apecs requires nightly Rust, so we use a placeholder implementation

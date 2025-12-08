@@ -1,0 +1,68 @@
+[package]
+name = "sx9-foundation-voice"
+version = "0.1.0"
+edition = "2021"
+license = "Apache-2.0"
+description = "SX9 Foundation Voice Synthesis - ElevenLabs Integration with Zoe Persona Management (v0.1.0 Smart Crate)"
+authors = ["Synaptix9 Engineering <foundation@sx9.dev>"]
+
+# Smart Crate v7.3.1 - Part of shipyard workspace
+# [workspace] - REMOVED for shipyard integration
+
+[dependencies]
+# Foundation Integration - v7.3.1 Trivariate Architecture
+sx9-foundation-core = { path = "../sx9-foundation-core" }
+sx9-foundation-data = { path = "../sx9-foundation-data" }
+
+# RFC-9107 §5: Voice Bridge Integration (ElevenLabs TTS/STT)
+# ctas7-voice-bridge = { path = "../ctas7-voice-bridge", optional = true }  # TODO: Add sx9-voice-bridge or remove dependency
+
+# Core Infrastructure
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+uuid = { version = "1.8", features = ["v4", "serde"] }
+chrono = { version = "0.4", features = ["serde"] }
+tokio = { version = "1.0", features = ["full"] }
+anyhow = "1.0"
+thiserror = "1.0"
+
+# HTTP Client for ElevenLabs API
+reqwest = { version = "0.11", features = ["json", "stream", "rustls-tls"], default-features = false, optional = true }
+
+# Audio Processing
+rodio = { version = "0.17", optional = true }
+symphonia = { version = "0.5", features = ["mp3"], optional = true }
+
+# Base64 encoding for audio data
+base64 = "0.22"
+
+# Cryptography (v7.2 Trivariate Hash Only)
+murmur3 = "0.5"
+unicode-segmentation = "1.10"
+
+# Monitoring and Telemetry
+tracing = "0.1"
+metrics = "0.22"
+
+# Configuration Management
+config = "0.14"
+
+[dev-dependencies]
+tokio-test = "0.4"
+tempfile = "3.8"
+mockall = "0.12"
+
+[features]
+default = ["persona_management"]
+# RFC-9107 §5: ElevenLabs is the primary voice provider
+# elevenlabs = ["dep:ctas7-voice-bridge"]  # TODO: Re-enable when voice-bridge is available
+elevenlabs = []
+# Legacy features (kept for compatibility)
+synthesis = ["reqwest"]
+persona_management = []
+audio_playback = ["rodio", "symphonia"]
+elevenlabs_api = ["synthesis"]
+
+[lib]
+name = "foundation_voice"
+path = "src/lib.rs"

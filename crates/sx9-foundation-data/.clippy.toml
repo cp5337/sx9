@@ -1,0 +1,38 @@
+# Clippy configuration for CTAS Data Foundation Service
+
+# Allow some lints that are common in data processing code
+allow = [
+    "cast_precision_loss",
+    "cast_possible_truncation",
+    "cast_sign_loss",
+    "module_name_repetitions",
+    "missing_errors_doc",
+    "missing_panics_doc",
+]
+
+# Deny important lints for code quality
+deny = [
+    "clippy::all",
+    "clippy::pedantic",
+    "clippy::nursery",
+    "clippy::cargo",
+]
+
+# Specific lint configurations
+[clippy::cast_precision_loss]
+msrv = "1.70"
+
+[clippy::cast_possible_truncation]
+msrv = "1.70"
+
+[clippy::cast_sign_loss]
+msrv = "1.70"
+
+[clippy::module_name_repetitions]
+msrv = "1.70"
+
+[clippy::missing_errors_doc]
+msrv = "1.70"
+
+[clippy::missing_panics_doc]
+msrv = "1.70"

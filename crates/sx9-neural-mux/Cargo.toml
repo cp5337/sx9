@@ -1,0 +1,16 @@
+[package]
+name = "sx9-neural-mux"
+version = "0.1.0"
+edition = "2021"
+description = "SX9 Neural Mux - Ultra-low latency routing via trivariate hash lookup (<250ns target)"
+authors = ["SX9 Team"]
+license = "MIT"
+
+[dependencies]
+tokio = { version = "1.40", features = ["full"] }
+anyhow = "1.0"
+serde = { version = "1.0", features = ["derive"] }
+dashmap = "5.5"
+
+# Hash structures from foundation core
+sx9-foundation-core = { path = "../sx9-foundation-core" }

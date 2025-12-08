@@ -1,0 +1,30 @@
+[package]
+name = "sx9-plasma-defender"
+version.workspace = true
+edition.workspace = true
+description = "PLASMA defender for health monitoring"
+license.workspace = true
+
+[[bin]]
+name = "sx9-plasma-defender"
+path = "src/main.rs"
+
+[dependencies]
+# Foundation crates - use foundation-core for all common dependencies
+sx9-foundation-core = { path = "../sx9-foundation-core" }
+sx9-atlas-bus = { path = "../sx9-atlas-bus", features = ["std", "nats"] }
+
+# NATS (not provided by foundation-core)
+async-nats.workspace = true
+base64 = "0.21"
+futures-util = "0.3"
+
+# Note: Use sx9-foundation-core re-exports:
+# - sx9_foundation_core::async_runtime::tokio (instead of tokio)
+# - sx9_foundation_core::networking::axum (instead of axum)
+# - sx9_foundation_core::networking::tower (instead of tower)
+# - sx9_foundation_core::networking::tower_http (instead of tower-http)
+# - sx9_foundation_core::data::serde (instead of serde)
+# - sx9_foundation_core::data::chrono (instead of chrono)
+# - sx9_foundation_core::diagnostics::anyhow (instead of anyhow)
+# - sx9_foundation_core::diagnostics::tracing (instead of tracing)

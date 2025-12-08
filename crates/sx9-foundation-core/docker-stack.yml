@@ -1,0 +1,158 @@
+# CTAS-7 Foundation Core - Docker Swarm Stack for QA Testing
+# Distributed testing environment matching production deployment
+
+version: '3.8'
+
+services:
+  # Foundation Core Gold Disk
+  foundation-core:
+    image: ctas7-foundation-core:gold-disk
+    deploy:
+      replicas: 3
+      placement:
+        constraints:
+          - node.role == worker
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 1G
+        reservations:
+          cpus: '0.5'
+          memory: 256M
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+      update_config:
+        parallelism: 1
+        delay: 10s
+        failure_action: rollback
+    ports:
+      - "18101:18101"
+    networks:
+      - ctas-overlay
+    environment:
+      - CTAS_VERSION=7.0.0
+      - CTAS_SWARM_MODE=true
+      - CTAS_NODE_ROLE=foundation
+    labels:
+      - "traefik.enable=true"
+      - "ctas.service=foundation-core"
+      - "ctas.tier=foundation"
+
+  # Statistical Analysis CDN
+  stats-cdn:
+    image: ctas7-statistical-analysis-cdn:latest
+    deploy:
+      replicas: 2
+      resources:
+        limits:
+          cpus: '3.0'
+          memory: 2G
+        reservations:
+          cpus: '1.0'
+          memory: 512M
+    ports:
+      - "18108:18108"
+      - "18109:18109"
+    networks:
+      - ctas-overlay
+    environment:
+      - CTAS_VERSION=7.0.0
+      - CTAS_STATISTICAL_MODE=production
+      - CTAS_FOUNDATION_ENDPOINT=http://foundation-core:18101
+    labels:
+      - "ctas.service=statistical-cdn"
+      - "ctas.port=18108"
+      - "ctas.tier=analysis"
+
+  # Dashboard CDN
+  dashboard-cdn:
+    image: nginx:alpine
+    deploy:
+      replicas: 2
+    ports:
+      - "18110:80"
+    networks:
+      - ctas-overlay
+    labels:
+      - "ctas.service=dashboard-cdn"
+      - "ctas.port=18110"
+
+  # Smart Orchestrator Gateway
+  orchestrator-gateway:
+    image: nginx:alpine
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.role == manager
+    ports:
+      - "18200:80"
+    networks:
+      - ctas-overlay
+    labels:
+      - "ctas.service=orchestrator-gateway"
+      - "ctas.port=18200"
+
+  # QA Testing Service
+  qa-tester:
+    image: ctas7-foundation-qa:sterile
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.role == manager
+      restart_policy:
+        condition: none
+    networks:
+      - ctas-overlay
+    environment:
+      - CTAS_QA_MODE=swarm
+      - CTAS_TEST_TARGETS=foundation-core:18101,stats-cdn:18108,dashboard-cdn:18110,orchestrator-gateway:18200
+    depends_on:
+      - foundation-core
+      - stats-cdn
+      - dashboard-cdn
+      - orchestrator-gateway
+
+  # Health Monitor
+  health-monitor:
+    image: prom/prometheus:latest
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.role == manager
+    ports:
+      - "9090:9090"
+    networks:
+      - ctas-overlay
+    labels:
+      - "ctas.service=health-monitor"
+
+networks:
+  ctas-overlay:
+    driver: overlay
+    driver_opts:
+      encrypted: "true"
+    attachable: true
+
+configs:
+  nginx-stats:
+    external: true
+
+secrets:
+  ctas-tls-cert:
+    external: true
+
+# Swarm deployment constraints
+x-deploy-defaults: &deploy-defaults
+  update_config:
+    parallelism: 1
+    delay: 10s
+    failure_action: rollback
+  restart_policy:
+    condition: on-failure
+    delay: 5s
+    max_attempts: 3

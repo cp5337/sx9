@@ -1,0 +1,99 @@
+[package]
+name = "sx9-foundation-daemon"
+version = "0.1.0"
+edition = "2021"
+authors = ["Synaptix9 Engineering Team"]
+description = "Synaptix9 ATLAS (Autonomous Task & Lifecycle Automation System) - Enterprise PM2 replacement with HFT optimization and OrbStack integration"
+license = "MIT"
+keywords = ["ctas", "atlas", "daemon", "orchestration", "pm2-replacement"]
+categories = ["development-tools", "containerization", "process-management"]
+
+[[bin]]
+name = "atlas"
+path = "src/main.rs"
+
+[features]
+default = ["hft"]
+hft = ["crossbeam", "parking_lot", "dashmap"]
+pm2-compatibility = []
+
+[dependencies]
+# Foundation dependencies - DSL uses existing trivariate hash engine
+# sx9-foundation-core = { path = "../sx9-foundation-core" }
+# sx9-foundation-math = { path = "../sx9-foundation-math" }
+# sx9-foundation-interface = { path = "../sx9-foundation-interface" }
+
+# Core async runtime
+tokio = { version = "1.37.0", features = ["full", "rt-multi-thread", "process", "signal"] }
+futures = { version = "0.3", features = ["std"] }
+async-trait = "0.1"
+
+# Serialization and data handling
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+serde_yaml = "0.9"
+toml = "0.8"
+uuid = { version = "1.8.0", features = ["v4", "serde"] }
+chrono = { version = "0.4", features = ["serde"] }
+
+# HTTP server and networking
+axum = { version = "0.7", features = ["ws", "multipart", "json"] }
+warp = "0.3"              # Web server framework for MCP services
+tower = { version = "0.4", features = ["util", "timeout", "load-shed", "limit"] }
+tower-http = { version = "0.5", features = ["fs", "trace", "cors"] }
+hyper = { version = "1.0", features = ["full"] }
+
+# Container Orchestration
+bollard = "0.16"          # Docker API
+# k8s-openapi = "0.21"    # Kubernetes API (future)
+tonic = { version = "0.11", features = ["gzip"] }  # gRPC for service mesh
+tonic-build = "0.11"      # gRPC code generation
+
+# HFT Performance (when feature enabled)
+crossbeam = { version = "0.8", optional = true }
+parking_lot = { version = "0.12", optional = true }
+dashmap = { version = "5.5", optional = true }
+atomic = "0.5"
+
+# Error handling and logging
+anyhow = "1.0"
+thiserror = "1.0"
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter", "json"] }
+env_logger = "0.11"
+
+# CLI and configuration
+clap = { version = "4.5", features = ["derive", "env"] }
+config = "0.14"
+
+# Process management
+sysinfo = "0.30"         # System information and process monitoring
+nix = "0.27"             # Unix system calls
+signal-hook = "0.3"      # Signal handling
+signal-hook-tokio = { version = "0.3", features = ["futures-v0_3"] }
+
+# Networking and service discovery
+mdns-sd = "0.10"         # mDNS service discovery
+trust-dns-resolver = "0.23"  # DNS resolution
+reqwest = { version = "0.12", features = ["json"] }
+
+# Configuration and templates
+handlebars = "4.5"       # Template engine for config generation
+glob = "0.3"             # File pattern matching
+
+# PM2 Compatibility
+js-sys = { version = "0.3", optional = true }  # JavaScript interop for PM2 config parsing
+
+# PLASMA Security Integration (when feature enabled)
+ring = { version = "0.17", optional = true }
+jsonwebtoken = { version = "9.0", optional = true }
+
+[build-dependencies]
+tonic-build = "0.11"
+
+[dev-dependencies]
+tokio-test = "0.4"
+criterion = { version = "0.5", features = ["html_reports"] }
+tempfile = "3.8"
+assert_cmd = "2.0"
+

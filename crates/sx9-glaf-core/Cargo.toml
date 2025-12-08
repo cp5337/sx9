@@ -1,0 +1,18 @@
+[package]
+name = "sx9-glaf-core"
+version.workspace = true
+edition.workspace = true
+description = "GLAF neural operations (ANN/GNN + topology mirroring)"
+license.workspace = true
+
+[dependencies]
+# Foundation crates
+sx9-foundation-core = { path = "../sx9-foundation-core" }
+sx9-atlas-bus = { path = "../sx9-atlas-bus", features = ["std"] }
+
+# Direct dependencies needed for derive macros
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+anyhow = "1.0"
+tokio = { version = "1.0", features = ["full"] }
+chrono = { version = "0.4", features = ["serde"] }

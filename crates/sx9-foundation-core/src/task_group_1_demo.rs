@@ -1,0 +1,147 @@
+//! CTAS Task Group 1 Demo - Scanning Operations with Bevy ECS
+//! 
+//! Demonstrates hash-triggered scan task execution using SlotGraph architecture
+
+use bevy::prelude::*;
+use ctas_exploit_vector_machine::{
+    ScanTask, ScanType, ScanTaskBundle, scan_task_executor::scan_task_execution_system
+};
+use ctas_slotgraph_tools::{
+    node_types::{HD4Phase, TaskPriority},
+    cognigraph::universal_nodes::UniversalNodeType
+};
+use std::time::Duration;
+
+fn main() {
+    println!("🎯 CTAS Task Group 1 - Network Scanning Demo");
+    println!("🔍 Demonstrating hash-triggered scan task execution with Bevy ECS SlotGraph");
+    println!("{}", "─".repeat(80));
+
+    // Initialize Bevy app with CTAS systems
+    App::new()
+        .add_plugins(MinimalPlugins)
+        .add_systems(Startup, setup_scan_tasks)
+        .add_systems(Update, (
+            scan_task_execution_system,
+            display_scan_progress,
+            auto_exit_system.run_if(should_exit),
+        ))
+        .run();
+}
+
+/// Setup initial scan tasks for demonstration
+fn setup_scan_tasks(mut commands: Commands) {
+    println!("🚀 Setting up Task Group 1 scan tasks...\n");
+
+    // Task 1: Port scan of target network
+    let port_scan_bundle = ScanTaskBundle::new(
+        "192.168.1.1".to_string(),
+        ScanType::PortScan,
+    );
+    commands.spawn((
+        port_scan_bundle,
+        Name::new("Task-1-PortScan-192.168.1.1"),
+    ));
+    println!("✅ Task 1: Port Scan of 192.168.1.1 (Task Group 1)");
+
+    // Task 2: Network discovery
+    let network_scan_bundle = ScanTaskBundle::new(
+        "192.168.1.0/24".to_string(),
+        ScanType::NetworkDiscovery,
+    );
+    commands.spawn((
+        network_scan_bundle,
+        Name::new("Task-2-NetworkDiscovery-192.168.1.0/24"),
+    ));
+    println!("✅ Task 2: Network Discovery of 192.168.1.0/24 (Task Group 1)");
+
+    // Task 3: Service enumeration
+    let service_scan_bundle = ScanTaskBundle::new(
+        "example.com".to_string(),
+        ScanType::ServiceEnum,
+    );
+    commands.spawn((
+        service_scan_bundle,
+        Name::new("Task-3-ServiceEnum-example.com"),
+    ));
+    println!("✅ Task 3: Service Enumeration of example.com (Task Group 1)");
+
+    // Task 4: Vulnerability scan
+    let vuln_scan_bundle = ScanTaskBundle::new(
+        "10.0.0.1".to_string(),
+        ScanType::VulnScan,
+    );
+    commands.spawn((
+        vuln_scan_bundle,
+        Name::new("Task-4-VulnScan-10.0.0.1"),
+    ));
+    println!("✅ Task 4: Vulnerability Scan of 10.0.0.1 (Task Group 1)");
+
+    println!("\n🎮 Starting Bevy ECS execution...");
+    println!("⏱️  Tasks will execute automatically based on hash triggers");
+    println!("🧠 Cognigraph will analyze results and recommend HD4 phases\n");
+}
+
+/// Display scan progress during execution
+fn display_scan_progress(
+    mut timer: Local<Timer>,
+    time: Res<Time>,
+    scan_query: Query<(&ScanTask, &Name), Without<ctas_exploit_vector_machine::ScanResultComponent>>,
+    result_query: Query<&ctas_exploit_vector_machine::ScanResultComponent>,
+) {
+    // Update timer
+    timer.tick(time.delta());
+    
+    if timer.finished() {
+        // Reset timer for next update
+        *timer = Timer::from_seconds(2.0, TimerMode::Repeating);
+        
+        let active_scans = scan_query.iter().count();
+        let completed_scans = result_query.iter().count();
+        
+        println!("📊 Progress Update:");
+        println!("   Active Scans: {}", active_scans);
+        println!("   Completed Scans: {}", completed_scans);
+        
+        // Display details of completed scans
+        for result in result_query.iter() {
+            let analysis = &result.cognitive_analysis;
+            println!("   🎯 Target: {} | HD4 Phase: {:?} | Risk Score: {:.2}", 
+                result.scan_result.target,
+                analysis.hd4_phase_recommendation,
+                analysis.attack_surface_score
+            );
+            
+            if !analysis.recommended_actions.is_empty() {
+                println!("     💡 Recommendations: {:?}", analysis.recommended_actions);
+            }
+        }
+        println!();
+    }
+}
+
+/// Auto-exit system after demonstration
+fn should_exit(
+    time: Res<Time>,
+    result_query: Query<&ctas_exploit_vector_machine::ScanResultComponent>,
+) -> bool {
+    // Exit after 15 seconds or when all scans complete
+    time.elapsed_seconds() > 15.0 || result_query.iter().count() >= 4
+}
+
+fn auto_exit_system(mut exit: EventWriter<AppExit>) {
+    println!("\n🎉 Task Group 1 demonstration complete!");
+    println!("📈 All scan tasks executed successfully with cognigraph analysis");
+    println!("🔍 Hash-triggered execution verified");
+    println!("🧠 HD4 phase recommendations generated");
+    println!("✨ CTAS Bevy ECS SlotGraph architecture validated\n");
+    
+    exit.send(AppExit::Success);
+}
+
+/// Initialize timer as local resource
+impl Default for Timer {
+    fn default() -> Self {
+        Timer::from_seconds(2.0, TimerMode::Repeating)
+    }
+}

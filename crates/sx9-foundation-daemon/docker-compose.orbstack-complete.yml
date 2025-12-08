@@ -1,0 +1,414 @@
+version: '3.8'
+
+# 🚀 CTAS-7 Complete Foundation Daemon Stack on OrbStack
+# Includes: Backend MCP, ABE Controlled Access, GLAF, Performance Testing, Phi-3
+
+services:
+  # Service Discovery - Central coordination
+  service-discovery:
+    build:
+      context: .
+      dockerfile: Dockerfile.service-discovery
+    container_name: ctas7-service-discovery
+    ports:
+      - "18650:18650"  # Service registry
+    environment:
+      - RUST_LOG=info
+      - REGISTRY_PORT=18650
+      - ORBSTACK_INTEGRATION=true
+    networks:
+      - ctas7-foundation-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:18650/health"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+
+  # Backend MCP Server with Watchdog
+  backend-mcp:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend-mcp
+    container_name: ctas7-backend-mcp
+    ports:
+      - "18600:18600"  # Backend MCP API
+      - "18602:18602"  # Watchdog status
+    environment:
+      - RUST_LOG=info
+      - WATCHDOG_ENABLED=true
+      - PHI3_ENDPOINT=http://phi3-guardian:11434
+      - SERVICE_DISCOVERY_URL=http://service-discovery:18650
+      - MURMURHASH3_VALIDATION=true
+    volumes:
+      - mcp-data:/data
+      - mcp-logs:/logs
+    networks:
+      - ctas7-foundation-network
+    depends_on:
+      service-discovery:
+        condition: service_healthy
+      phi3-guardian:
+        condition: service_healthy
+    restart: unless-stopped
+
+  # Database Validator - MurmurHash3 integrity
+  database-validator:
+    build:
+      context: .
+      dockerfile: Dockerfile.db-validator
+    container_name: ctas7-database-validator
+    ports:
+      - "18605:18605"  # Validation API
+    environment:
+      - RUST_LOG=info
+      - MURMURHASH3_SEED=1337
+      - VALIDATION_INTERVAL=30
+      - HASH_PERFORMANCE_TARGET=15240  # MB/sec target
+    volumes:
+      - validation-data:/validation
+      - hash-registry:/hashes
+    networks:
+      - ctas7-foundation-network
+    depends_on:
+      - service-discovery
+    restart: unless-stopped
+
+  # ABE Controlled Access - Intelligence Collection
+  abe-controlled-access:
+    build:
+      context: .
+      dockerfile: Dockerfile.abe-access
+    container_name: ctas7-abe-access
+    ports:
+      - "18630:18630"  # ABE API
+      - "18631:18631"  # Billing API
+      - "18632:18632"  # GPU allocation API
+    environment:
+      - RUST_LOG=info
+      - ABE_WORKSPACE=abe_intelligence_workspace
+      - CONTAMINATION_PREVENTION=true
+      - NODE_INTERVIEW_BLOCK=true  # Block what caused contamination
+      - TASK_POPULATION_BLOCK=true
+      - CTAS_OPERATIONAL_BLOCK=true
+      - PAYGO_BILLING=true
+      - GPU_HIGH_PERFORMANCE=true
+    volumes:
+      - abe-workspace:/workspace
+      - abe-billing:/billing
+      - intelligence-data:/intelligence
+    networks:
+      - ctas7-foundation-network
+      - ctas7-gpu-network  # Dedicated GPU network
+    depends_on:
+      - service-discovery
+      - backend-mcp
+    restart: unless-stopped
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+
+  # Phi-3 Guardian - Model drift prevention
+  phi3-guardian:
+    image: ghcr.io/ggerganov/llama.cpp:server
+    container_name: ctas7-phi3-guardian
+    ports:
+      - "11434:8080"
+    environment:
+      - MODEL_PATH=/models/phi-3-mini-4k-instruct.gguf
+      - CONTEXT_SIZE=4096
+      - THREADS=8
+      - GPU_LAYERS=32
+    volumes:
+      - phi3-models:/models:ro
+      - phi3-logs:/logs
+    networks:
+      - ctas7-foundation-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    deploy:
+      resources:
+        limits:
+          memory: 8G
+        reservations:
+          memory: 4G
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+
+  # GLAF Intelligence System
+  glaf-intelligence:
+    build:
+      context: .
+      dockerfile: Dockerfile.glaf
+    container_name: ctas7-glaf-intelligence
+    ports:
+      - "8090:8090"    # GLAF API
+      - "8091:8091"    # Threat correlation
+      - "8092:8092"    # Alert generation
+    environment:
+      - RUST_LOG=info
+      - GLAF_MODE=intelligence_processing
+      - THREAT_ANALYSIS=true
+      - PLASMA_INTEGRATION=true
+      - LEGION_ECS_ENDPOINT=http://legion-ecs:15177
+      - INTELLIGENCE_ACCURACY_TARGET=94.5
+    volumes:
+      - glaf-intelligence:/intelligence
+      - threat-patterns:/patterns
+    networks:
+      - ctas7-foundation-network
+    depends_on:
+      - service-discovery
+      - backend-mcp
+    restart: unless-stopped
+
+  # Performance Test Harness
+  performance-tester:
+    build:
+      context: .
+      dockerfile: Dockerfile.performance
+    container_name: ctas7-performance-tester
+    ports:
+      - "18620:18620"  # Test harness API
+      - "18621:18621"  # Results dashboard
+    environment:
+      - RUST_LOG=info
+      - HASH_PERFORMANCE_TARGET=15240   # 15,240 MB/sec
+      - ROUTING_LATENCY_TARGET=250      # <250ns
+      - SERVICE_RESPONSE_TARGET=100     # <100ms
+      - GLAF_PIPELINE_TARGET=1000       # <1000ms
+      - TEST_ORBSTACK_PERFORMANCE=true
+    volumes:
+      - performance-results:/results
+      - test-data:/testdata
+    networks:
+      - ctas7-foundation-network
+    depends_on:
+      - service-discovery
+      - backend-mcp
+      - database-validator
+      - abe-controlled-access
+      - glaf-intelligence
+    restart: unless-stopped
+
+  # Emergency Recovery System
+  emergency-recovery:
+    build:
+      context: .
+      dockerfile: Dockerfile.emergency
+    container_name: ctas7-emergency-recovery
+    ports:
+      - "18615:18615"  # Recovery API
+    environment:
+      - RUST_LOG=info
+      - BACKUP_INTERVAL=300        # 5 minutes
+      - CTAS_TASK_PROTECTION=true
+      - AUTO_RECOVERY=true
+      - CONTAMINATION_RESPONSE=true
+    volumes:
+      - emergency-backups:/backups
+      - ctas-snapshots:/snapshots
+      - recovery-logs:/logs
+    networks:
+      - ctas7-foundation-network
+    depends_on:
+      - service-discovery
+    restart: unless-stopped
+
+  # Watchdog Dashboard - Grafana monitoring
+  watchdog-dashboard:
+    image: grafana/grafana:latest
+    container_name: ctas7-watchdog-dashboard
+    ports:
+      - "18610:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=ctas7_foundation
+      - GF_INSTALL_PLUGINS=grafana-clock-panel,grafana-piechart-panel
+      - GF_DASHBOARDS_DEFAULT_HOME_DASHBOARD_PATH=/var/lib/grafana/dashboards/ctas7-overview.json
+    volumes:
+      - grafana-data:/var/lib/grafana
+      - ./grafana-dashboards:/var/lib/grafana/dashboards
+      - ./grafana-config:/etc/grafana/provisioning
+    networks:
+      - ctas7-foundation-network
+    depends_on:
+      - backend-mcp
+      - performance-tester
+    restart: unless-stopped
+
+  # Foundation Daemon Core
+  foundation-daemon:
+    build:
+      context: .
+      dockerfile: Dockerfile.foundation-daemon
+    container_name: ctas7-foundation-daemon
+    ports:
+      - "18500:18500"  # Foundation API
+      - "18103:18103"  # Port Manager
+      - "18105:18105"  # Hash Engine
+    environment:
+      - RUST_LOG=info
+      - FOUNDATION_MODE=multi_modal
+      - PORT_MANAGER_ENABLED=true
+      - HASH_ENGINE_ENABLED=true
+      - HFT_OPTIMIZATION=true
+      - ORBSTACK_NATIVE=true
+      - PM2_REPLACEMENT=true
+      - SERVICE_DISCOVERY_URL=http://service-discovery:18650
+    volumes:
+      - foundation-data:/data
+      - port-registry:/port_registry
+      - hash-engine-data:/hash_data
+    networks:
+      - ctas7-foundation-network
+    depends_on:
+      - service-discovery
+    restart: unless-stopped
+    privileged: false  # OrbStack doesn't require privileged mode
+
+networks:
+  # Main foundation network
+  ctas7-foundation-network:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.20.0.0/16
+          gateway: 172.20.0.1
+    driver_opts:
+      com.docker.network.bridge.name: ctas7-foundation
+      com.docker.network.bridge.enable_icc: "true"
+
+  # Dedicated GPU network for ABE
+  ctas7-gpu-network:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.22.0.0/16
+          gateway: 172.22.0.1
+    driver_opts:
+      com.docker.network.bridge.name: ctas7-gpu
+
+volumes:
+  # Service data
+  mcp-data:
+    driver: local
+  mcp-logs:
+    driver: local
+  validation-data:
+    driver: local
+  hash-registry:
+    driver: local
+
+  # ABE intelligence data
+  abe-workspace:
+    driver: local
+  abe-billing:
+    driver: local
+  intelligence-data:
+    driver: local
+
+  # AI models and logs
+  phi3-models:
+    driver: local
+  phi3-logs:
+    driver: local
+
+  # GLAF intelligence
+  glaf-intelligence:
+    driver: local
+  threat-patterns:
+    driver: local
+
+  # Performance and monitoring
+  performance-results:
+    driver: local
+  test-data:
+    driver: local
+  grafana-data:
+    driver: local
+
+  # Emergency systems
+  emergency-backups:
+    driver: local
+  ctas-snapshots:
+    driver: local
+  recovery-logs:
+    driver: local
+
+  # Foundation daemon
+  foundation-data:
+    driver: local
+  port-registry:
+    driver: local
+  hash-engine-data:
+    driver: local
+
+# 🚀 ORBSTACK DEPLOYMENT INSTRUCTIONS:
+#
+# 1. Ensure OrbStack is running and Docker context is set:
+#    docker context use orbstack
+#
+# 2. Download Phi-3 model (one time setup):
+#    mkdir -p ./phi3-models
+#    wget https://huggingface.co/microsoft/Phi-3-mini-4k-instruct-gguf/resolve/main/Phi-3-mini-4k-instruct-q4.gguf -O ./phi3-models/phi-3-mini-4k-instruct.gguf
+#
+# 3. Create required directories:
+#    mkdir -p {grafana-dashboards,grafana-config}
+#
+# 4. Deploy complete stack:
+#    docker-compose -f docker-compose.orbstack-complete.yml up -d
+#
+# 5. Wait for all services to be healthy:
+#    docker-compose -f docker-compose.orbstack-complete.yml ps
+#
+# 6. Verify deployment:
+#    curl http://localhost:18650/discover  # Service discovery
+#    curl http://localhost:18600/health    # Backend MCP
+#    curl http://localhost:18630/health    # ABE access
+#    curl http://localhost:8090/health     # GLAF intelligence
+#    curl http://localhost:18620/health    # Performance tester
+#
+# 7. Access dashboards:
+#    http://localhost:18610  # Watchdog dashboard (admin/ctas7_foundation)
+#    http://localhost:18621  # Performance results
+#
+# 8. Start ABE intelligence session:
+#    curl -X POST http://localhost:18630/start-session \
+#         -H "Content-Type: application/json" \
+#         -d '{"gpu_tier":"Standard Intelligence","operations":["IntelligenceCollection"],"max_cost":50.0,"duration_hours":4}'
+#
+# 9. Run performance validation:
+#    curl -X POST http://localhost:18620/run-tests \
+#         -H "Content-Type: application/json" \
+#         -d '{"test_mode":"full"}'
+#
+# CRITICAL FEATURES ENABLED:
+# ✅ ABE intelligence collection with high GPU
+# ✅ Contamination prevention (blocks node interviews/task population)
+# ✅ Pay-as-you-go billing for ABE usage
+# ✅ GLAF intelligence processing
+# ✅ Performance validation (15,240 MB/s hash, <250ns routing)
+# ✅ Emergency recovery system
+# ✅ Service discovery (no doubling)
+# ✅ Foundation Daemon (PM2 replacement)
+# ✅ Phi-3 model drift protection
+# ✅ Real-time monitoring dashboard
+#
+# OrbStack Benefits:
+# 🚀 2-second container startup
+# 💾 Low memory usage
+# 🔗 Native macOS integration
+# ⚡ Near-native performance

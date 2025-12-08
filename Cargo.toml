@@ -1,0 +1,83 @@
+[workspace]
+members = [
+    # Gateway & Core Services
+    "crates/sx9-gateway-primary",
+    "crates/sx9-atlas-bus",
+    "crates/sx9-atlas-daemon",
+
+    # Hash & Routing Infrastructure
+    "crates/sx9-hashing-engine",
+    "crates/sx9-neural-mux",
+    "crates/sx9-port-manager",
+
+    # Neural/AI Crates
+    "crates/sx9-ann-engine",
+    "crates/sx9-glaf-core",
+    "crates/sx9-dsl-engine",
+
+    # Plasma/ECS System
+    "crates/sx9-plasma-defender",
+    "crates/sx9-plasma-ecs",
+
+    # Foundation v7.3.1
+    "crates/sx9-foundation-core",
+    "crates/sx9-foundation-daemon",
+    "crates/sx9-foundation-data",
+    "crates/sx9-foundation-interface",
+    "crates/sx9-foundation-math",
+    "crates/sx9-foundation-tactical",
+    "crates/sx9-foundation-voice",
+    "crates/sx9-foundation-orbital",
+    "crates/sx9-foundation-manifold",
+]
+resolver = "2"
+
+[workspace.package]
+version = "0.1.0"
+edition = "2021"
+license = "MIT"
+authors = ["Synaptix9 Engineering Group"]
+
+[workspace.dependencies]
+# Core async runtime
+tokio = { version = "1.0", features = ["full", "macros", "rt-multi-thread"] }
+
+# Serialization
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+
+# Utilities
+anyhow = "1.0"
+thiserror = "1.0"
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+uuid = { version = "1.0", features = ["v7", "serde"] }
+
+# Web server
+axum = { version = "0.7", features = ["ws", "macros"] }
+tower = "0.4"
+tower-http = { version = "0.5", features = ["cors", "trace"] }
+
+# HTTP client
+reqwest = { version = "0.12", features = ["json"] }
+
+# Messaging
+async-nats = "0.35"
+
+# Database
+surrealdb = { version = "2.0", features = ["protocol-ws"] }
+
+# ECS
+legion = "0.4"
+apecs = "0.3"
+
+# WASM
+wasmtime = { version = "20.0", features = ["async"] }
+
+# CLI
+clap = { version = "4.0", features = ["derive"] }
+
+# Futures
+futures-util = { version = "0.3", features = ["sink"] }
+
+

@@ -1,0 +1,94 @@
+[package]
+name = "ctas7-foundation-orbital"
+version = "7.3.1"
+edition = "2021"
+license = "Apache-2.0"
+description = "CTAS-7 Foundation Orbital Mechanics - SGP4, Constellation Management, and FSO Link Budget Analysis (v7.3.1 Smart Crate)"
+authors = ["CTAS Foundation Engineering <foundation@ctas7.com>"]
+
+# Smart Crate v7.3.1 - No workspace declaration (part of shipyard workspace)
+# [workspace] - REMOVED for shipyard integration
+
+[dependencies]
+# Foundation Integration - v7.2 Trivariate Architecture
+foundation-core = { path = "../foundation_core" }
+foundation-math = { path = "../foundation_math" }
+foundation-data = { path = "../foundation_data" }
+
+# Core Infrastructure
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+uuid = { version = "1.8", features = ["v4", "serde"] }
+chrono = { version = "0.4", features = ["serde"] }
+tokio = { version = "1.0", features = ["full"] }
+anyhow = "1.0"
+thiserror = "1.0"
+
+# Mathematical Foundations
+nalgebra = "0.32"
+num = "0.4"
+
+# Geospatial and Coordinate Systems
+geo = "0.26"
+proj = "0.27"
+
+# Atmospheric and Environmental Modeling
+weather-apis = { version = "0.5", features = ["noaa", "ecmwf"], optional = true }
+
+# Cryptography (v7.2 Trivariate Hash Only)
+murmur3 = "0.5"
+unicode-segmentation = "1.10"
+
+# Monitoring and Telemetry
+tracing = "0.1"
+metrics = "0.22"
+
+[dev-dependencies]
+tokio-test = "0.4"
+criterion = "0.5"
+tempfile = "3.8"
+
+[features]
+default = ["constellation", "fso_analysis", "weather_integration"]
+constellation = []
+fso_analysis = []
+weather_integration = ["weather-apis"]
+atmospheric_modeling = []
+
+[lib]
+name = "ctas7_foundation_orbital"
+path = "src/lib.rs"
+
+# Smart Crate System metadata - v7.3.1
+[package.metadata.ctas7]
+crate_type = "foundation"
+mission = "OrbitalMechanics"
+security_level = "Production"
+orchestrator_compatible = true
+xsd_symbols = ["\\u{E500}", "\\u{E320}", "\\u{E000}"]
+assembly_language_version = "1.0.0"
+neural_mux_priority = "high"
+port_range_start = 18460
+port_range_end = 18480
+domain = "space"
+
+# SLSA Provenance metadata
+[package.metadata.slsa]
+build_type = "hermetic"
+builder_id = "ctas7-smart-crate-orchestrator"
+reproducible = true
+
+# Smart Crate System integration
+[package.metadata.smart_crate]
+template_version = "1.0.0"
+orchestrator_version = "7.3.1"
+autonomous_deployment = true
+threat_hunting_enabled = false
+neural_mux_integration = true
+unicode_compression_enabled = true
+trivariate_hash_support = true
+xsd_orchestrator_type = "crate"
+assembly_language_linkup = true
+laserlight_constellation = true
+fso_link_budget = true
+ground_station_network = 259

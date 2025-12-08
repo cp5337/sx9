@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns:ctas="http://ctas.cyber.gov/orchestration/core"
+           targetNamespace="http://ctas.cyber.gov/orchestration/core"
+           elementFormDefault="qualified">
+
+  <!-- CTAS-7 Orchestration Schema -->
+  <xs:element name="CTASOrchestration" type="ctas:OrchestrationType"/>
+
+  <xs:complexType name="OrchestrationType">
+    <xs:sequence>
+      <xs:element name="metadata" type="ctas:MetadataType"/>
+      <xs:element name="orchestrators" type="ctas:OrchestratorsType"/>
+      <xs:element name="dependencies" type="ctas:DependenciesType"/>
+      <xs:element name="status" type="ctas:StatusType"/>
+    </xs:sequence>
+    <xs:attribute name="version" type="xs:string" use="required"/>
+  </xs:complexType>
+
+  <xs:complexType name="OrchestratorType">
+    <xs:sequence>
+      <xs:element name="id" type="xs:string"/>
+      <xs:element name="type" type="ctas:OrchestratorTypeEnum"/>
+      <xs:element name="state" type="ctas:OrchestrationStateEnum"/>
+      <xs:element name="health" type="ctas:HealthMetricsType"/>
+      <xs:element name="resources" type="ctas:ResourceMetricsType"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:simpleType name="OrchestratorTypeEnum">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Service"/>
+      <xs:enumeration value="Asset"/>
+      <xs:enumeration value="Crate"/>
+      <xs:enumeration value="QualityAssurance"/>
+      <xs:enumeration value="Shipyard"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="OrchestrationStateEnum">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Initializing"/>
+      <xs:enumeration value="Running"/>
+      <xs:enumeration value="Stopping"/>
+      <xs:enumeration value="Stopped"/>
+      <xs:enumeration value="Error"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+</xs:schema>

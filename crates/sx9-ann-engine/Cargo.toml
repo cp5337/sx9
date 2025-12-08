@@ -1,0 +1,16 @@
+[package]
+name = "sx9-ann-engine"
+version.workspace = true
+edition.workspace = true
+description = "ANN observer mode for neural retrofit (RFC-9114 Rev 1.1)"
+license.workspace = true
+
+[dependencies]
+# Foundation crates - use foundation-core for all common dependencies
+sx9-foundation-core = { path = "../sx9-foundation-core" }
+sx9-atlas-bus = { path = "../sx9-atlas-bus", features = ["std"] }
+
+# Note: Use sx9-foundation-core re-exports instead of direct dependencies:
+# - sx9_foundation_core::data::serde (instead of serde)
+# - sx9_foundation_core::diagnostics::anyhow (instead of anyhow)
+# - sx9_foundation_core::diagnostics::tracing (instead of tracing)

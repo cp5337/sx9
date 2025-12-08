@@ -1,0 +1,35 @@
+# Rustfmt configuration for CTAS Interface Foundation
+# This file configures Rust formatting for the crate
+
+# Basic formatting options
+edition = "2021"
+max_width = 100
+tab_spaces = 4
+newline_style = "Unix"
+
+# Import formatting
+imports_granularity = "Crate"
+group_imports = "StdExternalCrate"
+reorder_imports = true
+
+# Function formatting
+fn_params_layout = "Tall"
+brace_style = "SameLineWhere"
+
+# Control flow formatting
+control_brace_style = "AlwaysSameLine"
+match_arm_blocks = true
+match_arm_leading_pipes = "Never"
+
+# String formatting
+format_strings = true
+format_code_in_doc_comments = true
+
+# Other formatting options
+use_field_init_shorthand = true
+use_try_shorthand = true
+force_explicit_abi = true
+empty_item_single_line = true
+struct_lit_single_line = true
+fn_single_line = false
+where_single_line = false

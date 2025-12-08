@@ -1,0 +1,29 @@
+[smart-crate]
+name = "sx9-neural-mux"
+version = "0.1.0"
+foundation = "sx9-foundation-core"
+retrofit_timestamp = "20251208-120000"
+
+[integration]
+gold_disk_compatible = true
+neural_mux_enabled = true
+hash_engine_integrated = true
+unicode_assembly_support = true
+
+[metadata]
+ctas_version = "7.3.1"
+sx9_version = "0.1.0"
+smart_crate_type = "router"
+original_crate = false
+cloned_from = "ctas7-neural-mux"
+tesla_grade = true
+
+[service]
+protocols = ["internal"]
+capabilities = ["trivariate-hash-routing", "ultra-low-latency", "sub-250ns-lookup"]
+rfc_reference = "RFC-9001"
+
+[performance]
+target_latency_ns = 250
+routing_algorithm = "murmur3-trivariate"
+cache_backend = "dashmap"

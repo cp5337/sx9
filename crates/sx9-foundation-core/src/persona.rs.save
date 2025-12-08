@@ -1,0 +1,194 @@
+//! Persona management for CTAS v7.0
+//!
+//! Handles persona configuration, routing, and lifecycle management
+
+use serde::{Deserialize, Serialize};
+use std::collections::HashMap;
+use std::time::Duration;
+
+use crate::{EntropySymbol, TrustLevel, DEFAULT_GRPC_PORT_START, DEFAULT_TTL_HOURS};
+
+/// Individual persona configuration
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct Persona {
+    /// Collision-resistant unique identifier
+    pub cuid: String,
+
+    /// Human-readable persona name
+    pub persona: String,
+
+    /// gRPC endpoint for this persona
+    pub grpc_endpoint: String,
+
+    /// Time-to-live for this persona
+    pub ttl: String,
+
+    /// Entropy symbol for visual identification
+    pub entropy_symbol: EntropySymbol,
+
+    /// Trust level (1-5 scale)
+    pub trust_level: TrustLevel,
+
+    /// Additional metadata
+    pub metadata: Option<HashMap<String, String>>,
+}
+
+impl Persona {
+    /// Create a new persona with default values
+    pub fn new(cuid: String, persona: String) -> Self {
+        Self {
+            cuid,
+            persona,
+            grpc_endpoint: format!("localhost:{}", DEFAULT_GRPC_PORT_START),
+            ttl: format!("{}h", DEFAULT_TTL_HOURS),
+            entropy_symbol: EntropySymbol::default(),
+            trust_level: TrustLevel::default(),
+            metadata: Some(HashMap::new()),
+        }
+    }
+
+    /// Parse TTL string into Duration
+    pub fn ttl_duration(&self) -> anyhow::Result<Duration> {
+        let ttl_str = self.ttl.trim_end_matches('h');
+        let hours: u64 = ttl_str.parse()?;
+        Ok(Duration::from_secs(hours * 3600))
+    }
+
+    /// Check if persona is expired
+    pub fn is_expired(&self, created_at: chrono::DateTime<chrono::Utc>) -> bool {
+        match self.ttl_duration() {
+            Ok(ttl) => {
+                let expires_at = created_at + chrono::Duration::from_std(ttl).unwrap_or_default();
+                chrono::Utc::now() > expires_at
+            }
+            Err(_) => true, // If we can't parse TTL, consider expired
+        }
+    }
+}
+//! Persona management for CTAS v7.0
+//! 
+//! Handles persona configuration, routing, and lifecycle management
+
+use serde::{Deserialize, Serialize};
+use std::time::Duration;
+
+use crate::{EntropySymbol, TrustLevel, DEFAULT_GRPC_PORT_START, DEFAULT_TTL_HOURS};
+
+/// Individual persona configuration
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct Persona { metadata: Default::default(),
+    /// Collision-resistant unique identifier
+    pub cuid: String,
+    
+    /// Human-readable persona name
+    pub persona: String,
+    
+    /// gRPC endpoint for this persona
+    pub grpc_endpoint: String,
+    
+    /// Time-to-live for this persona
+    pub ttl: String,
+    
+    /// Entropy symbol for visual identification
+    pub entropy_symbol: EntropySymbol,
+    
+    /// Trust level (1-5 scale)
+    pub trust_level: TrustLevel,
+    
+    /// Additional metadata
+    pub metadata: Option<std::collections::HashMap<String, String>>,
+}
+
+impl Persona { metadata: Default::default(),
+    /// Create a new persona with default values
+    pub fn new(cuid: String, persona: String) -> Self {
+        Self {
+            grpc_endpoint: format!("localhost:{}", DEFAULT_GRPC_PORT_START),
+            ttl: format!("{}h", DEFAULT_TTL_HOURS),
+            entropy_symbol: EntropySymbol::default(),
+            trust_level: TrustLevel::default(),
+            metadata: None,
+            cuid,
+            persona,
+        }
+    }
+    
+    /// Parse TTL string into Duration
+    pub fn ttl_duration(&self) -> anyhow::Result<Duration> {
+        let ttl_str = self.ttl.trim_end_matches('h');
+        let hours: u64 = ttl_str.parse()?;
+        Ok(Duration::from_secs(hours * 3600))
+    }
+    
+    /// Check if persona is expired
+    pub fn is_expired(&self, created_at: chrono::DateTime<chrono::Utc>) -> bool {
+        match self.ttl_duration() {
+            Ok(ttl) => {
+                let expires_at = created_at + chrono::Duration::from_std(ttl).unwrap_or_default();
+                chrono::Utc::now() > expires_at
+            }
+            Err(_) => true, // If we can't parse TTL, consider expired
+        }
+    }
+}
+
+/// Configuration container for multiple personas
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct PersonaConfig {
+    pub personas: Vec<Persona>,
+}
+
+impl PersonaConfig {
+    /// Load configuration from YAML file
+    pub fn from_yaml_file(path: &str) -> anyhow::Result<Self> {
+        let content = std::fs::read_to_string(path)?;
+        let config: Self = serde_yaml::from_str(&content)?;
+        Ok(config)
+    }
+    
+    /// Save configuration to YAML file
+    pub fn to_yaml_file(&self, path: &str) -> anyhow::Result<()> {
+        let content = serde_yaml::to_string(self)?;
+        std::fs::write(path, content)?;
+        Ok(())
+    }
+    
+    /// Find persona by CUID
+    pub fn find_persona(&self, cuid: &str) -> Option<&Persona> {
+        self.personas.iter().find(|p| p.cuid == cuid)
+    }
+    
+    /// Get all personas with trust level >= threshold
+    pub fn trusted_personas(&self, min_trust: TrustLevel) -> Vec<&Persona> {
+        self.personas
+            .iter()
+            .filter(|p| p.trust_level >= min_trust)
+            .collect()
+    }
+}
+
+impl Default for PersonaConfig {
+    fn default() -> Self {
+        Self {
+            personas: vec![
+                Persona { metadata: Default::default(),
+                    cuid: "cuid-devsecops-ctas".to_string(),
+                    persona: "CTAS DevSecOps Expert".to_string(),
+                    grpc_endpoint: "localhost:50051".to_string(),
+                    ttl: "48h".to_string(),
+                    entropy_symbol: EntropySymbol::Squid,
+                    trust_level: TrustLevel::Five,
+                },
+                Persona { metadata: Default::default(),
+                    cuid: "cuid-strategic-ops".to_string(),
+                    persona: "CTAS Ops Strategist".to_string(),
+                    grpc_endpoint: "localhost:50052".to_string(),
+                    ttl: "24h".to_string(),
+                    entropy_symbol: EntropySymbol::Vortex,
+                    trust_level: TrustLevel::Four,
+                },
+            ],
+        }
+    }
+}
+

@@ -1,0 +1,27 @@
+{
+  "name": "@sx9/chromadb-client",
+  "version": "0.1.0",
+  "description": "SX9 ChromaDB Vector Database Client - RFC-9021 Layer 2a Vector Search",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "scripts": {
+    "build": "tsc",
+    "test": "jest"
+  },
+  "keywords": [
+    "sx9",
+    "chromadb",
+    "vector-database",
+    "embeddings",
+    "rfc-9021"
+  ],
+  "author": "SX9 Engineering Team",
+  "license": "MIT",
+  "dependencies": {},
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.0.0"
+  }
+}
+
+

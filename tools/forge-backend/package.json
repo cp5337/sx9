@@ -1,0 +1,43 @@
+{
+  "name": "forge-backend",
+  "version": "1.0.0",
+  "description": "SYNAPTIX9 Forge Backend - Workflow Execution Engine (Port 18350)",
+  "main": "dist/index.js",
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsx watch src/index.ts",
+    "start": "node dist/index.js",
+    "test": "vitest",
+    "lint": "eslint src --ext .ts",
+    "clean": "rm -rf dist",
+    "docker:build": "docker build -t synaptix9/forge-backend .",
+    "docker:run": "docker run -p 18350:18350 synaptix9/forge-backend"
+  },
+  "dependencies": {
+    "@synaptix9/core": "workspace:*",
+    "express": "^4.18.0",
+    "cors": "^2.8.5",
+    "ws": "^8.14.0",
+    "uuid": "^9.0.0",
+    "zod": "^3.22.0",
+    "helmet": "^7.1.0",
+    "morgan": "^1.10.0",
+    "compression": "^1.7.0",
+    "rate-limiter-flexible": "^4.0.0"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.0",
+    "@types/cors": "^2.8.0",
+    "@types/ws": "^8.5.0",
+    "@types/uuid": "^9.0.0",
+    "@types/morgan": "^1.9.0",
+    "@types/compression": "^1.7.0",
+    "tsx": "^4.6.0",
+    "typescript": "^5.0.0",
+    "vitest": "^1.0.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

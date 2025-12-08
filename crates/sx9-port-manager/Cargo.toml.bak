@@ -1,0 +1,42 @@
+[package]
+name = "ctas7-real-port-manager"
+version = "7.2.0"
+edition = "2021"
+description = "CTAS-7 Real Port Manager - Canonical smart crate with orbital, CDN, and neural mesh port blocks"
+license = "Apache-2.0"
+
+[features]
+default = ["foundation", "orbital", "cdn", "neural"]
+foundation = ["dep:foundation-core", "dep:foundation-math"]
+orbital = []
+cdn = []
+neural = []
+standalone = []
+
+[dependencies]
+# Foundation v7.2.0 Integration
+foundation-core = { path = "../Cognitive Tactics Engine/hash _foundation_updates/foundation_core", optional = true }
+foundation-math = { path = "../Cognitive Tactics Engine/hash _foundation_updates/foundation_math", optional = true }
+
+# Workspace dependencies
+tokio = { workspace = true }
+axum = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+chrono = { workspace = true }
+tracing = { workspace = true }
+uuid = { workspace = true }
+anyhow = { workspace = true }
+
+# Additional dependencies
+thiserror = "1.0"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+
+# Smart crate foundation components
+# Trivariate Hash System v7.2 (SCH + CUID + UUID = 48 chars, 15,240 MB/sec)
+sha3 = { workspace = true }  # Secure Hash Algorithm for SCH component
+cuid2 = { workspace = true }  # CUID component
+
+[[bin]]
+name = "ctas7-real-port-manager"
+path = "src/main.rs"

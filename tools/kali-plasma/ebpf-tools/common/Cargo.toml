@@ -1,0 +1,15 @@
+[package]
+name = "plasma-ebpf-common"
+version.workspace = true
+edition.workspace = true
+description = "Common types and utilities for Kali Plasma eBPF tools"
+
+[dependencies]
+# No dependencies - this is for eBPF, must be minimal
+
+[features]
+default = []
+
+
+
+

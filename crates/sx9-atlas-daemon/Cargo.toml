@@ -1,0 +1,29 @@
+[package]
+name = "sx9-atlas-daemon"
+version.workspace = true
+edition.workspace = true
+description = "SX9 ATLAS Daemon - Cognitive Engine with OODA Loop integrated with sx9-atlas-bus"
+license.workspace = true
+
+[[bin]]
+name = "sx9-atlas-daemon"
+path = "src/main.rs"
+
+[dependencies]
+# SX9 ecosystem
+sx9-atlas-bus = { path = "../sx9-atlas-bus", features = ["std", "nats"] }
+
+# Foundation crates - use foundation-core for all common dependencies
+sx9-foundation-core = { path = "../sx9-foundation-core" }
+
+# Direct dependencies needed for derive macros
+serde = { version = "1.0", features = ["derive"] }
+tracing = "0.1"
+
+# Note: Use sx9-foundation-core re-exports where possible:
+# - sx9_foundation_core::async_runtime::tokio (for tokio types)
+# - sx9_foundation_core::diagnostics::anyhow (for Result types)
+# - sx9_foundation_core::diagnostics::tracing (for tracing macros)
+
+[dev-dependencies]
+tokio-test = "0.4"

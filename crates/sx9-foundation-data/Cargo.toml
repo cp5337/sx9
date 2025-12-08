@@ -1,0 +1,70 @@
+[package]
+name = "sx9-foundation-data"
+version = "7.3.1"
+edition = "2021"
+description = "CTAS-7 Foundation Data: Core data management and persistence layer for CTAS-7 v7.2"
+authors = ["CTAS-7 Team"]
+license = "MIT OR Apache-2.0"
+repository = "https://github.com/ctas7/sx9-foundation-data"
+keywords = ["ctas7", "foundation", "data", "persistence", "trivariate-hash"]
+categories = ["database", "data-structures"]
+
+[lib]
+name = "ctas7_foundation_data"
+crate-type = ["rlib"]
+
+[dependencies]
+# Core data processing dependencies
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+serde_yaml = "0.9"
+toml = "0.8"
+csv = "1.3"
+regex = "1.11"
+uuid = { version = "1.0", features = ["v4", "serde"] }
+chrono = { version = "0.4", features = ["serde"] }
+
+# Async and concurrency
+tokio = { version = "1.0", features = ["full"] }
+futures = "0.3"
+async-trait = "0.1"
+
+# Error handling and logging
+anyhow = "1.0"
+tracing = "0.1"
+tracing-subscriber = "0.3"
+
+# Trivariate hash system - use foundation-core canonical implementation
+sx9-foundation-core = { path = "../sx9-foundation-core" }
+# murmur3 available via foundation-core::hash64
+
+# Database support
+sled = { version = "0.34", optional = true }
+sqlx = { version = "0.7", features = ["runtime-tokio-rustls", "postgres", "chrono", "uuid"], optional = true }
+
+[features]
+default = ["embedded-db"]
+embedded-db = ["sled"]
+postgres = ["sqlx"]
+full = ["embedded-db", "postgres"]
+
+[dev-dependencies]
+tokio-test = "0.4"
+criterion = "0.5"
+futures = "0.3"
+
+# CTAS-7 Smart Crate Metadata - v7.2 Compliant
+[package.metadata.smart_crate]
+generation = "2.0"
+ctas7_certified = true
+ctas7_version = "7.3.1"
+foundation_tier = "data-foundation"
+service_port = 18400
+real_time = true
+integration_points = ["ctas-foundation-manifold", "all-ctas7-crates"]
+domain = "data"
+environmental_masks = ["WX", "TF", "OB", "JU", "TH"]
+trivariate_hash_enabled = true
+manifold_integration = true
+data_persistence = true
+

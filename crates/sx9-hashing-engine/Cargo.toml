@@ -1,0 +1,77 @@
+[package]
+name = "sx9-hashing-engine"
+version = "0.1.0"
+edition = "2021"
+authors = ["SX9 Team"]
+description = "SX9 Hashing Engine - gRPC/REST API for Murmur3 Trivariate Hashing (RFC-9001)"
+license = "MIT"
+
+[[bin]]
+name = "sx9-hash-service"
+path = "src/main.rs"
+
+[dependencies]
+# Foundation - hash engine with Unicode assembly
+sx9-foundation-core = { path = "../sx9-foundation-core" }
+
+# gRPC Framework
+tonic = { version = "0.10", features = ["tls"] }
+prost = "0.12"
+tokio = { version = "1.40", features = ["full"] }
+tokio-stream = "0.1"
+
+# REST API
+axum = { version = "0.7", features = ["json", "ws"] }
+tower = "0.4"
+tower-http = { version = "0.5", features = ["cors", "trace"] }
+futures = "0.3"
+
+# Serialization
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+
+# Logging & Tracing
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter", "json"] }
+
+# Time
+chrono = "0.4"
+
+# Hashing - Dual system for USIM
+sha2 = "0.10"  # SHA-256 for file integrity
+
+# Error Handling
+anyhow = "1.0"
+thiserror = "1.0"
+
+# Performance
+dashmap = "5.5"
+metrics = "0.21"
+metrics-exporter-prometheus = "0.13"
+
+# Configuration
+config = "0.14"
+toml = "0.8"
+
+# Security
+rustls = "0.21"
+rustls-pemfile = "1.0"
+
+[build-dependencies]
+tonic-build = "0.10"
+
+[features]
+default = ["grpc", "rest", "metrics"]
+grpc = []
+rest = []
+rdp = []  # Future: RDP protocol support
+metrics = []
+tls = []
+
+[package.metadata.ctas7]
+crate_type = "microservice"
+layer = "service"
+version = "7.3.1"
+status = "stable"
+ports = ["8002", "50051"]  # REST on 8002, gRPC on 50051
+capabilities = ["hash-generation", "grpc", "rest", "metrics"]

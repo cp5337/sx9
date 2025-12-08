@@ -1,0 +1,359 @@
+# SmartCrate.toml
+# Synaptix9 Smart Crate Manifest
+# SX9-Gateway-Primary | RFC-9114 Conformance
+# Version: 1.0.0 | Date: December 2025
+
+[smart-crate]
+name = "sx9-gateway-primary"
+version = "1.0.0"
+edition = "2021"
+smart_crate_version = "1.2.0"
+foundation = "ctas7-foundation-core"
+classification = "gateway"
+tesla_grade = true
+
+[smart_meta]
+description = "SX9 Gateway Primary - Unified API gateway for all Synaptix9 operations"
+domains = ["gateway", "routing", "streaming", "api", "l2-execution"]
+capabilities = ["websocket", "rest", "grpc", "deterministic-routing", "streaming-intelligence", "l2-execution", "bernoulli-zone"]
+build_system = "cargo"
+backend_language = "rust"
+frontend_language = "typescript"
+
+# XSD validation schemas
+xsd_schemas = [
+    "config/gateway-config.xsd",
+    "config/routing-config.xsd",
+    "config/streaming-config.xsd"
+]
+
+# Unicode metaprogramming
+unicode_operators = true
+unicode_symbols = ["🔀", "🌐", "⚡", "🔒", "📡", "🎯", "🧠", "⚙️"]
+
+[integration]
+gold_disk_compatible = true
+neural_mux_enabled = true
+hash_engine_integrated = true
+unicode_assembly_support = true
+multi_tenant = true
+real_time_capable = true
+layer2_fabric_node = true
+world_registry_participant = true
+
+# Gateway-specific integrations
+ops_main_platform = true
+usim_integration = true
+eei_integration = true
+foundation_manifold = true
+foundation_math = true
+government_data_manifold = true
+l2_execution = true
+kali_iso_integration = true
+
+# Runtime mode
+runtime = "rust"
+mode = "bernoulli"
+entry = "src/main.rs"
+
+[dependencies]
+foundation = "ctas7-foundation-core"
+manifold = "ctas7-foundation-manifold"
+usim = "ctas7-foundation-usim"
+eei = "ctas7-foundation-eei"
+math = "ctas7-foundation-math"
+nats = "jetstream"
+schema = "supabase"
+plasma_defender = "sx9-plasma-defender"
+atlas_daemon = "sx9-atlas-daemon"
+
+[features]
+ann = false          # Artificial Neural Nexus - documented, disabled
+glaf = false         # Genome Level Analysis Fabric - documented, disabled
+dsl = true           # DSL subsystem active
+atlas = true         # Atlas daemon integration active
+plasma = true        # Plasma Defender health telemetry active
+cdn = true           # CDN / Edge caching layer active
+performance = true   # Axum + compression optimizations active
+
+[network]
+protocols = ["grpc", "rest", "websocket"]
+port = 18600
+reuse_port = true
+compression = ["gzip", "brotli"]
+http2 = true
+
+[ports]
+# Gateway ports (allocated via ctas7-real-port-manager)
+websocket = 18600
+rest = 18601
+grpc = 18602
+
+# Foundation Services (fixed ports)
+port_manager = 18104
+foundation_core = 18001
+hashing_engine = 18105
+neural_mux = 18107
+atlas_daemon = 18500
+
+[port_manager]
+endpoint = "http://localhost:18104"
+crystal_gated = true
+mirror_ports = true
+
+[security]
+hash_algorithm = "murmur3-64"
+encoding = "base96"
+jwt_expiration = "10m"
+token_rotation = true
+tls_required = true
+
+# Security Configuration (canonical)
+slsa_level = 3
+hermetic_builds = true
+provenance_required = true
+source_verification = true
+supply_chain_security = true
+
+[security.operational]
+hash_centric = true
+content_addressable = true
+cryptographic_verification = true
+zero_trust_architecture = true
+
+[streaming]
+engine = "nats_jetstream"
+topics = [
+  "sx9.stream.intel.sigint",
+  "sx9.stream.ops.system",
+  "sx9.stream.ops.atlas"
+]
+decay_model = "exponential"
+decay_half_life_hours = 48
+
+[storage]
+engine = "supabase"
+schema = "unified"
+acid_compliance = true
+
+[performance]
+threads = "auto"
+max_connections = 10000
+request_timeout_sec = 30
+cache_ttl_sec = 300
+rate_limit_per_minute = 1000
+observability = "prometheus"
+
+# Performance Targets (RFC-9026: Hourglass-Bernoulli)
+routing_latency_ns = 250
+trivariate_hash_latency_us = 50
+bernoulli_zone_a_latency_us = 50
+l2_trigger_latency_us = 10
+nats_publish_latency_ms = 5
+throughput_routes_per_sec = 10000000
+
+[metadata]
+ctas_version = "7.1.1"
+smart_crate_type = "gateway"
+original_crate = true
+certification_level = "production"
+tesla_grade = true
+world_registry_participant = true
+
+[endpoints]
+health = "/health"
+metrics = "/metrics"
+status = "/status"
+smart_crate_status = "/smart-crate/status"
+websocket = "/ws"
+rest_api = "/api/v1"
+grpc = "/grpc"
+
+# Foundation Discovery Configuration
+[smart_foundations]
+auto_discover = true
+fallback_enabled = true
+cache_duration = "24h"
+
+# Core Runtime Foundation
+[[smart_foundations.required]]
+type = "core_runtime"
+preferred = ["rust-runtime"]
+fallback = "minimal-runtime"
+minimum_version = "1.0"
+features = ["async", "multi-threaded", "io"]
+
+# Build Configuration
+[build]
+optimization_level = "production"
+target_features = ["sse4.2", "avx2"]
+link_time_optimization = true
+strip_symbols = false
+build_target = "x86_64-unknown-linux-musl"
+
+[build.profiles.dev]
+optimization = "fast-compile"
+debug_info = true
+incremental = true
+
+[build.profiles.release]
+optimization = "maximum"
+debug_info = false
+incremental = false
+lto = true
+
+# Semantic Lock Management
+[semantic_lock]
+enabled = true
+lock_file = "smart-crate.lock"
+auto_update = false
+verify_on_build = true
+
+[semantic_lock.hashes]
+# RFC-9101: MUST use Murmur3-128 (not Blake3)
+content_hash_algorithm = "murmur3-128"
+interface_hash_algorithm = "murmur3-128"
+dependency_hash_algorithm = "murmur3-128"
+
+# Quality Assurance
+[qa]
+phd_suite_enabled = true
+minimum_score = 90
+automated_testing = true
+continuous_validation = true
+
+[qa.metrics]
+code_coverage_minimum = 80
+complexity_threshold = 15
+maintainability_index_minimum = 70
+technical_debt_ratio_maximum = 5
+
+# Deployment Configuration
+[deployment]
+strategy = "blue-green"
+health_check_interval = "30s"
+rollback_on_failure = true
+canary_percentage = 10
+container = true
+registry = "ghcr.io/synaptix9/sx9-gateway-primary"
+log_level = "info"
+
+[deployment.docker]
+base_image = "ctas7-foundation-core:gold-disk"
+multi_stage = true
+layer_caching = true
+security_scanning = true
+
+# Monitoring and Observability
+[observability]
+metrics_enabled = true
+tracing_enabled = true
+logging_level = "info"
+structured_logging = true
+observability = "prometheus"
+
+[observability.metrics]
+prometheus_enabled = true
+custom_metrics = ["routing_latency", "request_count", "error_rate", "bernoulli_zone_violations"]
+export_interval = "15s"
+
+[observability.tracing]
+jaeger_enabled = false
+sampling_rate = 0.1
+trace_context_propagation = true
+
+# Neural Retrofit Subsystems (RFC-9114 Rev 1.1)
+[ann]
+enabled = false
+description = "Adaptive Neural Network for predictive routing optimization (currently disabled)"
+model_path = "/opt/sx9/models/ann-routing-v1"
+update_interval_min = 60
+mode = "observe"
+entropy_seed = "murmur3-64"
+sync_interval_ms = 1000
+weights_path = "/data/ann/weights-v1.0.json"
+
+[glaf]
+enabled = false
+description = "Genome Level Analysis Fabric - long-term deterministic routing analysis layer (currently disabled)"
+endpoint = "ipc:///var/run/sx9-glaf.sock"
+engine = "sx9-glaf-core"
+mirror_slotgraph = true
+sync_interval_ms = 100
+topology_feedback = true
+
+[dsl]
+enabled = true
+description = "Domain Specific Language processor for crate orchestration"
+handler = "src/dsl.rs"
+engine = "sx9-dsl-engine"
+language = "symbolic"
+runtime = "wasm"
+reload_on_change = true
+
+[atlas]
+enabled = true
+description = "Atlas cognitive daemon for OODA loop coordination"
+endpoint = "ipc:///var/run/atlas-daemon.sock"
+daemon = "sx9-atlas-daemon"
+tick_interval_ms = 1
+phase_sequence = ["observe", "orient", "decide", "act"]
+
+[plasma]
+enabled = true
+description = "Plasma Defender system health and SDT gating"
+endpoint = "ipc:///var/run/plasma-defender.sock"
+engine = "sx9-plasma-defender"
+health_endpoint = "/health"
+metrics_endpoint = "/metrics"
+enforce_latency = true
+
+[cdn]
+enabled = true
+provider = "cloudflare-r2"
+bucket = "sx9-gateway-assets"
+static_ttl = 86400
+api_ttl = 300
+edge_regions = ["us-east-1", "eu-west-1", "ap-southeast-1"]
+
+[health]
+dashboard = true
+interval_sec = 5
+publish_topic = "sx9.stream.ops.health"
+threshold_latency_us = 50
+health_endpoint = "/health"
+
+[testing]
+smoke_test = true
+performance_benchmark = true
+integration_suite = ["routing", "hashing", "bernoulli_zone"]
+
+# Documentation
+[documentation]
+readme = "README.md"
+architecture = "docs/ARCHITECTURE.md"
+api_spec = "docs/API.md"
+deployment_guide = "docs/DEPLOYMENT.md"
+
+# License and Attribution
+[license]
+type = "MIT"
+file = "LICENSE"
+year = 2025
+organization = "Synaptix9"
+
+# Maintenance
+[maintenance]
+active = true
+support_level = "production"
+update_frequency = "continuous"
+deprecation_policy = "semantic-versioning"
+
+# Certification
+[certification]
+status = "production"
+certified_date = "2025-12-06"
+certified_by = "Synaptix9 Engineering Group"
+certification_level = "gateway_provider"
+security_clearance = "production_authorized"
+compliance_frameworks = ["RFC-9101", "RFC-9001", "RFC-9004", "RFC-9026", "RFC-9114"]

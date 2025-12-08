@@ -1,0 +1,57 @@
+# 🚀 CTAS-7 Foundation Daemon Container
+# Multi-modal execution: Container Coordinator, Embedded Container, Bare-Metal
+FROM rust:latest as builder
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    pkg-config \
+    libssl-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+# Set working directory
+WORKDIR /usr/src/foundation-daemon
+
+# Copy Cargo files first for better caching
+COPY Cargo.toml Cargo.lock ./
+
+# Copy source code
+COPY src ./src
+
+# Build the Foundation Daemon (binary name is 'atlas')
+RUN cargo build --release --bin atlas
+
+# Runtime image
+FROM debian:bookworm-slim
+
+# Install runtime dependencies
+RUN apt-get update && apt-get install -y \
+    ca-certificates \
+    curl \
+    libssl3 \
+    && rm -rf /var/lib/apt/lists/*
+
+# Create foundation user
+RUN groupadd -r foundation && useradd -r -g foundation foundation
+
+# Set working directory
+WORKDIR /app
+
+# Copy binary from builder
+COPY --from=builder /usr/src/foundation-daemon/target/release/atlas /usr/bin/foundation-daemon
+
+# Create data directories
+RUN mkdir -p /data /port_registry /hash_data && \
+    chown -R foundation:foundation /data /port_registry /hash_data /app
+
+# Switch to foundation user
+USER foundation
+
+# Expose ports
+EXPOSE 18500 18103 18105
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
+  CMD curl -f http://localhost:18500/health || exit 1
+
+# Default to coordinator mode
+CMD ["foundation-daemon", "coordinator"]
