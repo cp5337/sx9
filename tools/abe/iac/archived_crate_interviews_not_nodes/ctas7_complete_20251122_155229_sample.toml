@@ -1,0 +1,41 @@
+[metadata]
+interview_id = "82ca1c59-bdce-41b0-bb41-cfbd76873f50"
+hash_id = "83933201be4149df-1756a0e0247a1fb6-f0ec1759605d42bf"
+semantic_hash = "83933201be4149df-cd6e570ff8bf1466-25a962bba641feca"
+unicode_assembly_ref = "\\u{E0001}"
+created_at = "2025-11-22T20:52:29.940693+00:00"
+interview_version = "7.3.1"
+hd4_phase = "dominate"
+
+[identity]
+name = "Ideological Formation"
+type = "node"
+description = "I am the Ideological Formation, I provide Forming motivations via exposure."
+
+[component]
+unicode_address = "\\u{E000}"
+state = "compiled"
+cascade_dependencies = [ "\\u{E001}", "\\u{E002}",]
+execution_order = 1
+
+[esc]
+escalation_unicode = "\\u{F000}"
+escalation_level = "tactical"
+escalation_trigger = "ideation_detection_threshold"
+escalation_target = "\\u{F001}"
+
+[node_specific]
+adversary_persona = "I represent concept adversaries with ideation intent and 0.9 capability level"
+attack_lifecycle = "I operate during reconnaissance to achieve ideation objectives"
+counter_operations = "I am countered by behavioral analysis systems and ideation monitoring and detection methods"
+
+[unicode_references]
+tools = [ "\\u{E800}", "\\u{E801}",]
+attack_techniques = [ "\\u{E900}",]
+caldera_scenarios = [ "\\u{E950}",]
+eei_requirements = [ "\\u{F800}", "\\u{F801}",]
+
+[node_specific.ctas_taxonomy]
+node_id = "164-000"
+threat_category = "SCH-IDE"
+adversary_model = "Concept threat actor behavioral model"

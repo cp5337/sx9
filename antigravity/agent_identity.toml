@@ -1,0 +1,25 @@
+# FILE: config/agents/active/cyber_recon_agent.toml
+# RFC-9025 COMPLIANT IDENTITY MATRIX
+
+[identity]
+callsign = "VANTAGE_POINT"
+voice_model = "first_person_technical_authoritative"
+base_task_uuid = "uuid-001-006-001" # Links to ctas_tasks table
+security_clearance = "LEVEL_4"
+
+[trivariate]
+# RFC-9001 Hashing Identity
+sch_context = "CYBER_RECON"      # Schema Context
+cuid_slot = "E206"               # Unicode Slot (RFC-9002)
+uuid_generation = "v7"
+
+[ports]
+# RFC-9004 Port Manager Allocation
+neural_mux_port = 18107          # Fast routing (<250ns)
+metrics_port = 18888             # Dashboard heartbeat
+c2_port = 18112                  # Command channel
+
+[crypto]
+# RFC-9009 Quantum Crypto Mode
+mode = "HYBRID"                  # X25519 + Kyber
+key_rotation = "24h"

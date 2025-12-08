@@ -1,0 +1,71 @@
+# LinkML Schema for Threat Actor and Campaign Extraction
+# RFC-9010, RFC-9105
+#
+# Usage: SPIRES/OntoGPT zero-shot extraction via Gemini 2.5 Flash
+# Output: LinkML-conformant JSON for Neo4j graph population
+
+id: https://w3id.org/ctas7/threat_actor
+name: ThreatActor
+
+prefixes:
+  linkml: https://w3id.org/linkml/
+
+imports:
+  - linkml:types
+
+classes:
+  ThreatActor:
+    description: A known threat group or APT (Advanced Persistent Threat).
+    attributes:
+      actor_id:
+        description: Group ID (e.g., G0016 for APT29).
+        range: string
+        identifier: true
+      name:
+        description: Common name of the actor.
+        range: string
+      aliases:
+        description: Alternative names for the actor.
+        range: string
+        multivalued: true
+      techniques_used:
+        description: Techniques commonly associated with this actor.
+        range: string  # Reference to ThreatTechnique.technique_id
+        multivalued: true
+      targets:
+        description: Sectors and regions targeted.
+        range: TargetSector
+        multivalued: true
+      attribution:
+        description: Attribution details for the actor.
+        range: Attribution
+
+  Attribution:
+    description: Details regarding the likely sponsor of the actor.
+    attributes:
+      nation_state:
+        description: Suspected nation-state sponsor.
+        range: string
+      confidence:
+        description: Confidence level of attribution.
+        range: ConfidenceLevel
+
+  TargetSector:
+    description: Target sector and region information.
+    attributes:
+      sector:
+        description: Industry sector (e.g., Financial, ICS, Aerospace).
+        range: string
+      region:
+        description: Geographical region (e.g., APAC, EMEA).
+        range: string
+
+enums:
+  ConfidenceLevel:
+    permissible_values:
+      high:
+        description: High confidence attribution
+      medium:
+        description: Medium confidence attribution
+      low:
+        description: Low confidence attribution

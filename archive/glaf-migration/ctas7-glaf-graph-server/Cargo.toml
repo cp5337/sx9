@@ -1,0 +1,51 @@
+[package]
+name = "ctas7-glaf-graph-server"
+version = "0.1.0"
+edition = "2021"
+description = "GLAF Graph Server - Rust backend for GLAF Browser with Legion ECS and GLAF math"
+license = "MIT OR Apache-2.0"
+authors = ["CTAS Engineering"]
+
+[[bin]]
+name = "glaf-graph-server"
+path = "src/main.rs"
+
+[dependencies]
+# CTAS Foundation
+ctas7-foundation-core = { path = "../ctas7-foundation-core" }
+
+# GLAF Math Core
+ctas7-glaf-matroid-core = { path = "../ctas7-glaf-matroid-core" }
+
+# ECS & Graph
+ctas7-slotgraph-engine = { path = "../ctas7-slotgraph-engine" }
+
+# Web Framework
+axum = { version = "0.7", features = ["ws"] }
+tokio = { version = "1", features = ["full"] }
+tower = "0.4"
+tower-http = { version = "0.5", features = ["cors", "trace"] }
+
+# Serialization
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+
+# SurrealDB
+surrealdb = "2.0"
+
+# Utilities
+anyhow = "1.0"
+thiserror = "1.0"
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+uuid = { version = "1.0", features = ["v4", "serde"] }
+chrono = { version = "0.4", features = ["serde"] }
+
+# WebSocket
+futures = "0.3"
+tokio-stream = "0.1"
+
+[dev-dependencies]
+reqwest = { version = "0.12", features = ["json"] }
+
+

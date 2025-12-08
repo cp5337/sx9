@@ -1,0 +1,708 @@
+openapi: 3.1.0
+
+info:
+  title: Zoe Orbital Control API
+  version: 7.3.0
+  description: |
+    CTAS-7 v7.3 Orbital Systems Agent (Zoe)
+
+    Routes through Natasha Gateway with Neural Mux integration,
+    Real Port Manager coordination, and Murmur3 trivariate addressing.
+
+    **Primary Endpoint (External Access):**
+    - https://123456a5c866e82224.ngrok-free.app/api/zoe
+
+    **Alternative Endpoints (Local Development):**
+    - Gateway HTTP: http://localhost:15180/api/zoe
+    - Neural Mux CDN: http://localhost:18100/api/zoe (Failover)
+    - Direct Orbital: http://localhost:18405 (Dev Only)
+
+    **Internal Architecture:**
+    - Gateway gRPC: localhost:50055
+    - Real Port Manager: localhost:18103
+    - Orbital Mechanics: localhost:18405
+    - LaserLight MCP: localhost:18406
+    - Zoe Agent gRPC: localhost:50056
+
+    **External API Integration:**
+    - NOAA Weather: Via ngrok tunnel (weather-aware routing)
+    - Space-Track.org: TLE data fetching via ngrok
+    - Custom GPT (Natasha): Voice commands via ngrok
+    - Mobile/iOS: Orbital control via ngrok
+
+    **Authentication:**
+    - X-API-Key: ctas7-gateway-2025-secure-key-natasha-zoe-orbital
+    - Same key works for all endpoints (ngrok and local)
+    - Automatic failover to Neural Mux if gateway unavailable
+
+servers:
+  - url: https://123456a5c866e82224.ngrok-free.app/api/zoe
+    description: Primary endpoint for external access (Custom GPT, Weather APIs, Mobile)
+
+security:
+  - ApiKeyAuth: []
+
+paths:
+  /health:
+    get:
+      operationId: healthCheck
+      summary: Health check for Zoe orbital agent
+      tags: [System]
+      security: []
+      responses:
+        '200':
+          description: Zoe is operational
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "operational"
+                  agent:
+                    type: string
+                    example: "Zoe"
+                  version:
+                    type: string
+                    example: "7.3.0"
+                  neural_mux_connected:
+                    type: boolean
+                  port_manager_registered:
+                    type: boolean
+
+  /sgp4/propagate:
+    post:
+      operationId: sgp4Propagation
+      summary: Propagate orbital position using SGP4/SDP4 models
+      description: |
+        Generate ephemeris using SGP4 propagator with TLE input.
+        Returns positions in ECI (Earth-Centered Inertial) coordinates.
+
+        Uses Murmur3 trivariate hash for satellite entity addressing.
+      tags: [Orbital Mechanics]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SGP4Request'
+            example:
+              tle_line1: "1 25544U 98067A   25308.50000000  .00002182  00000-0  41420-4 0  9990"
+              tle_line2: "2 25544  51.6461 339.8014 0001873  85.8165 274.3190 15.48919393123456"
+              start_time: "2025-11-04T20:00:00Z"
+              duration_minutes: 90
+              step_seconds: 60
+      responses:
+        '200':
+          description: Propagated ephemeris data with trivariate hash addressing
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SGP4Response'
+        '400':
+          description: Invalid TLE or time parameters
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /sgp4/tle:
+    get:
+      operationId: getTLEData
+      summary: Retrieve TLE data for satellites
+      tags: [Orbital Mechanics]
+      parameters:
+        - name: norad_id
+          in: query
+          schema:
+            type: integer
+          description: NORAD catalog number
+        - name: name
+          in: query
+          schema:
+            type: string
+          description: Satellite name (e.g., "ISS")
+      responses:
+        '200':
+          description: TLE data retrieved
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  norad_id:
+                    type: integer
+                  name:
+                    type: string
+                  tle_line1:
+                    type: string
+                  tle_line2:
+                    type: string
+                  epoch:
+                    type: string
+                    format: date-time
+                  trivariate_hash:
+                    type: string
+                    description: Murmur3 SCH-CUID-UUID (48-position Base96)
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /cesium/camera:
+    post:
+      operationId: controlCamera
+      summary: Control CesiumJS camera position and orientation
+      description: |
+        Position the Cesium viewer camera using geodetic coordinates.
+        Integrates with Neural Mux for smooth camera transitions.
+      tags: [Cesium Visualization]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CesiumCameraRequest'
+            example:
+              longitude: -74.0060
+              latitude: 40.7128
+              altitude: 500000
+              heading: 0
+              pitch: -90
+              roll: 0
+              duration_seconds: 2
+      responses:
+        '200':
+          description: Camera repositioned successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "camera_moved"
+                  final_position:
+                    $ref: '#/components/schemas/CesiumCameraPosition'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /cesium/track:
+    post:
+      operationId: trackSatellite
+      summary: Track satellite with Cesium camera
+      description: |
+        Configure Cesium camera to track a specific satellite entity.
+        Uses trivariate hash addressing for entity lookup.
+      tags: [Cesium Visualization]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                satellite_hash:
+                  type: string
+                  description: Murmur3 trivariate hash (48-position Base96)
+                norad_id:
+                  type: integer
+                  description: Alternative to hash - NORAD catalog number
+                tracking_mode:
+                  type: string
+                  enum: [follow, orbit_view, ground_track]
+                  default: follow
+              oneOf:
+                - required: [satellite_hash]
+                - required: [norad_id]
+      responses:
+        '200':
+          description: Tracking enabled
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  tracking:
+                    type: object
+                    properties:
+                      satellite_hash:
+                        type: string
+                      norad_id:
+                        type: integer
+                      mode:
+                        type: string
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /routing/optimize:
+    post:
+      operationId: optimizeRouting
+      summary: Neural Mux routing optimization
+      description: |
+        Use CTAS-7 Neural Mux Smart CDN for intelligent routing decisions.
+        Supports FSO (Free Space Optical) link analysis and weather-aware routing.
+      tags: [Neural Routing]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RoutingRequest'
+            example:
+              source_hash: "3kJ9mP4xQ7Nn2vKp8Lm5Qw1Zx6Bc4Df9Gh3Jk7Mp2Rs5Tv8Wx"
+              destination_hash: "9Zx4mP7kQ2Nn8vKp3Lm1Qw5Dx9Bc6Gf2Jh4Mp8Rs1Tv3Wx7Yx"
+              constraints:
+                max_latency_ms: 100
+                min_bandwidth_mbps: 1000
+                weather_aware: true
+      responses:
+        '200':
+          description: Optimized routing path via Neural Mux
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RoutingResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /laserlight/link:
+    post:
+      operationId: analyzeFSOLink
+      summary: Analyze Free Space Optical (FSO) link budget
+      description: |
+        Calculate FSO link budget for satellite-to-satellite or satellite-to-ground.
+        Includes atmospheric modeling and weather impact analysis.
+      tags: [LaserLight FSO]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                transmitter_hash:
+                  type: string
+                  description: Source satellite trivariate hash
+                receiver_hash:
+                  type: string
+                  description: Target satellite or ground station hash
+                wavelength_nm:
+                  type: number
+                  default: 1550
+                  description: Laser wavelength in nanometers
+                transmit_power_dbm:
+                  type: number
+                  default: 30
+                include_weather:
+                  type: boolean
+                  default: true
+              required:
+                - transmitter_hash
+                - receiver_hash
+      responses:
+        '200':
+          description: FSO link analysis complete
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  link_budget_db:
+                    type: number
+                  link_margin_db:
+                    type: number
+                  atmospheric_loss_db:
+                    type: number
+                  weather_impact:
+                    type: object
+                  link_viable:
+                    type: boolean
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /simulation/whatif:
+    post:
+      operationId: runWhatIfSimulation
+      summary: Run what-if simulation with Monte Carlo analysis
+      description: |
+        Execute simulation scenarios using HFT ground station network.
+        Supports constellation changes, ground station failures, and weather scenarios.
+      tags: [Simulation]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WhatIfSimulationRequest'
+            example:
+              scenario: "ground_station_failure"
+              parameters:
+                failed_station_hash: "7Kp3mP9xQ4Nn5vKp1Lm8Qw2Zx3Bc7Df6Gh9Jk2Mp5Rs8Tv1Wx"
+                failure_duration_minutes: 30
+              monte_carlo_iterations: 1000
+      responses:
+        '200':
+          description: Simulation results with statistical analysis
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WhatIfSimulationResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /constellation/status:
+    get:
+      operationId: getConstellationStatus
+      summary: Get real-time constellation status
+      description: |
+        Retrieve status of all satellites in the constellation.
+        Includes ground station connectivity and FSO link health.
+      tags: [Constellation Management]
+      responses:
+        '200':
+          description: Constellation status
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  total_satellites:
+                    type: integer
+                  operational:
+                    type: integer
+                  satellites:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        trivariate_hash:
+                          type: string
+                        norad_id:
+                          type: integer
+                        name:
+                          type: string
+                        status:
+                          type: string
+                          enum: [operational, degraded, offline]
+                        position_eci:
+                          type: array
+                          items:
+                            type: number
+                        active_links:
+                          type: integer
+                  ground_stations:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        trivariate_hash:
+                          type: string
+                        name:
+                          type: string
+                        latitude:
+                          type: number
+                        longitude:
+                          type: number
+                        connected_satellites:
+                          type: integer
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-Key
+      description: |
+        CTAS-7 Gateway API Key
+        Default: ctas7-gateway-2025-secure-key-natasha-zoe-orbital
+
+  responses:
+    Unauthorized:
+      description: Invalid or missing API key
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: "Unauthorized - Invalid API Key"
+              required_header:
+                type: string
+                example: "X-API-Key"
+
+  schemas:
+    SGP4Request:
+      type: object
+      properties:
+        tle_line1:
+          type: string
+          description: TLE line 1 (69 characters)
+        tle_line2:
+          type: string
+          description: TLE line 2 (69 characters)
+        start_time:
+          type: string
+          format: date-time
+          description: Propagation start time (ISO 8601)
+        duration_minutes:
+          type: integer
+          minimum: 1
+          maximum: 1440
+          description: Propagation duration in minutes
+        step_seconds:
+          type: integer
+          minimum: 1
+          default: 60
+          description: Ephemeris step size in seconds
+      required:
+        - tle_line1
+        - tle_line2
+        - start_time
+        - duration_minutes
+
+    SGP4Response:
+      type: object
+      properties:
+        satellite_hash:
+          type: string
+          description: Murmur3 trivariate hash (SCH-CUID-UUID, 48-position Base96)
+        norad_id:
+          type: integer
+        ephemeris:
+          type: array
+          items:
+            type: object
+            properties:
+              timestamp:
+                type: string
+                format: date-time
+              position_eci:
+                type: array
+                items:
+                  type: number
+                description: "[x, y, z] in ECI km"
+              velocity_eci:
+                type: array
+                items:
+                  type: number
+                description: "[vx, vy, vz] in km/s"
+              latitude:
+                type: number
+              longitude:
+                type: number
+              altitude_km:
+                type: number
+      required:
+        - satellite_hash
+        - ephemeris
+
+    CesiumCameraRequest:
+      type: object
+      properties:
+        longitude:
+          type: number
+          minimum: -180
+          maximum: 180
+        latitude:
+          type: number
+          minimum: -90
+          maximum: 90
+        altitude:
+          type: number
+          minimum: 0
+          description: Altitude in meters above ellipsoid
+        heading:
+          type: number
+          minimum: 0
+          maximum: 360
+          default: 0
+          description: Heading in degrees (0 = North)
+        pitch:
+          type: number
+          minimum: -90
+          maximum: 90
+          default: -90
+          description: Pitch in degrees (-90 = looking down)
+        roll:
+          type: number
+          minimum: -180
+          maximum: 180
+          default: 0
+          description: Roll in degrees
+        duration_seconds:
+          type: number
+          minimum: 0
+          default: 2
+          description: Camera transition duration
+      required:
+        - longitude
+        - latitude
+        - altitude
+
+    CesiumCameraPosition:
+      type: object
+      properties:
+        longitude:
+          type: number
+        latitude:
+          type: number
+        altitude:
+          type: number
+        heading:
+          type: number
+        pitch:
+          type: number
+        roll:
+          type: number
+
+    RoutingRequest:
+      type: object
+      properties:
+        source_hash:
+          type: string
+          description: Source node trivariate hash (48-position Base96)
+        destination_hash:
+          type: string
+          description: Destination node trivariate hash (48-position Base96)
+        constraints:
+          type: object
+          properties:
+            max_latency_ms:
+              type: number
+            min_bandwidth_mbps:
+              type: number
+            weather_aware:
+              type: boolean
+              default: true
+            avoid_congested:
+              type: boolean
+              default: true
+          additionalProperties: true
+      required:
+        - source_hash
+        - destination_hash
+
+    RoutingResponse:
+      type: object
+      properties:
+        path:
+          type: array
+          items:
+            type: string
+            description: Trivariate hash of each hop in path
+        path_details:
+          type: array
+          items:
+            type: object
+            properties:
+              node_hash:
+                type: string
+              node_type:
+                type: string
+                enum: [satellite, ground_station, relay]
+              link_type:
+                type: string
+                enum: [fso, rf, fiber]
+        total_latency_ms:
+          type: number
+        total_bandwidth_mbps:
+          type: number
+        neural_mux_confidence:
+          type: number
+          minimum: 0
+          maximum: 1
+      required:
+        - path
+        - total_latency_ms
+
+    WhatIfSimulationRequest:
+      type: object
+      properties:
+        scenario:
+          type: string
+          enum:
+            - ground_station_failure
+            - satellite_failure
+            - constellation_expansion
+            - weather_degradation
+            - link_failure
+          description: Predefined simulation scenario
+        parameters:
+          type: object
+          additionalProperties: true
+          description: Scenario-specific parameters
+        monte_carlo_iterations:
+          type: integer
+          minimum: 100
+          maximum: 10000
+          default: 1000
+          description: Number of Monte Carlo iterations for statistical analysis
+        duration_minutes:
+          type: integer
+          minimum: 1
+          default: 60
+      required:
+        - scenario
+
+    WhatIfSimulationResponse:
+      type: object
+      properties:
+        scenario:
+          type: string
+        outcome:
+          type: string
+          description: High-level simulation outcome
+        metrics:
+          type: object
+          properties:
+            mean_latency_ms:
+              type: number
+            latency_std_dev:
+              type: number
+            network_availability:
+              type: number
+              description: Percentage of time network was available
+            affected_satellites:
+              type: integer
+            affected_ground_stations:
+              type: integer
+          additionalProperties: true
+        monte_carlo_results:
+          type: object
+          properties:
+            iterations:
+              type: integer
+            percentile_50:
+              type: object
+            percentile_95:
+              type: object
+            percentile_99:
+              type: object
+        recommendations:
+          type: array
+          items:
+            type: string
+          description: AI-generated recommendations based on simulation
+      required:
+        - scenario
+        - outcome
+        - metrics
+
+tags:
+  - name: System
+    description: Health checks and system status
+  - name: Orbital Mechanics
+    description: SGP4/SDP4 orbit propagation and ephemeris generation
+  - name: Cesium Visualization
+    description: CesiumJS camera control and satellite tracking
+  - name: Neural Routing
+    description: Neural Mux Smart CDN routing optimization
+  - name: LaserLight FSO
+    description: Free Space Optical link analysis and management
+  - name: Simulation
+    description: What-if simulations with Monte Carlo analysis
+  - name: Constellation Management
+    description: Real-time constellation monitoring and control

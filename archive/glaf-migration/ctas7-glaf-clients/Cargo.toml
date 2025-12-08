@@ -1,0 +1,23 @@
+[package]
+name = "ctas7-glaf-clients"
+version = "7.3.1"
+edition = "2021"
+authors = ["CTAS-7 Engineering Team"]
+description = "CTAS-7 GLAF Clients - ATLAS bridges to TETH (SurrealDB) and ChromaDB (RFC-9021)"
+
+[dependencies]
+tokio = { workspace = true }
+anyhow = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+reqwest = { workspace = true }
+uuid = { workspace = true }
+tracing = { workspace = true }
+
+# TETH Persistence Layer (SurrealDB)
+surrealdb = { version = "2.0", features = ["protocol-http"] }
+
+# Neo4j (temporary for data modeling)
+neo4rs = "0.7"
+
+ctas7-foundation-core = { path = "../ctas7-foundation-core" }

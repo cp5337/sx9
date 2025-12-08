@@ -1,0 +1,32 @@
+[package]
+name = "ctas7-glaf-matroid-core"
+version = "7.3.1"
+edition = "2021"
+description = "CTAS-7 GLAF Matroid Core - Convergence Math (H1/H2 Score, Matroids)"
+authors = ["CTAS-7 Engineering Team"]
+license = "MIT"
+
+# Governing RFC: RFC-9021
+# Core Element: Convergence Math
+# Implementation: ctas7-glaf-matroid-core
+
+[dependencies]
+# Inherit shared math dependencies
+nalgebra = { workspace = true }
+anyhow = { workspace = true }
+chrono = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+
+# Foundation Crate for core hash definitions
+ctas7-foundation-core = { path = "../ctas7-foundation-core" }
+
+[dev-dependencies]
+tokio-test = "0.4"
+
+[package.metadata.ctas7]
+crate_type = "analytical"
+mission = "ConvergenceMath"
+security_level = "Production"
+bernoulli_zone = "C"
+rfc_compliance = ["RFC-9021"]

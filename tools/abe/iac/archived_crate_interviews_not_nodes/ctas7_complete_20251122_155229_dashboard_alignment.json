@@ -1,0 +1,1759 @@
+{
+  "shipyard_staging": {
+    "tier": "shipyard_staging",
+    "crates": [
+      {
+        "name": "ctas7-port-manager-staging",
+        "version": "7.2.0",
+        "description": "CTAS7 Port Manager with Sister Ports and Mirror Blocks",
+        "path": "ctas7-port-manager-staging",
+        "cargo_file": "ctas7-port-manager-staging/Cargo.toml",
+        "tier": "shipyard_staging",
+        "criticality": 8,
+        "priority": "HIGH",
+        "unicode_address": "\\u{E03E}",
+        "escalation_unicode": "\\u{F03E}"
+      },
+      {
+        "name": "ctas7-intelligence-orchestrator",
+        "version": "7.3.1",
+        "description": "",
+        "path": "ctas7-intelligence-orchestrator",
+        "cargo_file": "ctas7-intelligence-orchestrator/Cargo.toml",
+        "tier": "shipyard_staging",
+        "criticality": 8,
+        "priority": "HIGH",
+        "unicode_address": "\\u{E03F}",
+        "escalation_unicode": "\\u{F03F}"
+      },
+      {
+        "name": "ctas-rapid-deployment-test",
+        "version": "0.1.0",
+        "description": "",
+        "path": "infrastructure/quality-gates/ctas-rapid-deployment-test",
+        "cargo_file": "infrastructure/quality-gates/ctas-rapid-deployment-test/Cargo.toml",
+        "tier": "shipyard_staging",
+        "criticality": 8,
+        "priority": "HIGH",
+        "unicode_address": "\\u{E040}",
+        "escalation_unicode": "\\u{F040}"
+      },
+      {
+        "name": "ctas7-smart-crate-orchestrator",
+        "version": "7.3.1",
+        "description": "Tesla/SpaceX-grade autonomous crate orchestration system",
+        "path": "smart-crate-system/ctas7-smart-crate-orchestrator",
+        "cargo_file": "smart-crate-system/ctas7-smart-crate-orchestrator/Cargo.toml",
+        "tier": "shipyard_staging",
+        "criticality": 8,
+        "priority": "HIGH",
+        "unicode_address": "\\u{E041}",
+        "escalation_unicode": "\\u{F041}"
+      },
+      {
+        "name": "ctas7-o3-orchestrator",
+        "version": "7.2.0",
+        "description": "",
+        "path": "ctas7-intel-system/crates/ctas7-o3-orchestrator",
+        "cargo_file": "ctas7-intel-system/crates/ctas7-o3-orchestrator/Cargo.toml",
+        "tier": "shipyard_staging",
+        "criticality": 8,
+        "priority": "HIGH",
+        "unicode_address": "\\u{E042}",
+        "escalation_unicode": "\\u{F042}"
+      }
+    ],
+    "node_mappings": [
+      {
+        "node_id": "164-005",
+        "name": "Overseas Travel",
+        "unicode_address": "\\u{E005}",
+        "hd4_phase": "disable",
+        "criticality": 6,
+        "status": "stable"
+      },
+      {
+        "node_id": "164-081",
+        "name": "Infiltration and Access",
+        "unicode_address": "\\u{E051}",
+        "hd4_phase": "disable",
+        "criticality": 2,
+        "status": "stable"
+      },
+      {
+        "node_id": "164-082",
+        "name": "Physical Infiltration",
+        "unicode_address": "\\u{E052}",
+        "hd4_phase": "disable",
+        "criticality": 3,
+        "status": "stable"
+      },
+      {
+        "node_id": "164-084",
+        "name": "UAVs for ISR and Infiltration",
+        "unicode_address": "\\u{E054}",
+        "hd4_phase": "disable",
+        "criticality": 5,
+        "status": "stable"
+      },
+      {
+        "node_id": "164-086",
+        "name": "RF Jamming for Disruption",
+        "unicode_address": "\\u{E056}",
+        "hd4_phase": "disable",
+        "criticality": 7,
+        "status": "stable"
+      },
+      {
+        "node_id": "164-087",
+        "name": "UAV Comms Exploitation",
+        "unicode_address": "\\u{E057}",
+        "hd4_phase": "disable",
+        "criticality": 8,
+        "status": "stable"
+      },
+      {
+        "node_id": "164-089",
+        "name": "Supply Chain Infiltration",
+        "unicode_address": "\\u{E059}",
+        "hd4_phase": "disable",
+        "criticality": 10,
+        "status": "stable"
+      },
+      {
+        "node_id": "164-092",
+        "name": "UAV Cyber Payload Delivery",
+        "unicode_address": "\\u{E05C}",
+        "hd4_phase": "disable",
+        "criticality": 3,
+        "status": "stable"
+      },
+      {
+        "node_id": "164-093",
+        "name": "Tunneling Border Tactics",
+        "unicode_address": "\\u{E05D}",
+        "hd4_phase": "disable",
+        "criticality": 4,
+        "status": "stable"
+      },
+      {
+        "node_id": "164-097",
+        "name": "Execution of Cyber Physical Attacks",
+        "unicode_address": "\\u{E061}",
+        "hd4_phase": "detect",
+        "criticality": 8,
+        "status": "stable"
+      },
+      {
+        "node_id": "164-098",
+        "name": "Disabling Security Systems",
+        "unicode_address": "\\u{E062}",
+        "hd4_phase": "disable",
+        "criticality": 9,
+        "status": "stable"
+      },
+      {
+        "node_id": "164-099",
+        "name": "Diversionary Attacks",
+        "unicode_address": "\\u{E063}",
+        "hd4_phase": "disable",
+        "criticality": 10,
+        "status": "stable"
+      },
+      {
+        "node_id": "164-100",
+        "name": "Targeting Critical Infrastructure",
+        "unicode_address": "\\u{E064}",
+        "hd4_phase": "detect",
+        "criticality": 1,
+        "status": "stable"
+      },
+      {
+        "node_id": "164-101",
+        "name": "Assault on Soft Targets",
+        "unicode_address": "\\u{E065}",
+        "hd4_phase": "disable",
+        "criticality": 2,
+        "status": "stable"
+      },
+      {
+        "node_id": "164-102",
+        "name": "Emergency Services Disruption",
+        "unicode_address": "\\u{E066}",
+        "hd4_phase": "disable",
+        "criticality": 3,
+        "status": "stable"
+      },
+      {
+        "node_id": "164-103",
+        "name": "Comms Tech Sabotage",
+        "unicode_address": "\\u{E067}",
+        "hd4_phase": "disable",
+        "criticality": 4,
+        "status": "stable"
+      },
+      {
+        "node_id": "164-104",
+        "name": "Energy Utilities Compromise",
+        "unicode_address": "\\u{E068}",
+        "hd4_phase": "detect",
+        "criticality": 5,
+        "status": "stable"
+      },
+      {
+        "node_id": "164-105",
+        "name": "Transport Supply Chain Attacks",
+        "unicode_address": "\\u{E069}",
+        "hd4_phase": "detect",
+        "criticality": 6,
+        "status": "stable"
+      },
+      {
+        "node_id": "164-106",
+        "name": "Govt Defense Operations",
+        "unicode_address": "\\u{E06A}",
+        "hd4_phase": "detect",
+        "criticality": 7,
+        "status": "stable"
+      },
+      {
+        "node_id": "164-107",
+        "name": "Industrial Economic Disruption",
+        "unicode_address": "\\u{E06B}",
+        "hd4_phase": "detect",
+        "criticality": 8,
+        "status": "stable"
+      },
+      {
+        "node_id": "164-108",
+        "name": "Cyber-Enabled Kinetic Attacks",
+        "unicode_address": "\\u{E06C}",
+        "hd4_phase": "disable",
+        "criticality": 9,
+        "status": "stable"
+      },
+      {
+        "node_id": "164-109",
+        "name": "Weaponized AI",
+        "unicode_address": "\\u{E06D}",
+        "hd4_phase": "detect",
+        "criticality": 10,
+        "status": "stable"
+      },
+      {
+        "node_id": "164-110",
+        "name": "Tactical Kinetic Operations",
+        "unicode_address": "\\u{E06E}",
+        "hd4_phase": "disable",
+        "criticality": 1,
+        "status": "stable"
+      },
+      {
+        "node_id": "164-125",
+        "name": "Exploiting Legal Systems",
+        "unicode_address": "\\u{E07D}",
+        "hd4_phase": "disable",
+        "criticality": 6,
+        "status": "stable"
+      },
+      {
+        "node_id": "164-129",
+        "name": "Sexual Violence",
+        "unicode_address": "\\u{E081}",
+        "hd4_phase": "disable",
+        "criticality": 10,
+        "status": "stable"
+      },
+      {
+        "node_id": "164-130",
+        "name": "Aggravated Assault",
+        "unicode_address": "\\u{E082}",
+        "hd4_phase": "disable",
+        "criticality": 1,
+        "status": "stable"
+      }
+    ],
+    "unicode_addresses": [
+      "\\u{E005}",
+      "\\u{E051}",
+      "\\u{E052}",
+      "\\u{E054}",
+      "\\u{E056}",
+      "\\u{E057}",
+      "\\u{E059}",
+      "\\u{E05C}",
+      "\\u{E05D}",
+      "\\u{E061}",
+      "\\u{E062}",
+      "\\u{E063}",
+      "\\u{E064}",
+      "\\u{E065}",
+      "\\u{E066}",
+      "\\u{E067}",
+      "\\u{E068}",
+      "\\u{E069}",
+      "\\u{E06A}",
+      "\\u{E06B}",
+      "\\u{E06C}",
+      "\\u{E06D}",
+      "\\u{E06E}",
+      "\\u{E07D}",
+      "\\u{E081}",
+      "\\u{E082}"
+    ],
+    "deployment_priority": "HIGH",
+    "status": "staging_ready"
+  },
+  "command_center": {
+    "tier": "command_center",
+    "crates": [
+      {
+        "name": "ctas7-dashboard-ui",
+        "version": "7.2.0",
+        "description": "CTAS-7 Dashboard and UI Components - ASCII and visual dashboards",
+        "path": "ctas7-dashboard-ui",
+        "cargo_file": "ctas7-dashboard-ui/Cargo.toml",
+        "tier": "command_center",
+        "criticality": 8,
+        "priority": "HIGH",
+        "unicode_address": "\\u{E043}",
+        "escalation_unicode": "\\u{F043}"
+      },
+      {
+        "name": "quick-error",
+        "version": "1.2.3",
+        "description": "    A macro which makes error types pleasant to write.\\n",
+        "path": "ctas7-enhanced-geolocation/.cargo-home/registry/src/index.crates.io-1949cf8c6b5b557f/quick-error-1.2.3",
+        "cargo_file": "ctas7-enhanced-geolocation/.cargo-home/registry/src/index.crates.io-1949cf8c6b5b557f/quick-error-1.2.3/Cargo.toml",
+        "tier": "command_center",
+        "criticality": 8,
+        "priority": "HIGH",
+        "unicode_address": "\\u{E044}",
+        "escalation_unicode": "\\u{F044}"
+      },
+      {
+        "name": "quinn-udp",
+        "version": "1.71",
+        "description": "UDP sockets with ECN information for the QUIC transport protocol",
+        "path": "ctas7-enhanced-geolocation/.cargo-home/registry/src/index.crates.io-1949cf8c6b5b557f/quinn-udp-0.5.13",
+        "cargo_file": "ctas7-enhanced-geolocation/.cargo-home/registry/src/index.crates.io-1949cf8c6b5b557f/quinn-udp-0.5.13/Cargo.toml",
+        "tier": "command_center",
+        "criticality": 8,
+        "priority": "HIGH",
+        "unicode_address": "\\u{E045}",
+        "escalation_unicode": "\\u{F045}"
+      },
+      {
+        "name": "quinn",
+        "version": "1.71",
+        "description": "Versatile QUIC transport protocol implementation",
+        "path": "ctas7-enhanced-geolocation/.cargo-home/registry/src/index.crates.io-1949cf8c6b5b557f/quinn-0.11.8",
+        "cargo_file": "ctas7-enhanced-geolocation/.cargo-home/registry/src/index.crates.io-1949cf8c6b5b557f/quinn-0.11.8/Cargo.toml",
+        "tier": "command_center",
+        "criticality": 8,
+        "priority": "HIGH",
+        "unicode_address": "\\u{E046}",
+        "escalation_unicode": "\\u{F046}"
+      },
+      {
+        "name": "windows-interface",
+        "version": "1.74",
+        "description": "The interface macro for the windows crate",
+        "path": "ctas7-enhanced-geolocation/.cargo-home/registry/src/index.crates.io-1949cf8c6b5b557f/windows-interface-0.59.1",
+        "cargo_file": "ctas7-enhanced-geolocation/.cargo-home/registry/src/index.crates.io-1949cf8c6b5b557f/windows-interface-0.59.1/Cargo.toml",
+        "tier": "command_center",
+        "criticality": 8,
+        "priority": "HIGH",
+        "unicode_address": "\\u{E047}",
+        "escalation_unicode": "\\u{F047}"
+      },
+      {
+        "name": "equivalent",
+        "version": "1.6",
+        "description": "Traits for key comparison in maps.",
+        "path": "ctas7-enhanced-geolocation/.cargo-home/registry/src/index.crates.io-1949cf8c6b5b557f/equivalent-1.0.2",
+        "cargo_file": "ctas7-enhanced-geolocation/.cargo-home/registry/src/index.crates.io-1949cf8c6b5b557f/equivalent-1.0.2/Cargo.toml",
+        "tier": "command_center",
+        "criticality": 8,
+        "priority": "HIGH",
+        "unicode_address": "\\u{E048}",
+        "escalation_unicode": "\\u{F048}"
+      },
+      {
+        "name": "uuid",
+        "version": "1.63.0",
+        "description": "A library to generate and parse UUIDs.",
+        "path": "ctas7-enhanced-geolocation/.cargo-home/registry/src/index.crates.io-1949cf8c6b5b557f/uuid-1.18.0",
+        "cargo_file": "ctas7-enhanced-geolocation/.cargo-home/registry/src/index.crates.io-1949cf8c6b5b557f/uuid-1.18.0/Cargo.toml",
+        "tier": "command_center",
+        "criticality": 8,
+        "priority": "HIGH",
+        "unicode_address": "\\u{E049}",
+        "escalation_unicode": "\\u{F049}"
+      },
+      {
+        "name": "quinn-proto",
+        "version": "1.71",
+        "description": "State machine for the QUIC transport protocol",
+        "path": "ctas7-enhanced-geolocation/.cargo-home/registry/src/index.crates.io-1949cf8c6b5b557f/quinn-proto-0.11.12",
+        "cargo_file": "ctas7-enhanced-geolocation/.cargo-home/registry/src/index.crates.io-1949cf8c6b5b557f/quinn-proto-0.11.12/Cargo.toml",
+        "tier": "command_center",
+        "criticality": 8,
+        "priority": "HIGH",
+        "unicode_address": "\\u{E04A}",
+        "escalation_unicode": "\\u{F04A}"
+      },
+      {
+        "name": "ctas-frontend-port-block",
+        "version": "7.2.0",
+        "description": "CTAS Frontend Port Block - Axum server for frontend services with obfuscated ports",
+        "path": "ctas7-broken-deprecated/crates/ctas-frontend-port-block",
+        "cargo_file": "ctas7-broken-deprecated/crates/ctas-frontend-port-block/Cargo.toml",
+        "tier": "command_center",
+        "criticality": 8,
+        "priority": "HIGH",
+        "unicode_address": "\\u{E04B}",
+        "escalation_unicode": "\\u{F04B}"
+      },
+      {
+        "name": "quick-error",
+        "version": "1.2.3",
+        "description": "    A macro which makes error types pleasant to write.\\n",
+        "path": "ctas7-gis-cesium-1/enhanced-geolocation-backend/.cargo-home/registry/src/index.crates.io-1949cf8c6b5b557f/quick-error-1.2.3",
+        "cargo_file": "ctas7-gis-cesium-1/enhanced-geolocation-backend/.cargo-home/registry/src/index.crates.io-1949cf8c6b5b557f/quick-error-1.2.3/Cargo.toml",
+        "tier": "command_center",
+        "criticality": 8,
+        "priority": "HIGH",
+        "unicode_address": "\\u{E04C}",
+        "escalation_unicode": "\\u{F04C}"
+      },
+      {
+        "name": "quinn-udp",
+        "version": "1.71",
+        "description": "UDP sockets with ECN information for the QUIC transport protocol",
+        "path": "ctas7-gis-cesium-1/enhanced-geolocation-backend/.cargo-home/registry/src/index.crates.io-1949cf8c6b5b557f/quinn-udp-0.5.13",
+        "cargo_file": "ctas7-gis-cesium-1/enhanced-geolocation-backend/.cargo-home/registry/src/index.crates.io-1949cf8c6b5b557f/quinn-udp-0.5.13/Cargo.toml",
+        "tier": "command_center",
+        "criticality": 8,
+        "priority": "HIGH",
+        "unicode_address": "\\u{E04D}",
+        "escalation_unicode": "\\u{F04D}"
+      },
+      {
+        "name": "quinn",
+        "version": "1.71",
+        "description": "Versatile QUIC transport protocol implementation",
+        "path": "ctas7-gis-cesium-1/enhanced-geolocation-backend/.cargo-home/registry/src/index.crates.io-1949cf8c6b5b557f/quinn-0.11.8",
+        "cargo_file": "ctas7-gis-cesium-1/enhanced-geolocation-backend/.cargo-home/registry/src/index.crates.io-1949cf8c6b5b557f/quinn-0.11.8/Cargo.toml",
+        "tier": "command_center",
+        "criticality": 8,
+        "priority": "HIGH",
+        "unicode_address": "\\u{E04E}",
+        "escalation_unicode": "\\u{F04E}"
+      },
+      {
+        "name": "windows-interface",
+        "version": "1.74",
+        "description": "The interface macro for the windows crate",
+        "path": "ctas7-gis-cesium-1/enhanced-geolocation-backend/.cargo-home/registry/src/index.crates.io-1949cf8c6b5b557f/windows-interface-0.59.1",
+        "cargo_file": "ctas7-gis-cesium-1/enhanced-geolocation-backend/.cargo-home/registry/src/index.crates.io-1949cf8c6b5b557f/windows-interface-0.59.1/Cargo.toml",
+        "tier": "command_center",
+        "criticality": 8,
+        "priority": "HIGH",
+        "unicode_address": "\\u{E04F}",
+        "escalation_unicode": "\\u{F04F}"
+      },
+      {
+        "name": "equivalent",
+        "version": "1.6",
+        "description": "Traits for key comparison in maps.",
+        "path": "ctas7-gis-cesium-1/enhanced-geolocation-backend/.cargo-home/registry/src/index.crates.io-1949cf8c6b5b557f/equivalent-1.0.2",
+        "cargo_file": "ctas7-gis-cesium-1/enhanced-geolocation-backend/.cargo-home/registry/src/index.crates.io-1949cf8c6b5b557f/equivalent-1.0.2/Cargo.toml",
+        "tier": "command_center",
+        "criticality": 8,
+        "priority": "HIGH",
+        "unicode_address": "\\u{E050}",
+        "escalation_unicode": "\\u{F050}"
+      },
+      {
+        "name": "uuid",
+        "version": "1.63.0",
+        "description": "A library to generate and parse UUIDs.",
+        "path": "ctas7-gis-cesium-1/enhanced-geolocation-backend/.cargo-home/registry/src/index.crates.io-1949cf8c6b5b557f/uuid-1.18.0",
+        "cargo_file": "ctas7-gis-cesium-1/enhanced-geolocation-backend/.cargo-home/registry/src/index.crates.io-1949cf8c6b5b557f/uuid-1.18.0/Cargo.toml",
+        "tier": "command_center",
+        "criticality": 8,
+        "priority": "HIGH",
+        "unicode_address": "\\u{E051}",
+        "escalation_unicode": "\\u{F051}"
+      },
+      {
+        "name": "quinn-proto",
+        "version": "1.71",
+        "description": "State machine for the QUIC transport protocol",
+        "path": "ctas7-gis-cesium-1/enhanced-geolocation-backend/.cargo-home/registry/src/index.crates.io-1949cf8c6b5b557f/quinn-proto-0.11.12",
+        "cargo_file": "ctas7-gis-cesium-1/enhanced-geolocation-backend/.cargo-home/registry/src/index.crates.io-1949cf8c6b5b557f/quinn-proto-0.11.12/Cargo.toml",
+        "tier": "command_center",
+        "criticality": 8,
+        "priority": "HIGH",
+        "unicode_address": "\\u{E052}",
+        "escalation_unicode": "\\u{F052}"
+      }
+    ],
+    "node_mappings": [
+      {
+        "node_id": "164-000",
+        "name": "Ideological Formation",
+        "unicode_address": "\\u{E000}",
+        "hd4_phase": "dominate",
+        "criticality": 1,
+        "status": "compiled"
+      },
+      {
+        "node_id": "164-001",
+        "name": "Radical Exposure",
+        "unicode_address": "\\u{E001}",
+        "hd4_phase": "dominate",
+        "criticality": 2,
+        "status": "compiled"
+      },
+      {
+        "node_id": "164-002",
+        "name": "Self Identification",
+        "unicode_address": "\\u{E002}",
+        "hd4_phase": "disrupt",
+        "criticality": 3,
+        "status": "compiled"
+      },
+      {
+        "node_id": "164-003",
+        "name": "Recruitment",
+        "unicode_address": "\\u{E003}",
+        "hd4_phase": "disrupt",
+        "criticality": 4,
+        "status": "compiled"
+      },
+      {
+        "node_id": "164-004",
+        "name": "Technical Training",
+        "unicode_address": "\\u{E004}",
+        "hd4_phase": "disrupt",
+        "criticality": 5,
+        "status": "stable"
+      },
+      {
+        "node_id": "164-006",
+        "name": "Identity Documentation",
+        "unicode_address": "\\u{E006}",
+        "hd4_phase": "dominate",
+        "criticality": 7,
+        "status": "compiled"
+      },
+      {
+        "node_id": "164-007",
+        "name": "Planning Initiation",
+        "unicode_address": "\\u{E007}",
+        "hd4_phase": "dominate",
+        "criticality": 8,
+        "status": "compiled"
+      },
+      {
+        "node_id": "164-008",
+        "name": "Pre-Operational Planning",
+        "unicode_address": "\\u{E008}",
+        "hd4_phase": "dominate",
+        "criticality": 9,
+        "status": "compiled"
+      },
+      {
+        "node_id": "164-009",
+        "name": "OSINT Collection",
+        "unicode_address": "\\u{E009}",
+        "hd4_phase": "dominate",
+        "criticality": 10,
+        "status": "compiled"
+      },
+      {
+        "node_id": "164-010",
+        "name": "Social Eng. Pretexting",
+        "unicode_address": "\\u{E00A}",
+        "hd4_phase": "dominate",
+        "criticality": 1,
+        "status": "compiled"
+      },
+      {
+        "node_id": "164-011",
+        "name": "Insider Recruitment",
+        "unicode_address": "\\u{E00B}",
+        "hd4_phase": "disrupt",
+        "criticality": 2,
+        "status": "compiled"
+      },
+      {
+        "node_id": "164-012",
+        "name": "Unwitting Accomplice Manipulation",
+        "unicode_address": "\\u{E00C}",
+        "hd4_phase": "disrupt",
+        "criticality": 3,
+        "status": "stable"
+      },
+      {
+        "node_id": "164-013",
+        "name": "Physical Surveillance",
+        "unicode_address": "\\u{E00D}",
+        "hd4_phase": "dominate",
+        "criticality": 4,
+        "status": "compiled"
+      },
+      {
+        "node_id": "164-014",
+        "name": "Cyber Reconnaissance",
+        "unicode_address": "\\u{E00E}",
+        "hd4_phase": "dominate",
+        "criticality": 5,
+        "status": "compiled"
+      },
+      {
+        "node_id": "164-015",
+        "name": "Vulnerability Scanning",
+        "unicode_address": "\\u{E00F}",
+        "hd4_phase": "dominate",
+        "criticality": 6,
+        "status": "compiled"
+      },
+      {
+        "node_id": "164-016",
+        "name": "Digital Identity Harvesting",
+        "unicode_address": "\\u{E010}",
+        "hd4_phase": "disrupt",
+        "criticality": 7,
+        "status": "compiled"
+      },
+      {
+        "node_id": "164-017",
+        "name": "Malware Deployment for Access",
+        "unicode_address": "\\u{E011}",
+        "hd4_phase": "disrupt",
+        "criticality": 8,
+        "status": "compiled"
+      },
+      {
+        "node_id": "164-018",
+        "name": "Dark Web Analysis",
+        "unicode_address": "\\u{E012}",
+        "hd4_phase": "dominate",
+        "criticality": 9,
+        "status": "compiled"
+      },
+      {
+        "node_id": "164-019",
+        "name": "RF Exploitation",
+        "unicode_address": "\\u{E013}",
+        "hd4_phase": "disrupt",
+        "criticality": 10,
+        "status": "compiled"
+      },
+      {
+        "node_id": "164-020",
+        "name": "Packet Capture Analysis",
+        "unicode_address": "\\u{E014}",
+        "hd4_phase": "disrupt",
+        "criticality": 1,
+        "status": "compiled"
+      },
+      {
+        "node_id": "164-021",
+        "name": "Supply Chain Vulnerability ID",
+        "unicode_address": "\\u{E015}",
+        "hd4_phase": "disrupt",
+        "criticality": 2,
+        "status": "stable"
+      },
+      {
+        "node_id": "164-022",
+        "name": "OPSEC Countermeasures",
+        "unicode_address": "\\u{E016}",
+        "hd4_phase": "dominate",
+        "criticality": 3,
+        "status": "compiled"
+      },
+      {
+        "node_id": "164-023",
+        "name": "Attack Method Selection",
+        "unicode_address": "\\u{E017}",
+        "hd4_phase": "dominate",
+        "criticality": 4,
+        "status": "compiled"
+      },
+      {
+        "node_id": "164-024",
+        "name": "Escape and Evasion Planning",
+        "unicode_address": "\\u{E018}",
+        "hd4_phase": "disrupt",
+        "criticality": 5,
+        "status": "compiled"
+      },
+      {
+        "node_id": "164-025",
+        "name": "Multi-Actor Coordination",
+        "unicode_address": "\\u{E019}",
+        "hd4_phase": "dominate",
+        "criticality": 6,
+        "status": "compiled"
+      },
+      {
+        "node_id": "164-026",
+        "name": "Reconnaissance and Targeting",
+        "unicode_address": "\\u{E01A}",
+        "hd4_phase": "dominate",
+        "criticality": 7,
+        "status": "compiled"
+      },
+      {
+        "node_id": "164-027",
+        "name": "OSINT Target Analysis",
+        "unicode_address": "\\u{E01B}",
+        "hd4_phase": "dominate",
+        "criticality": 8,
+        "status": "compiled"
+      },
+      {
+        "node_id": "164-028",
+        "name": "Social Eng. Reconnaissance",
+        "unicode_address": "\\u{E01C}",
+        "hd4_phase": "disrupt",
+        "criticality": 9,
+        "status": "compiled"
+      },
+      {
+        "node_id": "164-029",
+        "name": "Insider Threat Development",
+        "unicode_address": "\\u{E01D}",
+        "hd4_phase": "disrupt",
+        "criticality": 10,
+        "status": "stable"
+      },
+      {
+        "node_id": "164-030",
+        "name": "Physical Surveillance",
+        "unicode_address": "\\u{E01E}",
+        "hd4_phase": "dominate",
+        "criticality": 1,
+        "status": "compiled"
+      },
+      {
+        "node_id": "164-031",
+        "name": "Cyber Reconnaissance",
+        "unicode_address": "\\u{E01F}",
+        "hd4_phase": "dominate",
+        "criticality": 2,
+        "status": "compiled"
+      },
+      {
+        "node_id": "164-032",
+        "name": "Explosives Target Assessment",
+        "unicode_address": "\\u{E020}",
+        "hd4_phase": "disrupt",
+        "criticality": 3,
+        "status": "compiled"
+      },
+      {
+        "node_id": "164-033",
+        "name": "UAV Target Acquisition",
+        "unicode_address": "\\u{E021}",
+        "hd4_phase": "disrupt",
+        "criticality": 4,
+        "status": "stable"
+      },
+      {
+        "node_id": "164-034",
+        "name": "CBRN Target Selection",
+        "unicode_address": "\\u{E022}",
+        "hd4_phase": "disrupt",
+        "criticality": 5,
+        "status": "stable"
+      },
+      {
+        "node_id": "164-035",
+        "name": "EW Reconnaissance",
+        "unicode_address": "\\u{E023}",
+        "hd4_phase": "disrupt",
+        "criticality": 6,
+        "status": "compiled"
+      },
+      {
+        "node_id": "164-036",
+        "name": "Supply Chain Targeting",
+        "unicode_address": "\\u{E024}",
+        "hd4_phase": "disrupt",
+        "criticality": 7,
+        "status": "stable"
+      },
+      {
+        "node_id": "164-037",
+        "name": "Operational Security",
+        "unicode_address": "\\u{E025}",
+        "hd4_phase": "dominate",
+        "criticality": 8,
+        "status": "compiled"
+      },
+      {
+        "node_id": "164-038",
+        "name": "Encrypted Communication",
+        "unicode_address": "\\u{E026}",
+        "hd4_phase": "dominate",
+        "criticality": 9,
+        "status": "compiled"
+      },
+      {
+        "node_id": "164-039",
+        "name": "Digital Anonymization",
+        "unicode_address": "\\u{E027}",
+        "hd4_phase": "dominate",
+        "criticality": 10,
+        "status": "compiled"
+      },
+      {
+        "node_id": "164-040",
+        "name": "Physical Security Measures",
+        "unicode_address": "\\u{E028}",
+        "hd4_phase": "disrupt",
+        "criticality": 1,
+        "status": "compiled"
+      },
+      {
+        "node_id": "164-041",
+        "name": "Detection Avoidance for CBRN",
+        "unicode_address": "\\u{E029}",
+        "hd4_phase": "disrupt",
+        "criticality": 2,
+        "status": "stable"
+      },
+      {
+        "node_id": "164-042",
+        "name": "Covert Storage and Transport",
+        "unicode_address": "\\u{E02A}",
+        "hd4_phase": "disrupt",
+        "criticality": 3,
+        "status": "compiled"
+      },
+      {
+        "node_id": "164-043",
+        "name": "Operational Camouflage",
+        "unicode_address": "\\u{E02B}",
+        "hd4_phase": "disrupt",
+        "criticality": 4,
+        "status": "compiled"
+      },
+      {
+        "node_id": "164-044",
+        "name": "Compartmentalized Infrastructure",
+        "unicode_address": "\\u{E02C}",
+        "hd4_phase": "disrupt",
+        "criticality": 5,
+        "status": "compiled"
+      },
+      {
+        "node_id": "164-045",
+        "name": "Obtain Operational Resources",
+        "unicode_address": "\\u{E02D}",
+        "hd4_phase": "dominate",
+        "criticality": 6,
+        "status": "compiled"
+      },
+      {
+        "node_id": "164-046",
+        "name": "Financing Operations",
+        "unicode_address": "\\u{E02E}",
+        "hd4_phase": "dominate",
+        "criticality": 7,
+        "status": "compiled"
+      },
+      {
+        "node_id": "164-047",
+        "name": "Crowdfunding Fraud",
+        "unicode_address": "\\u{E02F}",
+        "hd4_phase": "disrupt",
+        "criticality": 8,
+        "status": "compiled"
+      },
+      {
+        "node_id": "164-048",
+        "name": "Cryptocurrency Laundering",
+        "unicode_address": "\\u{E030}",
+        "hd4_phase": "disrupt",
+        "criticality": 9,
+        "status": "compiled"
+      },
+      {
+        "node_id": "164-049",
+        "name": "Trade-Based Money Laundering",
+        "unicode_address": "\\u{E031}",
+        "hd4_phase": "disrupt",
+        "criticality": 10,
+        "status": "stable"
+      },
+      {
+        "node_id": "164-050",
+        "name": "Drug and Illicit Goods Trade",
+        "unicode_address": "\\u{E032}",
+        "hd4_phase": "dominate",
+        "criticality": 1,
+        "status": "compiled"
+      },
+      {
+        "node_id": "164-051",
+        "name": "State-Sponsored Financing",
+        "unicode_address": "\\u{E033}",
+        "hd4_phase": "disrupt",
+        "criticality": 2,
+        "status": "stable"
+      },
+      {
+        "node_id": "164-052",
+        "name": "Front Companies",
+        "unicode_address": "\\u{E034}",
+        "hd4_phase": "disrupt",
+        "criticality": 3,
+        "status": "compiled"
+      },
+      {
+        "node_id": "164-053",
+        "name": "Cybercrime Revenue",
+        "unicode_address": "\\u{E035}",
+        "hd4_phase": "disrupt",
+        "criticality": 4,
+        "status": "compiled"
+      },
+      {
+        "node_id": "164-054",
+        "name": "Bulk Cash Smuggling",
+        "unicode_address": "\\u{E036}",
+        "hd4_phase": "disrupt",
+        "criticality": 5,
+        "status": "stable"
+      },
+      {
+        "node_id": "164-055",
+        "name": "Dark Web Transactions",
+        "unicode_address": "\\u{E037}",
+        "hd4_phase": "disrupt",
+        "criticality": 6,
+        "status": "compiled"
+      },
+      {
+        "node_id": "164-056",
+        "name": "Structuring Transactions",
+        "unicode_address": "\\u{E038}",
+        "hd4_phase": "disrupt",
+        "criticality": 7,
+        "status": "compiled"
+      },
+      {
+        "node_id": "164-057",
+        "name": "Money Mules",
+        "unicode_address": "\\u{E039}",
+        "hd4_phase": "disrupt",
+        "criticality": 8,
+        "status": "stable"
+      },
+      {
+        "node_id": "164-058",
+        "name": "Precious Metals Laundering",
+        "unicode_address": "\\u{E03A}",
+        "hd4_phase": "disrupt",
+        "criticality": 9,
+        "status": "stable"
+      },
+      {
+        "node_id": "164-059",
+        "name": "Virtual Card Fraud",
+        "unicode_address": "\\u{E03B}",
+        "hd4_phase": "disrupt",
+        "criticality": 10,
+        "status": "compiled"
+      },
+      {
+        "node_id": "164-060",
+        "name": "Gift Card Laundering",
+        "unicode_address": "\\u{E03C}",
+        "hd4_phase": "disrupt",
+        "criticality": 1,
+        "status": "stable"
+      },
+      {
+        "node_id": "164-061",
+        "name": "Retail Front Laundering",
+        "unicode_address": "\\u{E03D}",
+        "hd4_phase": "disrupt",
+        "criticality": 2,
+        "status": "compiled"
+      },
+      {
+        "node_id": "164-062",
+        "name": "Illicit Untaxed Goods Sales",
+        "unicode_address": "\\u{E03E}",
+        "hd4_phase": "disrupt",
+        "criticality": 3,
+        "status": "stable"
+      },
+      {
+        "node_id": "164-063",
+        "name": "Radicalizing Students",
+        "unicode_address": "\\u{E03F}",
+        "hd4_phase": "disrupt",
+        "criticality": 4,
+        "status": "compiled"
+      },
+      {
+        "node_id": "164-064",
+        "name": "Compromising Officials",
+        "unicode_address": "\\u{E040}",
+        "hd4_phase": "dominate",
+        "criticality": 5,
+        "status": "compiled"
+      },
+      {
+        "node_id": "164-065",
+        "name": "Islamic Terror Cell Activation",
+        "unicode_address": "\\u{E041}",
+        "hd4_phase": "disrupt",
+        "criticality": 6,
+        "status": "compiled"
+      },
+      {
+        "node_id": "164-066",
+        "name": "Middle East Terror Funding",
+        "unicode_address": "\\u{E042}",
+        "hd4_phase": "disrupt",
+        "criticality": 7,
+        "status": "compiled"
+      },
+      {
+        "node_id": "164-067",
+        "name": "Reconnaissance and Targeting",
+        "unicode_address": "\\u{E043}",
+        "hd4_phase": "dominate",
+        "criticality": 8,
+        "status": "compiled"
+      },
+      {
+        "node_id": "164-068",
+        "name": "OSINT Collection",
+        "unicode_address": "\\u{E044}",
+        "hd4_phase": "dominate",
+        "criticality": 9,
+        "status": "compiled"
+      },
+      {
+        "node_id": "164-069",
+        "name": "Physical Surveillance",
+        "unicode_address": "\\u{E045}",
+        "hd4_phase": "dominate",
+        "criticality": 10,
+        "status": "compiled"
+      },
+      {
+        "node_id": "164-070",
+        "name": "Network Enumeration",
+        "unicode_address": "\\u{E046}",
+        "hd4_phase": "dominate",
+        "criticality": 1,
+        "status": "compiled"
+      },
+      {
+        "node_id": "164-071",
+        "name": "Cloud Reconnaissance",
+        "unicode_address": "\\u{E047}",
+        "hd4_phase": "disrupt",
+        "criticality": 2,
+        "status": "compiled"
+      },
+      {
+        "node_id": "164-072",
+        "name": "Target Vulnerability Assessment",
+        "unicode_address": "\\u{E048}",
+        "hd4_phase": "dominate",
+        "criticality": 3,
+        "status": "compiled"
+      },
+      {
+        "node_id": "164-073",
+        "name": "Supply Chain Targeting",
+        "unicode_address": "\\u{E049}",
+        "hd4_phase": "disrupt",
+        "criticality": 4,
+        "status": "compiled"
+      },
+      {
+        "node_id": "164-074",
+        "name": "Insider Threat Development",
+        "unicode_address": "\\u{E04A}",
+        "hd4_phase": "disrupt",
+        "criticality": 5,
+        "status": "stable"
+      },
+      {
+        "node_id": "164-075",
+        "name": "Dark Web Intel Gathering",
+        "unicode_address": "\\u{E04B}",
+        "hd4_phase": "dominate",
+        "criticality": 6,
+        "status": "compiled"
+      },
+      {
+        "node_id": "164-076",
+        "name": "Geospatial Reconnaissance",
+        "unicode_address": "\\u{E04C}",
+        "hd4_phase": "disrupt",
+        "criticality": 7,
+        "status": "compiled"
+      },
+      {
+        "node_id": "164-077",
+        "name": "Targeting Remote Work Systems",
+        "unicode_address": "\\u{E04D}",
+        "hd4_phase": "disrupt",
+        "criticality": 8,
+        "status": "compiled"
+      },
+      {
+        "node_id": "164-078",
+        "name": "Critical Infrastructure Targeting",
+        "unicode_address": "\\u{E04E}",
+        "hd4_phase": "dominate",
+        "criticality": 9,
+        "status": "compiled"
+      },
+      {
+        "node_id": "164-079",
+        "name": "Border Security Targeting",
+        "unicode_address": "\\u{E04F}",
+        "hd4_phase": "disrupt",
+        "criticality": 10,
+        "status": "compiled"
+      },
+      {
+        "node_id": "164-080",
+        "name": "Law Enforcement Surveillance",
+        "unicode_address": "\\u{E050}",
+        "hd4_phase": "disrupt",
+        "criticality": 1,
+        "status": "compiled"
+      },
+      {
+        "node_id": "164-083",
+        "name": "Cyber Exploitation for Access",
+        "unicode_address": "\\u{E053}",
+        "hd4_phase": "disrupt",
+        "criticality": 4,
+        "status": "stable"
+      },
+      {
+        "node_id": "164-085",
+        "name": "Network Trust Exploitation",
+        "unicode_address": "\\u{E055}",
+        "hd4_phase": "disrupt",
+        "criticality": 6,
+        "status": "stable"
+      },
+      {
+        "node_id": "164-088",
+        "name": "Insider Threats for Access",
+        "unicode_address": "\\u{E058}",
+        "hd4_phase": "disrupt",
+        "criticality": 9,
+        "status": "stable"
+      },
+      {
+        "node_id": "164-090",
+        "name": "Covert Data Exfiltration",
+        "unicode_address": "\\u{E05A}",
+        "hd4_phase": "disrupt",
+        "criticality": 1,
+        "status": "stable"
+      },
+      {
+        "node_id": "164-091",
+        "name": "Pre-Staged Cyber Implants",
+        "unicode_address": "\\u{E05B}",
+        "hd4_phase": "disrupt",
+        "criticality": 2,
+        "status": "stable"
+      },
+      {
+        "node_id": "164-094",
+        "name": "Mobile Device Compromise",
+        "unicode_address": "\\u{E05E}",
+        "hd4_phase": "disrupt",
+        "criticality": 5,
+        "status": "stable"
+      },
+      {
+        "node_id": "164-095",
+        "name": "Pre-Positioned Operative Mobilization",
+        "unicode_address": "\\u{E05F}",
+        "hd4_phase": "dominate",
+        "criticality": 6,
+        "status": "compiled"
+      },
+      {
+        "node_id": "164-096",
+        "name": "Social Eng. for Access",
+        "unicode_address": "\\u{E060}",
+        "hd4_phase": "disrupt",
+        "criticality": 7,
+        "status": "stable"
+      },
+      {
+        "node_id": "164-111",
+        "name": "Hostage Crisis Initiation",
+        "unicode_address": "\\u{E06F}",
+        "hd4_phase": "disrupt",
+        "criticality": 2,
+        "status": "compiled"
+      },
+      {
+        "node_id": "164-112",
+        "name": "National Asset Assault",
+        "unicode_address": "\\u{E070}",
+        "hd4_phase": "disrupt",
+        "criticality": 3,
+        "status": "stable"
+      },
+      {
+        "node_id": "164-113",
+        "name": "Multi-Jurisdiction Contingent Assembly",
+        "unicode_address": "\\u{E071}",
+        "hd4_phase": "dominate",
+        "criticality": 4,
+        "status": "compiled"
+      },
+      {
+        "node_id": "164-114",
+        "name": "Deleting Evidence",
+        "unicode_address": "\\u{E072}",
+        "hd4_phase": "disrupt",
+        "criticality": 5,
+        "status": "stable"
+      },
+      {
+        "node_id": "164-115",
+        "name": "Rotating Identities",
+        "unicode_address": "\\u{E073}",
+        "hd4_phase": "disrupt",
+        "criticality": 6,
+        "status": "compiled"
+      },
+      {
+        "node_id": "164-116",
+        "name": "Deploying Volatile Malware",
+        "unicode_address": "\\u{E074}",
+        "hd4_phase": "disrupt",
+        "criticality": 7,
+        "status": "stable"
+      },
+      {
+        "node_id": "164-117",
+        "name": "Concealing Digital Footprints",
+        "unicode_address": "\\u{E075}",
+        "hd4_phase": "disrupt",
+        "criticality": 8,
+        "status": "stable"
+      },
+      {
+        "node_id": "164-118",
+        "name": "Redirecting Attribution",
+        "unicode_address": "\\u{E076}",
+        "hd4_phase": "disrupt",
+        "criticality": 9,
+        "status": "stable"
+      },
+      {
+        "node_id": "164-119",
+        "name": "Using Safe Houses",
+        "unicode_address": "\\u{E077}",
+        "hd4_phase": "disrupt",
+        "criticality": 10,
+        "status": "stable"
+      },
+      {
+        "node_id": "164-120",
+        "name": "Escaping Operational Areas",
+        "unicode_address": "\\u{E078}",
+        "hd4_phase": "disrupt",
+        "criticality": 1,
+        "status": "compiled"
+      },
+      {
+        "node_id": "164-121",
+        "name": "Destroying Forensic Evidence",
+        "unicode_address": "\\u{E079}",
+        "hd4_phase": "disrupt",
+        "criticality": 2,
+        "status": "stable"
+      },
+      {
+        "node_id": "164-122",
+        "name": "Altering Appearance",
+        "unicode_address": "\\u{E07A}",
+        "hd4_phase": "disrupt",
+        "criticality": 3,
+        "status": "compiled"
+      },
+      {
+        "node_id": "164-123",
+        "name": "Disrupting Investigations",
+        "unicode_address": "\\u{E07B}",
+        "hd4_phase": "disrupt",
+        "criticality": 4,
+        "status": "stable"
+      },
+      {
+        "node_id": "164-124",
+        "name": "Conducting False Flags",
+        "unicode_address": "\\u{E07C}",
+        "hd4_phase": "disrupt",
+        "criticality": 5,
+        "status": "stable"
+      },
+      {
+        "node_id": "164-126",
+        "name": "Controlling Propaganda",
+        "unicode_address": "\\u{E07E}",
+        "hd4_phase": "disrupt",
+        "criticality": 7,
+        "status": "stable"
+      },
+      {
+        "node_id": "164-127",
+        "name": "Major Crimes",
+        "unicode_address": "\\u{E07F}",
+        "hd4_phase": "disrupt",
+        "criticality": 8,
+        "status": "compiled"
+      },
+      {
+        "node_id": "164-128",
+        "name": "Homicide",
+        "unicode_address": "\\u{E080}",
+        "hd4_phase": "disrupt",
+        "criticality": 9,
+        "status": "stable"
+      },
+      {
+        "node_id": "164-131",
+        "name": "Kidnapping",
+        "unicode_address": "\\u{E083}",
+        "hd4_phase": "disrupt",
+        "criticality": 2,
+        "status": "stable"
+      },
+      {
+        "node_id": "164-132",
+        "name": "Robbery",
+        "unicode_address": "\\u{E084}",
+        "hd4_phase": "disrupt",
+        "criticality": 3,
+        "status": "stable"
+      },
+      {
+        "node_id": "164-133",
+        "name": "Burglary",
+        "unicode_address": "\\u{E085}",
+        "hd4_phase": "disrupt",
+        "criticality": 4,
+        "status": "stable"
+      },
+      {
+        "node_id": "164-134",
+        "name": "Theft",
+        "unicode_address": "\\u{E086}",
+        "hd4_phase": "disrupt",
+        "criticality": 5,
+        "status": "stable"
+      },
+      {
+        "node_id": "164-135",
+        "name": "Vehicle Theft",
+        "unicode_address": "\\u{E087}",
+        "hd4_phase": "disrupt",
+        "criticality": 6,
+        "status": "compiled"
+      },
+      {
+        "node_id": "164-136",
+        "name": "Arson",
+        "unicode_address": "\\u{E088}",
+        "hd4_phase": "disrupt",
+        "criticality": 7,
+        "status": "stable"
+      },
+      {
+        "node_id": "164-137",
+        "name": "Law Enforcement Evasion",
+        "unicode_address": "\\u{E089}",
+        "hd4_phase": "disrupt",
+        "criticality": 8,
+        "status": "compiled"
+      },
+      {
+        "node_id": "164-138",
+        "name": "Traffic Violations",
+        "unicode_address": "\\u{E08A}",
+        "hd4_phase": "disrupt",
+        "criticality": 9,
+        "status": "compiled"
+      },
+      {
+        "node_id": "164-139",
+        "name": "Witness Questioning",
+        "unicode_address": "\\u{E08B}",
+        "hd4_phase": "disrupt",
+        "criticality": 10,
+        "status": "stable"
+      },
+      {
+        "node_id": "164-140",
+        "name": "Criminal Investigation",
+        "unicode_address": "\\u{E08C}",
+        "hd4_phase": "disrupt",
+        "criticality": 1,
+        "status": "compiled"
+      },
+      {
+        "node_id": "164-141",
+        "name": "Arrest Avoidance",
+        "unicode_address": "\\u{E08D}",
+        "hd4_phase": "disrupt",
+        "criticality": 2,
+        "status": "compiled"
+      },
+      {
+        "node_id": "164-142",
+        "name": "Police Counter-Surveillance",
+        "unicode_address": "\\u{E08E}",
+        "hd4_phase": "disrupt",
+        "criticality": 3,
+        "status": "compiled"
+      },
+      {
+        "node_id": "164-143",
+        "name": "Corrupting Officials",
+        "unicode_address": "\\u{E08F}",
+        "hd4_phase": "disrupt",
+        "criticality": 4,
+        "status": "stable"
+      },
+      {
+        "node_id": "164-144",
+        "name": "Exploiting Legal Loopholes",
+        "unicode_address": "\\u{E090}",
+        "hd4_phase": "disrupt",
+        "criticality": 5,
+        "status": "stable"
+      },
+      {
+        "node_id": "164-145",
+        "name": "Manipulating Law Enforcement",
+        "unicode_address": "\\u{E091}",
+        "hd4_phase": "disrupt",
+        "criticality": 6,
+        "status": "stable"
+      },
+      {
+        "node_id": "164-146",
+        "name": "Transnational Cartel Operations",
+        "unicode_address": "\\u{E092}",
+        "hd4_phase": "disrupt",
+        "criticality": 7,
+        "status": "compiled"
+      },
+      {
+        "node_id": "164-147",
+        "name": "Bribery Operations",
+        "unicode_address": "\\u{E093}",
+        "hd4_phase": "disrupt",
+        "criticality": 8,
+        "status": "compiled"
+      },
+      {
+        "node_id": "164-148",
+        "name": "Corrupting Law Enforcement",
+        "unicode_address": "\\u{E094}",
+        "hd4_phase": "disrupt",
+        "criticality": 9,
+        "status": "compiled"
+      },
+      {
+        "node_id": "164-149",
+        "name": "Exploiting Police Interactions",
+        "unicode_address": "\\u{E095}",
+        "hd4_phase": "disrupt",
+        "criticality": 10,
+        "status": "stable"
+      },
+      {
+        "node_id": "164-150",
+        "name": "Human Smuggling",
+        "unicode_address": "\\u{E096}",
+        "hd4_phase": "disrupt",
+        "criticality": 1,
+        "status": "compiled"
+      },
+      {
+        "node_id": "164-151",
+        "name": "Drug Trafficking",
+        "unicode_address": "\\u{E097}",
+        "hd4_phase": "dominate",
+        "criticality": 2,
+        "status": "compiled"
+      },
+      {
+        "node_id": "164-152",
+        "name": "Arms Trafficking",
+        "unicode_address": "\\u{E098}",
+        "hd4_phase": "disrupt",
+        "criticality": 3,
+        "status": "compiled"
+      },
+      {
+        "node_id": "164-153",
+        "name": "Cartel Counterintelligence",
+        "unicode_address": "\\u{E099}",
+        "hd4_phase": "disrupt",
+        "criticality": 4,
+        "status": "compiled"
+      },
+      {
+        "node_id": "164-154",
+        "name": "Coercion and Intimidation",
+        "unicode_address": "\\u{E09A}",
+        "hd4_phase": "disrupt",
+        "criticality": 5,
+        "status": "stable"
+      },
+      {
+        "node_id": "164-155",
+        "name": "False Flag Cartel Operations",
+        "unicode_address": "\\u{E09B}",
+        "hd4_phase": "disrupt",
+        "criticality": 6,
+        "status": "stable"
+      },
+      {
+        "node_id": "164-156",
+        "name": "Border Corruption",
+        "unicode_address": "\\u{E09C}",
+        "hd4_phase": "disrupt",
+        "criticality": 7,
+        "status": "compiled"
+      },
+      {
+        "node_id": "164-157",
+        "name": "Border Tunnel Operations",
+        "unicode_address": "\\u{E09D}",
+        "hd4_phase": "disrupt",
+        "criticality": 8,
+        "status": "compiled"
+      },
+      {
+        "node_id": "164-158",
+        "name": "Maritime Smuggling",
+        "unicode_address": "\\u{E09E}",
+        "hd4_phase": "disrupt",
+        "criticality": 9,
+        "status": "compiled"
+      },
+      {
+        "node_id": "164-159",
+        "name": "Airspace Exploitation",
+        "unicode_address": "\\u{E09F}",
+        "hd4_phase": "disrupt",
+        "criticality": 10,
+        "status": "stable"
+      },
+      {
+        "node_id": "164-160",
+        "name": "Border Crossing Counter-Surveillance",
+        "unicode_address": "\\u{E0A0}",
+        "hd4_phase": "disrupt",
+        "criticality": 1,
+        "status": "compiled"
+      },
+      {
+        "node_id": "164-161",
+        "name": "Document Forgery",
+        "unicode_address": "\\u{E0A1}",
+        "hd4_phase": "disrupt",
+        "criticality": 2,
+        "status": "compiled"
+      },
+      {
+        "node_id": "164-162",
+        "name": "Reserved Placeholder",
+        "unicode_address": "\\u{E0A2}",
+        "hd4_phase": "disrupt",
+        "criticality": 3,
+        "status": "compiled"
+      },
+      {
+        "node_id": "164-163",
+        "name": "Sicario Deployment",
+        "unicode_address": "\\u{E0A3}",
+        "hd4_phase": "disrupt",
+        "criticality": 4,
+        "status": "compiled"
+      }
+    ],
+    "unicode_addresses": [
+      "\\u{E000}",
+      "\\u{E001}",
+      "\\u{E002}",
+      "\\u{E003}",
+      "\\u{E004}",
+      "\\u{E006}",
+      "\\u{E007}",
+      "\\u{E008}",
+      "\\u{E009}",
+      "\\u{E00A}",
+      "\\u{E00B}",
+      "\\u{E00C}",
+      "\\u{E00D}",
+      "\\u{E00E}",
+      "\\u{E00F}",
+      "\\u{E010}",
+      "\\u{E011}",
+      "\\u{E012}",
+      "\\u{E013}",
+      "\\u{E014}",
+      "\\u{E015}",
+      "\\u{E016}",
+      "\\u{E017}",
+      "\\u{E018}",
+      "\\u{E019}",
+      "\\u{E01A}",
+      "\\u{E01B}",
+      "\\u{E01C}",
+      "\\u{E01D}",
+      "\\u{E01E}",
+      "\\u{E01F}",
+      "\\u{E020}",
+      "\\u{E021}",
+      "\\u{E022}",
+      "\\u{E023}",
+      "\\u{E024}",
+      "\\u{E025}",
+      "\\u{E026}",
+      "\\u{E027}",
+      "\\u{E028}",
+      "\\u{E029}",
+      "\\u{E02A}",
+      "\\u{E02B}",
+      "\\u{E02C}",
+      "\\u{E02D}",
+      "\\u{E02E}",
+      "\\u{E02F}",
+      "\\u{E030}",
+      "\\u{E031}",
+      "\\u{E032}",
+      "\\u{E033}",
+      "\\u{E034}",
+      "\\u{E035}",
+      "\\u{E036}",
+      "\\u{E037}",
+      "\\u{E038}",
+      "\\u{E039}",
+      "\\u{E03A}",
+      "\\u{E03B}",
+      "\\u{E03C}",
+      "\\u{E03D}",
+      "\\u{E03E}",
+      "\\u{E03F}",
+      "\\u{E040}",
+      "\\u{E041}",
+      "\\u{E042}",
+      "\\u{E043}",
+      "\\u{E044}",
+      "\\u{E045}",
+      "\\u{E046}",
+      "\\u{E047}",
+      "\\u{E048}",
+      "\\u{E049}",
+      "\\u{E04A}",
+      "\\u{E04B}",
+      "\\u{E04C}",
+      "\\u{E04D}",
+      "\\u{E04E}",
+      "\\u{E04F}",
+      "\\u{E050}",
+      "\\u{E053}",
+      "\\u{E055}",
+      "\\u{E058}",
+      "\\u{E05A}",
+      "\\u{E05B}",
+      "\\u{E05E}",
+      "\\u{E05F}",
+      "\\u{E060}",
+      "\\u{E06F}",
+      "\\u{E070}",
+      "\\u{E071}",
+      "\\u{E072}",
+      "\\u{E073}",
+      "\\u{E074}",
+      "\\u{E075}",
+      "\\u{E076}",
+      "\\u{E077}",
+      "\\u{E078}",
+      "\\u{E079}",
+      "\\u{E07A}",
+      "\\u{E07B}",
+      "\\u{E07C}",
+      "\\u{E07E}",
+      "\\u{E07F}",
+      "\\u{E080}",
+      "\\u{E083}",
+      "\\u{E084}",
+      "\\u{E085}",
+      "\\u{E086}",
+      "\\u{E087}",
+      "\\u{E088}",
+      "\\u{E089}",
+      "\\u{E08A}",
+      "\\u{E08B}",
+      "\\u{E08C}",
+      "\\u{E08D}",
+      "\\u{E08E}",
+      "\\u{E08F}",
+      "\\u{E090}",
+      "\\u{E091}",
+      "\\u{E092}",
+      "\\u{E093}",
+      "\\u{E094}",
+      "\\u{E095}",
+      "\\u{E096}",
+      "\\u{E097}",
+      "\\u{E098}",
+      "\\u{E099}",
+      "\\u{E09A}",
+      "\\u{E09B}",
+      "\\u{E09C}",
+      "\\u{E09D}",
+      "\\u{E09E}",
+      "\\u{E09F}",
+      "\\u{E0A0}",
+      "\\u{E0A1}",
+      "\\u{E0A2}",
+      "\\u{E0A3}"
+    ],
+    "ui_priority": "CRITICAL",
+    "status": "dashboard_ready"
+  },
+  "alignment_timestamp": "2025-11-22T20:52:29.946091+00:00",
+  "total_nodes": 164,
+  "unicode_address_space_usage": {
+    "components": 164,
+    "max_components": 2048,
+    "utilization_percent": 8.0078125
+  }
+}

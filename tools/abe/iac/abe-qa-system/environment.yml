@@ -1,0 +1,27 @@
+name: abe-qa-system
+channels:
+  - conda-forge
+  - pytorch
+dependencies:
+  - python=3.11
+  - fastapi
+  - uvicorn
+  - httpx
+  - structlog
+  - numpy
+  - pandas
+  - playwright
+  - nodejs
+  - pip
+  - pip:
+    - crawl4ai
+    - zencoder-sdk
+    - python-dotenv
+    - asyncpg
+    - surrealdb
+    - redis
+    - pygithub
+    - linear-sdk
+    - pyjwt
+    - rich
+    - colorama

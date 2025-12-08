@@ -1,0 +1,6 @@
+product_id,name,short_desc,status,owner,priority,revenue_model,dependencies,notes
+P001,HALO Cesium Demo,CesiumJS + live waveform demo for HALO optical routing,demo,Charlie Payne,High,Demo/Sales,"CTAS v7 simulator, Cesium",Bob demo ready; needs Supabase inserts
+P002,RAPTOR FPGA Prototype,iPhone-attached FPGA QEKD & PLC demo (Basys3/TinyFPGA),prototype,Hardware Team,High,Hardware Sales,"FPGA board, iOS bridge",RAPTOR-A1 (industrial) and TinyFPGA field nodes
+P003,Atomic Clipboard Lite,PowerShell + Pocket MCP local LLM bridge (education),released,Charlie Payne,Medium,Free / Lead Gen,Pocket MCP Runner,Starter kit v1.0 zipped for daughter
+P004,Romanov Skills Library,One-page .md skill capsules for agents,backlog,Knowledge Team,Medium,Subscription/Knowledge,"Crawl4AI, Supabase",Seed with 3 skills
+P005,RAPTOR PLC/QEKD Unified Demo,Unified demo combining PLC controls + QEKD key stock,prototype,Charlie Payne,High,Demo/POC,"FPGA boards, Cesium, Supabase",Integrated with PAYGO billing mock

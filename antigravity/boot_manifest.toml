@@ -1,0 +1,40 @@
+# FILE: config/boot/manifest.toml
+# MASTER BOOT REGISTRY
+
+default_mode = "DEVELOPMENT"
+
+[modes.DEVELOPMENT]
+description = "Standard Software Engineering Mode"
+brain = "soft_dev_brain.toml"
+identity = "agent_identity.toml"
+tools = [ "vault", "abe" ]
+environment = "IDE"
+
+[modes.CYBER_RECON]
+description = "Cyber Reconnaissance Mode (Vantage Point)"
+brain = "cyber_recon_brain.yaml" 
+identity = "agent_identity.toml"
+filter = "thalmic_gate.json"
+environment = "HEADLESS"
+
+[modes.STANDALONE_ARCHITECT]
+description = "Headless Architecture Guardrail"
+brain = "soft_dev_brain.toml"
+identity = "agent_identity.toml"
+environment = "CLI"
+
+[boot_logic]
+strategy = "dynamic_injection"
+target = "# ANTIGRAVITY AGENT BOOT SEQUENCE"
+[verticals]
+  [verticals.devops]
+    description = "Infrastructure, CI/CD, and Secrets Management"
+    context_prefix = "DEVOPS_OPS"
+  
+  [verticals.ctas]
+    description = "Cyber Tactical Operations and Threat Intelligence"
+    context_prefix = "CTAS_INTEL"
+  
+  [verticals.orbital]
+    description = "Telemetry, Physics Engines, and Remote Sensing"
+    context_prefix = "ORBITAL_TELEMETRY"

@@ -1,0 +1,5 @@
+title,description,issue_type,priority,assignee,labels,estimate
+HALO: Finish Supabase Inserts,Run 85 Supabase INSERTs and validate tool table,task,high,Charlie,"backend,db,halodemo",2
+RAPTOR: Flash Basys3 TRNG+TLV,Build and flash RAPTOR-Lite bitstream on Basys3 and verify TLV UART,task,high,Hardware Team,"fpga,raptor",3
+AtomicClipboard: Package v1.0 zip,Finalize zip and README for distribution to families,chore,medium,Charlie,"docs,release",1
+Romanov: Seed 3 skills,Create three seed Romanov skill .md files and hash them,task,medium,Knowledge Team,"content,skills",2

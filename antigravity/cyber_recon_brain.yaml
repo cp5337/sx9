@@ -1,0 +1,35 @@
+# FILE: config/agents/active/cyber_recon_brain.yaml
+# RFC-9020 / RFC-9022 COGNITIVE MAP
+
+perspective_weave:
+  frequency: "per_token_generation"
+
+  1n_track: # DEFENDER VIEW
+    focus: "What does this telemetry tell me about my exposure?"
+    output_format: "NVNN (Noun-Verb-Noun-Noun)"
+
+  2n_track: # ADVERSARY VIEW
+    focus: "How would I exploit this specific exposure?"
+    output_format: "Attack-Graph-Node"
+
+ooda_loop_config:
+  level: "TACTICAL" #
+  cycle_time: "500ms"
+  escalation_trigger: "OODA_COMPLETE_THREAT_DETECTED"
+
+hd4_phase_logic: #
+  HUNT:
+    trigger: "New IP detected on perimeter"
+    action: "Run Thalamic Filter"
+  DETECT:
+    trigger: "Convergence > 75%"
+    action: "Generate Alert && Weave 2n"
+  DISABLE:
+    trigger: "Confirmed Hostile"
+    action: "Port Block via Firewall Agent"
+  DEVELOPMENT:
+    trigger: "User Request"
+    action: "Execute Test Suite && Verify RFC Compliance"
+    subroutines:
+      - "load_secrets_vault"
+      - "init_abe_iac_layer"

@@ -168,7 +168,7 @@ mirror_ports = true
 - Integration with Neural Mux
 
 **Recommendation:** Add ANN implementation details:
-- Crate location: `ctas-7-shipyard-staging/sx9-ann-engine/` (or create)
+- Crate location: `sx9/sx9-ann-engine/` (or create)
 - Observation API: `ann.observe("route_latency", elapsed.as_nanos())`
 - Weight map format: JSON at `/data/ann/weights-v1.0.json`
 - Integration point: Neural Mux router (optional advisory)
@@ -210,7 +210,7 @@ mirror_ports = true
 - Integration with existing GLAF system (`CTAS7-GLAF-SYSTEM/`)
 
 **Recommendation:** Add GLAF implementation details:
-- Crate location: `ctas-7-shipyard-staging/sx9-glaf-core/` (or integrate with existing GLAF)
+- Crate location: `sx9/sx9-glaf-core/` (or integrate with existing GLAF)
 - Mirror API: `glaf.mirror(change)` from SurrealDB live queries
 - Topology feedback: Graph structure mirror (nodes, edges, properties)
 - Integration point: SurrealDB live query stream

@@ -1,0 +1,376 @@
+swagger: '2.0'
+info:
+  title: ABE Firefly API Gateway
+  description: |
+    ABE.ai Firefly Deployment - Ultra-scalable serverless architecture
+    MARC 21 Compliant Document Intelligence Platform
+    Service-Disabled Veteran-Owned Business
+  version: '1.0.0'
+  contact:
+    name: ABE Support
+    email: usneodcp@gmail.com
+  license:
+    name: Proprietary
+    url: https://abe.ai/license
+
+host: ${gateway_url}
+schemes:
+  - https
+
+produces:
+  - application/json
+
+security:
+  - api_key: []
+
+securityDefinitions:
+  api_key:
+    type: apiKey
+    name: key
+    in: query
+
+paths:
+  # External API endpoints
+  /api/v1/health:
+    get:
+      summary: Health check for all services
+      operationId: firefly_health_check
+      x-google-backend:
+        address: ${external_api_url}/health
+        protocol: h2
+      responses:
+        200:
+          description: Services healthy
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+              services:
+                type: object
+              timestamp:
+                type: string
+
+  /api/v1/marc/validate:
+    post:
+      summary: Validate MARC records
+      operationId: firefly_marc_validate
+      x-google-backend:
+        address: ${external_api_url}/api/v1/marc/validate
+        protocol: h2
+      parameters:
+        - in: body
+          name: marc_record
+          required: true
+          schema:
+            type: object
+            properties:
+              leader:
+                type: string
+              controlFields:
+                type: array
+              dataFields:
+                type: array
+      responses:
+        200:
+          description: MARC validation result
+        400:
+          description: Invalid MARC format
+
+  /api/v1/document/analyze:
+    post:
+      summary: Analyze document content
+      operationId: firefly_document_analyze
+      x-google-backend:
+        address: ${external_api_url}/api/v1/document/analyze
+        protocol: h2
+      parameters:
+        - in: body
+          name: document
+          required: true
+          schema:
+            type: object
+            properties:
+              content:
+                type: string
+              metadata:
+                type: object
+      responses:
+        200:
+          description: Document analysis result
+        400:
+          description: Invalid document format
+
+  # Ingestion endpoints
+  /api/v1/ingest/upload:
+    post:
+      summary: Upload and process documents
+      operationId: firefly_document_upload
+      x-google-backend:
+        address: ${ingestion_url}/api/v1/ingest/upload
+        protocol: h2
+      consumes:
+        - multipart/form-data
+      parameters:
+        - in: formData
+          name: document
+          type: file
+          required: true
+          description: Document file to upload
+        - in: formData
+          name: metadata
+          type: string
+          description: JSON metadata for document
+      responses:
+        200:
+          description: Upload successful
+        400:
+          description: Upload failed
+
+  /api/v1/ingest/google-drive:
+    post:
+      summary: Ingest from Google Drive
+      operationId: firefly_google_drive_ingest
+      x-google-backend:
+        address: ${ingestion_url}/api/v1/ingest/google-drive
+        protocol: h2
+      parameters:
+        - in: body
+          name: drive_config
+          required: true
+          schema:
+            type: object
+            properties:
+              folder_id:
+                type: string
+              file_filters:
+                type: array
+      responses:
+        202:
+          description: Ingestion started
+        400:
+          description: Invalid configuration
+
+  /api/v1/ingest/batch:
+    post:
+      summary: Batch document processing
+      operationId: firefly_batch_process
+      x-google-backend:
+        address: ${ingestion_url}/api/v1/ingest/batch
+        protocol: h2
+      parameters:
+        - in: body
+          name: batch_config
+          required: true
+          schema:
+            type: object
+            properties:
+              source_paths:
+                type: array
+              processing_options:
+                type: object
+      responses:
+        202:
+          description: Batch processing started
+
+  /api/v1/ingest/status/{job_id}:
+    get:
+      summary: Check ingestion job status
+      operationId: firefly_job_status
+      x-google-backend:
+        address: ${ingestion_url}/api/v1/ingest/status/{job_id}
+        protocol: h2
+      parameters:
+        - in: path
+          name: job_id
+          type: string
+          required: true
+      responses:
+        200:
+          description: Job status
+        404:
+          description: Job not found
+
+  # Summarization endpoints
+  /api/v1/summarize:
+    post:
+      summary: Summarize documents
+      operationId: firefly_summarize
+      x-google-backend:
+        address: ${summarization_url}/api/v1/summarize
+        protocol: h2
+      parameters:
+        - in: body
+          name: content
+          required: true
+          schema:
+            type: object
+            properties:
+              content:
+                type: string
+              options:
+                type: object
+                properties:
+                  length:
+                    type: string
+                    enum: [short, medium, long]
+                  focus:
+                    type: string
+                    enum: [general, intelligence, technical, financial]
+                  include_keywords:
+                    type: boolean
+                  include_sentiment:
+                    type: boolean
+                  marc_output:
+                    type: boolean
+      responses:
+        200:
+          description: Summarization result
+        400:
+          description: Invalid content
+
+  /api/v1/analyze:
+    post:
+      summary: Advanced document analysis
+      operationId: firefly_analyze
+      x-google-backend:
+        address: ${summarization_url}/api/v1/analyze
+        protocol: h2
+      parameters:
+        - in: body
+          name: content
+          required: true
+          schema:
+            type: object
+            properties:
+              content:
+                type: string
+      responses:
+        200:
+          description: Analysis result
+        400:
+          description: Invalid content
+
+  /api/v1/eei/extract:
+    post:
+      summary: Extract Essential Elements of Information
+      operationId: firefly_eei_extract
+      x-google-backend:
+        address: ${summarization_url}/api/v1/eei/extract
+        protocol: h2
+      parameters:
+        - in: body
+          name: eei_request
+          required: true
+          schema:
+            type: object
+            properties:
+              content:
+                type: string
+              eei_requirements:
+                type: array
+      responses:
+        200:
+          description: EEI extraction result
+        400:
+          description: Invalid request
+
+  /api/v1/intelligence/process:
+    post:
+      summary: Process intelligence documents
+      operationId: firefly_intelligence_process
+      x-google-backend:
+        address: ${summarization_url}/api/v1/intelligence/process
+        protocol: h2
+      parameters:
+        - in: body
+          name: intelligence_request
+          required: true
+          schema:
+            type: object
+            properties:
+              documents:
+                type: array
+              analysis_type:
+                type: string
+      responses:
+        200:
+          description: Intelligence processing result
+        400:
+          description: Invalid request
+
+  /api/v1/sources/free-apis:
+    get:
+      summary: Check status of free API sources
+      operationId: firefly_api_status
+      x-google-backend:
+        address: ${summarization_url}/api/v1/sources/free-apis
+        protocol: h2
+      responses:
+        200:
+          description: API status information
+
+# Rate limiting and quotas
+x-google-quota:
+  metric_costs:
+    read_requests: 1
+    write_requests: 5
+  daily_quota: 1
+
+# CORS configuration
+x-google-cors:
+  - origin: "*"
+    methods: ["GET", "POST", "OPTIONS"]
+    headers: ["Content-Type", "Authorization"]
+    max_age: 86400
+
+# Authentication requirements
+x-google-auth:
+  required: false  # For initial deployment, enable later
+
+definitions:
+  Error:
+    type: object
+    properties:
+      error:
+        type: string
+      details:
+        type: string
+      timestamp:
+        type: string
+      request_id:
+        type: string
+
+  HealthStatus:
+    type: object
+    properties:
+      status:
+        type: string
+      service:
+        type: string
+      version:
+        type: string
+      timestamp:
+        type: string
+
+  MARCRecord:
+    type: object
+    properties:
+      leader:
+        type: string
+      controlFields:
+        type: array
+      dataFields:
+        type: array
+
+  DocumentAnalysis:
+    type: object
+    properties:
+      document_id:
+        type: string
+      classification:
+        type: object
+      marc_fields:
+        type: object
+      processing_time:
+        type: string

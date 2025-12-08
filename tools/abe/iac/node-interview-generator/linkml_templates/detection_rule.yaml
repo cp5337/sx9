@@ -1,0 +1,136 @@
+# LinkML Schema for Detection Rules (Sigma/YARA/Wazuh)
+# RFC-9011, RFC-9105
+#
+# Usage: SPIRES/OntoGPT extraction for detection rule semantics
+# Output: LinkML-conformant JSON for Neo4j graph population
+
+id: https://w3id.org/ctas7/detection_rule
+name: DetectionRule
+
+prefixes:
+  linkml: https://w3id.org/linkml/
+  sigma: https://sigmahq.io/
+  attack: https://attack.mitre.org/techniques/
+
+imports:
+  - linkml:types
+
+classes:
+  DetectionRule:
+    description: A detection rule from Sigma, YARA, Wazuh, or similar.
+    attributes:
+      rule_id:
+        description: Unique rule identifier (UUID for Sigma, rule name for others).
+        range: string
+        identifier: true
+      title:
+        description: Human-readable rule title.
+        range: string
+      description:
+        description: Rule description and purpose.
+        range: string
+      status:
+        description: Rule maturity status.
+        range: RuleStatus
+      level:
+        description: Severity level.
+        range: SeverityLevel
+      logsource:
+        description: Log source specification.
+        range: LogSource
+      detection:
+        description: Detection logic.
+        range: DetectionLogic
+      mitre_attack_refs:
+        description: Associated MITRE ATT&CK technique IDs.
+        range: string
+        multivalued: true
+      false_positives:
+        description: Known false positive scenarios.
+        range: string
+        multivalued: true
+      tags:
+        description: Classification tags.
+        range: string
+        multivalued: true
+      author:
+        description: Rule author.
+        range: string
+      date:
+        description: Rule creation/modification date.
+        range: string
+      rule_type:
+        description: Type of detection rule.
+        range: RuleType
+      hd4_phase:
+        description: HD4 phase affinity for this detection.
+        range: string  # HUNT, DETECT, DISABLE, DISRUPT, DOMINATE
+
+  LogSource:
+    description: Specification of the log source for detection.
+    attributes:
+      category:
+        description: Log category (e.g., process_creation, network_connection).
+        range: string
+      product:
+        description: Product generating logs (e.g., windows, linux, zeek).
+        range: string
+      service:
+        description: Specific service (e.g., sysmon, security, powershell).
+        range: string
+
+  DetectionLogic:
+    description: The detection query logic.
+    attributes:
+      selection:
+        description: Selection criteria (field matches).
+        range: string
+      filter:
+        description: Filter criteria (exclusions).
+        range: string
+      condition:
+        description: Boolean condition combining selection/filter.
+        range: string
+      raw_query:
+        description: Raw query string for non-Sigma formats.
+        range: string
+
+enums:
+  RuleStatus:
+    permissible_values:
+      experimental:
+        description: Untested rule, may have false positives
+      test:
+        description: Rule under testing
+      stable:
+        description: Production-ready rule
+      deprecated:
+        description: Rule no longer maintained
+
+  SeverityLevel:
+    permissible_values:
+      informational:
+        description: Low priority, informational only
+      low:
+        description: Low severity finding
+      medium:
+        description: Medium severity finding
+      high:
+        description: High severity, requires attention
+      critical:
+        description: Critical severity, immediate action required
+
+  RuleType:
+    permissible_values:
+      sigma:
+        description: Sigma detection rule
+      yara:
+        description: YARA malware signature
+      nuclei:
+        description: Nuclei vulnerability template
+      wazuh:
+        description: Wazuh SIEM rule
+      snort:
+        description: Snort IDS rule
+      suricata:
+        description: Suricata IDS rule

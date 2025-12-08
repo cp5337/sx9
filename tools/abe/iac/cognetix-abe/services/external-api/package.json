@@ -1,0 +1,37 @@
+{
+  "name": "abe-external-api",
+  "version": "1.0.0",
+  "description": "ABE External API Service - MARC-compliant document intelligence",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js",
+    "build": "echo 'No build step required'",
+    "test": "echo 'Tests will be implemented'"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "helmet": "^7.1.0",
+    "compression": "^1.7.4",
+    "express-rate-limit": "^7.1.5",
+    "axios": "^1.6.2",
+    "zod": "^3.22.4",
+    "crypto": "^1.0.1",
+    "uuid": "^9.0.1"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "keywords": [
+    "abe",
+    "marc21",
+    "intelligence",
+    "document-processing",
+    "library-science",
+    "ctas7"
+  ],
+  "author": "Service-Disabled Veteran-Owned Business",
+  "license": "PROPRIETARY"
+}

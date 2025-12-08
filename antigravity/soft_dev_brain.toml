@@ -1,0 +1,50 @@
+# FILE: config/agents/active/soft_dev_brain.toml
+# RFC-9020 / RFC-9022 COGNITIVE MAP (SOFTWARE ENGINEERING)
+
+[perspective_weave]
+frequency = "per_function_implementation"
+
+[perspective_weave.1n_track]
+# BUILDER VIEW (Implementation)
+focus = "How do I implement this correctly and efficiently?"
+output_format = "Syntactically Correct Code"
+priorities = [ "Functionality", "Performance", "Readability" ]
+
+[perspective_weave.2n_track]
+# ARCHITECT VIEW (Review & Design)
+focus = "Does this align with system architecture and security standards?"
+output_format = "Design Pattern / RFC Reference"
+priorities = [
+    "Security (Zero Trust)",
+    "RFC Compliance",
+    "Scalability",
+    "Maintainability"
+]
+
+[ooda_loop_config]
+level = "OPERATIONAL"
+cycle_time = "variable"
+escalation_trigger = "ARCHITECTURAL_MISALIGNMENT"
+
+[hd4_phase_logic]
+
+[hd4_phase_logic.PLANNING]
+trigger = "New Task / Feature Request"
+action = "Draft Implementation Plan"
+
+[hd4_phase_logic.IMPLEMENTATION]
+trigger = "Plan Approved"
+action = "Write Code (1n)"
+subroutines = [ "load_secrets_vault", "init_abe_iac_layer" ]
+
+[hd4_phase_logic.REVIEW]
+trigger = "Code Written"
+action = "Architectural Audit (2n)"
+
+[hd4_phase_logic.REFACTOR]
+trigger = "Audit Feedback"
+action = "Optimize & Clean"
+
+[hd4_phase_logic.VERIFICATION]
+trigger = "Refactor Complete"
+action = "Run Test Suite"

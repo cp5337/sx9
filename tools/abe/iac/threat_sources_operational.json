@@ -1,0 +1,851 @@
+{
+  "$schema": "https://sx9.io/schemas/threat-sources-v2.json",
+  "meta": {
+    "version": "2.0.0",
+    "rfc_references": ["RFC-9011", "RFC-9023", "RFC-9108", "RFC-9109", "RFC-9300", "RFC-9301", "RFC-9302"],
+    "generated": "2025-12-07",
+    "total_sources": 27,
+    "estimated_raw_size_gb": 1.1,
+    "estimated_processed_size_mb": 200
+  },
+  "defaults": {
+    "clone_depth": 1,
+    "timeout_seconds": 300,
+    "retry_attempts": 3,
+    "cleanup_after_processing": true
+  },
+  "storage": {
+    "local": {
+      "cache_dir": "output/threat_content",
+      "processed_dir": "output/processed",
+      "ontology_dir": "output/ontology",
+      "dsl_dir": "output/dsl"
+    },
+    "remote": {
+      "gcs_bucket": "sx9-threat-intel",
+      "supabase_table": "threat_sources",
+      "cdn_base": "https://cdn.sx9.io/threat-intel"
+    }
+  },
+  "sources": {
+    "mitre_attack_enterprise": {
+      "enabled": true,
+      "category": "mitre",
+      "type": "http_json",
+      "url": "https://raw.githubusercontent.com/mitre/cti/master/enterprise-attack/enterprise-attack.json",
+      "output_file": "mitre_attack.json",
+      "description": "MITRE ATT&CK Enterprise techniques",
+      "estimated_size_mb": 30,
+      "parser": "stix_bundle"
+    },
+    "mitre_attack_ics": {
+      "enabled": true,
+      "category": "mitre",
+      "type": "http_json",
+      "url": "https://raw.githubusercontent.com/mitre/cti/master/ics-attack/ics-attack.json",
+      "output_file": "mitre_ics.json",
+      "description": "MITRE ATT&CK for ICS",
+      "estimated_size_mb": 2,
+      "parser": "stix_bundle"
+    },
+    "mitre_attack_mobile": {
+      "enabled": true,
+      "category": "mitre",
+      "type": "http_json",
+      "url": "https://raw.githubusercontent.com/mitre/cti/master/mobile-attack/mobile-attack.json",
+      "output_file": "mitre_mobile.json",
+      "description": "MITRE ATT&CK Mobile",
+      "estimated_size_mb": 3,
+      "parser": "stix_bundle"
+    },
+    "mitre_d3fend": {
+      "enabled": true,
+      "category": "mitre",
+      "type": "http_json",
+      "url": "https://d3fend.mitre.org/ontologies/d3fend.json",
+      "output_file": "d3fend.json",
+      "description": "MITRE D3FEND countermeasures ontology",
+      "estimated_size_mb": 3,
+      "parser": "json_ld"
+    },
+    "mitre_car": {
+      "enabled": true,
+      "category": "mitre",
+      "type": "git_repo",
+      "repo_url": "https://github.com/mitre-attack/car",
+      "content_path": "analytics",
+      "file_pattern": "*.yaml",
+      "output_file": "car_analytics.json",
+      "description": "MITRE Cyber Analytics Repository",
+      "estimated_files": 425,
+      "estimated_size_mb": 50,
+      "parser": "yaml_multi"
+    },
+    "mitre_atlas": {
+      "enabled": true,
+      "category": "mitre",
+      "type": "git_repo",
+      "repo_url": "https://github.com/mitre-atlas/atlas-data",
+      "content_path": "data",
+      "file_pattern": "*.yaml",
+      "output_file": "atlas_techniques.json",
+      "description": "MITRE ATLAS AI/ML adversarial attacks",
+      "estimated_files": 97,
+      "estimated_size_mb": 20,
+      "parser": "yaml_multi"
+    },
+    "mitre_engage": {
+      "enabled": true,
+      "category": "mitre",
+      "type": "git_repo",
+      "repo_url": "https://github.com/mitre/engage",
+      "content_path": "data",
+      "file_pattern": "*.yaml",
+      "output_file": "engage_activities.json",
+      "description": "MITRE ENGAGE adversary engagement",
+      "estimated_size_mb": 15,
+      "parser": "yaml_multi"
+    },
+    "atomic_red_team": {
+      "enabled": true,
+      "category": "emulation",
+      "type": "git_repo",
+      "repo_url": "https://github.com/redcanaryco/atomic-red-team",
+      "content_path": "atomics",
+      "file_pattern": "T*/T*.yaml",
+      "output_file": "atomic_tests.json",
+      "description": "Atomic Red Team test definitions",
+      "estimated_files": 1500,
+      "estimated_size_mb": 200,
+      "parser": "atomic_yaml"
+    },
+    "caldera": {
+      "enabled": true,
+      "category": "emulation",
+      "type": "git_repo",
+      "repo_url": "https://github.com/mitre/caldera",
+      "content_path": "data",
+      "file_pattern": "*.yml",
+      "output_file": "caldera_abilities.json",
+      "description": "MITRE Caldera adversary emulation",
+      "estimated_size_mb": 100,
+      "parser": "yaml_multi"
+    },
+    "nuclei_templates": {
+      "enabled": true,
+      "category": "detection",
+      "type": "git_repo",
+      "repo_url": "https://github.com/projectdiscovery/nuclei-templates",
+      "content_path": ".",
+      "file_pattern": "**/*.yaml",
+      "output_file": "nuclei_templates.json",
+      "description": "Nuclei vulnerability templates",
+      "estimated_files": 8000,
+      "estimated_size_mb": 100,
+      "parser": "nuclei_yaml"
+    },
+    "sigma_rules": {
+      "enabled": true,
+      "category": "detection",
+      "type": "git_repo",
+      "repo_url": "https://github.com/SigmaHQ/sigma",
+      "content_path": "rules",
+      "file_pattern": "**/*.yml",
+      "output_file": "sigma_rules.json",
+      "description": "Sigma detection rules",
+      "estimated_files": 3000,
+      "estimated_size_mb": 50,
+      "parser": "sigma_yaml"
+    },
+    "yara_rules": {
+      "enabled": true,
+      "category": "detection",
+      "type": "git_repo",
+      "repo_url": "https://github.com/Yara-Rules/rules",
+      "content_path": ".",
+      "file_pattern": "**/*.yar",
+      "output_file": "yara_rules.json",
+      "description": "YARA malware detection rules",
+      "estimated_size_mb": 30,
+      "parser": "yara_rule"
+    },
+    "wazuh_rules": {
+      "enabled": true,
+      "category": "detection",
+      "type": "git_repo",
+      "repo_url": "https://github.com/wazuh/wazuh",
+      "content_path": "ruleset/rules",
+      "file_pattern": "*.xml",
+      "output_file": "wazuh_rules.json",
+      "description": "Wazuh SIEM detection rules",
+      "estimated_size_mb": 20,
+      "parser": "xml_rules"
+    },
+    "nmap_scripts": {
+      "enabled": true,
+      "category": "recon",
+      "type": "git_repo",
+      "repo_url": "https://github.com/nmap/nmap",
+      "content_path": "scripts",
+      "file_pattern": "*.nse",
+      "clone_options": ["--filter=blob:none"],
+      "output_file": "nmap_scripts.json",
+      "description": "Nmap NSE scripts",
+      "estimated_files": 600,
+      "estimated_size_mb": 30,
+      "parser": "nse_lua"
+    },
+    "lolbas": {
+      "enabled": true,
+      "category": "loltl",
+      "type": "git_repo",
+      "repo_url": "https://github.com/LOLBAS-Project/LOLBAS",
+      "content_path": "yml",
+      "file_pattern": "**/*.yml",
+      "output_file": "lolbas.json",
+      "description": "Living Off The Land Binaries and Scripts",
+      "estimated_size_mb": 5,
+      "parser": "yaml_multi"
+    },
+    "gtfobins": {
+      "enabled": true,
+      "category": "loltl",
+      "type": "git_repo",
+      "repo_url": "https://github.com/GTFOBins/GTFOBins.github.io",
+      "content_path": "_gtfobins",
+      "file_pattern": "*.md",
+      "output_file": "gtfobins.json",
+      "description": "Unix binaries abuse techniques",
+      "estimated_size_mb": 5,
+      "parser": "gtfobins_md"
+    },
+    "loldrivers": {
+      "enabled": true,
+      "category": "loltl",
+      "type": "git_repo",
+      "repo_url": "https://github.com/magicsword-io/LOLDrivers",
+      "content_path": "yaml",
+      "file_pattern": "*.yaml",
+      "output_file": "loldrivers.json",
+      "description": "Living Off The Land Drivers",
+      "estimated_size_mb": 10,
+      "parser": "yaml_multi"
+    },
+    "hijacklibs": {
+      "enabled": true,
+      "category": "loltl",
+      "type": "git_repo",
+      "repo_url": "https://github.com/wietze/HijackLibs",
+      "content_path": "yml",
+      "file_pattern": "*.yml",
+      "output_file": "hijacklibs.json",
+      "description": "DLL hijacking libraries",
+      "estimated_size_mb": 3,
+      "parser": "yaml_multi"
+    },
+    "wadcoms": {
+      "enabled": true,
+      "category": "loltl",
+      "type": "git_repo",
+      "repo_url": "https://github.com/WADComs/WADComs.github.io",
+      "content_path": "_wadcoms",
+      "file_pattern": "*.md",
+      "output_file": "wadcoms.json",
+      "description": "Windows/AD abuse commands",
+      "estimated_size_mb": 2,
+      "parser": "wadcoms_md"
+    },
+    "exploitdb": {
+      "enabled": true,
+      "category": "exploits",
+      "type": "git_repo",
+      "repo_url": "https://gitlab.com/exploit-database/exploitdb",
+      "content_path": "exploits",
+      "file_pattern": "**/*",
+      "clone_options": ["--filter=blob:none"],
+      "output_file": "exploitdb_index.json",
+      "description": "Exploit-DB exploits",
+      "estimated_size_mb": 500,
+      "parser": "exploitdb_csv"
+    },
+    "osint_framework": {
+      "enabled": true,
+      "category": "osint",
+      "type": "git_repo",
+      "repo_url": "https://github.com/lockfale/osint-framework",
+      "content_path": ".",
+      "file_pattern": "*.json",
+      "output_file": "osint_framework.json",
+      "description": "OSINT Framework tool collection",
+      "estimated_size_mb": 2,
+      "parser": "json_single"
+    },
+    "awesome_osint": {
+      "enabled": true,
+      "category": "osint",
+      "type": "git_repo",
+      "repo_url": "https://github.com/jivoi/awesome-osint",
+      "content_path": ".",
+      "file_pattern": "README.md",
+      "output_file": "awesome_osint.json",
+      "description": "Curated OSINT resources",
+      "estimated_size_mb": 1,
+      "parser": "markdown_list"
+    },
+    "sherlock": {
+      "enabled": true,
+      "category": "osint",
+      "type": "git_repo",
+      "repo_url": "https://github.com/sherlock-project/sherlock",
+      "content_path": "sherlock/resources",
+      "file_pattern": "data.json",
+      "output_file": "sherlock_sites.json",
+      "description": "Sherlock username search sites",
+      "estimated_size_mb": 1,
+      "parser": "json_single"
+    },
+    "kali_tools": {
+      "enabled": true,
+      "category": "osint",
+      "type": "http_scrape",
+      "url": "https://www.kali.org/tools/",
+      "output_file": "kali_tools.json",
+      "description": "Kali Linux security tools",
+      "estimated_size_mb": 5,
+      "parser": "kali_html"
+    },
+    "ptcc_configs": {
+      "enabled": true,
+      "category": "ctas_internal",
+      "type": "local_path",
+      "path": "../ctas7-ptcc-teth-database/abe_results",
+      "file_pattern": "*.json",
+      "output_file": "ptcc_configs.json",
+      "description": "PTCC configurations from ABE",
+      "parser": "json_multi"
+    },
+    "teth_algorithms": {
+      "enabled": true,
+      "category": "ctas_internal",
+      "type": "local_path",
+      "path": "../ctas7-ptcc-teth-database/teth_format_output",
+      "file_pattern": "*.json",
+      "output_file": "teth_algorithms.json",
+      "description": "TETH validation algorithms",
+      "parser": "json_multi"
+    },
+    "ptcc_toolchains": {
+      "enabled": true,
+      "category": "ctas_internal",
+      "type": "derived",
+      "depends_on": ["ptcc_configs", "kali_tools"],
+      "output_file": "ptcc_toolchains.json",
+      "description": "Derived tool chains from PTCC",
+      "parser": "toolchain_derive"
+    }
+  },
+  "processing": {
+    "pipeline": [
+      {
+        "step": 1,
+        "name": "fetch",
+        "description": "Download/clone all sources",
+        "command": "python3 threat_content_fetcher.py --all --no-training"
+      },
+      {
+        "step": 2,
+        "name": "spires_ontology",
+        "description": "Generate SPIRES ontology",
+        "command": "python3 threat_content_fetcher.py --ontology-only",
+        "outputs": ["ontology_raw.json", "threat_ontology.cypher", "threat_ontology.surql"]
+      },
+      {
+        "step": 3,
+        "name": "yaml_dsl",
+        "description": "Convert YAML to SX9 DSL",
+        "command": "python3 yaml_dsl_pipeline.py --input output/threat_content --output output/dsl",
+        "outputs": ["*.sx9dsl"]
+      },
+      {
+        "step": 4,
+        "name": "trivariate_hash",
+        "description": "Generate RFC-9001 trivariate hashes",
+        "outputs": ["threat_content_index.json"]
+      },
+      {
+        "step": 5,
+        "name": "crosswalk",
+        "description": "Generate technique crosswalk mappings",
+        "outputs": ["crosswalk_index.json"]
+      },
+      {
+        "step": 6,
+        "name": "upload",
+        "description": "Upload to remote storage",
+        "targets": ["supabase", "gcs", "neo4j"]
+      },
+      {
+        "step": 7,
+        "name": "cleanup",
+        "description": "Remove raw repos, keep processed JSON",
+        "keep": ["*.json"],
+        "remove": ["car/", "atlas/", "engage/", "atomic-red-team/", "nuclei-templates/", "sigma/"]
+      }
+    ]
+  },
+  "crosswalk": {
+    "primary_key": "technique_id",
+    "mappings": {
+      "technique_to_atomic": "Maps ATT&CK techniques to Atomic tests",
+      "technique_to_sigma": "Maps ATT&CK techniques to Sigma rules",
+      "technique_to_nuclei": "Maps ATT&CK techniques to Nuclei templates",
+      "technique_to_car": "Maps ATT&CK techniques to CAR analytics",
+      "technique_to_caldera": "Maps ATT&CK techniques to Caldera abilities",
+      "technique_to_lolbas": "Maps ATT&CK techniques to LOLBAS binaries",
+      "cve_to_nuclei": "Maps CVEs to Nuclei templates",
+      "cve_to_exploitdb": "Maps CVEs to ExploitDB entries"
+    }
+  },
+  "neo4j": {
+    "enabled": true,
+    "browser_url": "http://localhost:7474/browser/",
+    "bolt_url": "bolt://localhost:7687",
+    "database": "neo4j",
+    "import_cypher": "output/ontology/threat_ontology.cypher",
+    "node_labels": [
+      "Technique",
+      "Tool",
+      "Detection",
+      "Tactic",
+      "Platform",
+      "DataSource",
+      "Primitive"
+    ],
+    "relationship_types": [
+      "USES",
+      "DETECTS",
+      "MITIGATES",
+      "TARGETS",
+      "CHAINS_TO",
+      "REQUIRES",
+      "MAPS_TO_PRIMITIVE"
+    ]
+  },
+  "layer2_validation": {
+    "enabled": true,
+    "script_path": "../ctas7-command-center/Combinatorial Optimizaton/validate_with_layer1_layer2.py",
+    "components": {
+      "layer1": {
+        "hmm_persona": {
+          "enabled": true,
+          "hidden_states": ["Hunt", "Detect", "Disrupt", "Dominate", "Disable"],
+          "description": "HD4 phase discovery via Hidden Markov Model"
+        },
+        "latent_matroids": {
+          "enabled": true,
+          "description": "Constraint discovery via spectral analysis"
+        },
+        "combinatorial_optimization": {
+          "monte_carlo": true,
+          "las_vegas": true,
+          "electric_football_detection": true
+        }
+      },
+      "layer2": {
+        "teth": {
+          "enabled": true,
+          "entropy_threshold": 2.5,
+          "description": "Topological Entropy Threat Heuristic"
+        },
+        "lstar": {
+          "enabled": true,
+          "max_iterations": 100,
+          "description": "L* Learning Algorithm for threat pattern discovery"
+        },
+        "stock_market_validation": {
+          "enabled": true,
+          "benchmark_return": 0.02,
+          "sharpe_threshold": 1.0,
+          "description": "Ultimate universality test via primitive-to-trading mapping"
+        }
+      }
+    },
+    "primitives_32": [
+      "CREATE", "READ", "UPDATE", "DELETE",
+      "SEND", "RECEIVE", "TRANSFORM", "VALIDATE",
+      "BRANCH", "LOOP", "RETURN", "CALL",
+      "CONNECT", "DISCONNECT", "ROUTE", "FILTER",
+      "AUTHENTICATE", "AUTHORIZE", "ENCRYPT", "DECRYPT",
+      "ALLOCATE", "DEALLOCATE", "LOCK", "UNLOCK",
+      "SAVE", "RESTORE", "CHECKPOINT", "ROLLBACK",
+      "COORDINATE", "SYNCHRONIZE", "SIGNAL", "WAIT"
+    ],
+    "apt_levels": [
+      {"level": "SCRIPT_KIDDIE", "entropy_threshold": 1.0},
+      {"level": "INTERMEDIATE", "entropy_threshold": 2.0},
+      {"level": "ADVANCED", "entropy_threshold": 3.0},
+      {"level": "APT_NATION_STATE", "entropy_threshold": 4.0}
+    ],
+    "success_criteria": {
+      "all_scenarios_validate": true,
+      "all_apt_levels_work": true,
+      "stock_market_generates_alpha": true,
+      "no_electric_football": true,
+      "universality_score_threshold": 0.75
+    }
+  },
+  "full_pipeline": {
+    "description": "Complete threat intel pipeline: Download → SPIRES → Neo4j → Layer2 Validation",
+    "steps": [
+      {
+        "phase": 1,
+        "name": "download",
+        "command": "cd 04-abe-iac/node-interview-generator && python3 threat_content_fetcher.py --all --no-training",
+        "estimated_time_minutes": 30
+      },
+      {
+        "phase": 2,
+        "name": "spires_ontology",
+        "command": "cd 04-abe-iac/node-interview-generator && python3 threat_content_fetcher.py --ontology-only",
+        "estimated_time_minutes": 5
+      },
+      {
+        "phase": 3,
+        "name": "neo4j_import",
+        "command": "cat output/ontology/threat_ontology.cypher | cypher-shell -u neo4j",
+        "verify": "MATCH (n) RETURN count(n) AS total_nodes"
+      },
+      {
+        "phase": 4,
+        "name": "layer2_validation",
+        "command": "cd ../ctas7-command-center/Combinatorial\\ Optimizaton && python3 validate_with_layer1_layer2.py",
+        "output": "layer2_validation_results.json"
+      },
+      {
+        "phase": 5,
+        "name": "tool_matching",
+        "command": "cd 04-abe-iac && python3 match_tools_to_ctas_tasks.py",
+        "output": "tools_tasks_matching.json"
+      },
+      {
+        "phase": 6,
+        "name": "chromadb_vectorize",
+        "command": "cd 04-abe-iac && python3 add_to_chromadb_with_unicode.py",
+        "collections": ["tools", "ctas_tasks", "ptcc_configs", "tool_chains"]
+      },
+      {
+        "phase": 7,
+        "name": "plasma_rules_generate",
+        "description": "Generate Plasma Defender TOML rules from validated threat intel",
+        "command": "cd ctas7-plasma-defender && cargo run --bin rule-generator",
+        "output": "/plasma/rules/toml/"
+      },
+      {
+        "phase": 8,
+        "name": "plasma_rules_compile",
+        "description": "Compile TOML rules to JSON for hot-path performance",
+        "command": "sx9-ct rules compile --toml-dir /plasma/rules/toml --json-dir /plasma/rules/json",
+        "output": "/plasma/rules/json/"
+      },
+      {
+        "phase": 9,
+        "name": "ossec_reload",
+        "description": "Hot reload OSSEC daemon with new rules (zero downtime)",
+        "command": "systemctl reload plasma-ossec",
+        "verify": "sx9-ct daemon status plasma-ossec"
+      }
+    ]
+  },
+  "plasma_defender": {
+    "enabled": true,
+    "description": "OSSEC rule generation from threat intel",
+    "rule_paths": {
+      "toml_source": "/plasma/rules/toml",
+      "json_compiled": "/plasma/rules/json",
+      "backup": "/plasma/rules/backup"
+    },
+    "rule_id_ranges": {
+      "sigma_detection": {"start": 60000, "end": 60999},
+      "yara_malware": {"start": 61000, "end": 61999},
+      "nuclei_vuln": {"start": 62000, "end": 62999},
+      "atomic_emulation": {"start": 63000, "end": 63999},
+      "lolbas_abuse": {"start": 64000, "end": 64999},
+      "custom_ptcc": {"start": 65000, "end": 69999}
+    },
+    "level_mapping": {
+      "informational": 3,
+      "low": 5,
+      "medium": 7,
+      "high": 10,
+      "critical": 12,
+      "emergency": 15
+    },
+    "active_response": {
+      "enabled": true,
+      "default_timeout": 600,
+      "commands": {
+        "scorpion-tarpit": "Tarpit attacker with slow response",
+        "fail2ban-jail": "Ban IP via fail2ban",
+        "iptables-drop": "Drop packets from source IP",
+        "icmp-redirect": "Redirect to honeypot"
+      }
+    },
+    "source_to_rule_mapping": {
+      "sigma_rules": {
+        "rule_type": "detection",
+        "default_level": 7,
+        "primitive": "VALIDATE",
+        "unicode_range": "U+E400-E4FF"
+      },
+      "yara_rules": {
+        "rule_type": "malware",
+        "default_level": 10,
+        "primitive": "FILTER",
+        "unicode_range": "U+E500-E5FF"
+      },
+      "nuclei_templates": {
+        "rule_type": "vulnerability",
+        "default_level": 8,
+        "primitive": "CONNECT",
+        "unicode_range": "U+E600-E6FF"
+      },
+      "atomic_red_team": {
+        "rule_type": "emulation",
+        "default_level": 12,
+        "primitive": "CALL",
+        "unicode_range": "U+E700-E7FF"
+      },
+      "lolbas": {
+        "rule_type": "abuse",
+        "default_level": 10,
+        "primitive": "TRANSFORM",
+        "unicode_range": "U+E800-E8FF"
+      },
+      "wazuh_rules": {
+        "rule_type": "hids",
+        "default_level": 5,
+        "primitive": "READ",
+        "unicode_range": "U+E900-E9FF"
+      }
+    },
+    "nine_sided_integration": {
+      "sch_seed": "0xC7A50000",
+      "cuid_seed": "0xC7A50001",
+      "encoding": "base96",
+      "hash_algorithm": "murmur3_x64_128"
+    }
+  },
+  "thalmic_filter": {
+    "enabled": true,
+    "rfc_reference": "RFC-9108",
+    "description": "L2 Cognitive Fabric Intercept Layer with DistilBERT Classifier",
+    "iso_deployment_path": "/opt/ctas7/thalmic-filter/",
+    "models": {
+      "distilbert_classifier": {
+        "name": "sx9_distilbert_mitre_v1",
+        "base_model": "distilbert-base-uncased",
+        "huggingface_id": "distilbert-base-uncased",
+        "fine_tuned_on": "mitre_attck_techniques",
+        "model_path": "/opt/ctas7/thalmic-filter/models/distilbert-mitre-v1/",
+        "safetensors_file": "model.safetensors",
+        "tokenizer_file": "tokenizer.json",
+        "config_file": "config.json",
+        "size_mb": 260,
+        "latency_target_ms": 50
+      },
+      "phi3_explainer": {
+        "name": "sx9_phi3_lora_v1",
+        "base_model": "microsoft/phi-3-mini-4k-instruct",
+        "adapter_type": "lora",
+        "model_path": "/opt/ctas7/thalmic-filter/models/phi3-lora-v1/",
+        "adapter_file": "adapter_model.safetensors",
+        "adapter_config": "adapter_config.json",
+        "size_mb": 50,
+        "latency_target_ms": 200
+      }
+    },
+    "escalation_tiers": {
+      "local": {
+        "tier": 0,
+        "path": "/opt/ctas7/thalmic-filter/models/",
+        "latency_ms": 50,
+        "use_case": ["DevOps", "BNE", "DevSecOps", "Offline"]
+      },
+      "gcp": {
+        "tier": 1,
+        "endpoint": "https://models.sx9.io/thalmic/v1",
+        "latency_ms": 100,
+        "use_case": ["Operational", "Connected"]
+      },
+      "cloudflare": {
+        "tier": 2,
+        "endpoint": "https://cdn.sx9.io/ai/thalmic",
+        "latency_ms": 150,
+        "use_case": ["Strategic", "Global", "Edge"]
+      }
+    },
+    "unicode_operations": {
+      "block_range": "U+E540-E55F",
+      "operations": {
+        "THALMIC_CLASSIFY": "U+E540",
+        "THALMIC_EXPLAIN": "U+E541",
+        "THALMIC_CACHE_HIT": "U+E542",
+        "THALMIC_CACHE_MISS": "U+E543",
+        "THALMIC_ESCALATE": "U+E544",
+        "THALMIC_BLOCK": "U+E545",
+        "THALMIC_ENRICH": "U+E546",
+        "THALMIC_LOCAL": "U+E547",
+        "THALMIC_GCP": "U+E548",
+        "THALMIC_CLOUDFLARE": "U+E549",
+        "THALMIC_ATOMIC_WRITE": "U+E54A",
+        "THALMIC_ATOMIC_READ": "U+E54B",
+        "THALMIC_LISP_ENCODE": "U+E54C",
+        "THALMIC_TRIVARIATE": "U+E54D",
+        "THALMIC_VOICE_FILTER": "U+E54E",
+        "THALMIC_PROMPT_FILTER": "U+E54F"
+      }
+    },
+    "atomic_clipboard": {
+      "state_path": "/opt/ctas7/atomic-clipboard/state/clipboard.sled",
+      "pre_send_hook": "/opt/ctas7/atomic-clipboard/hooks/pre-send.d/00-thalmic-filter.sh",
+      "captures": ["prompt_text", "tool_invocations", "voice_commands"],
+      "shares_state": ["prompt_windows", "terminals", "model_inference"]
+    }
+  },
+  "distilbert_training": {
+    "enabled": true,
+    "description": "Training pipeline for DistilBERT MITRE technique classifier using local ctas7-hash-fingerprint-engine",
+    "local_embedder": {
+      "module": "ctas7-hash-fingerprint-engine/ctas_hash/embeddings/distilbert.py",
+      "class": "DistilBERTEmbedder",
+      "embedding_dim": 768,
+      "device_auto": true
+    },
+    "training_data": {
+      "existing_files": {
+        "classification": "04-abe-iac/node-interview-generator/output/training_data/distilbert_classification.jsonl",
+        "label_map": "04-abe-iac/node-interview-generator/output/training_data/distilbert_label_map.json",
+        "multilabel": "04-abe-iac/node-interview-generator/output/training_data/distilbert_multilabel.jsonl",
+        "ner": "04-abe-iac/node-interview-generator/output/training_data/distilbert_ner.jsonl"
+      },
+      "generation_script": "04-abe-iac/node-interview-generator/threat_vector_pipeline.py",
+      "generation_command": "python3 threat_vector_pipeline.py --training-only"
+    },
+    "model_config": {
+      "base_model": "distilbert-base-uncased",
+      "num_labels": 1094,
+      "problem_type": "multi_label_classification",
+      "max_length": 512,
+      "embedding_dim": 768
+    },
+    "training_args": {
+      "output_dir": "output/models/distilbert-mitre-v1",
+      "num_train_epochs": 10,
+      "per_device_train_batch_size": 16,
+      "warmup_steps": 500,
+      "weight_decay": 0.01,
+      "learning_rate": 2e-5,
+      "fp16": true,
+      "evaluation_strategy": "epoch",
+      "save_strategy": "epoch",
+      "load_best_model_at_end": true,
+      "metric_for_best_model": "f1_macro"
+    },
+    "target_performance": {
+      "accuracy": 0.90,
+      "f1_macro": 0.85
+    },
+    "thalmic_deployment": {
+      "export_path": "/opt/ctas7/thalmic-filter/models/distilbert-mitre-v1/",
+      "export_format": "safetensors",
+      "latency_target_ms": 50
+    }
+  },
+  "hd4_canonical": {
+    "rfc_reference": "RFC-9300",
+    "description": "HD4 Canonical Specification - Unified Operational Model",
+    "phase_order": ["HUNT", "DETECT", "DISRUPT", "DISABLE", "DOMINATE"],
+    "order_is_immutable": true,
+    "unicode_allocation": {
+      "HD4_HUNT": "U+E700",
+      "HD4_DETECT": "U+E701",
+      "HD4_DISRUPT": "U+E702",
+      "HD4_DISABLE": "U+E703",
+      "HD4_DOMINATE": "U+E704"
+    },
+    "delta_angles": {
+      "precision": 6,
+      "axis_x": {"name": "Semantic", "description": "Threat classification (Recon=0.0 → Exfil=1.0)"},
+      "axis_y": {
+        "name": "Operational",
+        "description": "HD4 Phase",
+        "values": {
+          "hunt": 0.000000,
+          "detect": 0.250000,
+          "disrupt": 0.500000,
+          "disable": 0.750000,
+          "dominate": 1.000000
+        }
+      },
+      "axis_z": {"name": "Temporal", "description": "Historical=0.0 → Predictive=1.0"}
+    },
+    "framework_subsumption": {
+      "mitre_attack_to_hd4": {
+        "reconnaissance": "HUNT",
+        "resource_development": "HUNT",
+        "initial_access": "DETECT",
+        "execution": "DISRUPT",
+        "persistence": "DISRUPT",
+        "privilege_escalation": "DISRUPT",
+        "defense_evasion": "DISRUPT",
+        "credential_access": "DISRUPT",
+        "discovery": "DETECT",
+        "lateral_movement": "DISRUPT",
+        "collection": "DISABLE",
+        "command_and_control": "DISABLE",
+        "exfiltration": "DOMINATE",
+        "impact": "DOMINATE"
+      }
+    }
+  },
+  "linkml_schemas": {
+    "template_path": "04-abe-iac/linkml_templates/",
+    "output_format": "LinkML-conformant JSON for Neo4j",
+    "schemas": {
+      "threat_technique": {
+        "file": "threat_technique.yaml",
+        "id": "https://w3id.org/ctas7/threat_technique",
+        "classes": ["ThreatTechnique", "DetectionMethod", "Mitigation"],
+        "training_use": "DistilBERT classification labels"
+      },
+      "detection_rule": {
+        "file": "detection_rule.yaml",
+        "id": "https://w3id.org/ctas7/detection_rule",
+        "classes": ["DetectionRule", "LogSource", "DetectionLogic"],
+        "training_use": "Rule-to-technique mapping"
+      },
+      "threat_actor": {
+        "file": "threat_actor.yaml",
+        "id": "https://w3id.org/ctas7/threat_actor",
+        "classes": ["ThreatActor", "Attribution", "TargetSector"],
+        "training_use": "Actor-technique association"
+      },
+      "threat_campaign": {
+        "file": "threat_campaign.yaml",
+        "id": "https://w3id.org/ctas7/threat_campaign",
+        "training_use": "Campaign context enrichment"
+      },
+      "offensive_tool": {
+        "file": "offensive_tool.yaml",
+        "id": "https://w3id.org/ctas7/offensive_tool",
+        "training_use": "Tool-technique mapping"
+      }
+    },
+    "enums": {
+      "rule_type": ["sigma", "yara", "nuclei", "wazuh", "snort", "suricata"],
+      "rule_status": ["experimental", "test", "stable", "deprecated"],
+      "severity_level": ["informational", "low", "medium", "high", "critical"],
+      "hd4_phase": ["HUNT", "DETECT", "DISRUPT", "DISABLE", "DOMINATE"]
+    }
+  }
+}

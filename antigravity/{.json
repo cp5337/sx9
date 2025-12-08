@@ -1,0 +1,28 @@
+{
+  "file": "config/filters/thalamus_recon.json",
+  "rfc_compliance": "RFC-9024", 
+  "filter_mode": "STRICT",
+  
+  "pre_computation_rules": [
+    {
+      "name": "NOISE_REJECTION_LOGS",
+      "method": "REGEX",
+      "pattern": "^INFO.*(heartbeat|healthcheck|metrics).*",
+      "action": "DROP",
+      "rationale": "Do not waste cognitive tokens on healthy heartbeats" 
+    },
+    {
+      "name": "NEEDLE_EXTRACTION_IPS",
+      "method": "REGEX",
+      "pattern": "\\b(?:\\d{1,3}\\.){3}\\d{1,3}\\b",
+      "action": "PROMOTE_TO_ATTENTION",
+      "rationale": "IP addresses are potential target nodes"
+    }
+  ],
+  
+  "convergence_thresholds": {
+    "h1_operational": 0.75,  
+    "h2_semantic": 0.60,
+    "decay_function": "cholinesterase_v1" 
+  }
+}

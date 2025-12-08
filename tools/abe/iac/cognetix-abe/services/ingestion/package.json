@@ -1,0 +1,41 @@
+{
+  "name": "abe-ingestion-service",
+  "version": "1.0.0",
+  "description": "ABE Document Ingestion Service - Google Drive + MARC processing",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js",
+    "build": "echo 'No build step required'",
+    "test": "echo 'Tests will be implemented'"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "helmet": "^7.1.0",
+    "compression": "^1.7.4",
+    "express-rate-limit": "^7.1.5",
+    "multer": "^1.4.5-lts.1",
+    "googleapis": "^128.0.0",
+    "pdf-parse": "^1.1.1",
+    "mammoth": "^1.6.0",
+    "csv-parse": "^5.5.2",
+    "zod": "^3.22.4",
+    "uuid": "^9.0.1",
+    "@google-cloud/storage": "^7.7.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "keywords": [
+    "abe",
+    "document-ingestion",
+    "google-drive",
+    "marc21",
+    "intelligence",
+    "ctas7"
+  ],
+  "author": "Service-Disabled Veteran-Owned Business",
+  "license": "PROPRIETARY"
+}

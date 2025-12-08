@@ -1,0 +1,200 @@
+# ================================================================
+# Natasha CTAS-7 Cross-Domain Operations Agent
+# GPU Cloud Deployment for Google Cloud Run + Vertex AI
+# Version: 7.3.0 | Author: Natasha Volkov | CTAS-7 Mesh
+# ================================================================
+
+apiVersion: run.googleapis.com/v1
+kind: Service
+metadata:
+  name: natasha-ctas7-agent
+  namespace: default
+  labels:
+    app: natasha-ctas7
+    environment: production
+    mesh: ctas7
+spec:
+  template:
+    metadata:
+      annotations:
+        run.googleapis.com/launch-stage: GA
+        run.googleapis.com/ingress: all
+        autoscaling.knative.dev/maxScale: "3"
+        run.googleapis.com/cpu-throttling: "false"
+        run.googleapis.com/client-name: "ctas7-deployer"
+        run.googleapis.com/container-declaration: "natasha"
+        run.googleapis.com/vpc-access-connector: "projects/gen-lang-client-0290627006/locations/us-central1/connectors/natasha-vpc"
+        run.googleapis.com/gpu-type: "NVIDIA_TESLA_L4"
+        run.googleapis.com/gpu-count: "1"
+        run.googleapis.com/memory: "32Gi"
+        run.googleapis.com/cpu: "8"
+    spec:
+      containers:
+        # =============================================
+        # PRIMARY: Natasha Agent Container
+        # =============================================
+        - name: natasha
+          image: gcr.io/gen-lang-client-0290627006/ctas7-natasha:latest
+          command: ["uvicorn", "natasha:app", "--host", "0.0.0.0", "--port", "8080"]
+          resources:
+            limits:
+              cpu: "8"
+              memory: "32Gi"
+              nvidia.com/gpu: "1"
+          env:
+            - name: CTAS_AGENT_ENDPOINT
+              value: "https://natasha.ctas7.ngrok.io"
+            - name: OPENAI_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: natasha-secrets
+                  key: openai_api_key
+            - name: CLAUDE_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: natasha-secrets
+                  key: claude_api_key
+            - name: GEMINI_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: natasha-secrets
+                  key: gemini_api_key
+            - name: ELEVENLABS_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: natasha-secrets
+                  key: elevenlabs_api_key
+            - name: SURR_DB_URL
+              value: "ws://localhost:8000/rpc"
+            - name: X_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: natasha-secrets
+                  key: x_api_key
+            # Two-stage generation config
+            - name: LLM_STAGE1_PROVIDER
+              value: "gemini"
+            - name: LLM_STAGE2_PROVIDER
+              value: "vertex"
+            - name: VERTEX_PROJECT
+              value: "gen-lang-client-0290627006"
+            - name: VERTEX_LOCATION
+              value: "us-central1"
+          ports:
+            - name: http1
+              containerPort: 8080
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            initialDelaySeconds: 10
+            periodSeconds: 30
+            timeoutSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            initialDelaySeconds: 5
+            periodSeconds: 15
+
+        # =============================================
+        # SIDECAR: SurrealDB for SlotGraph/PTCC
+        # =============================================
+        - name: surrealdb
+          image: surrealdb/surrealdb:latest
+          command: ["surreal", "start", "--log", "info", "--user", "root", "--pass", "ctas7root", "memory"]
+          resources:
+            limits:
+              cpu: "2"
+              memory: "4Gi"
+          ports:
+            - containerPort: 8000
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 5
+            periodSeconds: 30
+
+        # =============================================
+        # SIDECAR: RepoAgent for Crate Analysis
+        # =============================================
+        - name: repoagent
+          image: gcr.io/gen-lang-client-0290627006/ctas7-repoagent:latest
+          command: ["python3", "repo_agent_service.py"]
+          resources:
+            limits:
+              cpu: "1"
+              memory: "2Gi"
+          env:
+            - name: SURR_DB_URL
+              value: "ws://localhost:8000/rpc"
+            - name: CRATE_REGISTRY_PATH
+              value: "/mnt/crates/registered-components"
+            - name: GEMINI_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: natasha-secrets
+                  key: gemini_api_key
+          ports:
+            - containerPort: 8081
+          volumeMounts:
+            - name: crate-data
+              mountPath: /mnt/crates
+
+      volumes:
+        - name: crate-data
+          emptyDir:
+            sizeLimit: "10Gi"
+
+      timeoutSeconds: 3600
+
+  traffic:
+    - latestRevision: true
+      percent: 100
+      tag: production
+
+---
+# ================================================================
+# Vertex AI Custom Job for Node Interview Batch Processing
+# ================================================================
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: natasha-node-interview-batch
+  labels:
+    app: natasha-ctas7
+    job-type: node-interview
+spec:
+  template:
+    spec:
+      containers:
+        - name: interview-generator
+          image: gcr.io/gen-lang-client-0290627006/ctas7-natasha:latest
+          command: ["python3", "two_stage_generator.py", "--limit", "164"]
+          resources:
+            limits:
+              nvidia.com/gpu: "1"
+              memory: "16Gi"
+              cpu: "4"
+          env:
+            - name: MODE
+              value: "vertex_node_interview"
+            - name: GEMINI_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: natasha-secrets
+                  key: gemini_api_key
+            - name: VERTEX_PROJECT
+              value: "gen-lang-client-0290627006"
+            - name: VERTEX_LOCATION
+              value: "us-central1"
+            - name: SUPABASE_URL
+              value: "https://kxabqezjpglbbrjdpdmv.supabase.co"
+            - name: SUPABASE_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: natasha-secrets
+                  key: supabase_key
+      restartPolicy: Never
+  backoffLimit: 2

@@ -1,0 +1,60 @@
+# LinkML Schema for Tool/Binary Extraction (Kali, LOLBAS, GTFOBins)
+# RFC-9011, RFC-9105, RFC-9100
+#
+# Usage: SPIRES/OntoGPT extraction for offensive tool inventory
+# Output: LinkML-conformant JSON for Neo4j graph population
+
+id: https://w3id.org/ctas7/tool
+name: OffensiveTool
+
+prefixes:
+  ptcc: https://w3id.org/ctas7/ptcc/
+  attack: https://attack.mitre.org/techniques/
+  linkml: https://w3id.org/linkml/
+
+imports:
+  - linkml:types
+
+classes:
+  OffensiveTool:
+    description: A binary, script, or framework used for adversarial purposes.
+    attributes:
+      package_name:
+        description: Canonical package name (e.g., nmap, mimikatz).
+        range: string
+        identifier: true
+      display_name:
+        description: Human-readable display name.
+        range: string
+      homepage:
+        description: Project homepage URL.
+        range: string
+      categories:
+        description: Kali tool categories (e.g., exploitation, password-cracking).
+        range: string
+        multivalued: true
+      commands:
+        description: List of main executables provided by the package (e.g., nmap, nping).
+        range: string
+        multivalued: true
+      ptcc_affinity:
+        description: The primary PTCC primitive implemented by the tool (e.g., READ, AUTHENTICATE).
+        range: string  # References Primitive enum from RFC-9100
+      mitre_techniques:
+        description: Techniques that this tool can execute.
+        range: string  # Reference to ThreatTechnique.technique_id
+        multivalued: true
+      size_mb:
+        description: Package size in megabytes.
+        range: float
+      is_living_off_the_land:
+        description: True if this is a default OS binary (LOLBAS/GTFOBins).
+        range: boolean
+      dependencies:
+        description: Package dependencies.
+        range: string
+        multivalued: true
+      platforms:
+        description: Supported platforms (windows, linux, macos).
+        range: string
+        multivalued: true

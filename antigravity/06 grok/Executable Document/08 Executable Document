@@ -1,0 +1,152 @@
+Take the full TOML meta-prompt you just authored below and:
+
+Insert it verbatim under the section:
+
+[embedded.sx9_manifest]
+
+inside the SX9 Executable Document wrapper (RFC-9102 format).
+
+Then save the resulting file as exactly:
+
+sx9-executable-document.toml
+
+Requirements:
+- Do NOT change formatting, spacing, indentation, or reorder keys.
+- Do NOT add comments or explanations.
+- Do NOT modify any content outside the [embedded.sx9_manifest] block.
+- Preserve all TOML syntax strictly.
+- After saving, validate that the TOML parses cleanly.
+- If validation succeeds, output only this text:
+  “SX9 Executable Document is valid and ready.”
+
+
+
+
+# ========================================================================
+# SX9 EXECUTABLE DOCUMENT v1.0
+# Conforms to: RFC-9102 Executable Document Framework
+# Purpose: Deterministic onboarding + repo extraction + GLAF orchestration
+# ========================================================================
+
+[document]
+id = "sx9-meta-prompt-compiler"
+version = "1.0.0"
+classification = "deterministic-system-bootstrap"
+kind = "Executable-Document"
+schema = "RFC-9102"
+owner = "Synaptix9 Onboarding Engine"
+created_at = "auto:now"
+hash = "auto:trivariate"     # SCH + UUID + CUID (RFC-9100)
+validated = false
+
+[execution]
+mode = "deterministic"
+strict = true
+max_time_ms = 5000
+approved = false
+requires_human_gate = true
+
+description = """
+This executable document initializes the SX9 deterministic onboarding pipeline.
+It drives the SPIRES → Needle → RepoScan → DataSpine → ANN → GLAF → ISO-L2 → NATS → Neo4j chain.
+It is the authoritative initialization blueprint for SX9 Antigravity onboarding.
+"""
+
+[input]
+accepted_formats = ["prompt", "toml"]
+requires_rfc_context = true
+rfc_window = [
+    "RFC-9100",
+    "RFC-9101",
+    "RFC-9102",
+    "RFC-9105",
+    "RFC-9107",
+    "RFC-9108",
+    "RFC-9109",
+    "RFC-9110",
+    "RFC-9010",
+    "RFC-9011",
+    "RFC-9012",
+    "RFC-9013"
+]
+
+[input.validation]
+checks = ["schema", "bnf-grammar", "trivariate-hash"]
+on_failure = "abort"
+
+# ========================================================================
+# INSERT YOUR SX9 META-PROMPT TOML BELOW THIS LINE
+# ========================================================================
+
+[embedded.sx9_manifest]
+# paste the entire TOML you wrote (starting from [agent] ... ending at metrics etc.)
+# It will be parsed, validated, and executed via GLAF + Deterministic Compiler
+
+# ========================================================================
+# END OF USER TOML
+# ========================================================================
+
+
+[actions]
+resolve_rfc_dependencies = true
+generate_prompt_map = true
+activate_spires = true
+activate_needle_extraction = true
+scan_repositories = true
+extract_data_spines = true
+run_ann_embedding = true
+build_glaf_graph = true
+generate_iso_layer2_manifests = true
+prepare_vertex_ai_jobs = true
+wire_nats_fabric = true
+emit_neo4j_cypher = true
+emit_overview_report = true
+gate_iac_outputs = true
+boot_ctas_if_requested = true
+
+[actions.execution_order]
+steps = [
+    "validate-document",
+    "hash-document",
+    "resolve-rfc-dependencies",
+    "activate-spires",
+    "activate-needle-extractor",
+    "scan-repositories",
+    "extract-data-spines",
+    "run-ann-embedding",
+    "construct-dependency-graph",
+    "generate-deterministic-prompt-map",
+    "orchestrate-with-glaf",
+    "emit-iso-layer2-manifests",
+    "prepare-nats-fabric",
+    "emit-neo4j-cypher",
+    "prepare-vertexai-job-descriptors",
+    "optional-ctas-boot",
+    "emit-overview-report"
+]
+
+[outputs]
+deterministic_overview = "outputs/deterministic_overview.md"
+prompt_map = "outputs/prompt_map/"
+iso_layer2_manifests = "manifests/layer2/"
+cypher_graph = "graph/cypher/"
+ann_embeddings = "ann/embeddings/"
+spires_output = "extraction/spires/"
+needle_output = "extraction/needles/"
+repo_inventory = "inventory/repos/"
+data_spine_report = "inventory/data-spine/"
+vertex_jobs = "jobs/vertex/"
+nats_config = "fabric/nats/"
+
+[security]
+strip_secrets = true
+allowed_placeholders = ["${google_secret_manager:*}"]
+forbidden_content = ["api_keys", "plaintext_credentials", "tokens"]
+
+[review]
+required = true
+reviewer = "human"
+summary_format = "markdown"
+diff_required = true
+apply_protection = true
+

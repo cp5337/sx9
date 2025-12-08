@@ -1,0 +1,36 @@
+{
+  "crate_name": "test-crate",
+  "analysis_time_seconds": 2.5,
+  "gpu_accelerated": false,
+  "files_analyzed": 42,
+  "total_loc": 1337,
+  "complexity_score": 7.5,
+  "maintainability_score": 8.2,
+  "security_score": 9.1,
+  "overall_grade": "A-",
+  "critical_issues": [
+    {
+      "type": "security",
+      "severity": "medium",
+      "description": "Potential buffer overflow"
+    },
+    {
+      "type": "performance",
+      "severity": "low",
+      "description": "Unoptimized loop"
+    }
+  ],
+  "recommendations": [
+    "Add input validation",
+    "Optimize memory allocation",
+    "Update dependencies"
+  ],
+  "pr_candidates": [
+    {
+      "title": "Fix buffer overflow in data parser",
+      "priority": "high",
+      "estimated_effort": "2 hours"
+    }
+  ],
+  "timestamp": "2025-11-24T01:19:56.496409"
+}

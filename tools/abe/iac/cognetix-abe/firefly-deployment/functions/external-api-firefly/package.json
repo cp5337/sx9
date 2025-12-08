@@ -1,0 +1,33 @@
+{
+  "name": "abe-external-api-firefly",
+  "version": "1.0.0",
+  "description": "ABE External API - Firefly Serverless Deployment",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "functions-framework --target=abeLive --port=8080",
+    "deploy": "zip -r ../external-api-firefly.zip . -x node_modules/",
+    "test": "echo 'Tests will be implemented'"
+  },
+  "dependencies": {
+    "@google-cloud/functions-framework": "^3.3.0",
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "helmet": "^7.1.0",
+    "compression": "^1.7.4",
+    "zod": "^3.22.4",
+    "uuid": "^9.0.1"
+  },
+  "engines": {
+    "node": "18"
+  },
+  "keywords": [
+    "abe",
+    "firefly",
+    "serverless",
+    "marc21",
+    "cloud-functions"
+  ],
+  "author": "Service-Disabled Veteran-Owned Business",
+  "license": "PROPRIETARY"
+}

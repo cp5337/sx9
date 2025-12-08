@@ -1,0 +1,79 @@
+# LinkML Schema for MITRE ATT&CK Technique Extraction
+# RFC-9105, RFC-9023, RFC-9011
+# 
+# Usage: SPIRES/OntoGPT zero-shot extraction via Gemini 2.5 Flash
+# Output: LinkML-conformant JSON for Neo4j graph population
+
+id: https://w3id.org/ctas7/threat_technique
+name: ThreatTechnique
+
+prefixes:
+  attack: https://attack.mitre.org/techniques/
+  d3fend: https://d3fend.mitre.org/
+  linkml: https://w3id.org/linkml/
+
+imports:
+  - linkml:types
+
+classes:
+  ThreatTechnique:
+    description: A canonical MITRE ATT&CK technique or sub-technique.
+    attributes:
+      technique_id:
+        description: Canonical MITRE ATT&CK ID (e.g., T1059.001)
+        range: string
+        identifier: true
+      name:
+        description: Technique name.
+        range: string
+      tactic:
+        description: Associated tactic (e.g., execution, persistence).
+        range: string
+        multivalued: true
+      platforms:
+        description: Target platforms (Windows, Linux, macOS, ICS).
+        range: string
+        multivalued: true
+      detection_methods:
+        description: Structured methods for detecting this technique.
+        range: DetectionMethod
+        multivalued: true
+      mitigations:
+        description: Countermeasures applicable (D3FEND IDs).
+        range: Mitigation
+        multivalued: true
+
+  DetectionMethod:
+    description: A specific means of identifying the technique (Sigma rule, CAR analytic, etc.).
+    attributes:
+      name:
+        range: string
+      data_source:
+        description: Log source required (e.g., Process Creation, Network Flow).
+        range: string
+      rule_type:
+        range: RuleType
+
+  Mitigation:
+    description: Defensive actions and their D3FEND mapping.
+    attributes:
+      name:
+        range: string
+      d3fend_id:
+        description: D3FEND countermeasure ID (e.g., D3-PSA).
+        range: string
+      hd4_phase:
+        description: HD4 phase affinity (Disable or Disrupt).
+        range: string
+
+enums:
+  RuleType:
+    permissible_values:
+      sigma:
+        description: Sigma detection rule
+      yara:
+        description: YARA malware signature
+      nuclei:
+        description: Nuclei vulnerability template
+      wazuh:
+        description: Wazuh SIEM rule

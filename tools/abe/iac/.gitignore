@@ -1,0 +1,55 @@
+# Threat Content - External Repositories
+# These are cloned from external sources and should NOT be committed
+
+# Cloned repositories (CAR, ATLAS, ENGAGE, Atomic Red Team, etc.)
+node-interview-generator/output/threat_content/car/
+node-interview-generator/output/threat_content/atlas/
+node-interview-generator/output/threat_content/engage/
+node-interview-generator/output/threat_content/atomic-red-team/
+node-interview-generator/output/threat_content/nuclei-templates/
+node-interview-generator/output/threat_content/sigma/
+node-interview-generator/output/threat_content/yara-rules/
+node-interview-generator/output/threat_content/wazuh/
+node-interview-generator/output/threat_content/lolbas/
+node-interview-generator/output/threat_content/gtfobins/
+node-interview-generator/output/threat_content/loldrivers/
+node-interview-generator/output/threat_content/hijacklibs/
+node-interview-generator/output/threat_content/wadcoms/
+node-interview-generator/output/threat_content/nmap/
+node-interview-generator/output/threat_content/awesome-osint/
+node-interview-generator/output/threat_content/osint-framework/
+node-interview-generator/output/threat_content/sherlock/
+node-interview-generator/output/threat_content/caldera/
+
+# Keep processed JSON files (these are our data)
+!node-interview-generator/output/threat_content/*.json
+
+# Build artifacts and caches
+output/
+logs/
+*.log
+*.pyc
+__pycache__/
+.pytest_cache/
+*.egg-info/
+dist/
+build/
+
+# Environment
+.env
+.venv/
+venv/
+conda-env/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+
