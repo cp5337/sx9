@@ -23,19 +23,19 @@ pub mod primitives;
 // CTAS-7.3.1 Canonical (DEFAULT)
 pub mod trivariate_hash_v731;
 // CTAS-7.2 Legacy (DEPRECATED - use v731)
+pub mod mathematical_consciousness;
 #[deprecated(note = "Use trivariate_hash_v731 instead. v7.2 is legacy.")]
 pub mod trivariate_hash;
-pub mod mathematical_consciousness;
 
 // PLASMA Delta Operator Module (feature flag: delta-tuner)
+pub mod hash_is_ui;
 #[cfg(feature = "delta-tuner")]
 pub mod plasma;
-pub mod hash_is_ui;
 
 // CLI/UI Manifest System
 pub mod cli_manifest;
-pub mod ui_manifest;
 pub mod frontend_bridge;
+pub mod ui_manifest;
 
 // CTE Integration
 pub mod cte_integration;
@@ -43,33 +43,31 @@ pub mod cte_integration;
 // Code Watchdog
 pub mod code_watchdog;
 
+pub mod unified_neural_mux;
+
 // Re-exports for other foundation crates
 // CTAS-7.3.1 Canonical (DEFAULT)
 pub use trivariate_hash_v731::{
-    TrivariateHashEngineV731 as TrivariateHashEngine,
-    TrivariateHash,
-    DualTrivariateHash,
-    ContextFrame,
-    ExecEnv,
-    ExecState,
-    SupersessionLevel,
-    CuidTtl,
-    CuidSlots,
+    ContextFrame, CuidSlots, CuidTtl, DualTrivariateHash, ExecEnv, ExecState, SupersessionLevel,
+    TrivariateHash, TrivariateHashEngineV731 as TrivariateHashEngine,
 };
 // CTAS-7.2 Legacy (DEPRECATED)
+pub use cte_integration::{AgentRegistry, CTEAgent, CTEHealthBridge};
+pub use hash_is_ui::{AnimationProperties, HashIsUISystem, VisualProperties};
+pub use mathematical_consciousness::{CTASPrimitive, MathematicalFoundation, PrimitiveType};
 #[deprecated(note = "Use TrivariateHashEngineV731 instead")]
 pub use trivariate_hash::TrivariteHashEngine;
-pub use mathematical_consciousness::{MathematicalFoundation, CTASPrimitive, PrimitiveType};
-pub use hash_is_ui::{HashIsUISystem, VisualProperties, AnimationProperties};
-pub use cte_integration::{CTEHealthBridge, AgentRegistry, CTEAgent};
 // RFC-9001 Identity & Hashing exports
-pub use hash::{PrimaryTrivariate, generate_primary_trivariate, generate_deterministic_trivariate, compute_sch, compute_cuid, quick_hash, route_hash};
+pub use hash::{
+    compute_cuid, compute_sch, generate_deterministic_trivariate, generate_primary_trivariate,
+    quick_hash, route_hash, PrimaryTrivariate,
+};
 // RFC-9100 PTCC Primitives exports
-pub use primitives::{Primitive, PrimitiveCategory, TacticalInstruction, ALL_PRIMITIVES};
 pub use cli_manifest::CLIManifest;
-pub use ui_manifest::UIManifest;
-pub use frontend_bridge::FrontendBridge;
 pub use code_watchdog::CodeWatchdog;
+pub use frontend_bridge::FrontendBridge;
+pub use primitives::{Primitive, PrimitiveCategory, TacticalInstruction, ALL_PRIMITIVES};
+pub use ui_manifest::UIManifest;
 
 /// CTAS-7 version constants
 pub const VERSION: &str = env!("CARGO_PKG_VERSION");
@@ -78,7 +76,7 @@ pub const FOUNDATION_VERSION: &str = "1.0.0";
 
 /// CTAS-7 Foundation Core - Ground Truth compliant
 pub struct FoundationCore {
-    pub hash_engine: TrivariteHashEngine,
+    pub hash_engine: TrivariateHashEngine,
     pub consciousness: MathematicalFoundation,
     pub ui_system: HashIsUISystem,
     pub cte_bridge: CTEHealthBridge,
@@ -90,7 +88,7 @@ pub struct FoundationCore {
 impl FoundationCore {
     pub fn new() -> Self {
         Self {
-            hash_engine: TrivariteHashEngine::new(),
+            hash_engine: TrivariateHashEngine::new(),
             consciousness: MathematicalFoundation::new(),
             ui_system: HashIsUISystem::new(),
             cte_bridge: CTEHealthBridge::new(),
@@ -105,8 +103,8 @@ impl FoundationCore {
         // Initialize mathematical consciousness
         self.consciousness.activate_consciousness().await?;
 
-        // Initialize trivariate hash engine (Murmur3, NOT Blake3)
-        self.hash_engine.initialize_murmur3_engine().await?;
+        // Initialize trivariate hash engine (Murmur3 V731)
+        // V731 is auto-initialized with seeds in new()
 
         // Initialize Hash-IS-UI system
         self.ui_system.initialize_lut_systems().await?;
@@ -120,8 +118,10 @@ impl FoundationCore {
         self.frontend_bridge.initialize_bridges().await?;
 
         // Update frontend bridge with manifests
-        self.frontend_bridge.update_cli_manifest(self.cli_manifest.clone());
-        self.frontend_bridge.update_ui_manifest(self.ui_manifest.clone());
+        self.frontend_bridge
+            .update_cli_manifest(self.cli_manifest.clone());
+        self.frontend_bridge
+            .update_ui_manifest(self.ui_manifest.clone());
 
         println!("🔥 CTAS-7 Foundation Core: Ground Truth Initialized");
         println!("💎 Trivariate Hash: Murmur3 Active");
@@ -136,8 +136,16 @@ impl FoundationCore {
     }
 
     /// Generate complete trivariate hash
-    pub fn generate_hash(&self, content: &str, context: &str, primitive_type: &str) -> String {
-        self.hash_engine.generate_trivariate_hash(content, context, primitive_type)
+    pub fn generate_hash(
+        &self,
+        content: &str,
+        _context_name: &str,
+        primitive_type: &str,
+    ) -> String {
+        let context = ContextFrame::new(ExecEnv::Native, 0, ExecState::Hot);
+        self.hash_engine
+            .generate_trivariate(content, primitive_type, "Core", "Gen", &context)
+            .to_canonical_format()
     }
 
     /// Get visual properties from hash
@@ -174,14 +182,22 @@ impl FoundationCore {
              UI System: Hash-IS-UI Active\n\
              Frontend Bridge: {}",
             CTAS_VERSION,
-            if self.consciousness.active { "ACTIVE" } else { "INACTIVE" },
+            if self.consciousness.active {
+                "ACTIVE"
+            } else {
+                "INACTIVE"
+            },
             match self.cte_bridge.get_health_status() {
                 cte_integration::OverallHealth::Healthy => "🟢 HEALTHY",
                 cte_integration::OverallHealth::Degraded => "🟡 DEGRADED",
                 cte_integration::OverallHealth::Critical => "🔴 CRITICAL",
                 cte_integration::OverallHealth::Unknown => "⚪ UNKNOWN",
             },
-            if self.frontend_bridge.initialized { "ACTIVE" } else { "INACTIVE" }
+            if self.frontend_bridge.initialized {
+                "ACTIVE"
+            } else {
+                "INACTIVE"
+            }
         )
     }
 }
@@ -205,51 +221,51 @@ pub async fn initialize_foundation() -> Result<FoundationCore, Box<dyn std::erro
 
 /// Async runtime and futures
 pub mod async_runtime {
-    pub use tokio::{self, sync, task, time};
-    pub use futures::{self, stream, sink, future};
     pub use async_trait::async_trait;
+    pub use futures::{self, future, sink, stream};
+    pub use tokio::{self, sync, task, time};
 }
 
 /// Serialization and data handling
 pub mod data {
-    pub use serde::{self, Serialize, Deserialize, Serializer, Deserializer};
+    pub use chrono::{self, DateTime, Duration, Utc};
+    pub use serde::{self, Deserialize, Deserializer, Serialize, Serializer};
     pub use serde_json::{self, json, Value};
     pub use serde_yaml;
     pub use toml;
     pub use uuid::{self, Uuid};
-    pub use chrono::{self, DateTime, Utc, Duration};
 }
 
 /// Error handling and logging
 pub mod diagnostics {
-    pub use anyhow::{self, Result, Context, Error};
+    pub use anyhow::{self, Context, Error, Result};
     pub use thiserror::{self, Error};
-    pub use tracing::{self, info, warn, error, debug, trace, instrument};
+    pub use tracing::{self, debug, error, info, instrument, trace, warn};
     pub use tracing_subscriber;
 }
 
 /// HTTP and networking
 pub mod networking {
-    pub use reqwest::{self, Client, Response};
-    pub use axum::{self, Router, extract, response, http};
-    pub use tower::{self, Service, Layer};
-    pub use tower_http;
+    pub use axum::{self, extract, http, response, Router};
     pub use hyper;
+    pub use reqwest::{self, Client, Response};
+    pub use tower::{self, Layer, Service};
+    pub use tower_http;
 }
 
 /// CLI and configuration
 pub mod interface {
-    pub use clap::{self, Parser, Args, Subcommand};
+    pub use clap::{self, Args, Parser, Subcommand};
     pub use config::{self, Config, ConfigError};
 }
 
 /// Cryptography and security - CTAS-7 v7.2 Smart Crate Implementation
 pub mod security {
     #[allow(deprecated)]
-    pub use crate::trivariate_hash::{TrivariteHashEngine, EnvironmentalMasks};
-    pub use hex::{self, encode, decode};
+    pub use crate::trivariate_hash::{EnvironmentalMasks, TrivariteHashEngine};
     pub use crc32fast;
-    pub use jsonwebtoken::{self, encode as jwt_encode, decode as jwt_decode};
+    pub use hex::{self, decode, encode};
+    pub use jsonwebtoken::{self, decode as jwt_decode, encode as jwt_encode};
     // sha2 removed - using murmur3 trivariate system per RFC-9001
     pub use hmac;
 }
@@ -269,34 +285,28 @@ pub mod hashing {
 
     // CTAS-7.3.1 Canonical 64-bit hashing (RFC-9001)
     pub use crate::hash64::{
-        murmur3_64, murmur3_64_hex, murmur3_64_base96,
-        encode_base96, trivariate_hash, trivariate_from_key,
-        unicode_slot, unicode_slot_hex,
-        seeds, BASE96_CHARSET,
+        encode_base96, murmur3_64, murmur3_64_base96, murmur3_64_hex, seeds, trivariate_from_key,
+        trivariate_hash, unicode_slot, unicode_slot_hex, BASE96_CHARSET,
     };
 
     // CTAS-7 v7.2 Trivariate Hash Engine - ecosystem integrity
     #[allow(deprecated)]
-    pub use crate::trivariate_hash::{
-        TrivariteHashEngine, EnvironmentalMasks, GraduatedLevel
-    };
+    pub use crate::trivariate_hash::{EnvironmentalMasks, GraduatedLevel, TrivariteHashEngine};
 
     pub use crate::hash_engine::{
-        HashEngine, ComponentHash, ComponentType, HashHealthStatus,
-        HashVerification, HashChainEntry,
-        init_global_hash_engine, update_global_component_hash,
-        get_global_ecosystem_verification, get_global_hash_state
+        get_global_ecosystem_verification, get_global_hash_state, init_global_hash_engine,
+        update_global_component_hash, ComponentHash, ComponentType, HashChainEntry, HashEngine,
+        HashHealthStatus, HashVerification,
     };
 
     // MurmurHash3 trivariate system - crate identification
     #[cfg(feature = "unicode-assembly")]
     pub use crate::unicode_assembly::{
-        TrivariatHash, TrivariatRequest, generate_murmur3_trivariate,
-        Base96
+        generate_murmur3_trivariate, Base96, TrivariatHash, TrivariatRequest,
     };
 
     // Foundation-level convenience functions
-    pub use crate::security::{hex, crc32fast};
+    pub use crate::security::{crc32fast, hex};
 
     /// Quick hash for simple data using CTAS-7.3.1 64-bit system
     pub fn quick_hash(data: &str) -> String {
@@ -317,10 +327,10 @@ pub mod hashing {
 /// Persona system from original foundation
 pub mod persona;
 
+pub mod dsl_unicode_router;
 /// Neural Mux integration for smart routing
 #[cfg(feature = "neural-mux")]
 pub mod neural_mux;
-pub mod dsl_unicode_router;
 
 #[cfg(feature = "unified-neural-mux")]
 pub mod unified_neural_mux;
@@ -367,8 +377,8 @@ pub mod platform_native_multimedia;
 
 /// Agent coordination types with telemetry and statistical feedback
 pub mod agents {
-    pub use crate::data::{Serialize, Deserialize};
-    pub use crate::data::{Uuid, DateTime, Utc};
+    pub use crate::data::{DateTime, Utc, Uuid};
+    pub use crate::data::{Deserialize, Serialize};
     use std::collections::HashMap;
 
     /// Agent identifier
@@ -407,10 +417,10 @@ pub mod agents {
     /// Telemetry data for agents
     #[derive(Debug, Clone, Serialize, Deserialize)]
     pub struct AgentTelemetry {
-        pub cpu_usage: f64,              // 0.0 - 100.0
-        pub memory_usage: f64,           // 0.0 - 100.0
+        pub cpu_usage: f64,    // 0.0 - 100.0
+        pub memory_usage: f64, // 0.0 - 100.0
         pub operations_per_second: u32,
-        pub error_rate: f64,             // 0.0 - 1.0
+        pub error_rate: f64, // 0.0 - 1.0
         pub response_time_ms: u32,
         pub active_connections: u32,
         pub queue_length: u32,
@@ -445,8 +455,8 @@ pub mod agents {
         pub average_response_time: f64,
         pub peak_operations_per_second: u32,
         pub uptime_percentage: f64,
-        pub efficiency_score: f64,        // 0.0 - 1.0
-        pub quality_score: f64,           // 0.0 - 1.0
+        pub efficiency_score: f64, // 0.0 - 1.0
+        pub quality_score: f64,    // 0.0 - 1.0
         pub unicode_operation_breakdown: HashMap<String, u64>,
         pub trivariate_hash_usage: u64,
         pub last_updated: DateTime<Utc>,
@@ -526,28 +536,44 @@ pub mod agents {
                     port: 18108,
                     path: "/analysis".to_string(),
                     active: true,
-                    capabilities: vec!["real-time".to_string(), "metrics".to_string(), "statistical-feedback".to_string()],
+                    capabilities: vec![
+                        "real-time".to_string(),
+                        "metrics".to_string(),
+                        "statistical-feedback".to_string(),
+                    ],
                 },
                 CdnEndpoint {
                     name: "stats-ingestion-cdn".to_string(),
                     port: 18109,
                     path: "/stats".to_string(),
                     active: true,
-                    capabilities: vec!["historical".to_string(), "trends".to_string(), "data-ingestion".to_string()],
+                    capabilities: vec![
+                        "historical".to_string(),
+                        "trends".to_string(),
+                        "data-ingestion".to_string(),
+                    ],
                 },
                 CdnEndpoint {
                     name: "dashboard-visualization-cdn".to_string(),
                     port: 18110,
                     path: "/dashboard".to_string(),
                     active: true,
-                    capabilities: vec!["visualization".to_string(), "reporting".to_string(), "emoji-status".to_string()],
+                    capabilities: vec![
+                        "visualization".to_string(),
+                        "reporting".to_string(),
+                        "emoji-status".to_string(),
+                    ],
                 },
                 CdnEndpoint {
                     name: "smart-orchestrator-gateway".to_string(),
                     port: 18200,
                     path: "/gateway".to_string(),
                     active: true,
-                    capabilities: vec!["api".to_string(), "external".to_string(), "orchestration".to_string()],
+                    capabilities: vec![
+                        "api".to_string(),
+                        "external".to_string(),
+                        "orchestration".to_string(),
+                    ],
                 },
             ]
         }
@@ -560,8 +586,12 @@ pub mod agents {
             // Auto-update status based on telemetry
             self.status = match self.telemetry.cpu_usage {
                 usage if usage > 90.0 => AgentStatus::Overloaded,
-                usage if usage > 80.0 && self.telemetry.error_rate > 0.1 => AgentStatus::RetrofitNeeded,
-                _ if self.telemetry.last_heartbeat < Utc::now() - chrono::Duration::minutes(5) => AgentStatus::Offline,
+                usage if usage > 80.0 && self.telemetry.error_rate > 0.1 => {
+                    AgentStatus::RetrofitNeeded
+                }
+                _ if self.telemetry.last_heartbeat < Utc::now() - chrono::Duration::minutes(5) => {
+                    AgentStatus::Offline
+                }
                 _ => AgentStatus::Online,
             };
         }
@@ -583,7 +613,9 @@ pub mod agents {
                 self.statistics.failed_operations += 1;
             }
 
-            *self.statistics.unicode_operation_breakdown
+            *self
+                .statistics
+                .unicode_operation_breakdown
                 .entry(operation_type)
                 .or_insert(0) += 1;
 
@@ -605,19 +637,49 @@ pub mod agents {
         pub fn get_cdn_telemetry(&self) -> HashMap<String, serde_json::Value> {
             let mut telemetry = HashMap::new();
 
-            telemetry.insert("agent_id".to_string(), serde_json::json!(self.id.to_string()));
+            telemetry.insert(
+                "agent_id".to_string(),
+                serde_json::json!(self.id.to_string()),
+            );
             telemetry.insert("name".to_string(), serde_json::json!(self.name));
             telemetry.insert("ea_code".to_string(), serde_json::json!(self.ea_code));
             telemetry.insert("status".to_string(), serde_json::json!(self.status));
-            telemetry.insert("cpu_usage".to_string(), serde_json::json!(self.telemetry.cpu_usage));
-            telemetry.insert("memory_usage".to_string(), serde_json::json!(self.telemetry.memory_usage));
-            telemetry.insert("operations_per_second".to_string(), serde_json::json!(self.telemetry.operations_per_second));
-            telemetry.insert("error_rate".to_string(), serde_json::json!(self.telemetry.error_rate));
-            telemetry.insert("health_score".to_string(), serde_json::json!(self.health_score()));
-            telemetry.insert("total_operations".to_string(), serde_json::json!(self.statistics.total_operations));
-            telemetry.insert("efficiency_score".to_string(), serde_json::json!(self.statistics.efficiency_score));
-            telemetry.insert("unicode_operations_processed".to_string(), serde_json::json!(self.telemetry.unicode_operations_processed));
-            telemetry.insert("trivariate_hash".to_string(), serde_json::json!(self.trivariate_hash));
+            telemetry.insert(
+                "cpu_usage".to_string(),
+                serde_json::json!(self.telemetry.cpu_usage),
+            );
+            telemetry.insert(
+                "memory_usage".to_string(),
+                serde_json::json!(self.telemetry.memory_usage),
+            );
+            telemetry.insert(
+                "operations_per_second".to_string(),
+                serde_json::json!(self.telemetry.operations_per_second),
+            );
+            telemetry.insert(
+                "error_rate".to_string(),
+                serde_json::json!(self.telemetry.error_rate),
+            );
+            telemetry.insert(
+                "health_score".to_string(),
+                serde_json::json!(self.health_score()),
+            );
+            telemetry.insert(
+                "total_operations".to_string(),
+                serde_json::json!(self.statistics.total_operations),
+            );
+            telemetry.insert(
+                "efficiency_score".to_string(),
+                serde_json::json!(self.statistics.efficiency_score),
+            );
+            telemetry.insert(
+                "unicode_operations_processed".to_string(),
+                serde_json::json!(self.telemetry.unicode_operations_processed),
+            );
+            telemetry.insert(
+                "trivariate_hash".to_string(),
+                serde_json::json!(self.trivariate_hash),
+            );
             telemetry.insert("timestamp".to_string(), serde_json::json!(Utc::now()));
 
             telemetry
@@ -669,7 +731,7 @@ pub mod agents {
 
 /// Linear integration types
 pub mod linear {
-    pub use crate::data::{Serialize, Deserialize};
+    pub use crate::data::{Deserialize, Serialize};
     pub use crate::networking::reqwest;
 
     /// Linear issue priority
@@ -697,14 +759,14 @@ pub mod linear {
 
 /// Smart crate orchestration types
 pub mod orchestration {
-    pub use crate::data::{Serialize, Deserialize, Uuid};
     pub use crate::async_runtime::tokio;
+    pub use crate::data::{Deserialize, Serialize, Uuid};
 
     /// Crate specification
     #[derive(Debug, Clone, Serialize, Deserialize)]
     pub struct CrateSpec {
         pub name: String,
-        pub description: String,
+        pub ios: Option<IosIntegration>,
         pub mission: Mission,
         pub security_level: SecurityLevel,
     }
@@ -727,7 +789,19 @@ pub mod orchestration {
         Production,
         Classified,
     }
-}
+
+    #[derive(Debug, Clone, Serialize, Deserialize)]
+    pub struct IosIntegration {
+        pub enabled: bool,
+        pub version: String,
+    }
+
+    #[derive(Debug, Clone, Serialize, Deserialize)]
+    pub struct MacOsIntegration {
+        pub enabled: bool,
+        pub version: String,
+    }
+} // Closes orchestration module
 
 // =============================================================================
 // FOUNDATION PROTECTION SYSTEM
@@ -741,8 +815,16 @@ impl FoundationIntegrity {
     pub fn validate() -> crate::diagnostics::Result<()> {
         // Check that we only have expected modules
         let expected_modules = [
-            "async_runtime", "data", "diagnostics", "networking",
-            "interface", "security", "persona", "agents", "linear", "orchestration"
+            "async_runtime",
+            "data",
+            "diagnostics",
+            "networking",
+            "interface",
+            "security",
+            "persona",
+            "agents",
+            "linear",
+            "orchestration",
         ];
 
         // This would be expanded with actual validation logic
@@ -839,4 +921,5 @@ mod tests {
         let id2 = agents::AgentId::new();
         assert_ne!(id1, id2);
     }
-}pub mod foundation_integration;
+}
+pub mod foundation_integration;

@@ -3,15 +3,15 @@
 //! GROUND TRUTH: Direct hash-to-UI mapping with no translation layers
 //! LUT systems for colors, symbols, animations based on hash positions
 
-use std::collections::HashMap;
 use serde::{Deserialize, Serialize};
+use std::collections::HashMap;
 
 /// Hash-IS-UI System implementation
 #[derive(Debug, Clone)]
 pub struct HashIsUISystem {
-    pub color_lut: HashMap<String, String>,      // 3 bits -> 8 color schemes
-    pub symbol_lut: HashMap<String, String>,     // 4 bits -> 16 symbol sets
-    pub animation_lut: HashMap<String, String>,  // 2 bits -> 4 animation types
+    pub color_lut: HashMap<String, String>, // 3 bits -> 8 color schemes
+    pub symbol_lut: HashMap<String, String>, // 4 bits -> 16 symbol sets
+    pub animation_lut: HashMap<String, String>, // 2 bits -> 4 animation types
     pub initialized: bool,
 }
 
@@ -57,8 +57,14 @@ impl HashIsUISystem {
     /// Initialize color lookup table
     fn initialize_color_lut(&mut self) {
         let colors = vec![
-            ("000", "#FF0000"), ("001", "#00FF00"), ("010", "#0000FF"), ("011", "#FFFF00"),
-            ("100", "#FF00FF"), ("101", "#00FFFF"), ("110", "#FFA500"), ("111", "#800080"),
+            ("000", "#FF0000"),
+            ("001", "#00FF00"),
+            ("010", "#0000FF"),
+            ("011", "#FFFF00"),
+            ("100", "#FF00FF"),
+            ("101", "#00FFFF"),
+            ("110", "#FFA500"),
+            ("111", "#800080"),
         ];
 
         for (key, color) in colors {
@@ -69,10 +75,22 @@ impl HashIsUISystem {
     /// Initialize symbol lookup table
     fn initialize_symbol_lut(&mut self) {
         let symbols = vec![
-            ("0000", "●"), ("0001", "■"), ("0010", "▲"), ("0011", "♦"),
-            ("0100", "★"), ("0101", "◆"), ("0110", "▼"), ("0111", "◀"),
-            ("1000", "▶"), ("1001", "⬟"), ("1010", "⬢"), ("1011", "⬡"),
-            ("1100", "⭘"), ("1101", "⭗"), ("1110", "⭖"), ("1111", "⭕"),
+            ("0000", "●"),
+            ("0001", "■"),
+            ("0010", "▲"),
+            ("0011", "♦"),
+            ("0100", "★"),
+            ("0101", "◆"),
+            ("0110", "▼"),
+            ("0111", "◀"),
+            ("1000", "▶"),
+            ("1001", "⬟"),
+            ("1010", "⬢"),
+            ("1011", "⬡"),
+            ("1100", "⭘"),
+            ("1101", "⭗"),
+            ("1110", "⭖"),
+            ("1111", "⭕"),
         ];
 
         for (key, symbol) in symbols {
@@ -83,11 +101,15 @@ impl HashIsUISystem {
     /// Initialize animation lookup table
     fn initialize_animation_lut(&mut self) {
         let animations = vec![
-            ("00", "fade"), ("01", "slide"), ("10", "rotate"), ("11", "pulse"),
+            ("00", "fade"),
+            ("01", "slide"),
+            ("10", "rotate"),
+            ("11", "pulse"),
         ];
 
         for (key, animation) in animations {
-            self.animation_lut.insert(key.to_string(), animation.to_string());
+            self.animation_lut
+                .insert(key.to_string(), animation.to_string());
         }
     }
 
@@ -122,26 +144,37 @@ impl HashIsUISystem {
     /// Hash to color mapping
     fn hash_to_color(&self, hash_segment: &str) -> String {
         let binary = self.hash_to_binary(hash_segment, 3);
-        self.color_lut.get(&binary).unwrap_or(&"#FFFFFF".to_string()).clone()
+        self.color_lut
+            .get(&binary)
+            .unwrap_or(&"#FFFFFF".to_string())
+            .clone()
     }
 
     /// Hash to symbol mapping
     fn hash_to_symbol(&self, hash_segment: &str) -> String {
         let binary = self.hash_to_binary(hash_segment, 4);
-        self.symbol_lut.get(&binary).unwrap_or(&"●".to_string()).clone()
+        self.symbol_lut
+            .get(&binary)
+            .unwrap_or(&"●".to_string())
+            .clone()
     }
 
     /// Hash to animation mapping
     fn hash_to_animation(&self, hash_segment: &str) -> String {
         let binary = self.hash_to_binary(hash_segment, 2);
-        self.animation_lut.get(&binary).unwrap_or(&"fade".to_string()).clone()
+        self.animation_lut
+            .get(&binary)
+            .unwrap_or(&"fade".to_string())
+            .clone()
     }
 
     /// Convert hash segment to binary representation
     fn hash_to_binary(&self, hash_segment: &str, bits: usize) -> String {
         let mut result = String::new();
         for (i, c) in hash_segment.chars().enumerate() {
-            if i >= bits { break; }
+            if i >= bits {
+                break;
+            }
             let bit = match c.to_ascii_lowercase() {
                 '0'..='9' => (c as u8 - b'0') % 2,
                 'a'..='z' => (c as u8 - b'a') % 2,
@@ -230,8 +263,12 @@ mod tests {
     #[test]
     fn test_visual_properties_extraction() {
         let mut system = HashIsUISystem::new();
-        system.color_lut.insert("000".to_string(), "#FF0000".to_string());
-        system.symbol_lut.insert("0000".to_string(), "●".to_string());
+        system
+            .color_lut
+            .insert("000".to_string(), "#FF0000".to_string());
+        system
+            .symbol_lut
+            .insert("0000".to_string(), "●".to_string());
 
         let sch = "000111000011122";
         let props = system.extract_visual_properties(sch);

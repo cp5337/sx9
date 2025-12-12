@@ -20,14 +20,15 @@ impl TethAnalyzer {
 /// Uses node degree relative to total graph degree
 pub async fn calculate_entropy(node: &GlafNode) -> f64 {
     use serde_json::Value;
-    
+
     // Simplified: use node property "degree" if available
     // Otherwise calculate from relationships
-    let degree = node.properties
+    let degree = node
+        .properties
         .get("degree")
         .and_then(|v| v.as_f64())
         .unwrap_or(0.0);
-    
+
     // For single node, entropy is based on degree distribution
     // In full implementation, would need total graph degree
     if degree == 0.0 {
@@ -43,13 +44,14 @@ pub async fn calculate_entropy(node: &GlafNode) -> f64 {
 /// H(G) = -Σ p(v) log p(v)
 pub async fn calculate_graph_entropy(nodes: &[GlafNode]) -> f64 {
     use serde_json::Value;
-    
+
     if nodes.is_empty() {
         return 0.0;
     }
 
     // Calculate total degree
-    let total_degree: f64 = nodes.iter()
+    let total_degree: f64 = nodes
+        .iter()
         .map(|n| {
             n.properties
                 .get("degree")
@@ -65,11 +67,12 @@ pub async fn calculate_graph_entropy(nodes: &[GlafNode]) -> f64 {
     // Calculate entropy
     let mut entropy = 0.0;
     for node in nodes {
-        let degree = node.properties
+        let degree = node
+            .properties
             .get("degree")
             .and_then(|v| v.as_f64())
             .unwrap_or(0.0);
-        
+
         if degree > 0.0 {
             let p = degree / total_degree;
             entropy -= p * p.ln();
@@ -78,4 +81,3 @@ pub async fn calculate_graph_entropy(nodes: &[GlafNode]) -> f64 {
 
     entropy
 }
-

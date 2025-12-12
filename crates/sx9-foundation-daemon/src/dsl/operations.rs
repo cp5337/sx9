@@ -292,7 +292,3 @@ mod tests {
         assert_eq!(kali_op.operation_name(), "kali_tool");
     }
 }
-
-
-
-

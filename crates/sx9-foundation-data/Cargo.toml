@@ -10,7 +10,7 @@ keywords = ["ctas7", "foundation", "data", "persistence", "trivariate-hash"]
 categories = ["database", "data-structures"]
 
 [lib]
-name = "ctas7_foundation_data"
+name = "sx9_foundation_data"
 crate-type = ["rlib"]
 
 [dependencies]
@@ -52,6 +52,7 @@ full = ["embedded-db", "postgres"]
 tokio-test = "0.4"
 criterion = "0.5"
 futures = "0.3"
+tempfile = "3.10"
 
 # CTAS-7 Smart Crate Metadata - v7.2 Compliant
 [package.metadata.smart_crate]

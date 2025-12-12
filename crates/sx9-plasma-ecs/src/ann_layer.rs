@@ -139,11 +139,8 @@ impl AnnObserverWorld {
         // Forward pass propagates through each layer sequentially
         for layer in &self.layers {
             if let Some(neurons) = self.neurons.get_mut(&layer.layer_id) {
-                current_input = AnnForwardSystem::forward(
-                    &current_input,
-                    neurons,
-                    layer.activation_fn,
-                ).await?;
+                current_input =
+                    AnnForwardSystem::forward(&current_input, neurons, layer.activation_fn).await?;
             }
         }
 
@@ -162,11 +159,8 @@ impl AnnObserverWorld {
         // Training proceeds backward through layers
         for layer in self.layers.iter().rev() {
             if let Some(neurons) = self.neurons.get_mut(&layer.layer_id) {
-                let error = AnnTrainingSystem::train(
-                    neurons,
-                    target,
-                    self.config.learning_rate,
-                ).await?;
+                let error =
+                    AnnTrainingSystem::train(neurons, target, self.config.learning_rate).await?;
                 total_error += error;
             }
         }
@@ -196,7 +190,8 @@ impl AnnObserverWorld {
 
     /// World returns all observers with confidence above threshold
     pub fn confident_observers(&self) -> Vec<&AnnObserverComponent> {
-        self.observers.iter()
+        self.observers
+            .iter()
             .filter(|o| o.confidence_score >= self.config.confidence_threshold)
             .collect()
     }
@@ -228,12 +223,7 @@ mod tests {
     #[test]
     fn test_add_layer() {
         let mut world = AnnObserverWorld::with_defaults();
-        let layer_id = world.add_layer(
-            AnnLayerType::Dense,
-            4,
-            8,
-            ActivationFunction::ReLU,
-        );
+        let layer_id = world.add_layer(AnnLayerType::Dense, 4, 8, ActivationFunction::ReLU);
         assert_eq!(layer_id, 0);
         assert_eq!(world.layer_count(), 1);
     }
@@ -246,8 +236,7 @@ mod tests {
 
         // Verify weights are initialized (not all zeros)
         let neurons = world.neurons.get(&0).unwrap();
-        let has_nonzero = neurons.iter()
-            .any(|n| n.weights.iter().any(|&w| w != 0.0));
+        let has_nonzero = neurons.iter().any(|n| n.weights.iter().any(|&w| w != 0.0));
         assert!(has_nonzero);
     }
 }

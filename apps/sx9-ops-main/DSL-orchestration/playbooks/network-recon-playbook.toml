@@ -1,0 +1,74 @@
+[playbook]
+name = "network-recon-playbook"
+version = "1.0"
+description = "Network reconnaissance with 7-tier escalation"
+
+[playbook.trivariate_hash]
+sch = "3kJ9mP4xQ7R8sN2m"  # Component identity
+cuid = "K5fH9nL8vC3dF6gH"  # Context
+uuid = "2jK9mP4xQ7R8sN2m"  # Persistence
+
+[playbook.escalation]
+# 7-tier escalation path
+tier_1_wasm = "recon.wasm"
+tier_2_microkernel = "microkernel_recon"
+tier_3_kernel_crate = "ctas7-network-scanner"
+tier_4_multi_crates = ["ctas7-intel-system", "ctas7-cognitive-intelligence-system"]
+tier_5_containers = "docker-swarm-stack"
+tier_6_firefly = "firefly-config"
+tier_7_orb = "orb-config"
+
+[playbook.unicode_assembly]
+# Auto-generated from TOML → Unicode compression
+primary_trigger = "\\u{E300}"  # ptie (intelligence)
+escalation_triggers = ["\\u{E900}", "\\u{E901}", "\\u{E902}", "\\u{E903}", "\\u{E904}", "\\u{E905}", "\\u{E906}"]
+
+[playbook.steps.1]
+name = "initial-recon"
+tier = 1  # WASM
+tool = "nmap"
+target = "10.133.247.0/24"
+unicode_op = "\\u{E800}"  # kali-tool
+
+[playbook.steps.2]
+name = "deep-scan"
+tier = 2  # microkernel
+depends_on = ["initial-recon"]
+tool = "metasploit"
+unicode_op = "\\u{E801}"
+
+[playbook.steps.3]
+name = "intelligence-analysis"
+tier = 3  # kernel crate
+depends_on = ["deep-scan"]
+crate = "ctas7-intel-system"
+unicode_op = "\\u{E300}"  # ptie
+
+[playbook.steps.4]
+name = "multi-crate-correlation"
+tier = 4  # multi-crates
+depends_on = ["intelligence-analysis"]
+crates = ["ctas7-intel-system", "ctas7-cognitive-intelligence-system"]
+unicode_op = "\\u{E30C}"  # intel-fusion
+
+[playbook.steps.5]
+name = "container-orchestration"
+tier = 5  # containers
+depends_on = ["multi-crate-correlation"]
+container = "docker-swarm-stack"
+unicode_op = "\\u{E500}"  # container-op
+
+[playbook.steps.6]
+name = "firefly-execution"
+tier = 6  # firefly
+depends_on = ["container-orchestration"]
+firefly = "firefly-config"
+unicode_op = "\\u{E600}"  # firefly-op
+
+[playbook.steps.7]
+name = "orb-integration"
+tier = 7  # orb
+depends_on = ["firefly-execution"]
+orb = "orb-config"
+unicode_op = "\\u{E700}"  # orb-op
+

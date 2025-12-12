@@ -9,18 +9,18 @@
 //! Zone B - 1ms cognitive tick for OODA loop processing
 //! Integrated with sx9-atlas-bus for command dispatch
 
-pub mod ooda_loop;
-pub mod hd4_phases;
 pub mod convergence;
+pub mod hd4_phases;
+pub mod ooda_loop;
 
-pub use ooda_loop::{OodaLoop, OodaOutcome, OodaState, TacticalAction};
+pub use convergence::{ConvergenceCalculator, ConvergenceScore};
 pub use hd4_phases::{HD4Phase, VerticalLevel};
-pub use convergence::{ConvergenceScore, ConvergenceCalculator};
+pub use ooda_loop::{OodaLoop, OodaOutcome, OodaState, TacticalAction};
 
 use serde::{Deserialize, Serialize};
+use std::sync::Arc;
 use sx9_atlas_bus::{AtlasBus, PlasmaState, ThyristorConfig};
 use sx9_foundation_core::async_runtime::tokio::time::{interval, Duration};
-use std::sync::Arc;
 
 /// Trivariate hash type alias
 pub type TrivariateHash = u128;
@@ -72,16 +72,12 @@ impl AtlasDaemon {
     pub fn new(config: AtlasConfig) -> Self {
         let bus = Arc::new(AtlasBus::new());
         let plasma = Arc::new(PlasmaState::new());
-        
+
         // Prime SDT gate
         plasma.prime();
-        
-        let ooda = OodaLoop::new(
-            VerticalLevel::Tactical,
-            HD4Phase::Hunt,
-            bus.clone(),
-        );
-        
+
+        let ooda = OodaLoop::new(VerticalLevel::Tactical, HD4Phase::Hunt, bus.clone());
+
         Self {
             config,
             ooda,
@@ -216,4 +212,3 @@ impl AtlasStatus {
         }
     }
 }
-

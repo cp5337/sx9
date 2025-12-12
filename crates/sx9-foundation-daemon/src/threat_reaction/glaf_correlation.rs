@@ -6,15 +6,15 @@
 use anyhow::Result;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
-use tracing::{info, debug};
+use tracing::{debug, info};
 use uuid::Uuid;
 
-use crate::threat_reaction::recognize::{
-    RecognizedThreat, DualTrivariateHash, TrivariateHash, GLAFGraph, ThreatNode,
-};
+use crate::threat_reaction::interdiction_analyzer::{InterdictionPoint, InterdictionPointAnalyzer};
 use crate::threat_reaction::pattern_discovery::PatternDiscoveryEngine;
-use crate::threat_reaction::interdiction_analyzer::{InterdictionPointAnalyzer, InterdictionPoint};
 use crate::threat_reaction::recognize::ATTACKTechnique;
+use crate::threat_reaction::recognize::{
+    DualTrivariateHash, GLAFGraph, RecognizedThreat, ThreatNode, TrivariateHash,
+};
 
 /// GLAF correlation result
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -60,6 +60,7 @@ pub struct GNNPattern {
 }
 
 /// GLAF client (placeholder - will integrate with actual GLAF service)
+#[allow(dead_code)]
 pub struct GLAFClient {
     endpoint: String,
 }
@@ -73,10 +74,13 @@ impl GLAFClient {
         &self,
         hash: &DualTrivariateHash,
         unicode: char,
-        threat: &RecognizedThreat,
+        _threat: &RecognizedThreat,
     ) -> Result<()> {
         // TODO: Implement actual GLAF API integration
-        debug!("Creating threat node in GLAF: hash={:?}, unicode={}", hash, unicode);
+        debug!(
+            "Creating threat node in GLAF: hash={:?}, unicode={}",
+            hash, unicode
+        );
         Ok(())
     }
 
@@ -85,8 +89,11 @@ impl GLAFClient {
         hash_unicode_pairs: &[(DualTrivariateHash, char)],
     ) -> Result<GLAFGraph> {
         // TODO: Implement actual GLAF Cypher++ query
-        info!("Querying GLAF correlation for {} hash/Unicode pairs", hash_unicode_pairs.len());
-        
+        info!(
+            "Querying GLAF correlation for {} hash/Unicode pairs",
+            hash_unicode_pairs.len()
+        );
+
         // Create mock graph structure
         let nodes: Vec<ThreatNode> = hash_unicode_pairs
             .iter()
@@ -105,11 +112,11 @@ impl GLAFClient {
                         timestamp: chrono::Utc::now(),
                         correlation_graph: None,
                     },
-                    gnn_features: Vec::new(),  // Populated by embedding-model-service:18117
+                    gnn_features: Vec::new(), // Populated by embedding-model-service:18117
                 }
             })
             .collect();
-        
+
         Ok(GLAFGraph {
             nodes,
             edges: vec![],
@@ -156,18 +163,24 @@ pub struct ExecutionStep {
 /// GLAF Correlation Engine
 pub struct GLAFCorrelationEngine {
     glaf_client: GLAFClient,
-    hash_correlator: HashCorrelator,
-    unicode_correlator: UnicodeCorrelator,
+    _hash_correlator: HashCorrelator,
+    _unicode_correlator: UnicodeCorrelator,
     pattern_discovery: PatternDiscoveryEngine,
     interdiction_analyzer: InterdictionPointAnalyzer,
+}
+
+impl Default for GLAFCorrelationEngine {
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 impl GLAFCorrelationEngine {
     pub fn new() -> Self {
         Self {
             glaf_client: GLAFClient::new("http://localhost:8090".to_string()),
-            hash_correlator: HashCorrelator::new(),
-            unicode_correlator: UnicodeCorrelator::new(),
+            _hash_correlator: HashCorrelator::new(),
+            _unicode_correlator: UnicodeCorrelator::new(),
             pattern_discovery: PatternDiscoveryEngine::new(),
             interdiction_analyzer: InterdictionPointAnalyzer::new(),
         }
@@ -179,7 +192,7 @@ impl GLAFCorrelationEngine {
         threats: &[RecognizedThreat],
     ) -> Result<CorrelationResult> {
         info!("Correlating {} threats in GLAF", threats.len());
-        
+
         // 1. Extract trivariate hashes and Unicode operations
         let hash_unicode_pairs: Vec<(DualTrivariateHash, char)> = threats
             .iter()
@@ -189,24 +202,28 @@ impl GLAFCorrelationEngine {
                 (hash, unicode)
             })
             .collect();
-        
+
         // 2. Store in GLAF graph with hash/Unicode as node features
         for (hash, unicode) in &hash_unicode_pairs {
             if let Some(_threat) = threats.first() {
-                self.glaf_client.create_threat_node(hash, *unicode, _threat).await?;
+                self.glaf_client
+                    .create_threat_node(hash, *unicode, _threat)
+                    .await?;
             }
         }
-        
+
         // 3. Run GNN correlation query in GLAF
-        let correlation_graph = self.glaf_client.query_correlation(
-            &hash_unicode_pairs,
-        ).await?;
-        
+        let correlation_graph = self
+            .glaf_client
+            .query_correlation(&hash_unicode_pairs)
+            .await?;
+
         // 4. Discover patterns for prediction and emulation
-        let patterns = self.pattern_discovery.discover_patterns(
-            &correlation_graph,
-        ).await?;
-        
+        let patterns = self
+            .pattern_discovery
+            .discover_patterns(&correlation_graph)
+            .await?;
+
         Ok(CorrelationResult {
             correlation_graph,
             patterns,
@@ -219,18 +236,23 @@ impl GLAFCorrelationEngine {
         &self,
         technique: &ATTACKTechnique,
     ) -> Result<Vec<InterdictionPoint>> {
-        info!("Finding interdiction points for technique: {}", technique.technique_id);
-        
+        info!(
+            "Finding interdiction points for technique: {}",
+            technique.technique_id
+        );
+
         // 1. Query GLAF for technique execution graph
-        let execution_graph = self.glaf_client.query_technique_graph(
-            &technique.technique_id,
-        ).await?;
-        
+        let execution_graph = self
+            .glaf_client
+            .query_technique_graph(&technique.technique_id)
+            .await?;
+
         // 2. Analyze attack chain to find earliest interdiction point
-        let interdiction_points = self.interdiction_analyzer.analyze_chain(
-            &execution_graph,
-        ).await?;
-        
+        let interdiction_points = self
+            .interdiction_analyzer
+            .analyze_chain(&execution_graph)
+            .await?;
+
         // 3. Rank by "leftness" (earlier = better)
         let ranked: Vec<(InterdictionPoint, f64)> = interdiction_points
             .into_iter()
@@ -239,11 +261,11 @@ impl GLAFCorrelationEngine {
                 (ip, leftness_score)
             })
             .collect();
-        
+
         // Sort by leftness (higher = further left = better)
         let mut sorted = ranked;
         sorted.sort_by(|a, b| b.1.partial_cmp(&a.1).unwrap());
-        
+
         Ok(sorted.into_iter().map(|(ip, _)| ip).collect())
     }
 
@@ -251,19 +273,25 @@ impl GLAFCorrelationEngine {
     fn calculate_leftness_score(&self, point: &InterdictionPoint) -> f64 {
         // Base score from position (earlier = higher)
         let position_score = 1.0 - (point.position as f64 / 100.0);
-        
+
         // Bonus for hash/Unicode correlation strength
-        let correlation_bonus = 0.1;  // TODO: Calculate from actual correlation
-        
+        let correlation_bonus = 0.1; // TODO: Calculate from actual correlation
+
         // Bonus for technique-specific early detection
-        let technique_bonus = 0.05;  // TODO: Calculate from technique metadata
-        
+        let technique_bonus = 0.05; // TODO: Calculate from technique metadata
+
         position_score + correlation_bonus + technique_bonus
     }
 }
 
 /// Hash correlator
 pub struct HashCorrelator;
+
+impl Default for HashCorrelator {
+    fn default() -> Self {
+        Self::new()
+    }
+}
 
 impl HashCorrelator {
     pub fn new() -> Self {
@@ -274,9 +302,14 @@ impl HashCorrelator {
 /// Unicode correlator
 pub struct UnicodeCorrelator;
 
+impl Default for UnicodeCorrelator {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl UnicodeCorrelator {
     pub fn new() -> Self {
         Self
     }
 }
-

@@ -5,9 +5,9 @@
 
 use anyhow::Result;
 use serde::{Deserialize, Serialize};
-use tracing::{info, debug};
+use tracing::{debug, info};
 
-use crate::dsl::playbook_unicode::{UnicodePlaybook, UnicodePlaybookStep, EscalationTier};
+use crate::dsl::playbook_unicode::{EscalationTier, UnicodePlaybook, UnicodePlaybookStep};
 use crate::threat_reaction::recognize::ThreatSeverity;
 
 /// Escalation plan
@@ -85,6 +85,12 @@ pub struct DeltaGate {
 /// Escalation tier selector
 pub struct EscalationTierSelector;
 
+impl Default for EscalationTierSelector {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl EscalationTierSelector {
     pub fn new() -> Self {
         Self
@@ -122,15 +128,19 @@ impl EscalationTierSelector {
                     Ok(EscalationTier::Microkernel)
                 }
             }
-            ThreatSeverity::Low => {
-                Ok(EscalationTier::Wasm)
-            }
+            ThreatSeverity::Low => Ok(EscalationTier::Wasm),
         }
     }
 }
 
 /// Resource analyzer
 pub struct ResourceAnalyzer;
+
+impl Default for ResourceAnalyzer {
+    fn default() -> Self {
+        Self::new()
+    }
+}
 
 impl ResourceAnalyzer {
     pub fn new() -> Self {
@@ -141,14 +151,20 @@ impl ResourceAnalyzer {
 /// Escalation Planner
 pub struct EscalationPlanner {
     tier_selector: EscalationTierSelector,
-    resource_analyzer: ResourceAnalyzer,
+    _resource_analyzer: ResourceAnalyzer,
+}
+
+impl Default for EscalationPlanner {
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 impl EscalationPlanner {
     pub fn new() -> Self {
         Self {
             tier_selector: EscalationTierSelector::new(),
-            resource_analyzer: ResourceAnalyzer::new(),
+            _resource_analyzer: ResourceAnalyzer::new(),
         }
     }
 
@@ -158,30 +174,31 @@ impl EscalationPlanner {
         playbook: &UnicodePlaybook,
         severity: &ThreatSeverity,
     ) -> Result<EscalationPlan> {
-        info!("Planning escalation for playbook with {} steps", playbook.steps.len());
-        
+        info!(
+            "Planning escalation for playbook with {} steps",
+            playbook.steps.len()
+        );
+
         let mut plan = EscalationPlan::new();
-        
+
         // Start at Tier 1 (WASM) for simple operations
         for step in &playbook.steps {
             let tier = self.tier_selector.select_tier(step, severity).await?;
-            
+
             // Check if escalation needed (compare by tier value)
             let tier_value = tier as u8;
             if tier_value > EscalationTier::Wasm as u8 {
-                plan.add_escalation(
-                    EscalationStep {
-                        step: step.clone(),
-                        tier,
-                        escalation_trigger: Some(EscalationTrigger::Complexity),
-                        delta_gate: Some(self.evaluate_delta_gate(step).await),
-                    }
-                );
+                plan.add_escalation(EscalationStep {
+                    step: step.clone(),
+                    tier,
+                    escalation_trigger: Some(EscalationTrigger::Complexity),
+                    delta_gate: Some(self.evaluate_delta_gate(step).await),
+                });
             } else {
                 plan.add_step(step.clone(), tier);
             }
         }
-        
+
         debug!("Planned escalation through tiers: {:?}", plan.tier_path);
         Ok(plan)
     }
@@ -197,4 +214,3 @@ impl EscalationPlanner {
         }
     }
 }
-

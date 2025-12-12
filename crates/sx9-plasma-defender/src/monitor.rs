@@ -2,14 +2,14 @@
 //!
 //! Orchestrates threat agents → crystal → SDT gate flow
 
-use sx9_atlas_bus::PlasmaState;
-use std::sync::Arc;
-use tokio::sync::RwLock;
-use tokio::time::{interval, Duration};
 use crate::agents::{ThreatAgent, ThreatEvent};
 use crate::crystal::CrystalIntegration;
-use crate::sdt::SdtIntegration;
 use crate::plasma_bus::PlasmaBus;
+use crate::sdt::SdtIntegration;
+use std::sync::Arc;
+use sx9_atlas_bus::PlasmaState;
+use tokio::sync::RwLock;
+use tokio::time::{interval, Duration};
 
 pub struct ThreatMonitor {
     agents: Arc<RwLock<Vec<ThreatAgent>>>,
@@ -39,36 +39,31 @@ impl ThreatMonitor {
             tick: 0,
         }
     }
-    
+
     pub async fn run(&mut self) -> anyhow::Result<()> {
         let mut ticker = interval(self.monitor_interval);
-        
+
         loop {
             ticker.tick().await;
             self.tick += 1;
-            
+
             // Monitor threats from agents
             let agents = self.agents.read().await;
             for agent in agents.iter() {
                 if let Ok(Some(event)) = agent.monitor().await {
                     // Evaluate through crystal
-                    let ring_strength = self.crystal.get_ring_strength(
-                        &event.payload,
-                        self.plasma.delta_angle_raw(),
-                    );
-                    
+                    let ring_strength = self
+                        .crystal
+                        .get_ring_strength(&event.payload, self.plasma.delta_angle_raw());
+
                     // Resonate through SDT gate
                     let crystal = self.crystal.crystal();
-                    let allowed = self.sdt.resonate(
-                        &event.payload,
-                        &crystal,
-                        self.tick,
-                    );
-                    
+                    let allowed = self.sdt.resonate(&event.payload, &crystal, self.tick);
+
                     // Evaluate load (simulated from ring strength)
                     let load = ring_strength as f64;
                     self.sdt.evaluate_load(load, &self.plasma_bus).await?;
-                    
+
                     if allowed {
                         // Threat detected and allowed by SDT
                         self.handle_threat(event).await?;
@@ -80,19 +75,28 @@ impl ThreatMonitor {
             }
         }
     }
-    
+
     async fn handle_threat(&self, event: ThreatEvent) -> anyhow::Result<()> {
         tracing::warn!("Threat detected and allowed: {:?}", event);
-        self.plasma_bus.emit("plasma.defender.threat.allowed", event.severity as u8 as f64).await?;
+        self.plasma_bus
+            .emit(
+                "plasma.defender.threat.allowed",
+                event.severity as u8 as f64,
+            )
+            .await?;
         // Handle threat (alert, log, etc.)
         Ok(())
     }
-    
+
     async fn block_threat(&self, event: ThreatEvent) -> anyhow::Result<()> {
         tracing::info!("Threat blocked by SDT gate: {:?}", event);
-        self.plasma_bus.emit("plasma.defender.threat.blocked", event.severity as u8 as f64).await?;
+        self.plasma_bus
+            .emit(
+                "plasma.defender.threat.blocked",
+                event.severity as u8 as f64,
+            )
+            .await?;
         // Block threat (log, metrics, etc.)
         Ok(())
     }
 }
-

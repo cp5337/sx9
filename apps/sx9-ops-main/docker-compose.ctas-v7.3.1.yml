@@ -1,0 +1,340 @@
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# CTAS Main Ops v7.3.1 - Production Container Stack
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# Complete vertical: Frontend + Plasma + Kali + USIMs
+# Dev agents (PM2) call in via API Gateway
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+version: '3.8'
+
+services:
+  # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  # Frontend (React + Vite + Mapbox)
+  # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  main-ops-frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: sx9-ops-main-v7.3.1
+    ports:
+      - "15174:15174"  # Primary port
+      - "25174:15174"  # Mirror port
+    environment:
+      - NODE_ENV=production
+      - VITE_API_GATEWAY=http://api-gateway:18450
+      - VITE_SURREALDB_URL=http://surrealdb:8000
+      - VITE_SLEDIS_URL=http://sledis:19014
+      - VITE_PLASMA_URL=http://plasma-dashboard:15601
+      - VITE_MAPBOX_TOKEN=${VITE_MAPBOX_TOKEN}
+    volumes:
+      - ./src:/app/src:ro
+      - ./public:/app/public:ro
+    networks:
+      - ctas_network
+    depends_on:
+      - api-gateway
+      - surrealdb
+      - sledis
+      - plasma-dashboard
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:15174"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  # API Gateway (Exposes APIs for Dev Center agents)
+  # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  api-gateway:
+    image: ctas7/api-gateway:7.3.1
+    container_name: ctas-api-gateway
+    ports:
+      - "18450:18450"  # Main API Gateway
+    environment:
+      - RUST_LOG=info
+      - SURREALDB_URL=http://surrealdb:8000
+      - SLEDIS_URL=http://sledis:19014
+      - PLASMA_URL=http://wazuh-manager:55000
+      - KALI_TOOLS_URL=http://kali-tools:15178
+    networks:
+      - ctas_network
+    depends_on:
+      - surrealdb
+      - sledis
+      - wazuh-manager
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:18450/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  # SurrealDB (Primary database with 2,309 USIMs)
+  # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  surrealdb:
+    image: surrealdb/surrealdb:latest
+    container_name: ctas-surrealdb-v7.3.1
+    ports:
+      - "8000:8000"
+    command: start --log info --user root --pass root file:/data/database.db
+    volumes:
+      - surrealdb_data:/data
+    networks:
+      - ctas_network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  # Sledis (Memory Mesh v2.0 RC1)
+  # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  sledis:
+    build:
+      context: ../ctas7-sledis
+      dockerfile: Dockerfile
+    container_name: ctas-sledis-v7.3.1
+    ports:
+      - "19014:19014"  # Redis protocol + Memory Mesh
+      - "20014:20014"  # gRPC Health monitoring
+    environment:
+      - RUST_LOG=info
+      - SLEDIS_MODE=production
+      - MEMORY_MESH_VERSION=2.0-RC1
+    volumes:
+      - sledis_data:/data
+    networks:
+      - ctas_network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "-p", "19014", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  # SYNAPTIX PLASMA STACK
+  # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  # Wazuh Manager (Data collection shell)
+  wazuh-manager:
+    image: wazuh/wazuh-manager:latest
+    container_name: ctas-wazuh-manager
+    ports:
+      - "1514:1514"   # Agent communication
+      - "1515:1515"   # Agent enrollment
+      - "55000:55000" # API
+    volumes:
+      - wazuh_data:/var/ossec
+      - wazuh_logs:/var/ossec/logs
+    environment:
+      - AXON_ENDPOINT=http://axon:15176
+    networks:
+      - ctas_network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:55000"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # AXON Processing Engine (CTAS-7 native)
+  axon:
+    image: ctas7/axon:7.3.1
+    container_name: ctas-axon
+    ports:
+      - "15176:15176"
+    environment:
+      - RUST_LOG=info
+      - AXON_PORT=15176
+      - WAZUH_API=http://wazuh-manager:55000
+      - LEGION_ENDPOINT=http://legion-ecs:15177
+      - PHI3_ENDPOINT=http://phi3-lora:11434
+      - SURREALDB_URL=http://surrealdb:8000
+      - USIM_COUNT=2309
+    networks:
+      - ctas_network
+    depends_on:
+      - wazuh-manager
+      - surrealdb
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:15176/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Legion ECS (Entity tracking)
+  legion-ecs:
+    image: ctas7/legion-ecs:7.3.1
+    container_name: ctas-legion-ecs
+    ports:
+      - "15177:15177"
+    volumes:
+      - legion_data:/data
+    environment:
+      - RUST_LOG=info
+      - LEGION_PORT=15177
+      - SURREALDB_URL=http://surrealdb:8000
+    networks:
+      - ctas_network
+    depends_on:
+      - surrealdb
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:15177/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Phi-3 LoRA Farm (AI validation)
+  phi3-lora:
+    image: ollama/ollama:latest
+    container_name: ctas-phi3-lora
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_models:/root/.ollama
+    environment:
+      - MODEL=phi3:mini
+    networks:
+      - ctas_network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:11434/api/tags"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # HFT Ground Stations (Response)
+  hft-ground-stations:
+    image: ctas7/hft-ground-stations:7.3.1
+    container_name: ctas-hft-ground-stations
+    ports:
+      - "18200:18200"
+    environment:
+      - RUST_LOG=info
+      - LEGION_URL=http://legion-ecs:15177
+    networks:
+      - ctas_network
+    depends_on:
+      - legion-ecs
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:18200/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Synaptix Plasma Dashboard
+  plasma-dashboard:
+    image: ctas7/plasma-dashboard:7.3.1
+    container_name: ctas-plasma-dashboard
+    ports:
+      - "15601:15601"  # Primary dashboard
+      - "25601:15601"  # Mirror port
+    environment:
+      - AXON_URL=http://axon:15176
+      - LEGION_URL=http://legion-ecs:15177
+      - WAZUH_URL=http://wazuh-manager:55000
+    networks:
+      - ctas_network
+    depends_on:
+      - axon
+      - legion-ecs
+      - wazuh-manager
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:15601/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  # KALI TOOLS INTEGRATION (165 CTAS Tasks)
+  # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  # Kali Tools API Server
+  kali-tools:
+    image: ctas7/kali-tools:7.3.1
+    container_name: ctas-kali-tools
+    ports:
+      - "15178:15178"  # Kali tools API
+    environment:
+      - RUST_LOG=info
+      - CTAS_TASKS_COUNT=164
+      - SURREALDB_URL=http://surrealdb:8000
+      - PLASMA_URL=http://axon:15176
+    volumes:
+      - kali_tools:/opt/kali-tools
+    networks:
+      - ctas_network
+    depends_on:
+      - surrealdb
+      - axon
+    restart: unless-stopped
+    cap_add:
+      - NET_ADMIN
+      - NET_RAW
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:15178/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Kali Purple Microkernel (Layer 2)
+  kali-microkernel:
+    image: ctas7/kali-microkernel:7.3.1
+    container_name: ctas-kali-microkernel
+    ports:
+      - "18350:18350"  # Microkernel API
+    environment:
+      - RUST_LOG=info
+      - KALI_TOOLS_URL=http://kali-tools:15178
+    networks:
+      - ctas_network
+    depends_on:
+      - kali-tools
+    restart: unless-stopped
+    cap_add:
+      - NET_ADMIN
+      - NET_RAW
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:18350/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# Networks
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+networks:
+  ctas_network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.28.0.0/16
+
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# Volumes
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+volumes:
+  surrealdb_data:
+    driver: local
+  sledis_data:
+    driver: local
+  wazuh_data:
+    driver: local
+  wazuh_logs:
+    driver: local
+  legion_data:
+    driver: local
+  ollama_models:
+    driver: local
+  kali_tools:
+    driver: local
+

@@ -35,7 +35,9 @@ impl StorageBackend {
         }
         #[cfg(not(feature = "embedded-db"))]
         {
-            Ok(StorageBackend::Memory(Arc::new(RwLock::new(HashMap::new()))))
+            Ok(StorageBackend::Memory(Arc::new(
+                RwLock::new(HashMap::new()),
+            )))
         }
     }
 
@@ -86,9 +88,7 @@ impl Storage for StorageBackend {
                 Ok(map.remove(key).is_some())
             }
             #[cfg(feature = "embedded-db")]
-            StorageBackend::Sled(db) => {
-                Ok(db.remove(key.as_bytes())?.is_some())
-            }
+            StorageBackend::Sled(db) => Ok(db.remove(key.as_bytes())?.is_some()),
         }
     }
 

@@ -2,8 +2,8 @@
 //!
 //! Axum-based WebSocket server that routes messages to handlers.
 
-use std::sync::Arc;
 use std::net::SocketAddr;
+use std::sync::Arc;
 
 use axum::{
     extract::{
@@ -16,7 +16,7 @@ use axum::{
 };
 use futures_util::{SinkExt, StreamExt};
 use tower_http::cors::{Any, CorsLayer};
-use tracing::{info, warn, error};
+use tracing::{error, info, warn};
 
 use crate::handlers::handle_message;
 use crate::protocol::{WsMessage, WsResponse};
@@ -31,21 +31,21 @@ pub async fn run_gateway(port: Option<u16>) -> anyhow::Result<()> {
     tracing_subscriber::fmt()
         .with_env_filter(
             tracing_subscriber::EnvFilter::from_default_env()
-                .add_directive("sx9_gateway=info".parse()?)
+                .add_directive("sx9_gateway=info".parse()?),
         )
         .init();
-    
+
     // Create shared state
     let mut state = GatewayState::new();
-    
+
     // Connect to backends
     info!("Connecting to SX9 backends...");
     if let Err(e) = state.connect_all().await {
         warn!("Some backends failed to connect: {}", e);
     }
-    
+
     let shared_state: SharedState = Arc::new(state);
-    
+
     // Build router
     let app = Router::new()
         .route("/ws", get(ws_handler))
@@ -57,14 +57,14 @@ pub async fn run_gateway(port: Option<u16>) -> anyhow::Result<()> {
                 .allow_methods(Any)
                 .allow_headers(Any),
         );
-    
+
     // Bind and serve
     let addr = SocketAddr::from(([0, 0, 0, 0], port.unwrap_or(DEFAULT_PORT)));
     info!("SX9 Gateway listening on {}", addr);
-    
+
     let listener = tokio::net::TcpListener::bind(addr).await?;
     axum::serve(listener, app).await?;
-    
+
     Ok(())
 }
 
@@ -72,7 +72,7 @@ pub async fn run_gateway(port: Option<u16>) -> anyhow::Result<()> {
 async fn health_handler(State(state): State<SharedState>) -> impl IntoResponse {
     let statuses = state.get_connection_statuses().await;
     let connected_count = statuses.iter().filter(|s| s.connected).count();
-    
+
     axum::Json(serde_json::json!({
         "status": if connected_count > 0 { "ok" } else { "degraded" },
         "connected_backends": connected_count,
@@ -81,19 +81,16 @@ async fn health_handler(State(state): State<SharedState>) -> impl IntoResponse {
 }
 
 /// WebSocket upgrade handler
-async fn ws_handler(
-    ws: WebSocketUpgrade,
-    State(state): State<SharedState>,
-) -> impl IntoResponse {
+async fn ws_handler(ws: WebSocketUpgrade, State(state): State<SharedState>) -> impl IntoResponse {
     ws.on_upgrade(move |socket| handle_socket(socket, state))
 }
 
 /// Handle a WebSocket connection
 async fn handle_socket(socket: WebSocket, state: SharedState) {
     let (mut sender, mut receiver) = socket.split();
-    
+
     info!("New WebSocket connection");
-    
+
     // Process incoming messages
     while let Some(msg) = receiver.next().await {
         match msg {
@@ -110,7 +107,7 @@ async fn handle_socket(socket: WebSocket, state: SharedState) {
                                 details: None,
                             },
                         };
-                        
+
                         // Send response
                         if let Ok(json) = serde_json::to_string(&response) {
                             if let Err(e) = sender.send(Message::Text(json.into())).await {
@@ -126,7 +123,7 @@ async fn handle_socket(socket: WebSocket, state: SharedState) {
                             message: format!("Invalid message format: {}", e),
                             details: Some(serde_json::json!({ "raw": text })),
                         };
-                        
+
                         if let Ok(json) = serde_json::to_string(&error) {
                             let _ = sender.send(Message::Text(json.into())).await;
                         }
@@ -156,7 +153,7 @@ async fn handle_socket(socket: WebSocket, state: SharedState) {
             }
         }
     }
-    
+
     info!("WebSocket connection ended");
 }
 
@@ -171,4 +168,3 @@ mod tests {
         assert_eq!(statuses.len(), 5);
     }
 }
-

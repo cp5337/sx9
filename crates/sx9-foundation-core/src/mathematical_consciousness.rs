@@ -27,16 +27,16 @@ pub struct CTASPrimitive {
 /// GROUND TRUTH: 10 CTAS Primitive Types
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub enum PrimitiveType {
-    Actor,      // "I perform actions and drive events in reality"
-    Object,     // "I am acted upon and transformed by others"
-    Event,      // "I trigger cascading actions across systems"
-    Concept,    // "I represent abstract models and strategies"
-    Attribute,  // "I carry properties and metadata"
-    Function,   // "I execute actions and operations"
-    Module,     // "I encapsulate system components"
-    Header,     // "I provide contextual metadata"
-    Footer,     // "I ensure completion and audit trails"
-    Comment,    // "I hold intelligence and observations"
+    Actor,     // "I perform actions and drive events in reality"
+    Object,    // "I am acted upon and transformed by others"
+    Event,     // "I trigger cascading actions across systems"
+    Concept,   // "I represent abstract models and strategies"
+    Attribute, // "I carry properties and metadata"
+    Function,  // "I execute actions and operations"
+    Module,    // "I encapsulate system components"
+    Header,    // "I provide contextual metadata"
+    Footer,    // "I ensure completion and audit trails"
+    Comment,   // "I hold intelligence and observations"
 }
 
 impl MathematicalFoundation {
@@ -126,7 +126,10 @@ impl MathematicalFoundation {
         // Activate all 10 CTAS primitives
         for primitive in &mut self.primitives {
             primitive.active = true;
-            println!("✅ {} Primitive: {}", primitive.name, primitive.consciousness);
+            println!(
+                "✅ {} Primitive: {}",
+                primitive.name, primitive.consciousness
+            );
         }
 
         self.active = true;
@@ -137,21 +140,23 @@ impl MathematicalFoundation {
 
     /// Validate primitive consciousness
     pub fn validate_primitive(&self, primitive_name: &str) -> bool {
-        self.primitives.iter()
+        self.primitives
+            .iter()
             .any(|p| p.name == primitive_name && p.active)
     }
 
     /// Get primitive by type
     pub fn get_primitive(&self, primitive_type: PrimitiveType) -> Option<&CTASPrimitive> {
-        self.primitives.iter()
-            .find(|p| std::mem::discriminant(&p.primitive_type) == std::mem::discriminant(&primitive_type))
+        self.primitives.iter().find(|p| {
+            std::mem::discriminant(&p.primitive_type) == std::mem::discriminant(&primitive_type)
+        })
     }
 
     /// Mathematical consciousness self-validation
     pub fn self_validate(&self) -> bool {
-        self.active &&
-        self.primitives.iter().all(|p| p.active) &&
-        self.consciousness == "I am the CTAS 7.0 mathematical foundation"
+        self.active
+            && self.primitives.iter().all(|p| p.active)
+            && self.consciousness == "I am the CTAS 7.0 mathematical foundation"
     }
 
     /// Generate consciousness report

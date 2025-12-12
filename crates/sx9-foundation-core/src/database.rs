@@ -3,7 +3,7 @@
 //! Provides multi-database support for Supabase, SurrealDB, SlotGraph, and Sled
 //! Integrates with Smart Crate Orchestrator for persistent state management
 
-use crate::data::{Serialize, Deserialize, DateTime, Utc};
+use crate::data::{DateTime, Deserialize, Serialize, Utc};
 use std::collections::HashMap;
 
 /// Database backend options for CTAS-7
@@ -55,7 +55,7 @@ impl Default for DatabaseConfig {
             backend: DatabaseBackend::Sled {
                 path: "./data/ctas7_foundation.sled".to_string(),
                 cache_capacity: Some(1024 * 1024 * 100), // 100MB cache
-                flush_every_ms: Some(1000), // 1 second flush interval
+                flush_every_ms: Some(1000),              // 1 second flush interval
             },
             pool_size: 20,
             connection_timeout: 30,
@@ -82,6 +82,7 @@ pub enum DatabaseClient {
 }
 
 /// Supabase client wrapper
+#[allow(dead_code)]
 pub struct SupabaseClient {
     url: String,
     anon_key: String,
@@ -89,6 +90,7 @@ pub struct SupabaseClient {
 }
 
 /// SurrealDB client wrapper
+#[allow(dead_code)]
 pub struct SurrealClient {
     endpoint: String,
     namespace: String,
@@ -97,6 +99,7 @@ pub struct SurrealClient {
 }
 
 /// SlotGraph client wrapper
+#[allow(dead_code)]
 pub struct SlotGraphClient {
     host: String,
     port: u16,
@@ -165,41 +168,55 @@ impl DatabaseManager {
     /// Create new database manager with specified backend
     pub async fn new(config: DatabaseConfig) -> crate::diagnostics::Result<Self> {
         let backend_client = match &config.backend {
-            DatabaseBackend::Supabase { url, anon_key, service_role_key } => {
-                DatabaseClient::Supabase(SupabaseClient {
-                    url: url.clone(),
-                    anon_key: anon_key.clone(),
-                    service_role_key: service_role_key.clone(),
-                })
-            },
-            DatabaseBackend::SurrealDB { endpoint, namespace, database, username, password } => {
-                DatabaseClient::SurrealDB(SurrealClient {
-                    endpoint: endpoint.clone(),
-                    namespace: namespace.clone(),
-                    database: database.clone(),
-                    credentials: match (username, password) {
-                        (Some(u), Some(p)) => Some((u.clone(), p.clone())),
-                        _ => None,
-                    },
-                })
-            },
-            DatabaseBackend::SlotGraph { host, port, database, auth_token } => {
-                DatabaseClient::SlotGraph(SlotGraphClient {
-                    host: host.clone(),
-                    port: *port,
-                    database: database.clone(),
-                    auth_token: auth_token.clone(),
-                })
-            },
-            DatabaseBackend::Sled { path, cache_capacity: _, flush_every_ms: _ } => {
+            DatabaseBackend::Supabase {
+                url,
+                anon_key,
+                service_role_key,
+            } => DatabaseClient::Supabase(SupabaseClient {
+                url: url.clone(),
+                anon_key: anon_key.clone(),
+                service_role_key: service_role_key.clone(),
+            }),
+            DatabaseBackend::SurrealDB {
+                endpoint,
+                namespace,
+                database,
+                username,
+                password,
+            } => DatabaseClient::SurrealDB(SurrealClient {
+                endpoint: endpoint.clone(),
+                namespace: namespace.clone(),
+                database: database.clone(),
+                credentials: match (username, password) {
+                    (Some(u), Some(p)) => Some((u.clone(), p.clone())),
+                    _ => None,
+                },
+            }),
+            DatabaseBackend::SlotGraph {
+                host,
+                port,
+                database,
+                auth_token,
+            } => DatabaseClient::SlotGraph(SlotGraphClient {
+                host: host.clone(),
+                port: *port,
+                database: database.clone(),
+                auth_token: auth_token.clone(),
+            }),
+            DatabaseBackend::Sled {
+                path,
+                cache_capacity: _,
+                flush_every_ms: _,
+            } => {
                 DatabaseClient::Sled(SledClient {
                     db: None, // Will be initialized in initialize_schema
                     path: path.clone(),
                 })
-            },
+            }
         };
 
-        crate::diagnostics::info!("🗄️ Database manager initialized with {:?} backend",
+        crate::diagnostics::info!(
+            "🗄️ Database manager initialized with {:?} backend",
             match config.backend {
                 DatabaseBackend::Supabase { .. } => "Supabase",
                 DatabaseBackend::SurrealDB { .. } => "SurrealDB",
@@ -219,32 +236,48 @@ impl DatabaseManager {
     pub async fn initialize_schema(&mut self) -> crate::diagnostics::Result<()> {
         match &mut self.backend_client {
             DatabaseClient::Supabase(_) => {
-                crate::diagnostics::info!("🔵 Supabase schema initialization (requires API implementation)");
-            },
+                crate::diagnostics::info!(
+                    "🔵 Supabase schema initialization (requires API implementation)"
+                );
+            }
             DatabaseClient::SurrealDB(_) => {
-                crate::diagnostics::info!("🟣 SurrealDB schema initialization (requires client implementation)");
-            },
+                crate::diagnostics::info!(
+                    "🟣 SurrealDB schema initialization (requires client implementation)"
+                );
+            }
             DatabaseClient::SlotGraph(_) => {
-                crate::diagnostics::info!("🟢 SlotGraph schema initialization (requires graph API implementation)");
-            },
+                crate::diagnostics::info!(
+                    "🟢 SlotGraph schema initialization (requires graph API implementation)"
+                );
+            }
             DatabaseClient::Sled(client) => {
-                let db = sled::open(&client.path)
-                    .map_err(|e| crate::diagnostics::Error::msg(format!("Failed to open Sled database: {}", e)))?;
+                let db = sled::open(&client.path).map_err(|e| {
+                    crate::diagnostics::Error::msg(format!("Failed to open Sled database: {}", e))
+                })?;
 
                 // Create trees for different data types
-                db.open_tree("agents")
-                    .map_err(|e| crate::diagnostics::Error::msg(format!("Failed to create agents tree: {}", e)))?;
+                db.open_tree("agents").map_err(|e| {
+                    crate::diagnostics::Error::msg(format!("Failed to create agents tree: {}", e))
+                })?;
 
-                db.open_tree("smart_crates")
-                    .map_err(|e| crate::diagnostics::Error::msg(format!("Failed to create smart_crates tree: {}", e)))?;
+                db.open_tree("smart_crates").map_err(|e| {
+                    crate::diagnostics::Error::msg(format!(
+                        "Failed to create smart_crates tree: {}",
+                        e
+                    ))
+                })?;
 
-                db.open_tree("unicode_operations")
-                    .map_err(|e| crate::diagnostics::Error::msg(format!("Failed to create unicode_operations tree: {}", e)))?;
+                db.open_tree("unicode_operations").map_err(|e| {
+                    crate::diagnostics::Error::msg(format!(
+                        "Failed to create unicode_operations tree: {}",
+                        e
+                    ))
+                })?;
 
                 client.db = Some(db);
 
                 crate::diagnostics::info!("🟡 Sled database initialized at: {}", client.path);
-            },
+            }
         }
 
         crate::diagnostics::info!("📋 Database schema initialized successfully");
@@ -252,7 +285,10 @@ impl DatabaseManager {
     }
 
     /// Store agent state with Unicode compression
-    pub async fn store_agent_state(&mut self, agent: &AgentState) -> crate::diagnostics::Result<()> {
+    pub async fn store_agent_state(
+        &mut self,
+        agent: &AgentState,
+    ) -> crate::diagnostics::Result<()> {
         // Compress metadata if enabled
         let _metadata_json = if self.config.unicode_compression_enabled {
             let original = crate::data::serde_json::to_string(&agent.metadata)?;
@@ -261,7 +297,7 @@ impl DatabaseManager {
             let compressed = {
                 let compressed = crate::unicode_assembly::UnicodeCompression::compress(
                     &original,
-                    crate::unicode_assembly::CompressionRatio::Medium
+                    crate::unicode_assembly::CompressionRatio::Medium,
                 )?;
 
                 // Update compression stats
@@ -293,9 +329,12 @@ impl DatabaseManager {
                     agents_tree.insert(&agent.agent_id, agent_data)?;
                     db.flush_async().await?;
                 }
-            },
+            }
             _ => {
-                crate::diagnostics::info!("Mock storing agent state for: {} (backend implementation needed)", agent.agent_id);
+                crate::diagnostics::info!(
+                    "Mock storing agent state for: {} (backend implementation needed)",
+                    agent.agent_id
+                );
             }
         }
 
@@ -303,7 +342,10 @@ impl DatabaseManager {
     }
 
     /// Store smart crate metadata
-    pub async fn store_smart_crate(&mut self, crate_meta: &SmartCrateMetadata) -> crate::diagnostics::Result<()> {
+    pub async fn store_smart_crate(
+        &mut self,
+        crate_meta: &SmartCrateMetadata,
+    ) -> crate::diagnostics::Result<()> {
         match &mut self.backend_client {
             DatabaseClient::Sled(client) => {
                 if let Some(db) = &client.db {
@@ -312,9 +354,12 @@ impl DatabaseManager {
                     crates_tree.insert(&crate_meta.crate_name, crate_data)?;
                     db.flush_async().await?;
                 }
-            },
+            }
             _ => {
-                crate::diagnostics::info!("Mock storing smart crate: {} (backend implementation needed)", crate_meta.crate_name);
+                crate::diagnostics::info!(
+                    "Mock storing smart crate: {} (backend implementation needed)",
+                    crate_meta.crate_name
+                );
             }
         }
 
@@ -333,7 +378,7 @@ impl DatabaseManager {
             let result = {
                 let compressed = crate::unicode_assembly::UnicodeCompression::compress(
                     data,
-                    crate::unicode_assembly::CompressionRatio::Medium
+                    crate::unicode_assembly::CompressionRatio::Medium,
                 )?;
                 let ratio = compressed.len() as f64 / data.len().max(1) as f64;
 
@@ -367,13 +412,21 @@ impl DatabaseManager {
                         "compression_ratio": compression_ratio,
                         "timestamp": crate::data::Utc::now()
                     });
-                    let key = format!("{}_{}", operation as u32, crate::data::Utc::now().timestamp_nanos_opt().unwrap_or(0));
+                    let key = format!(
+                        "{}_{}",
+                        operation as u32,
+                        crate::data::Utc::now().timestamp_nanos_opt().unwrap_or(0)
+                    );
                     ops_tree.insert(key.as_bytes(), operation_data.to_string().as_bytes())?;
                     db.flush_async().await?;
                 }
-            },
+            }
             _ => {
-                crate::diagnostics::info!("Mock storing Unicode operation: {} ({}) (backend implementation needed)", operation, operation_type);
+                crate::diagnostics::info!(
+                    "Mock storing Unicode operation: {} ({}) (backend implementation needed)",
+                    operation,
+                    operation_type
+                );
             }
         }
 
@@ -388,9 +441,7 @@ impl DatabaseManager {
     /// Health check for database connection
     pub async fn health_check(&self) -> bool {
         match &self.backend_client {
-            DatabaseClient::Sled(client) => {
-                client.db.is_some()
-            },
+            DatabaseClient::Sled(client) => client.db.is_some(),
             _ => {
                 // Other backends would implement their specific health checks
                 true
@@ -424,7 +475,11 @@ pub async fn initialize_foundation_database() -> crate::diagnostics::Result<Data
         crate_type: "foundation".to_string(),
         mission: "DependencyUnification".to_string(),
         security_level: "Production".to_string(),
-        xsd_symbols: vec!["\\u{E500}".to_string(), "\\u{E320}".to_string(), "\\u{E000}".to_string()],
+        xsd_symbols: vec![
+            "\\u{E500}".to_string(),
+            "\\u{E320}".to_string(),
+            "\\u{E000}".to_string(),
+        ],
         port_range: (18101, 18120),
         database_connections: 20,
         neural_mux_enabled: true,
@@ -435,8 +490,10 @@ pub async fn initialize_foundation_database() -> crate::diagnostics::Result<Data
 
     db_manager.store_smart_crate(&foundation_meta).await?;
 
-    crate::diagnostics::info!("🗄️ Foundation database initialized successfully with {} backend",
-        db_manager.get_backend_type());
+    crate::diagnostics::info!(
+        "🗄️ Foundation database initialized successfully with {} backend",
+        db_manager.get_backend_type()
+    );
 
     Ok(db_manager)
 }
@@ -454,7 +511,9 @@ mod tests {
 
     #[tokio::test]
     async fn test_compression_stats() {
-        let db = DatabaseManager::new(DatabaseConfig::default()).await.unwrap();
+        let db = DatabaseManager::new(DatabaseConfig::default())
+            .await
+            .unwrap();
         let stats = db.get_compression_stats();
         assert_eq!(stats.total_compressions, 0);
         assert_eq!(stats.total_bytes_saved, 0);
@@ -495,6 +554,9 @@ mod tests {
             },
             ..Default::default()
         };
-        assert!(matches!(supabase_config.backend, DatabaseBackend::Supabase { .. }));
+        assert!(matches!(
+            supabase_config.backend,
+            DatabaseBackend::Supabase { .. }
+        ));
     }
 }

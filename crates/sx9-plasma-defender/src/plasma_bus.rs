@@ -3,10 +3,10 @@
 //! NATS integration for plasma telemetry and ANN event streaming
 
 use async_nats::Client;
-use tokio::sync::broadcast;
+use serde_json::json;
 use std::sync::Arc;
 use std::time::Instant;
-use serde_json::json;
+use tokio::sync::broadcast;
 use tracing::{info, warn};
 
 /// PlasmaBus - NATS telemetry bridge with ANN event channel
@@ -27,9 +27,9 @@ impl PlasmaBus {
     pub async fn new(nats_url: &str) -> anyhow::Result<Self> {
         let nats = Arc::new(async_nats::connect(nats_url).await?);
         let (ann_tx, _) = broadcast::channel(2048);
-        
+
         info!("✅ PlasmaBus connected to NATS: {}", nats_url);
-        
+
         Ok(Self { nats, ann_tx })
     }
 
@@ -43,7 +43,10 @@ impl PlasmaBus {
 
         // Publish to NATS
         self.nats
-            .publish("sx9.stream.ops.plasma.telemetry", serde_json::to_vec(&payload)?.into())
+            .publish(
+                "sx9.stream.ops.plasma.telemetry",
+                serde_json::to_vec(&payload)?.into(),
+            )
             .await?;
 
         // Broadcast to ANN channel
@@ -55,12 +58,9 @@ impl PlasmaBus {
 
         Ok(())
     }
-    
+
     /// Get ANN event receiver
     pub fn subscribe_ann(&self) -> broadcast::Receiver<PlasmaEvent> {
         self.ann_tx.subscribe()
     }
 }
-
-
-

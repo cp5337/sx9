@@ -41,23 +41,22 @@ extern crate std;
 #[cfg(all(not(feature = "std"), not(feature = "nats"), not(test)))]
 extern crate alloc;
 
-mod ring;
-mod command;
-mod result;
 mod bus;
-mod plasma;
+mod command;
 pub mod crystal;
+mod plasma;
+mod result;
+mod ring;
 
-pub use ring::Ring;
+pub use bus::{AtlasBus, BusStats, DispatchResult};
 pub use command::{Command, CommandKind};
-pub use result::{AtlasResult, ResultKind};
-pub use bus::{AtlasBus, DispatchResult, BusStats};
-pub use plasma::{PlasmaState, PlasmaSnapshot, SdtState, ThyristorConfig};
 pub use crystal::{
-    Crystal, CrystalFamily, ResonanceProfile, DeltaClass,
-    VotingPolicy, Polycrystal, PolycrystalResult, MAX_CRYSTALS,
+    Crystal, CrystalFamily, DeltaClass, Polycrystal, PolycrystalResult, ResonanceProfile,
+    VotingPolicy, MAX_CRYSTALS,
 };
+pub use plasma::{PlasmaSnapshot, PlasmaState, SdtState, ThyristorConfig};
+pub use result::{AtlasResult, ResultKind};
+pub use ring::Ring;
 
 #[cfg(feature = "nats")]
 pub mod bridge;
-

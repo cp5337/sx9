@@ -29,30 +29,30 @@
 //! ATLAS Daemon Orchestration
 //! ```
 
-pub mod parser;
-pub mod operations;
 pub mod hash_classifier;
 pub mod hash_extractor;
+pub mod operations;
+pub mod parser;
 
-pub use parser::*;
-pub use operations::*;
 pub use hash_classifier::*;
 pub use hash_extractor::*;
+pub use operations::*;
+pub use parser::*;
 
 // New modules for Canonical Escalatory Action System
-pub mod unicode_registry;
-pub mod unicode_bridge;
-pub mod playbook_unicode;
 pub mod hash_unicode_bridge;
-pub mod toml_unicode_compiler;
 pub mod playbook_executor;
+pub mod playbook_unicode;
+pub mod toml_unicode_compiler;
+pub mod unicode_bridge;
+pub mod unicode_registry;
 
-pub use unicode_registry::*;
-pub use unicode_bridge::*;
+pub use hash_unicode_bridge::*;
+pub use playbook_executor::*;
 pub use playbook_unicode::*;
 pub use toml_unicode_compiler::*;
-pub use playbook_executor::*;
-pub use hash_unicode_bridge::*;
+pub use unicode_bridge::*;
+pub use unicode_registry::*;
 
 /// DSL version
 pub const DSL_VERSION: &str = "7.3.1";
@@ -100,7 +100,3 @@ impl From<String> for DSLError {
         DSLError::ExecutionFailed(s)
     }
 }
-
-
-
-

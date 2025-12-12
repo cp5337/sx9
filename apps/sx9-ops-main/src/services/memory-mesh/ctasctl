@@ -1,0 +1,75 @@
+#!/usr/bin/env python3
+import subprocess
+import socket
+import json
+import time
+
+SERVICES = {
+    "context-mesh": 19011,
+    "atomic-clipboard": 19012,
+    "thalmic-filter": 19013,
+    "sledis-cache": 19014,
+    "voice-gateway": 19015,
+    "shuttle-sync": 19016,
+}
+
+def check_port(host, port, timeout=1.0):
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    s.settimeout(timeout)
+    try:
+        s.connect((host, port))
+        s.shutdown(socket.SHUT_RDWR)
+        return True
+    except Exception:
+        return False
+    finally:
+        s.close()
+
+def service_status():
+    results = {}
+    for service, port in SERVICES.items():
+        alive = check_port("127.0.0.1", port)
+        results[service] = {
+            "port": port,
+            "status": "🟢 RUNNING" if alive else "🔴 OFFLINE"
+        }
+    return results
+
+def cache_metrics():
+    # Placeholder for sledis stats check
+    try:
+        result = subprocess.check_output(["du", "-sh", "./sledis_cache"], text=True)
+        size = result.split()[0]
+    except Exception:
+        size = "N/A"
+    return {"sledis_cache_size": size}
+
+def print_status():
+    print("=== CTAS-7 Memory Mesh System Status ===\n")
+    statuses = service_status()
+    for name, info in statuses.items():
+        print(f"{name:20} | Port {info['port']:5} | {info['status']}")
+    print("\nCache Metrics:", json.dumps(cache_metrics(), indent=2))
+
+def main():
+    print("CTAS-7 Operator CLI (ctasctl)")
+    print("Commands: status | ports | cache\n")
+
+    while True:
+        cmd = input("ctasctl> ").strip().lower()
+        if cmd == "exit" or cmd == "quit":
+            break
+        elif cmd == "status":
+            print_status()
+        elif cmd == "ports":
+            for s, p in SERVICES.items():
+                print(f"{s:20} -> Port {p}")
+        elif cmd == "cache":
+            print(json.dumps(cache_metrics(), indent=2))
+        elif cmd == "help":
+            print("Commands: status, ports, cache, exit")
+        else:
+            print("Unknown command. Type 'help' for options.")
+
+if __name__ == "__main__":
+    main()

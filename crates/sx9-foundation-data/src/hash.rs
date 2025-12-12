@@ -4,8 +4,7 @@
 //! All outputs are Base96 encoded per RFC-9001/RFC-9002
 
 use sx9_foundation_core::hash64::{
-    murmur3_64, murmur3_64_base96, trivariate_from_key,
-    unicode_slot, seeds, BASE96_CHARSET,
+    murmur3_64, murmur3_64_base96, seeds, trivariate_from_key, unicode_slot, BASE96_CHARSET,
 };
 
 /// CTAS-7 v7.3.1 Trivariate Hash Engine
@@ -34,7 +33,11 @@ impl TrivariateHashEngine {
 
     /// Generate environmental mask hash (16 Base96 chars)
     pub fn generate_environmental_hash(&self, environmental_data: &str) -> anyhow::Result<String> {
-        Ok(murmur3_64_base96(environmental_data.as_bytes(), seeds::ENV, 16))
+        Ok(murmur3_64_base96(
+            environmental_data.as_bytes(),
+            seeds::ENV,
+            16,
+        ))
     }
 
     /// Generate Unicode compressed hash (U+E000–E9FF)
@@ -70,10 +73,7 @@ impl Default for TrivariateHashEngine {
 
 // Re-export core hash functions for convenience
 pub use sx9_foundation_core::hash64::{
-    murmur3_64 as hash64,
-    murmur3_64_base96 as hash64_base96,
-    trivariate_hash,
-    encode_base96,
+    encode_base96, murmur3_64 as hash64, murmur3_64_base96 as hash64_base96, trivariate_hash,
 };
 
 #[cfg(test)]
@@ -86,7 +86,9 @@ mod tests {
         let hash = engine.generate_hash("test_key", "test_data").unwrap();
 
         assert_eq!(hash.len(), 48); // SCH(16) + CUID(16) + UUID(16)
-        assert!(hash.chars().all(|c| engine.base96_chars.contains(&(c as u8))));
+        assert!(hash
+            .chars()
+            .all(|c| engine.base96_chars.contains(&(c as u8))));
     }
 
     #[test]
@@ -123,7 +125,9 @@ mod tests {
     #[test]
     fn test_environmental_hash() {
         let engine = TrivariateHashEngine::new();
-        let hash = engine.generate_environmental_hash("environment_data").unwrap();
+        let hash = engine
+            .generate_environmental_hash("environment_data")
+            .unwrap();
         assert_eq!(hash.len(), 16);
     }
 

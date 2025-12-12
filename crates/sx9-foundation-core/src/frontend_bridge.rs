@@ -74,7 +74,10 @@ impl FrontendBridge {
         self.test_frontend_connections().await?;
 
         self.initialized = true;
-        println!("🌉 Frontend Bridge initialized with {} endpoints", self.bridge_endpoints.len());
+        println!(
+            "🌉 Frontend Bridge initialized with {} endpoints",
+            self.bridge_endpoints.len()
+        );
 
         Ok(())
     }
@@ -120,7 +123,8 @@ impl FrontendBridge {
         let endpoints_clone = self.bridge_endpoints.clone();
         for (index, endpoint) in endpoints_clone.iter().enumerate() {
             // Simulate connection test
-            self.bridge_endpoints[index].active = self.test_endpoint_connection(&endpoint.url).await;
+            self.bridge_endpoints[index].active =
+                self.test_endpoint_connection(&endpoint.url).await;
 
             if self.bridge_endpoints[index].active {
                 self.active_connections.push(ActiveConnection {
@@ -188,8 +192,16 @@ impl FrontendBridge {
             active_count,
             total_count,
             self.active_connections.len(),
-            if self.cli_manifest.is_some() { "LOADED" } else { "NOT LOADED" },
-            if self.ui_manifest.is_some() { "LOADED" } else { "NOT LOADED" }
+            if self.cli_manifest.is_some() {
+                "LOADED"
+            } else {
+                "NOT LOADED"
+            },
+            if self.ui_manifest.is_some() {
+                "LOADED"
+            } else {
+                "NOT LOADED"
+            }
         )
     }
 }
@@ -232,8 +244,14 @@ mod tests {
         bridge.setup_bridge_endpoints();
 
         assert_eq!(bridge.bridge_endpoints.len(), 4);
-        assert!(bridge.bridge_endpoints.iter().any(|e| e.name == "n8n_workflow"));
-        assert!(bridge.bridge_endpoints.iter().any(|e| e.name == "apple_native"));
+        assert!(bridge
+            .bridge_endpoints
+            .iter()
+            .any(|e| e.name == "n8n_workflow"));
+        assert!(bridge
+            .bridge_endpoints
+            .iter()
+            .any(|e| e.name == "apple_native"));
     }
 
     #[test]

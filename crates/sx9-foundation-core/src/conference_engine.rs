@@ -3,7 +3,7 @@
 //! Handles conference solutions, integrations, and communication protocols
 
 use serde::{Deserialize, Serialize};
-use std::collections::HashMap;
+
 use chrono::{DateTime, Utc};
 
 // Conference Solutions [INTEGRATE] Platforms [MANAGE] Protocols
@@ -161,10 +161,26 @@ pub struct QualitySettings {
 // Video Quality Presets [DEFINE] Standards [SET] Parameters
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub enum VideoQualityPreset {
-    Low { max_resolution: (u32, u32), max_fps: u32, max_bitrate: u32 },
-    Medium { max_resolution: (u32, u32), max_fps: u32, max_bitrate: u32 },
-    High { max_resolution: (u32, u32), max_fps: u32, max_bitrate: u32 },
-    Ultra { max_resolution: (u32, u32), max_fps: u32, max_bitrate: u32 },
+    Low {
+        max_resolution: (u32, u32),
+        max_fps: u32,
+        max_bitrate: u32,
+    },
+    Medium {
+        max_resolution: (u32, u32),
+        max_fps: u32,
+        max_bitrate: u32,
+    },
+    High {
+        max_resolution: (u32, u32),
+        max_fps: u32,
+        max_bitrate: u32,
+    },
+    Ultra {
+        max_resolution: (u32, u32),
+        max_fps: u32,
+        max_bitrate: u32,
+    },
     Custom {
         resolution: (u32, u32),
         fps: u32,
@@ -176,9 +192,18 @@ pub enum VideoQualityPreset {
 // Audio Quality Presets [CONFIGURE] Sound [SET] Standards
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub enum AudioQualityPreset {
-    Voice { sample_rate: u32, bitrate: u32 },
-    Music { sample_rate: u32, bitrate: u32 },
-    Broadcast { sample_rate: u32, bitrate: u32 },
+    Voice {
+        sample_rate: u32,
+        bitrate: u32,
+    },
+    Music {
+        sample_rate: u32,
+        bitrate: u32,
+    },
+    Broadcast {
+        sample_rate: u32,
+        bitrate: u32,
+    },
     Custom {
         sample_rate: u32,
         bitrate: u32,
@@ -199,10 +224,10 @@ pub struct BandwidthManagement {
 // Priority Allocation [MANAGE] Resources [DISTRIBUTE] Fairly
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct PriorityAllocation {
-    pub video_priority: u8,     // 1-10
-    pub audio_priority: u8,     // 1-10
+    pub video_priority: u8,        // 1-10
+    pub audio_priority: u8,        // 1-10
     pub screen_share_priority: u8, // 1-10
-    pub data_priority: u8,      // 1-10
+    pub data_priority: u8,         // 1-10
 }
 
 // Security Configuration [IMPLEMENT] Protection [ENSURE] Privacy

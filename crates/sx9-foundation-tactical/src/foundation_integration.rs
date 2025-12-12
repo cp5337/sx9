@@ -2,12 +2,7 @@
 //! Retrofit integration with gold disk foundation core
 
 #[cfg(feature = "foundation-integration")]
-use sx9_foundation_core::{
-    // hash_engine::{init_global_hash_engine}, // TODO: Check if this exists in sx9-foundation-core
-    // neural_mux::NeuralMux,
-    // unicode_assembly::UnicodeAssembly,
-    // statistical_engine::StatisticalEngine,
-};
+use sx9_foundation_core::{};
 
 /// Initialize foundation integration
 pub fn init_foundation_integration() -> Result<(), Box<dyn std::error::Error>> {

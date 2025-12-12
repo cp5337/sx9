@@ -67,9 +67,8 @@ impl ConvergenceCalculator {
 
         // Calculate H2 (semantic) from signal variance
         let mean = h1_raw;
-        let variance: f64 = signals.iter()
-            .map(|&x| (x - mean).powi(2))
-            .sum::<f64>() / signals.len() as f64;
+        let variance: f64 =
+            signals.iter().map(|&x| (x - mean).powi(2)).sum::<f64>() / signals.len() as f64;
         let h2_raw = 1.0 - variance.sqrt().min(1.0); // Lower variance = higher semantic coherence
 
         self.update(h1_raw, h2_raw);
@@ -145,5 +144,3 @@ mod tests {
         assert!(calc.h1_score() > 0.5);
     }
 }
-
-

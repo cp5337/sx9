@@ -35,8 +35,9 @@ struct Args {
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
     let args = Args::parse();
-    
-    println!(r#"
+
+    println!(
+        r#"
     ╔═══════════════════════════════════════════════════════════════╗
     ║                                                               ║
     ║   ███████╗██╗  ██╗ █████╗        ██████╗  █████╗ ████████╗   ║
@@ -49,8 +50,8 @@ async fn main() -> anyhow::Result<()> {
     ║   Unified Gateway for the SYNAPTIX9 Cognitive Engine          ║
     ║                                                               ║
     ╚═══════════════════════════════════════════════════════════════╝
-    "#);
-    
+    "#
+    );
+
     sx9_gateway_primary::run_gateway(Some(args.port)).await
 }
-

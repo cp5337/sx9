@@ -8,9 +8,9 @@
 //! Unicode Compression: U+E000–E9FF for compact telemetry
 //! Environmental Masks: WX/TF/OB/JU/TH (prefix) + RP/RE/RS/BW/RO (suffix)
 
-use std::time::{SystemTime, UNIX_EPOCH};
-use std::collections::HashMap;
+#![allow(deprecated)]
 use anyhow::Result;
+use std::time::{SystemTime, UNIX_EPOCH};
 
 /// Base96 Character Set (RFC-9001 v1.1 Standard) - Exactly 96 characters
 /// Canonical charset per RFC-9001 Section 4.3
@@ -20,34 +20,34 @@ const BASE96_CHARSET: &str = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmn
 #[derive(Debug, Clone)]
 pub struct EnvironmentalMasks {
     // Prefix Masks (Global Context)
-    pub wx: f64,  // Weather/Radiation (0-1)
-    pub tf: f64,  // Traffic/Orbital congestion (0-1)
-    pub ob: u8,   // Order of Battle (0-5 threat index)
+    pub wx: f64,    // Weather/Radiation (0-1)
+    pub tf: f64,    // Traffic/Orbital congestion (0-1)
+    pub ob: u8,     // Order of Battle (0-5 threat index)
     pub ju: String, // Jurisdiction/Authority
-    pub th: f64,  // Threat Posture (0-1)
+    pub th: f64,    // Threat Posture (0-1)
 
     // Space-Specific Extensions
-    pub sr: f64,  // Solar radiation impact (0-1)
-    pub gm: f64,  // Geomagnetic disturbance (0-1)
-    pub de: f64,  // Debris field density (0-1)
+    pub sr: f64,    // Solar radiation impact (0-1)
+    pub gm: f64,    // Geomagnetic disturbance (0-1)
+    pub de: f64,    // Debris field density (0-1)
     pub js: String, // Jurisdictional shell (orbital layer)
 
     // Suffix Masks (Local Context)
-    pub rp: f64,  // Personnel availability (0-1)
-    pub re: f64,  // Equipment readiness (0-1)
-    pub rs: f64,  // Resource/Fuel availability (0-1)
-    pub bw: f64,  // Bandwidth (normalized)
+    pub rp: f64,    // Personnel availability (0-1)
+    pub re: f64,    // Equipment readiness (0-1)
+    pub rs: f64,    // Resource/Fuel availability (0-1)
+    pub bw: f64,    // Bandwidth (normalized)
     pub ro: String, // Rules of Engagement
 }
 
 /// Graduated Level System
 #[derive(Debug, Clone)]
 pub enum GraduatedLevel {
-    Critical,   // ! (0-0.2)
-    Degraded,   // # (0.2-0.4)
-    Nominal,    // = (0.4-0.6)
-    Enhanced,   // + (0.6-0.8)
-    Optimal,    // ~ (0.8-1.0)
+    Critical, // ! (0-0.2)
+    Degraded, // # (0.2-0.4)
+    Nominal,  // = (0.4-0.6)
+    Enhanced, // + (0.6-0.8)
+    Optimal,  // ~ (0.8-1.0)
 }
 
 impl GraduatedLevel {
@@ -74,9 +74,9 @@ impl GraduatedLevel {
 
 /// CTAS-7 v7.2 Trivariate Hash Engine with Environmental Awareness
 pub struct TrivariteHashEngine {
-    murmur_sch_seed: u64,    // 0x5BD1E995 - Murmur3 constant for SCH
-    murmur_cuid_seed: u64,   // 0x1B873593 - Murmur3 constant for CUID
-    murmur_uuid_seed: u64,   // 0xDEADBEEF - Murmur3 constant for UUID
+    murmur_sch_seed: u64,  // 0x5BD1E995 - Murmur3 constant for SCH
+    murmur_cuid_seed: u64, // 0x1B873593 - Murmur3 constant for CUID
+    murmur_uuid_seed: u64, // 0xDEADBEEF - Murmur3 constant for UUID
     base96_charset: &'static str,
     environmental_masks: Option<EnvironmentalMasks>,
 }
@@ -85,23 +85,23 @@ impl Default for EnvironmentalMasks {
     fn default() -> Self {
         Self {
             // Prefix Masks (Global Context)
-            wx: 0.5,  // Nominal weather
-            tf: 0.3,  // Light traffic
-            ob: 1,    // Minimal threat
+            wx: 0.5, // Nominal weather
+            tf: 0.3, // Light traffic
+            ob: 1,   // Minimal threat
             ju: "CONUS".to_string(),
-            th: 0.2,  // Low threat
+            th: 0.2, // Low threat
 
             // Space-Specific Extensions
-            sr: 0.4,  // Moderate solar radiation
-            gm: 0.3,  // Low geomagnetic activity
-            de: 0.1,  // Minimal debris
+            sr: 0.4, // Moderate solar radiation
+            gm: 0.3, // Low geomagnetic activity
+            de: 0.1, // Minimal debris
             js: "LEO".to_string(),
 
             // Suffix Masks (Local Context)
-            rp: 0.8,  // Good personnel availability
-            re: 0.9,  // High equipment readiness
-            rs: 0.7,  // Good resource availability
-            bw: 0.6,  // Adequate bandwidth
+            rp: 0.8, // Good personnel availability
+            re: 0.9, // High equipment readiness
+            rs: 0.7, // Good resource availability
+            bw: 0.6, // Adequate bandwidth
             ro: "PEACEFUL".to_string(),
         }
     }
@@ -110,9 +110,9 @@ impl Default for EnvironmentalMasks {
 impl TrivariteHashEngine {
     pub fn new() -> Self {
         Self {
-            murmur_sch_seed: 0x5BD1E995,   // CTAS-7 v7.2 constant
-            murmur_cuid_seed: 0x1B873593,  // CTAS-7 v7.2 constant
-            murmur_uuid_seed: 0xDEADBEEF,  // CTAS-7 v7.2 constant
+            murmur_sch_seed: 0x5BD1E995,  // CTAS-7 v7.2 constant
+            murmur_cuid_seed: 0x1B873593, // CTAS-7 v7.2 constant
+            murmur_uuid_seed: 0xDEADBEEF, // CTAS-7 v7.2 constant
             base96_charset: BASE96_CHARSET,
             environmental_masks: None,
         }
@@ -130,7 +130,14 @@ impl TrivariteHashEngine {
         println!("🌍 CUID Seed: 0x{:X}", self.murmur_cuid_seed);
         println!("🔑 UUID Seed: 0x{:X}", self.murmur_uuid_seed);
         println!("📝 Base96 Charset: 96 characters");
-        println!("🌐 Environmental Masks: {}", if self.environmental_masks.is_some() { "Enabled" } else { "Disabled" });
+        println!(
+            "🌐 Environmental Masks: {}",
+            if self.environmental_masks.is_some() {
+                "Enabled"
+            } else {
+                "Disabled"
+            }
+        );
         Ok(())
     }
 
@@ -143,7 +150,7 @@ impl TrivariteHashEngine {
 
         for (i, &byte) in semantic_input.as_bytes().iter().enumerate() {
             hash_accumulator = hash_accumulator
-                .wrapping_mul(0xCC9E2D51)  // Murmur3 constant
+                .wrapping_mul(0xCC9E2D51) // Murmur3 constant
                 .wrapping_add(byte as u64)
                 .wrapping_add(i as u64);
         }
@@ -154,7 +161,10 @@ impl TrivariteHashEngine {
 
     /// CTAS-7 v7.2: Generate CUID with Environmental Masks (Positions 17-32)
     pub fn generate_cuid_murmur3(&self, context: &str) -> String {
-        let timestamp = SystemTime::now().duration_since(UNIX_EPOCH).unwrap().as_secs();
+        let timestamp = SystemTime::now()
+            .duration_since(UNIX_EPOCH)
+            .unwrap()
+            .as_secs();
 
         // Build environmental mask tail
         let mask_tail = if let Some(ref masks) = self.environmental_masks {
@@ -170,7 +180,7 @@ impl TrivariteHashEngine {
 
         for (i, &byte) in cuid_input.as_bytes().iter().enumerate() {
             hash_accumulator = hash_accumulator
-                .wrapping_mul(0xC2B2AE35)  // Murmur3 constant
+                .wrapping_mul(0xC2B2AE35) // Murmur3 constant
                 .wrapping_add(byte as u64)
                 .wrapping_add(i as u64);
         }
@@ -221,7 +231,12 @@ impl TrivariteHashEngine {
     }
 
     /// Generate complete 48-position trivariate hash (CTAS-7 v7.2)
-    pub fn generate_trivariate_hash(&self, content: &str, context: &str, primitive_type: &str) -> String {
+    pub fn generate_trivariate_hash(
+        &self,
+        content: &str,
+        context: &str,
+        primitive_type: &str,
+    ) -> String {
         let sch = self.generate_sch_murmur3(content, primitive_type);
         let cuid = self.generate_cuid_murmur3(context);
         let uuid = self.generate_uuid_murmur3(content, context);
@@ -240,7 +255,8 @@ impl TrivariteHashEngine {
     fn compress_to_unicode(&self, hash: &str) -> String {
         let mut result = String::new();
 
-        for c in hash.chars().take(48) { // Ensure we only take 48 characters
+        for c in hash.chars().take(48) {
+            // Ensure we only take 48 characters
             // Map each Base96 character to Unicode Private Use Block
             let code = 0xE000 + ((c as u32) % 0x9FF);
             if let Some(unicode_char) = std::char::from_u32(code) {
@@ -376,15 +392,16 @@ impl Default for TrivariteHashEngine {
 }
 
 #[cfg(test)]
+#[allow(deprecated)]
 mod tests {
     use super::*;
 
     #[test]
     fn test_trivariate_hash_generation_v72() {
         let engine = TrivariteHashEngine::new();
-        let hash = engine.generate_trivariate_hash("test_content", "test_context", "Actor");
-        assert_eq!(hash.len(), 48);
-        assert!(engine.validate_trivariate_hash(&hash));
+        let _hash = engine.generate_trivariate_hash("test_content", "test_context", "Actor");
+        assert_eq!(_hash.len(), 48);
+        assert!(engine.validate_trivariate_hash(&_hash));
     }
 
     #[test]
@@ -397,7 +414,11 @@ mod tests {
         };
 
         let engine = TrivariteHashEngine::new().with_environmental_masks(masks);
-        let hash = engine.generate_trivariate_hash("satellite_track", "ground_station_42", "TrackSatellite");
+        let hash = engine.generate_trivariate_hash(
+            "satellite_track",
+            "ground_station_42",
+            "TrackSatellite",
+        );
         assert_eq!(hash.len(), 48);
 
         // Test routing based on threat level
@@ -455,15 +476,16 @@ mod tests {
     #[test]
     fn test_space_environment_masks() {
         let masks = EnvironmentalMasks {
-            sr: 0.95, // High solar radiation
-            gm: 0.80, // High geomagnetic activity
-            de: 0.25, // Moderate debris
+            sr: 0.95,              // High solar radiation
+            gm: 0.80,              // High geomagnetic activity
+            de: 0.25,              // Moderate debris
             js: "GEO".to_string(), // Geostationary orbit
             ..Default::default()
         };
 
         let engine = TrivariteHashEngine::new().with_environmental_masks(masks);
-        let hash = engine.generate_trivariate_hash("orbital_track", "space_station", "SatelliteManeuver");
+        let hash =
+            engine.generate_trivariate_hash("orbital_track", "space_station", "SatelliteManeuver");
         assert_eq!(hash.len(), 48);
     }
 }

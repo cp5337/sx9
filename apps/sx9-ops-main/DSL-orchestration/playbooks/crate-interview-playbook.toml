@@ -1,0 +1,99 @@
+[playbook]
+name = "crate-interview-playbook"
+version = "1.0"
+description = "Comprehensive crate interview system for operational intelligence - converted from XSD"
+
+[playbook.trivariate_hash]
+sch = "crateIntrvwSch001"  # Component identity for crate interview
+cuid = "crateIntrvwCuid01"  # Context for interview operations
+uuid = "crateIntrvwUuid01"  # Persistence for interview results
+
+[playbook.escalation]
+tier_1_wasm = "crate-scanner.wasm"
+tier_2_microkernel = "microkernel_crate_analyzer"
+tier_3_kernel_crate = "ctas7-crate-analyzer-system"
+tier_4_multi_crates = ["ctas7-crate-analyzer-system", "ctas7-intel-system"]
+tier_5_containers = "docker-swarm-crate-analysis"
+tier_6_firefly = "firefly-crate-config"
+tier_7_orb = "orb-crate-config"
+
+[playbook.unicode_assembly]
+primary_trigger = "\\u{E300}"  # ptie (intelligence)
+escalation_triggers = ["\\u{E900}", "\\u{E901}", "\\u{E902}", "\\u{E903}"]
+
+[playbook.steps.1]
+name = "crate-discovery"
+tier = 1  # WASM
+tool = "crate_scanner"
+unicode_op = "\\u{E900}"  # WASM sensor
+
+[playbook.steps.2]
+name = "dependency-analysis"
+tier = 2  # microkernel
+depends_on = ["crate-discovery"]
+tool = "dependency_analyzer"
+unicode_op = "\\u{E901}"
+
+[playbook.steps.3]
+name = "metadata-extraction"
+tier = 2  # microkernel
+depends_on = ["crate-discovery"]
+tool = "metadata_extractor"
+unicode_op = "\\u{E902}"
+
+[playbook.steps.4]
+name = "individual-interviews"
+tier = 3  # kernel crate
+depends_on = ["dependency-analysis", "metadata-extraction"]
+crate = "ctas7-crate-analyzer-system"
+unicode_op = "\\u{E300}"  # ptie
+
+[playbook.steps.5]
+name = "capability-analysis"
+tier = 3  # kernel crate
+depends_on = ["individual-interviews"]
+crate = "ctas7-crate-analyzer-system"
+unicode_op = "\\u{E301}"  # eei
+
+[playbook.steps.6]
+name = "health-check"
+tier = 3  # kernel crate
+depends_on = ["individual-interviews"]
+crate = "ctas7-crate-analyzer-system"
+unicode_op = "\\u{E302}"  # threat
+
+[playbook.steps.7]
+name = "group-analysis"
+tier = 4  # multi-crates
+depends_on = ["capability-analysis", "health-check"]
+crates = ["ctas7-crate-analyzer-system", "ctas7-intel-system"]
+unicode_op = "\\u{E30C}"  # intel-fusion
+
+[playbook.steps.8]
+name = "operational-mapping"
+tier = 4  # multi-crates
+depends_on = ["group-analysis"]
+crates = ["ctas7-crate-analyzer-system", "ctas7-cognitive-intelligence-system"]
+unicode_op = "\\u{E30D}"  # operational-mapping
+
+[playbook.steps.9]
+name = "database-integration"
+tier = 5  # containers
+depends_on = ["operational-mapping"]
+container = "docker-swarm-crate-analysis"
+unicode_op = "\\u{E500}"  # database-op
+
+[playbook.steps.10]
+name = "result-aggregation"
+tier = 6  # firefly
+depends_on = ["database-integration"]
+firefly = "firefly-crate-config"
+unicode_op = "\\u{E600}"  # firefly-op
+
+[playbook.steps.11]
+name = "final-report"
+tier = 7  # orb
+depends_on = ["result-aggregation"]
+orb = "orb-crate-config"
+unicode_op = "\\u{E700}"  # orb-op
+

@@ -6,8 +6,8 @@
 //!
 //! All outputs are Base96 encoded for Unicode assembly compatibility.
 
-use std::io::Cursor;
 use murmur3::murmur3_x64_128;
+use std::io::Cursor;
 
 /// Base96 character set (RFC-9002 compliant)
 /// 96 printable ASCII characters for maximum density
@@ -41,7 +41,7 @@ pub mod seeds {
 pub fn murmur3_64(data: &[u8], seed: u32) -> u64 {
     let mut cursor = Cursor::new(data);
     let hash_128 = murmur3_x64_128(&mut cursor, seed).unwrap_or(0);
-    hash_128 as u64  // Lower 64 bits
+    hash_128 as u64 // Lower 64 bits
 }
 
 /// Compute 64-bit MurmurHash3 and return as hex string (16 chars)
@@ -115,7 +115,11 @@ pub fn trivariate_from_key(key: &str, data: &str) -> String {
     let sch_data = format!("SCH:{}", key);
     let cuid_data = format!("CUID:{}:{}", key, data.len());
     let uuid_data = format!("UUID:{}:{}", key, data);
-    trivariate_hash(sch_data.as_bytes(), cuid_data.as_bytes(), uuid_data.as_bytes())
+    trivariate_hash(
+        sch_data.as_bytes(),
+        cuid_data.as_bytes(),
+        uuid_data.as_bytes(),
+    )
 }
 
 /// Generate Unicode slot assignment from data (U+E000-E9FF range)
@@ -178,7 +182,10 @@ mod tests {
         let data = b"test";
         let slot = unicode_slot(data, seeds::SLOT);
         let code = slot as u32;
-        assert!(code >= 0xE000 && code <= 0xE9FF, "Slot should be in PUA range");
+        assert!(
+            code >= 0xE000 && code <= 0xE9FF,
+            "Slot should be in PUA range"
+        );
     }
 
     #[test]

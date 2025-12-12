@@ -4,7 +4,7 @@
 //! operational trivariate hashes and map them to Unicode triggers.
 
 use crate::dsl::{DSLError, DSLResult};
-use serde::{Serialize, Deserialize};
+use serde::{Deserialize, Serialize};
 use std::ops::Range;
 
 /// Operational hash position ranges (0-indexed)
@@ -184,7 +184,3 @@ mod tests {
         assert_eq!(triggers[2], '\u{E400}');
     }
 }
-
-
-
-

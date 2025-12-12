@@ -1,0 +1,61 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: opencti
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: opencti
+  template:
+    metadata:
+      labels:
+        app: opencti
+    spec:
+      containers:
+      - name: opencti
+        image: opencti/platform:latest
+        ports:
+        - containerPort: 4000
+        env:
+        - name: APP__PORT
+          value: "4000"
+        - name: APP__BASE_URL
+          value: "http://localhost:4000"
+        - name: APP__ADMIN__EMAIL
+          value: "admin@opencti.io"
+        - name: APP__ADMIN__PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: ctas-secrets
+              key: opencti-admin-password
+        - name: APP__ADMIN__TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: ctas-secrets
+              key: opencti-admin-token
+        - name: ELASTICSEARCH__URL
+          value: "http://elasticsearch:9200"
+        - name: MINIO__ENDPOINT
+          value: "minio"
+        - name: RABBITMQ__HOSTNAME
+          value: "rabbitmq"
+        - name: REDIS__HOSTNAME
+          value: "redis"
+        resources:
+          limits:
+            cpu: "4"
+            memory: "8Gi"
+          requests:
+            cpu: "2"
+            memory: "4Gi"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: opencti
+spec:
+  ports:
+  - port: 4000
+  selector:
+    app: opencti

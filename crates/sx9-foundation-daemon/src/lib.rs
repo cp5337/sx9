@@ -2,10 +2,10 @@
 // Core modules for enterprise PM2 replacement
 
 pub mod services {
-    pub mod backend_mcp_server;
-    pub mod service_discovery;
     pub mod abe_controlled_access;
     pub mod api_vault_client;
+    pub mod backend_mcp_server;
+    pub mod service_discovery;
 }
 
 pub mod testing {

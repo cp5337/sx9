@@ -1,0 +1,77 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kali
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kali
+  template:
+    metadata:
+      labels:
+        app: kali
+    spec:
+      containers:
+      - name: kali
+        image: kalilinux/kali-rolling:latest
+        securityContext:
+          privileged: true
+        ports:
+        - containerPort: 8080
+        - containerPort: 4444
+        volumeMounts:
+        - name: kali-data
+          mountPath: /root
+        - name: kali-tools
+          mountPath: /opt/tools
+        - name: kali-scripts
+          mountPath: /opt/scripts
+        env:
+        - name: DISPLAY
+          value: ":0"
+        - name: TERM
+          value: "xterm"
+        resources:
+          limits:
+            cpu: "4"
+            memory: "8Gi"
+          requests:
+            cpu: "2"
+            memory: "4Gi"
+        command: ["/bin/bash"]
+        args: ["-c", "/opt/scripts/init.sh && sleep infinity"]
+      volumes:
+      - name: kali-data
+        persistentVolumeClaim:
+          claimName: kali-data-pvc
+      - name: kali-tools
+        configMap:
+          name: kali-tools-config
+      - name: kali-scripts
+        configMap:
+          name: kali-scripts-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kali
+spec:
+  ports:
+  - port: 8080
+    name: api
+  - port: 4444
+    name: msf
+  selector:
+    app: kali
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: kali-data-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 20Gi

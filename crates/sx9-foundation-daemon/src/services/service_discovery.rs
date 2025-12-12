@@ -101,7 +101,7 @@ pub enum BridgeType {
 }
 
 /// Service Registration Request
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ServiceRegistration {
     pub service_type: ServiceType,
     pub name: String,
@@ -125,7 +125,10 @@ impl ServiceRegistry {
 
     /// Start service discovery server
     pub async fn start(&self) -> Result<(), Box<dyn std::error::Error>> {
-        println!("🔍 Starting Service Discovery on port {}", self.discovery_port);
+        println!(
+            "🔍 Starting Service Discovery on port {}",
+            self.discovery_port
+        );
 
         // Start heartbeat monitoring
         self.start_heartbeat_monitoring().await;
@@ -146,11 +149,14 @@ impl ServiceRegistry {
 
         // Check for singleton violations
         if registration.singleton {
-            let existing_singleton = services.values()
+            let existing_singleton = services
+                .values()
                 .find(|s| s.service_type == registration.service_type && s.singleton);
 
             if let Some(existing) = existing_singleton {
-                if existing.status == ServiceStatus::Healthy || existing.status == ServiceStatus::Degraded {
+                if existing.status == ServiceStatus::Healthy
+                    || existing.status == ServiceStatus::Degraded
+                {
                     return Err(format!(
                         "Singleton violation: {} already running as {}",
                         format!("{:?}", registration.service_type),
@@ -161,7 +167,8 @@ impl ServiceRegistry {
         }
 
         // Check for port conflicts
-        let port_conflict = services.values()
+        let port_conflict = services
+            .values()
             .find(|s| s.host == registration.host && s.port == registration.port);
 
         if let Some(conflict) = port_conflict {
@@ -172,7 +179,8 @@ impl ServiceRegistry {
         }
 
         // Create service ID
-        let service_id = format!("{}-{}",
+        let service_id = format!(
+            "{}-{}",
             format!("{:?}", registration.service_type).to_lowercase(),
             Uuid::new_v4().to_string()[..8].to_string()
         );
@@ -192,8 +200,15 @@ impl ServiceRegistry {
 
         services.insert(service_id.clone(), registered_service);
 
-        println!("✅ Registered service: {} ({})", service_id,
-                 if registration.singleton { "singleton" } else { "multi-instance" });
+        println!(
+            "✅ Registered service: {} ({})",
+            service_id,
+            if registration.singleton {
+                "singleton"
+            } else {
+                "multi-instance"
+            }
+        );
 
         Ok(service_id)
     }
@@ -219,8 +234,10 @@ impl ServiceRegistry {
 
                     if time_since_heartbeat > chrono::Duration::from_std(timeout).unwrap() {
                         if service.status != ServiceStatus::Shutting {
-                            println!("⚠️ Service timeout detected: {} ({})",
-                                     service.name, service_id);
+                            println!(
+                                "⚠️ Service timeout detected: {} ({})",
+                                service.name, service_id
+                            );
                             to_remove.push(service_id.clone());
                         }
                     }
@@ -250,8 +267,10 @@ impl ServiceRegistry {
 
                 // Count services by type
                 for service in services_guard.values() {
-                    if service.singleton &&
-                       (service.status == ServiceStatus::Healthy || service.status == ServiceStatus::Degraded) {
+                    if service.singleton
+                        && (service.status == ServiceStatus::Healthy
+                            || service.status == ServiceStatus::Degraded)
+                    {
                         *type_counts.entry(service.service_type.clone()).or_insert(0) += 1;
                     }
                 }
@@ -259,8 +278,11 @@ impl ServiceRegistry {
                 // Report violations
                 for (service_type, count) in type_counts {
                     if count > 1 {
-                        println!("🚨 Singleton violation detected: {} has {} instances",
-                                 format!("{:?}", service_type), count);
+                        println!(
+                            "🚨 Singleton violation detected: {} has {} instances",
+                            format!("{:?}", service_type),
+                            count
+                        );
                     }
                 }
             }
@@ -274,12 +296,12 @@ impl ServiceRegistry {
         let services = Arc::clone(&self.services);
 
         // Health endpoint
-        let health = warp::path("health")
-            .and(warp::get())
-            .map(|| warp::reply::json(&serde_json::json!({
+        let health = warp::path("health").and(warp::get()).map(|| {
+            warp::reply::json(&serde_json::json!({
                 "status": "ok",
                 "service": "Service-Discovery"
-            })));
+            }))
+        });
 
         // Service registration endpoint
         let register = warp::path("register")
@@ -290,48 +312,56 @@ impl ServiceRegistry {
                 async move {
                     // This is a simplified version - in real implementation would call register_service
                     match Self::mock_register_service(services_clone, reg).await {
-                        Ok(service_id) => Ok::<_, warp::Rejection>(warp::reply::json(&serde_json::json!({
-                            "success": true,
-                            "service_id": service_id
-                        }))),
+                        Ok(service_id) => {
+                            Ok::<_, warp::Rejection>(warp::reply::json(&serde_json::json!({
+                                "success": true,
+                                "service_id": service_id
+                            })))
+                        }
                         Err(e) => Ok::<_, warp::Rejection>(warp::reply::json(&serde_json::json!({
                             "success": false,
                             "error": e
-                        })))
+                        }))),
                     }
                 }
             });
 
         // Discovery endpoint
         let services_clone = Arc::clone(&self.services);
-        let discover = warp::path("discover")
-            .and(warp::get())
-            .map(move || {
-                let services_guard = services_clone.lock().unwrap();
-                let services_list: Vec<RegisteredService> = services_guard.values().cloned().collect();
+        let discover = warp::path("discover").and(warp::get()).map(move || {
+            let services_guard = services_clone.lock().unwrap();
+            let services_list: Vec<RegisteredService> = services_guard.values().cloned().collect();
 
-                let response = DiscoveryResponse {
-                    services: services_list.clone(),
-                    registry_status: RegistryStatus {
-                        total_services: services_list.len() as u32,
-                        healthy_services: services_list.iter()
-                            .filter(|s| s.status == ServiceStatus::Healthy)
-                            .count() as u32,
-                        singleton_violations: 0, // Would calculate in real implementation
-                        bridge_conflicts: 0,
-                        last_cleanup: chrono::Utc::now(),
-                    },
-                    coordination_bridges: vec![], // Would populate in real implementation
-                };
+            let response = DiscoveryResponse {
+                services: services_list.clone(),
+                registry_status: RegistryStatus {
+                    total_services: services_list.len() as u32,
+                    healthy_services: services_list
+                        .iter()
+                        .filter(|s| s.status == ServiceStatus::Healthy)
+                        .count() as u32,
+                    singleton_violations: 0, // Would calculate in real implementation
+                    bridge_conflicts: 0,
+                    last_cleanup: chrono::Utc::now(),
+                },
+                coordination_bridges: vec![], // Would populate in real implementation
+            };
 
-                warp::reply::json(&response)
-            });
+            warp::reply::json(&response)
+        });
 
-        let routes = health.or(register).or(discover)
+        let routes = health
+            .or(register)
+            .or(discover)
             .with(warp::cors().allow_any_origin());
 
-        println!("🌐 Service Discovery listening on http://localhost:{}", self.discovery_port);
-        warp::serve(routes).run(([127, 0, 0, 1], self.discovery_port)).await;
+        println!(
+            "🌐 Service Discovery listening on http://localhost:{}",
+            self.discovery_port
+        );
+        warp::serve(routes)
+            .run(([127, 0, 0, 1], self.discovery_port))
+            .await;
 
         Ok(())
     }
@@ -341,7 +371,10 @@ impl ServiceRegistry {
         services: Arc<Mutex<HashMap<String, RegisteredService>>>,
         registration: ServiceRegistration,
     ) -> Result<String, String> {
-        let service_id = format!("{}-mock", format!("{:?}", registration.service_type).to_lowercase());
+        let service_id = format!(
+            "{}-mock",
+            format!("{:?}", registration.service_type).to_lowercase()
+        );
 
         let registered_service = RegisteredService {
             service_id: service_id.clone(),
@@ -412,7 +445,9 @@ impl ServiceDiscoveryClient {
     }
 
     /// Discover other services
-    pub async fn discover_services(&self) -> Result<Vec<RegisteredService>, Box<dyn std::error::Error>> {
+    pub async fn discover_services(
+        &self,
+    ) -> Result<Vec<RegisteredService>, Box<dyn std::error::Error>> {
         let client = reqwest::Client::new();
 
         let response = client

@@ -36,7 +36,7 @@ impl DeltaMeasurement {
     fn compute_noise_score(delta_angle: f32, entropy_drift: f32, semantic_drift: f32) -> f32 {
         // Normalize delta angle to 0.0-1.0 (assuming max 180 degrees)
         let normalized_angle = (delta_angle.abs() / 180.0).min(1.0);
-        
+
         // Weighted combination: 40% angle, 30% entropy, 30% semantic
         (normalized_angle * 0.4) + (entropy_drift * 0.3) + (semantic_drift * 0.3)
     }
@@ -68,7 +68,11 @@ impl DeltaOperator {
         let delta_angle_rad = ctx2.delta_angle - ctx1.delta_angle;
 
         // Compute magnitude
-        let magnitude = (delta_timestamp.powi(2) + delta_agent.powi(2) + delta_lineage.powi(2) + delta_angle_rad.powi(2)).sqrt();
+        let magnitude = (delta_timestamp.powi(2)
+            + delta_agent.powi(2)
+            + delta_lineage.powi(2)
+            + delta_angle_rad.powi(2))
+        .sqrt();
 
         // Convert to degrees and normalize to 0-180
         let angle_degrees = magnitude.to_degrees();
@@ -99,7 +103,7 @@ impl DeltaOperator {
 
         // Compare SCH components (semantic identity)
         let sch_diff = Self::hash_component_diff(&hash1.sch, &hash2.sch);
-        
+
         // Compare CUID components (context similarity)
         let cuid_diff = Self::hash_component_diff(&hash1.cuid, &hash2.cuid);
 
@@ -131,7 +135,7 @@ impl DeltaOperator {
         ctx.delta_angle.to_bits().hash(&mut hasher);
         ctx.lineage.hash(&mut hasher);
         ctx.nonce.hash(&mut hasher);
-        
+
         let hash = hasher.finish();
         // Normalize to 0.0-1.0
         (hash as f32) / (u64::MAX as f32)
@@ -169,7 +173,7 @@ mod tests {
     #[test]
     fn test_delta_angle_computation() {
         let operator = DeltaOperator::new(true);
-        
+
         let ctx1 = ContextFrame::new(ExecEnv::Wasm, 1, ExecState::Hot);
         let mut ctx2 = ContextFrame::new(ExecEnv::Wasm, 2, ExecState::Hot);
         ctx2.delta_angle = 45.0;
@@ -181,7 +185,7 @@ mod tests {
     #[test]
     fn test_entropy_drift() {
         let operator = DeltaOperator::new(true);
-        
+
         let ctx1 = ContextFrame::new(ExecEnv::Wasm, 1, ExecState::Hot);
         let ctx2 = ContextFrame::new(ExecEnv::Container, 2, ExecState::Warm);
 
@@ -192,13 +196,13 @@ mod tests {
     #[test]
     fn test_semantic_drift() {
         let operator = DeltaOperator::new(true);
-        
+
         let hash1 = TrivariateHash::new(
             "aB7x9pQw2zRt4kMn".to_string(),
             "c5j8k3p2q7w1x9z".to_string(),
             "550e8400-e29b-41d4-a716-446655440000".to_string(),
         );
-        
+
         let hash2 = TrivariateHash::new(
             "xY9mP4qR8sT2wN5k".to_string(),
             "d6k9l4p3q8w2x0z".to_string(),
@@ -212,16 +216,16 @@ mod tests {
     #[test]
     fn test_complete_measurement() {
         let operator = DeltaOperator::new(true);
-        
+
         let ctx1 = ContextFrame::new(ExecEnv::Wasm, 1, ExecState::Hot);
         let ctx2 = ContextFrame::new(ExecEnv::Container, 2, ExecState::Warm);
-        
+
         let hash1 = TrivariateHash::new(
             "aB7x9pQw2zRt4kMn".to_string(),
             "c5j8k3p2q7w1x9z".to_string(),
             "550e8400-e29b-41d4-a716-446655440000".to_string(),
         );
-        
+
         let hash2 = TrivariateHash::new(
             "xY9mP4qR8sT2wN5k".to_string(),
             "d6k9l4p3q8w2x0z".to_string(),
@@ -229,7 +233,7 @@ mod tests {
         );
 
         let measurement = operator.measure_delta(&ctx1, &ctx2, &hash1, &hash2);
-        
+
         assert!(measurement.delta_angle >= 0.0 && measurement.delta_angle <= 180.0);
         assert!(measurement.entropy_drift >= 0.0 && measurement.entropy_drift <= 1.0);
         assert!(measurement.semantic_drift >= 0.0 && measurement.semantic_drift <= 1.0);
@@ -239,7 +243,7 @@ mod tests {
     #[test]
     fn test_disabled_operator() {
         let operator = DeltaOperator::new(false);
-        
+
         let ctx1 = ContextFrame::new(ExecEnv::Wasm, 1, ExecState::Hot);
         let ctx2 = ContextFrame::new(ExecEnv::Container, 2, ExecState::Warm);
 
@@ -247,5 +251,3 @@ mod tests {
         assert_eq!(operator.compute_entropy_drift(&ctx1, &ctx2), 0.0);
     }
 }
-
-

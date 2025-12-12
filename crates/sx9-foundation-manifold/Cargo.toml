@@ -8,7 +8,7 @@ repository = "https://example.com/ctas7/foundation"
 
 [features]
 default = ["elastic"]
-elastic = ["tokio", "tracing", "tracing-subscriber", "sx9-foundation-math", "sx9-foundation-tactical", "sx9-foundation-data", "sx9-atlas-daemon"]
+elastic = ["tokio", "tracing", "tracing-subscriber", "sx9-foundation-math", "sx9-foundation-tactical", "sx9-foundation-data", "sx9-atlas-daemon", "sx9-neural-mux"]
 l2_only = ["sx9-foundation-math"]
 tactical_only = ["sx9-foundation-tactical"]
 wasm_only = ["sx9-foundation-data"]
@@ -30,6 +30,7 @@ sx9-foundation-math = { path = "../sx9-foundation-math", optional = true }
 sx9-foundation-tactical = { path = "../sx9-foundation-tactical", optional = true }
 # ATLAS for orchestration
 sx9-atlas-daemon = { path = "../sx9-atlas-daemon", optional = true }
+sx9-neural-mux = { path = "../sx9-neural-mux", optional = true }
 reqwest = { version = "0.12", features = ["json"] }
 # Blake3 eliminated per v7.3.1 specification
 xxhash-rust = { version = "0.8", features = ["xxh3"] }

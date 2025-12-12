@@ -158,7 +158,10 @@ impl CLIManifest {
         // Generate n8n workflow integration
         self.configure_n8n_integration();
 
-        println!("📋 CLI Manifest generated with {} endpoints", self.cli_endpoints.len());
+        println!(
+            "📋 CLI Manifest generated with {} endpoints",
+            self.cli_endpoints.len()
+        );
         Ok(())
     }
 

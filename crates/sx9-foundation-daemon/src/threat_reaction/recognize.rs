@@ -7,11 +7,11 @@
 //! - GLAF hash/Unicode correlation
 
 use anyhow::Result;
+use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
-use tracing::{info, debug};
+use tracing::{debug, info};
 use uuid::Uuid;
-use chrono::{DateTime, Utc};
 
 use crate::threat_reaction::glaf_correlation::GLAFCorrelationEngine;
 
@@ -21,7 +21,7 @@ pub struct RecognizedThreat {
     pub id: Uuid,
     pub source: ThreatSource,
     pub severity: ThreatSeverity,
-    pub technique_id: Option<String>,  // ATT&CK technique ID (e.g., T1003)
+    pub technique_id: Option<String>, // ATT&CK technique ID (e.g., T1003)
     pub dual_trivariate_hash: DualTrivariateHash,
     pub unicode_operation: char,
     pub metadata: HashMap<String, String>,
@@ -57,9 +57,9 @@ pub struct DualTrivariateHash {
 /// Trivariate hash components
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct TrivariateHash {
-    pub sch: String,   // Semantic Convergent Hash (positions 1-16)
-    pub cuid: String,  // Contextual Unique ID (positions 17-32)
-    pub uuid: String,  // Universal Unique ID (positions 33-48)
+    pub sch: String,  // Semantic Convergent Hash (positions 1-16)
+    pub cuid: String, // Contextual Unique ID (positions 17-32)
+    pub uuid: String, // Universal Unique ID (positions 33-48)
 }
 
 /// GLAF graph structure (placeholder - will be defined in glaf_correlation)
@@ -99,7 +99,7 @@ pub enum ThreatRelationship {
 /// MITRE ATT&CK Technique
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ATTACKTechnique {
-    pub technique_id: String,  // e.g., T1003
+    pub technique_id: String, // e.g., T1003
     pub name: String,
     pub tactics: Vec<String>,
     pub platforms: Vec<String>,
@@ -136,6 +136,7 @@ pub struct WazuhAlert {
 }
 
 /// Exploit Vector Machine client (placeholder)
+#[allow(dead_code)]
 pub struct ExploitVectorMachine {
     exploitdb_path: String,
 }
@@ -173,12 +174,14 @@ impl ThreatIngestionPipeline {
 
 /// AXON client (placeholder - will integrate with actual AXON service)
 pub struct AxonClient {
-    endpoint: String,
+    _endpoint: String,
 }
 
 impl AxonClient {
     pub fn new(endpoint: String) -> Self {
-        Self { endpoint }
+        Self {
+            _endpoint: endpoint,
+        }
     }
 
     pub async fn process_threats(&self, threats: &[CorrelatedThreat]) -> Result<Vec<USIM>> {
@@ -224,11 +227,14 @@ impl ThreatCorrelationEngine {
         wazuh_alerts: &[WazuhAlert],
         vulnerabilities: &[Vulnerability],
     ) -> Result<Vec<CorrelatedThreat>> {
-        info!("Correlating {} alerts with {} vulnerabilities", 
-            wazuh_alerts.len(), vulnerabilities.len());
-        
+        info!(
+            "Correlating {} alerts with {} vulnerabilities",
+            wazuh_alerts.len(),
+            vulnerabilities.len()
+        );
+
         let mut correlated = Vec::new();
-        
+
         // Simple correlation logic (will be enhanced with GLAF)
         for alert in wazuh_alerts {
             for vuln in vulnerabilities {
@@ -243,7 +249,7 @@ impl ThreatCorrelationEngine {
                 }
             }
         }
-        
+
         Ok(correlated)
     }
 
@@ -251,17 +257,17 @@ impl ThreatCorrelationEngine {
         // Simple correlation based on rule description and CVE description
         let alert_text = alert.rule_description.to_lowercase();
         let vuln_text = vuln.description.to_lowercase();
-        
+
         // Check for common keywords
         let common_words: Vec<&str> = alert_text
             .split_whitespace()
             .filter(|w| vuln_text.contains(w))
             .collect();
-        
+
         if common_words.is_empty() {
             return 0.0;
         }
-        
+
         // Calculate correlation score
         (common_words.len() as f64 / alert_text.split_whitespace().count().max(1) as f64).min(1.0)
     }
@@ -271,7 +277,7 @@ impl ThreatCorrelationEngine {
 pub struct ThreatRecognitionEngine {
     wazuh_client: WazuhClient,
     exploit_db: ExploitVectorMachine,
-    threat_ingestion: ThreatIngestionPipeline,
+    _threat_ingestion: ThreatIngestionPipeline,
     axon_client: AxonClient,
     correlation_engine: ThreatCorrelationEngine,
     glaf_correlator: GLAFCorrelationEngine,
@@ -279,15 +285,11 @@ pub struct ThreatRecognitionEngine {
 
 impl ThreatRecognitionEngine {
     /// Create new recognition engine
-    pub fn new(
-        wazuh_endpoint: String,
-        axon_endpoint: String,
-        exploitdb_path: String,
-    ) -> Self {
+    pub fn new(wazuh_endpoint: String, axon_endpoint: String, exploitdb_path: String) -> Self {
         Self {
             wazuh_client: WazuhClient::new(wazuh_endpoint),
             exploit_db: ExploitVectorMachine::new(exploitdb_path),
-            threat_ingestion: ThreatIngestionPipeline::new(),
+            _threat_ingestion: ThreatIngestionPipeline::new(),
             axon_client: AxonClient::new(axon_endpoint),
             correlation_engine: ThreatCorrelationEngine::new(),
             glaf_correlator: GLAFCorrelationEngine::new(),
@@ -297,44 +299,45 @@ impl ThreatRecognitionEngine {
     /// Recognize threats from multiple sources
     pub async fn recognize(&self) -> Result<Vec<RecognizedThreat>> {
         info!("Starting threat recognition");
-        
+
         // 1. Collect Wazuh alerts
         let wazuh_alerts = self.wazuh_client.fetch_alerts().await?;
         debug!("Fetched {} Wazuh alerts", wazuh_alerts.len());
-        
+
         // 2. Query ExploitDB for CVEs
         let vulnerabilities = self.exploit_db.scan_for_vulnerabilities().await?;
         debug!("Found {} vulnerabilities", vulnerabilities.len());
-        
+
         // 3. Correlate threats
-        let correlated = self.correlation_engine.correlate(
-            &wazuh_alerts,
-            &vulnerabilities,
-        ).await?;
+        let correlated = self
+            .correlation_engine
+            .correlate(&wazuh_alerts, &vulnerabilities)
+            .await?;
         debug!("Correlated {} threat groups", correlated.len());
-        
+
         // 4. Generate USIMs via AXON
         let usims = self.axon_client.process_threats(&correlated).await?;
         debug!("Generated {} USIMs", usims.len());
-        
+
         // 5. Convert USIMs to RecognizedThreats
         let mut recognized_threats: Vec<RecognizedThreat> = usims
             .iter()
             .map(|u| RecognizedThreat::from_usim(u))
             .collect();
-        
+
         // 6. Correlate in GLAF using hash/Unicode
         if !recognized_threats.is_empty() {
-            let glaf_correlation = self.glaf_correlator.correlate_threats(
-                &recognized_threats,
-            ).await?;
-            
+            let glaf_correlation = self
+                .glaf_correlator
+                .correlate_threats(&recognized_threats)
+                .await?;
+
             // Update threats with correlation graph
             for threat in &mut recognized_threats {
                 threat.correlation_graph = Some(glaf_correlation.correlation_graph.clone());
             }
         }
-        
+
         info!("Recognized {} threats", recognized_threats.len());
         Ok(recognized_threats)
     }
@@ -358,26 +361,25 @@ impl RecognizedThreat {
                 uuid: usim.uuid.clone(),
             }
         };
-        
+
         Self {
             id: Uuid::parse_str(&usim.id).unwrap_or_else(|_| Uuid::new_v4()),
-            source: ThreatSource::Wazuh,  // Default, will be set based on USIM source
+            source: ThreatSource::Wazuh, // Default, will be set based on USIM source
             severity: match usim.severity.as_str() {
                 "critical" => ThreatSeverity::Critical,
                 "high" => ThreatSeverity::High,
                 "medium" => ThreatSeverity::Medium,
                 _ => ThreatSeverity::Low,
             },
-            technique_id: None,  // Will be extracted from metadata
+            technique_id: None, // Will be extracted from metadata
             dual_trivariate_hash: DualTrivariateHash {
                 primary,
-                secondary: None,  // Will be generated if needed
+                secondary: None, // Will be generated if needed
             },
-            unicode_operation: '\u{E800}',  // Default, will be mapped from hash
+            unicode_operation: '\u{E800}', // Default, will be mapped from hash
             metadata: HashMap::new(),
             timestamp: usim.timestamp,
             correlation_graph: None,
         }
     }
 }
-

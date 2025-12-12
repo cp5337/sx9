@@ -7,27 +7,27 @@
 //! serialization, parsing, CSV handling, regex operations, and data validation
 //! to reduce complexity and improve performance across the system.
 
+use anyhow::Result;
+use chrono::{DateTime, Utc};
+use csv::{Reader, StringRecord};
+use regex::Regex;
+use serde::{Deserialize, Serialize};
+use std::collections::HashMap;
 use std::sync::Arc;
 use std::time::{Duration, Instant};
-use serde::{Deserialize, Serialize};
-use anyhow::Result;
-use tracing::{info, error, debug};
-use chrono::{DateTime, Utc};
-use regex::Regex;
+use tracing::{debug, error, info};
 use uuid::Uuid;
-use csv::{Reader, StringRecord};
-use std::collections::HashMap;
 
 // CTAS-7 v7.2 Foundation Data modules
-pub mod storage;
+pub mod ctas_sled_kvs;
 pub mod hash;
 pub mod persistence;
-pub mod ctas_sled_kvs;
+pub mod storage;
 
-pub use storage::*;
+pub use ctas_sled_kvs::*;
 pub use hash::*;
 pub use persistence::*;
-pub use ctas_sled_kvs::*;
+pub use storage::*;
 
 /// CTAS-7 v7.2 Foundation Data Manager
 #[derive(Debug, Clone)]
@@ -212,7 +212,7 @@ impl DataService {
     /// Initialize the data foundation service
     pub fn new(config: DataConfig) -> Result<Self> {
         let start_time = Instant::now();
-        
+
         let metrics = DataMetrics {
             initialization_time: start_time.elapsed(),
             json_operations_total: 0,
@@ -225,9 +225,12 @@ impl DataService {
             error_rate: 0.0,
             timestamp: Utc::now(),
         };
-        
-        info!("Data foundation service initialized in {:?}", metrics.initialization_time);
-        
+
+        info!(
+            "Data foundation service initialized in {:?}",
+            metrics.initialization_time
+        );
+
         Ok(Self {
             config,
             metrics,
@@ -243,137 +246,150 @@ impl DataService {
             regex_cache: Arc::new(std::sync::Mutex::new(HashMap::new())),
         })
     }
-    
+
     /// Serialize data to JSON
     pub fn to_json<T: Serialize>(&self, data: &T) -> Result<String> {
         if !self.config.enable_json_processing {
             return Err(anyhow::anyhow!("JSON processing not enabled"));
         }
-        
-        self.json_operations.fetch_add(1, std::sync::atomic::Ordering::Relaxed);
+
+        self.json_operations
+            .fetch_add(1, std::sync::atomic::Ordering::Relaxed);
         match serde_json::to_string(data) {
             Ok(json) => {
                 debug!("Data serialized to JSON successfully");
                 Ok(json)
             }
             Err(e) => {
-                self.error_count.fetch_add(1, std::sync::atomic::Ordering::Relaxed);
+                self.error_count
+                    .fetch_add(1, std::sync::atomic::Ordering::Relaxed);
                 error!("JSON serialization failed: {}", e);
                 Err(e.into())
             }
         }
     }
-    
+
     /// Deserialize data from JSON
     pub fn from_json<T: for<'de> Deserialize<'de>>(&self, json: &str) -> Result<T> {
         if !self.config.enable_json_processing {
             return Err(anyhow::anyhow!("JSON processing not enabled"));
         }
-        
-        self.json_operations.fetch_add(1, std::sync::atomic::Ordering::Relaxed);
+
+        self.json_operations
+            .fetch_add(1, std::sync::atomic::Ordering::Relaxed);
         match serde_json::from_str(json) {
             Ok(data) => {
                 debug!("Data deserialized from JSON successfully");
                 Ok(data)
             }
             Err(e) => {
-                self.error_count.fetch_add(1, std::sync::atomic::Ordering::Relaxed);
+                self.error_count
+                    .fetch_add(1, std::sync::atomic::Ordering::Relaxed);
                 error!("JSON deserialization failed: {}", e);
                 Err(e.into())
             }
         }
     }
-    
+
     /// Serialize data to YAML
     pub fn to_yaml<T: Serialize>(&self, data: &T) -> Result<String> {
         if !self.config.enable_yaml_processing {
             return Err(anyhow::anyhow!("YAML processing not enabled"));
         }
-        
-        self.yaml_operations.fetch_add(1, std::sync::atomic::Ordering::Relaxed);
+
+        self.yaml_operations
+            .fetch_add(1, std::sync::atomic::Ordering::Relaxed);
         match serde_yaml::to_string(data) {
             Ok(yaml) => {
                 debug!("Data serialized to YAML successfully");
                 Ok(yaml)
             }
             Err(e) => {
-                self.error_count.fetch_add(1, std::sync::atomic::Ordering::Relaxed);
+                self.error_count
+                    .fetch_add(1, std::sync::atomic::Ordering::Relaxed);
                 error!("YAML serialization failed: {}", e);
                 Err(e.into())
             }
         }
     }
-    
+
     /// Deserialize data from YAML
     pub fn from_yaml<T: for<'de> Deserialize<'de>>(&self, yaml: &str) -> Result<T> {
         if !self.config.enable_yaml_processing {
             return Err(anyhow::anyhow!("YAML processing not enabled"));
         }
-        
-        self.yaml_operations.fetch_add(1, std::sync::atomic::Ordering::Relaxed);
+
+        self.yaml_operations
+            .fetch_add(1, std::sync::atomic::Ordering::Relaxed);
         match serde_yaml::from_str(yaml) {
             Ok(data) => {
                 debug!("Data deserialized from YAML successfully");
                 Ok(data)
             }
             Err(e) => {
-                self.error_count.fetch_add(1, std::sync::atomic::Ordering::Relaxed);
+                self.error_count
+                    .fetch_add(1, std::sync::atomic::Ordering::Relaxed);
                 error!("YAML deserialization failed: {}", e);
                 Err(e.into())
             }
         }
     }
-    
+
     /// Serialize data to TOML
     pub fn to_toml<T: Serialize>(&self, data: &T) -> Result<String> {
         if !self.config.enable_toml_processing {
             return Err(anyhow::anyhow!("TOML processing not enabled"));
         }
-        
-        self.toml_operations.fetch_add(1, std::sync::atomic::Ordering::Relaxed);
+
+        self.toml_operations
+            .fetch_add(1, std::sync::atomic::Ordering::Relaxed);
         match toml::to_string(data) {
             Ok(toml) => {
                 debug!("Data serialized to TOML successfully");
                 Ok(toml)
             }
             Err(e) => {
-                self.error_count.fetch_add(1, std::sync::atomic::Ordering::Relaxed);
+                self.error_count
+                    .fetch_add(1, std::sync::atomic::Ordering::Relaxed);
                 error!("TOML serialization failed: {}", e);
                 Err(e.into())
             }
         }
     }
-    
+
     /// Deserialize data from TOML
     pub fn from_toml<T: for<'de> Deserialize<'de>>(&self, toml: &str) -> Result<T> {
         if !self.config.enable_toml_processing {
             return Err(anyhow::anyhow!("TOML processing not enabled"));
         }
-        
-        self.toml_operations.fetch_add(1, std::sync::atomic::Ordering::Relaxed);
+
+        self.toml_operations
+            .fetch_add(1, std::sync::atomic::Ordering::Relaxed);
         match toml::from_str(toml) {
             Ok(data) => {
                 debug!("Data deserialized from TOML successfully");
                 Ok(data)
             }
             Err(e) => {
-                self.error_count.fetch_add(1, std::sync::atomic::Ordering::Relaxed);
+                self.error_count
+                    .fetch_add(1, std::sync::atomic::Ordering::Relaxed);
                 error!("TOML deserialization failed: {}", e);
                 Err(e.into())
             }
         }
     }
-    
+
     /// Parse CSV data
     pub fn parse_csv(&self, csv_data: &str) -> Result<Vec<StringRecord>> {
         if !self.config.enable_csv_processing {
             return Err(anyhow::anyhow!("CSV processing not enabled"));
         }
-        
-        self.csv_operations.fetch_add(1, std::sync::atomic::Ordering::Relaxed);
+
+        self.csv_operations
+            .fetch_add(1, std::sync::atomic::Ordering::Relaxed);
         let mut reader = Reader::from_reader(csv_data.as_bytes());
         let mut records = Vec::new();
-        
+
         for result in reader.records() {
             match result {
                 Ok(record) => {
@@ -383,37 +399,40 @@ impl DataService {
                     records.push(record);
                 }
                 Err(e) => {
-                    self.error_count.fetch_add(1, std::sync::atomic::Ordering::Relaxed);
+                    self.error_count
+                        .fetch_add(1, std::sync::atomic::Ordering::Relaxed);
                     error!("CSV parsing failed: {}", e);
                     return Err(e.into());
                 }
             }
         }
-        
+
         debug!("CSV parsed successfully: {} records", records.len());
         Ok(records)
     }
-    
+
     /// Generate a new UUID
     pub fn generate_uuid(&self) -> Result<Uuid> {
         if !self.config.enable_uuid_generation {
             return Err(anyhow::anyhow!("UUID generation not enabled"));
         }
-        
-        self.uuid_generations.fetch_add(1, std::sync::atomic::Ordering::Relaxed);
+
+        self.uuid_generations
+            .fetch_add(1, std::sync::atomic::Ordering::Relaxed);
         let uuid = Uuid::new_v4();
         debug!("UUID generated: {}", uuid);
         Ok(uuid)
     }
-    
+
     /// Compile and cache a regex pattern
     pub fn compile_regex(&self, pattern: &str) -> Result<Regex> {
         if !self.config.enable_regex_processing {
             return Err(anyhow::anyhow!("Regex processing not enabled"));
         }
-        
-        self.regex_operations.fetch_add(1, std::sync::atomic::Ordering::Relaxed);
-        
+
+        self.regex_operations
+            .fetch_add(1, std::sync::atomic::Ordering::Relaxed);
+
         // Check cache first
         {
             let cache = self.regex_cache.lock().unwrap();
@@ -421,7 +440,7 @@ impl DataService {
                 return Ok(regex.clone());
             }
         }
-        
+
         // Compile and cache
         match Regex::new(pattern) {
             Ok(regex) => {
@@ -433,62 +452,79 @@ impl DataService {
                 Ok(regex)
             }
             Err(e) => {
-                self.error_count.fetch_add(1, std::sync::atomic::Ordering::Relaxed);
+                self.error_count
+                    .fetch_add(1, std::sync::atomic::Ordering::Relaxed);
                 error!("Regex compilation failed: {}", e);
                 Err(e.into())
             }
         }
     }
-    
+
     /// Validate data structure
     pub fn validate_data<T: Serialize>(&self, data: &T) -> Result<bool> {
         if !self.config.enable_data_validation {
             return Err(anyhow::anyhow!("Data validation not enabled"));
         }
-        
-        self.data_validations.fetch_add(1, std::sync::atomic::Ordering::Relaxed);
-        
+
+        self.data_validations
+            .fetch_add(1, std::sync::atomic::Ordering::Relaxed);
+
         // Basic validation - try to serialize and deserialize
         match self.to_json(data) {
-            Ok(json) => {
-                match self.from_json::<serde_json::Value>(&json) {
-                    Ok(_) => {
-                        debug!("Data validation successful");
-                        Ok(true)
-                    }
-                    Err(e) => {
-                        self.error_count.fetch_add(1, std::sync::atomic::Ordering::Relaxed);
-                        error!("Data validation failed: {}", e);
-                        Ok(false)
-                    }
+            Ok(json) => match self.from_json::<serde_json::Value>(&json) {
+                Ok(_) => {
+                    debug!("Data validation successful");
+                    Ok(true)
                 }
-            }
+                Err(e) => {
+                    self.error_count
+                        .fetch_add(1, std::sync::atomic::Ordering::Relaxed);
+                    error!("Data validation failed: {}", e);
+                    Ok(false)
+                }
+            },
             Err(e) => {
-                self.error_count.fetch_add(1, std::sync::atomic::Ordering::Relaxed);
+                self.error_count
+                    .fetch_add(1, std::sync::atomic::Ordering::Relaxed);
                 error!("Data validation failed: {}", e);
                 Ok(false)
             }
         }
     }
-    
+
     /// Get current performance metrics
     pub fn get_metrics(&self) -> DataMetrics {
-        let json_ops = self.json_operations.load(std::sync::atomic::Ordering::Relaxed);
-        let yaml_ops = self.yaml_operations.load(std::sync::atomic::Ordering::Relaxed);
-        let toml_ops = self.toml_operations.load(std::sync::atomic::Ordering::Relaxed);
-        let csv_ops = self.csv_operations.load(std::sync::atomic::Ordering::Relaxed);
-        let regex_ops = self.regex_operations.load(std::sync::atomic::Ordering::Relaxed);
-        let uuid_ops = self.uuid_generations.load(std::sync::atomic::Ordering::Relaxed);
-        let validation_ops = self.data_validations.load(std::sync::atomic::Ordering::Relaxed);
+        let json_ops = self
+            .json_operations
+            .load(std::sync::atomic::Ordering::Relaxed);
+        let yaml_ops = self
+            .yaml_operations
+            .load(std::sync::atomic::Ordering::Relaxed);
+        let toml_ops = self
+            .toml_operations
+            .load(std::sync::atomic::Ordering::Relaxed);
+        let csv_ops = self
+            .csv_operations
+            .load(std::sync::atomic::Ordering::Relaxed);
+        let regex_ops = self
+            .regex_operations
+            .load(std::sync::atomic::Ordering::Relaxed);
+        let uuid_ops = self
+            .uuid_generations
+            .load(std::sync::atomic::Ordering::Relaxed);
+        let validation_ops = self
+            .data_validations
+            .load(std::sync::atomic::Ordering::Relaxed);
         let errors = self.error_count.load(std::sync::atomic::Ordering::Relaxed);
-        
-        let total_operations = json_ops + yaml_ops + toml_ops + csv_ops + regex_ops + uuid_ops + validation_ops;
+
+        let total_operations =
+            json_ops + yaml_ops + toml_ops + csv_ops + regex_ops + uuid_ops + validation_ops;
         let error_rate = if total_operations > 0 {
             (errors as f64 / total_operations as f64) * 100.0
         } else {
             0.0
         };
-        
+
         DataMetrics {
             initialization_time: self.metrics.initialization_time,
             json_operations_total: json_ops,
@@ -502,39 +538,39 @@ impl DataService {
             timestamp: Utc::now(),
         }
     }
-    
+
     /// Get the current configuration
     pub fn get_config(&self) -> &DataConfig {
         &self.config
     }
-    
+
     /// Run performance test
     pub fn run_performance_test(&self) -> Result<Duration> {
         let start = Instant::now();
-        
+
         // Test JSON operations
         let test_data = serde_json::json!({
             "test": "data",
             "number": 42,
             "array": [1, 2, 3]
         });
-        
+
         for _ in 0..1000 {
             let _ = self.to_json(&test_data)?;
             let _ = self.from_json::<serde_json::Value>(&self.to_json(&test_data)?)?;
         }
-        
+
         // Test UUID generation
         for _ in 0..1000 {
             let _ = self.generate_uuid()?;
         }
-        
+
         // Test regex operations
         for i in 0..100 {
             let pattern = format!(r"\d+\.\d+\.\d+\.\d+{}", i);
             let _ = self.compile_regex(&pattern)?;
         }
-        
+
         let duration = start.elapsed();
         info!("Performance test completed in {:?}", duration);
         Ok(duration)
@@ -544,12 +580,12 @@ impl DataService {
 #[cfg(test)]
 mod tests {
     use super::*;
-    
+
     fn init_data_foundation() -> Result<DataService> {
         let config = DataConfig::default();
         DataService::new(config)
     }
-    
+
     #[test]
     fn test_data_service_initialization() {
         let service = init_data_foundation().unwrap();
@@ -561,54 +597,54 @@ mod tests {
         assert!(service.config.enable_uuid_generation);
         assert!(service.config.enable_data_validation);
     }
-    
+
     #[test]
     fn test_json_operations() {
         let service = init_data_foundation().unwrap();
         let test_data = serde_json::json!({"test": "data", "number": 42});
-        
+
         let json = service.to_json(&test_data).unwrap();
         assert!(json.contains("test"));
         assert!(json.contains("data"));
         assert!(json.contains("42"));
-        
+
         let parsed: serde_json::Value = service.from_json(&json).unwrap();
         assert_eq!(parsed["test"], "data");
         assert_eq!(parsed["number"], 42);
     }
-    
+
     #[test]
     fn test_uuid_generation() {
         let service = init_data_foundation().unwrap();
         let uuid1 = service.generate_uuid().unwrap();
         let uuid2 = service.generate_uuid().unwrap();
-        
+
         assert_ne!(uuid1, uuid2);
         assert!(uuid1.to_string().len() > 0);
         assert!(uuid2.to_string().len() > 0);
     }
-    
+
     #[test]
     fn test_regex_compilation() {
         let service = init_data_foundation().unwrap();
         let regex = service.compile_regex(r"\d+").unwrap();
-        
+
         assert!(regex.is_match("123"));
         assert!(!regex.is_match("abc"));
     }
-    
+
     #[test]
     fn test_performance_test() {
         let service = init_data_foundation().unwrap();
         let duration = service.run_performance_test().unwrap();
-        
+
         // Performance test should complete in reasonable time
         assert!(duration < Duration::from_secs(10));
     }
 }
 
 // Re-export commonly used data processing dependencies
-pub use anyhow::{Error as AnyError};
+pub use anyhow::Error as AnyError;
 pub use serde_json;
 pub use serde_yaml;
 pub use toml;

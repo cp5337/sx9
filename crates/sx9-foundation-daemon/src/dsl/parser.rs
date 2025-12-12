@@ -6,8 +6,8 @@
 //! NOTE: Full procedural macros would require a separate proc-macro crate.
 //! For now, we use builder functions with similar ergonomics.
 
-use crate::dsl::operations::*;
 use crate::dsl::hash_extractor::*;
+use crate::dsl::operations::*;
 use crate::dsl::{DSLError, DSLResult};
 use std::collections::HashMap;
 
@@ -51,9 +51,13 @@ impl HashTriggerBuilder {
 
     pub fn build(self) -> DSLResult<DSLOperation> {
         Ok(DSLOperation::HashTrigger(HashTriggerOp {
-            sch: self.sch.ok_or_else(|| DSLError::InvalidParameters("sch is required".to_string()))?,
+            sch: self
+                .sch
+                .ok_or_else(|| DSLError::InvalidParameters("sch is required".to_string()))?,
             unicode: self.unicode.unwrap(),
-            operation: self.operation.ok_or_else(|| DSLError::InvalidParameters("operation is required".to_string()))?,
+            operation: self
+                .operation
+                .ok_or_else(|| DSLError::InvalidParameters("operation is required".to_string()))?,
             metadata: self.metadata,
         }))
     }
@@ -137,7 +141,9 @@ impl IntelCollectionBuilder {
             hash: self.hash,
             semantic_hash: self.semantic_hash,
             unicode: self.unicode,
-            tool: self.tool.ok_or_else(|| DSLError::InvalidParameters("tool is required".to_string()))?,
+            tool: self
+                .tool
+                .ok_or_else(|| DSLError::InvalidParameters("tool is required".to_string()))?,
             gpu_tier: self.gpu_tier,
             isolation: self.isolation,
             max_cost: self.max_cost,
@@ -208,7 +214,9 @@ impl PentestSpawnBuilder {
 
     pub fn build(self) -> DSLResult<DSLOperation> {
         if self.tools.is_empty() {
-            return Err(DSLError::InvalidParameters("tools list cannot be empty".to_string()));
+            return Err(DSLError::InvalidParameters(
+                "tools list cannot be empty".to_string(),
+            ));
         }
 
         Ok(DSLOperation::PentestSpawn(PentestSpawnOp {
@@ -399,9 +407,13 @@ impl NodeInterviewBuilder {
 
     pub fn build(self) -> DSLResult<DSLOperation> {
         Ok(DSLOperation::NodeInterview(NodeInterviewOp {
-            operational_hash: self.operational_hash.ok_or_else(|| DSLError::InvalidParameters("operational_hash is required".to_string()))?,
+            operational_hash: self.operational_hash.ok_or_else(|| {
+                DSLError::InvalidParameters("operational_hash is required".to_string())
+            })?,
             semantic_hash: self.semantic_hash,
-            task_id: self.task_id.ok_or_else(|| DSLError::InvalidParameters("task_id is required".to_string()))?,
+            task_id: self
+                .task_id
+                .ok_or_else(|| DSLError::InvalidParameters("task_id is required".to_string()))?,
             task_name: self.task_name,
             hd4_phase: self.hd4_phase,
             mitre_technique: self.mitre_technique,
@@ -469,9 +481,13 @@ impl KaliToolBuilder {
 
     pub fn build(self) -> DSLResult<DSLOperation> {
         Ok(DSLOperation::KaliTool(KaliToolOp {
-            tool: self.tool.ok_or_else(|| DSLError::InvalidParameters("tool is required".to_string()))?,
+            tool: self
+                .tool
+                .ok_or_else(|| DSLError::InvalidParameters("tool is required".to_string()))?,
             unicode: self.unicode,
-            target: self.target.ok_or_else(|| DSLError::InvalidParameters("target is required".to_string()))?,
+            target: self
+                .target
+                .ok_or_else(|| DSLError::InvalidParameters("target is required".to_string()))?,
             container: self.container,
             l2_orchestration: self.l2_orchestration,
             memory_mesh: self.memory_mesh,
@@ -568,7 +584,3 @@ mod tests {
         assert!(result.is_err());
     }
 }
-
-
-
-

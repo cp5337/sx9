@@ -1,0 +1,38 @@
+[
+  {
+    "category_id": 1,
+    "category": "Hunt Phase",
+    "tasks": [
+      {
+        "id": 1,
+        "task_name": "Network Reconnaissance",
+        "description": "Conduct comprehensive network scanning and enumeration",
+        "hd4_hunt_actions": ["Network Scanning", "Port Enumeration", "Service Discovery"]
+      },
+      {
+        "id": 2,
+        "task_name": "OSINT Gathering",
+        "description": "Collect open-source intelligence on target",
+        "hd4_hunt_actions": ["Social Media Analysis", "Domain Research", "Email Harvesting"]
+      }
+    ]
+  },
+  {
+    "category_id": 2,
+    "category": "Detect Phase",
+    "tasks": [
+      {
+        "id": 3,
+        "task_name": "Threat Detection",
+        "description": "Identify and analyze potential threats",
+        "hd4_hunt_actions": ["Signature Analysis", "Behavioral Analysis", "Anomaly Detection"]
+      },
+      {
+        "id": 4,
+        "task_name": "Vulnerability Assessment",
+        "description": "Assess system vulnerabilities and weaknesses",
+        "hd4_hunt_actions": ["Vulnerability Scanning", "Configuration Review", "Risk Assessment"]
+      }
+    ]
+  }
+]

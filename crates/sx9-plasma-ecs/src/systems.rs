@@ -28,7 +28,10 @@ impl CrystalResonanceSystem {
         resonance_components: &mut [CrystalResonanceComponent],
     ) -> Result<()> {
         // Calculate crystal resonance for each entity
-        for (plasma, resonance) in plasma_components.iter().zip(resonance_components.iter_mut()) {
+        for (plasma, resonance) in plasma_components
+            .iter()
+            .zip(resonance_components.iter_mut())
+        {
             // Calculate resonance based on plasma state
             resonance.ring_strength = (plasma.delta_angle as f32 / 65535.0) * 2.0 - 1.0;
         }
@@ -73,15 +76,27 @@ impl AnnObserverSystem {
 
             // Observer extracts features from plasma state
             observer.pattern_buffer.clear();
-            observer.pattern_buffer.push(plasma.delta_angle as f32 / 65535.0);
-            observer.pattern_buffer.push(plasma.entropy as f32 / u32::MAX as f32);
-            observer.pattern_buffer.push(plasma.sdt_state as u8 as f32 / 3.0);
-            observer.pattern_buffer.push(plasma.crystal_family as u8 as f32 / 6.0);
+            observer
+                .pattern_buffer
+                .push(plasma.delta_angle as f32 / 65535.0);
+            observer
+                .pattern_buffer
+                .push(plasma.entropy as f32 / u32::MAX as f32);
+            observer
+                .pattern_buffer
+                .push(plasma.sdt_state as u8 as f32 / 3.0);
+            observer
+                .pattern_buffer
+                .push(plasma.crystal_family as u8 as f32 / 6.0);
 
             // Observer updates observation hash via murmur3
-            let hash_input = observer.pattern_buffer.iter()
+            let hash_input = observer
+                .pattern_buffer
+                .iter()
                 .map(|f| f.to_bits())
-                .fold(0u64, |acc, bits| acc.wrapping_mul(31).wrapping_add(bits as u64));
+                .fold(0u64, |acc, bits| {
+                    acc.wrapping_mul(31).wrapping_add(bits as u64)
+                });
             observer.last_observation_hash = hash_input;
             observer.observation_count += 1;
         }
@@ -110,10 +125,13 @@ impl AnnForwardSystem {
 
         for neuron in neurons.iter_mut() {
             // Neuron computes weighted sum of inputs plus bias
-            let weighted_sum: f32 = neuron.weights.iter()
+            let weighted_sum: f32 = neuron
+                .weights
+                .iter()
                 .zip(input.iter())
                 .map(|(w, x)| w * x)
-                .sum::<f32>() + neuron.bias;
+                .sum::<f32>()
+                + neuron.bias;
 
             // System applies activation function to weighted sum
             neuron.activation = match activation_fn {

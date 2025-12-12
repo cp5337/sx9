@@ -1,0 +1,2953 @@
+[
+  {
+    "task_id": "uuid-000-000-001",
+    "task_name": "Ideological Formation",
+    "category": "Ideation",
+    "hd4_phase": "Hunt",
+    "description": "Forming motivations via exposure.",
+    "kali_tools": [],
+    "primitives": [],
+    "usim_hash": "68c3c43f0343f50b8c5f9c49272ef2085f53eab386c38722",
+    "unicode_compressed": "\ud83d\udd2568c3\ud83d\udcbb8c5f\ud83d\ude805f53",
+    "escalation_levels": [
+      "script",
+      "microkernel",
+      "binary",
+      "container"
+    ],
+    "supabase_id": null
+  },
+  {
+    "task_id": "uuid-000-000-002",
+    "task_name": "Radical Exposure",
+    "category": "Digital Ideation",
+    "hd4_phase": "Hunt",
+    "description": "Encountering radical materials.",
+    "kali_tools": [],
+    "primitives": [],
+    "usim_hash": "9dffb796e6c7e7c69682e613025ecbeebe6fee78b39a9e48",
+    "unicode_compressed": "\ud83d\udd259dff\ud83d\udcbb9682\ud83d\ude80be6f",
+    "escalation_levels": [
+      "script",
+      "microkernel",
+      "binary",
+      "container"
+    ],
+    "supabase_id": null
+  },
+  {
+    "task_id": "uuid-000-000-003",
+    "task_name": "Self Identification",
+    "category": "Ideation",
+    "hd4_phase": "Hunt",
+    "description": "Participating with radical groups.",
+    "kali_tools": [],
+    "primitives": [],
+    "usim_hash": "1d1877e0308fa2ef38cebc53836fccf525b82a60587457ac",
+    "unicode_compressed": "\ud83d\udd251d18\ud83d\udcbb38ce\ud83d\ude8025b8",
+    "escalation_levels": [
+      "script",
+      "microkernel",
+      "binary",
+      "container"
+    ],
+    "supabase_id": null
+  },
+  {
+    "task_id": "uuid-000-000-004",
+    "task_name": "Recruitment",
+    "category": "HUMINT Digital",
+    "hd4_phase": "Hunt",
+    "description": "Initiating contact with extremists.",
+    "kali_tools": [],
+    "primitives": [],
+    "usim_hash": "107088e436dfedcc94d3adc69cbdfb56b3dd37b830ffdc17",
+    "unicode_compressed": "\ud83d\udd251070\ud83d\udcbb94d3\ud83d\ude80b3dd",
+    "escalation_levels": [
+      "script",
+      "microkernel",
+      "binary",
+      "container"
+    ],
+    "supabase_id": null
+  },
+  {
+    "task_id": "uuid-000-000-005",
+    "task_name": "Technical Training",
+    "category": "Cyber Training",
+    "hd4_phase": "Hunt",
+    "description": "Consuming operational tradecraft.",
+    "kali_tools": [],
+    "primitives": [],
+    "usim_hash": "6f91fd9cc1bc21d325ac7714c59945562b75560f180f4345",
+    "unicode_compressed": "\ud83d\udd256f91\ud83d\udcbb25ac\ud83d\ude802b75",
+    "escalation_levels": [
+      "script",
+      "microkernel",
+      "binary",
+      "container"
+    ],
+    "supabase_id": null
+  },
+  {
+    "task_id": "uuid-000-000-006",
+    "task_name": "Overseas Travel",
+    "category": "Travel Tradecraft",
+    "hd4_phase": "Hunt",
+    "description": "Traveling abroad for instruction.",
+    "kali_tools": [],
+    "primitives": [],
+    "usim_hash": "44353ef9b6e13f21f9356742832dcf1f87819c07eb081de5",
+    "unicode_compressed": "\ud83d\udd254435\ud83d\udcbbf935\ud83d\ude808781",
+    "escalation_levels": [
+      "script",
+      "microkernel",
+      "binary",
+      "container"
+    ],
+    "supabase_id": null
+  },
+  {
+    "task_id": "uuid-000-000-007",
+    "task_name": "Identity Documentation",
+    "category": "Logistics",
+    "hd4_phase": "Hunt",
+    "description": "Acquiring false IDs for operations.",
+    "kali_tools": [],
+    "primitives": [],
+    "usim_hash": "c07a63e720aafd58fcf6177183ff29c24cc67e1e007b5f8a",
+    "unicode_compressed": "\ud83d\udd25c07a\ud83d\udcbbfcf6\ud83d\ude804cc6",
+    "escalation_levels": [
+      "script",
+      "microkernel",
+      "binary",
+      "container"
+    ],
+    "supabase_id": null
+  },
+  {
+    "task_id": "uuid-000-001-001",
+    "task_name": "Planning Initiation",
+    "category": "Intelligence",
+    "hd4_phase": "Hunt",
+    "description": "Initiating plot formation.",
+    "kali_tools": [],
+    "primitives": [],
+    "usim_hash": "12f1f76aa5370cc92f988051adabbbbd3495dd040947ea82",
+    "unicode_compressed": "\ud83d\udd2512f1\ud83d\udcbb2f98\ud83d\ude803495",
+    "escalation_levels": [
+      "script",
+      "microkernel",
+      "binary",
+      "container"
+    ],
+    "supabase_id": null
+  },
+  {
+    "task_id": "uuid-001-000-001",
+    "task_name": "Pre-Operational Planning",
+    "category": "Planning",
+    "hd4_phase": "Hunt",
+    "description": "Identifying intelligence sources and attack methodologies.",
+    "kali_tools": [],
+    "primitives": [],
+    "usim_hash": "37e9c4ab0712c20e3879f8abd76342baefcf1ca5766efe50",
+    "unicode_compressed": "\ud83d\udd2537e9\ud83d\udcbb3879\ud83d\ude80efcf",
+    "escalation_levels": [
+      "script",
+      "microkernel",
+      "binary",
+      "container"
+    ],
+    "supabase_id": null
+  },
+  {
+    "task_id": "uuid-001-001-001",
+    "task_name": "OSINT Collection",
+    "category": "Intelligence",
+    "hd4_phase": "Hunt",
+    "description": "Gathering intel from public sources.",
+    "kali_tools": [],
+    "primitives": [],
+    "usim_hash": "2b0100df4512a66e9c305cf8ddca5362fbd0e115d6f3a59a",
+    "unicode_compressed": "\ud83d\udd252b01\ud83d\udcbb9c30\ud83d\ude80fbd0",
+    "escalation_levels": [
+      "script",
+      "microkernel",
+      "binary",
+      "container"
+    ],
+    "supabase_id": null
+  },
+  {
+    "task_id": "uuid-001-002-001",
+    "task_name": "Social Eng. Pretexting",
+    "category": "HUMINT",
+    "hd4_phase": "Hunt",
+    "description": "Conducting deceptive interactions to extract info.",
+    "kali_tools": [],
+    "primitives": [],
+    "usim_hash": "70dbfa240175d860624a2682f2036254ff2ad20f30985580",
+    "unicode_compressed": "\ud83d\udd2570db\ud83d\udcbb624a\ud83d\ude80ff2a",
+    "escalation_levels": [
+      "script",
+      "microkernel",
+      "binary",
+      "container"
+    ],
+    "supabase_id": null
+  },
+  {
+    "task_id": "uuid-001-003-001",
+    "task_name": "Insider Recruitment",
+    "category": "HUMINT",
+    "hd4_phase": "Hunt",
+    "description": "Exploiting individuals via incentives or coercion.",
+    "kali_tools": [],
+    "primitives": [],
+    "usim_hash": "5963a4efe63f28b99203815f477089f96d60765565349fd3",
+    "unicode_compressed": "\ud83d\udd255963\ud83d\udcbb9203\ud83d\ude806d60",
+    "escalation_levels": [
+      "script",
+      "microkernel",
+      "binary",
+      "container"
+    ],
+    "supabase_id": null
+  },
+  {
+    "task_id": "uuid-001-004-001",
+    "task_name": "Unwitting Accomplice Manipulation",
+    "category": "HUMINT",
+    "hd4_phase": "Hunt",
+    "description": "Using individuals for indirect target access.",
+    "kali_tools": [],
+    "primitives": [],
+    "usim_hash": "fbd9c823e58ce95002664bc986ec7495416b9946fe933159",
+    "unicode_compressed": "\ud83d\udd25fbd9\ud83d\udcbb0266\ud83d\ude80416b",
+    "escalation_levels": [
+      "script",
+      "microkernel",
+      "binary",
+      "container"
+    ],
+    "supabase_id": null
+  },
+  {
+    "task_id": "uuid-001-005-001",
+    "task_name": "Physical Surveillance",
+    "category": "Reconnaissance",
+    "hd4_phase": "Hunt",
+    "description": "Observing target locations and routines.",
+    "kali_tools": [],
+    "primitives": [],
+    "usim_hash": "cbb4547b9d371df15dee1e9d4c1e7a790a17c9a6dfc8ae4d",
+    "unicode_compressed": "\ud83d\udd25cbb4\ud83d\udcbb5dee\ud83d\ude800a17",
+    "escalation_levels": [
+      "script",
+      "microkernel",
+      "binary",
+      "container"
+    ],
+    "supabase_id": null
+  },
+  {
+    "task_id": "uuid-001-006-001",
+    "task_name": "Cyber Reconnaissance",
+    "category": "Cyber Reconnaissance",
+    "hd4_phase": "Hunt",
+    "description": "Identifying live hosts and network topology.",
+    "kali_tools": [],
+    "primitives": [],
+    "usim_hash": "389bd568e517d16eeb5f154bf0c880145b67fdc9b147cec3",
+    "unicode_compressed": "\ud83d\udd25389b\ud83d\udcbbeb5f\ud83d\ude805b67",
+    "escalation_levels": [
+      "script",
+      "microkernel",
+      "binary",
+      "container"
+    ],
+    "supabase_id": null
+  },
+  {
+    "task_id": "uuid-001-007-001",
+    "task_name": "Vulnerability Scanning",
+    "category": "Cyber Reconnaissance",
+    "hd4_phase": "Hunt",
+    "description": "Assessing networks and supply chains for weaknesses.",
+    "kali_tools": [],
+    "primitives": [],
+    "usim_hash": "c711462e415306dd7169753b8ea71ed7a0dbae72c0ba0a6b",
+    "unicode_compressed": "\ud83d\udd25c711\ud83d\udcbb7169\ud83d\ude80a0db",
+    "escalation_levels": [
+      "script",
+      "microkernel",
+      "binary",
+      "container"
+    ],
+    "supabase_id": null
+  },
+  {
+    "task_id": "uuid-001-008-001",
+    "task_name": "Digital Identity Harvesting",
+    "category": "Infiltration",
+    "hd4_phase": "Hunt",
+    "description": "Collecting credentials via phishing or breaches.",
+    "kali_tools": [],
+    "primitives": [],
+    "usim_hash": "0371d02f1bf6b7f903fbd5a7073916b9770f9bae8dc8c982",
+    "unicode_compressed": "\ud83d\udd250371\ud83d\udcbb03fb\ud83d\ude80770f",
+    "escalation_levels": [
+      "script",
+      "microkernel",
+      "binary",
+      "container"
+    ],
+    "supabase_id": null
+  },
+  {
+    "task_id": "uuid-001-009-001",
+    "task_name": "Malware Deployment for Access",
+    "category": "Infiltration",
+    "hd4_phase": "Hunt",
+    "description": "Sending payloads to establish persistence.",
+    "kali_tools": [],
+    "primitives": [],
+    "usim_hash": "7045a97b9f6877ab55d83e8a0919ad4f40348fc55577c7a7",
+    "unicode_compressed": "\ud83d\udd257045\ud83d\udcbb55d8\ud83d\ude804034",
+    "escalation_levels": [
+      "script",
+      "microkernel",
+      "binary",
+      "container"
+    ],
+    "supabase_id": null
+  },
+  {
+    "task_id": "uuid-001-010-001",
+    "task_name": "Dark Web Analysis",
+    "category": "Intelligence",
+    "hd4_phase": "Hunt",
+    "description": "Monitoring forums for intel and procurement.",
+    "kali_tools": [],
+    "primitives": [],
+    "usim_hash": "b6e2733df1c638e8a9ac15a5543567f514f6fda08e39a370",
+    "unicode_compressed": "\ud83d\udd25b6e2\ud83d\udcbba9ac\ud83d\ude8014f6",
+    "escalation_levels": [
+      "script",
+      "microkernel",
+      "binary",
+      "container"
+    ],
+    "supabase_id": null
+  },
+  {
+    "task_id": "uuid-001-011-001",
+    "task_name": "RF Exploitation",
+    "category": "Cyber Reconnaissance",
+    "hd4_phase": "Hunt",
+    "description": "Identifying RF vulnerabilities for interception.",
+    "kali_tools": [],
+    "primitives": [],
+    "usim_hash": "634d860ded9f11bab826383f29abb34adac959910bb3ae2c",
+    "unicode_compressed": "\ud83d\udd25634d\ud83d\udcbbb826\ud83d\ude80dac9",
+    "escalation_levels": [
+      "script",
+      "microkernel",
+      "binary",
+      "container"
+    ],
+    "supabase_id": null
+  },
+  {
+    "task_id": "uuid-001-012-001",
+    "task_name": "Packet Capture Analysis",
+    "category": "Cyber Reconnaissance",
+    "hd4_phase": "Hunt",
+    "description": "Monitoring unencrypted traffic for flaws.",
+    "kali_tools": [],
+    "primitives": [],
+    "usim_hash": "7aa59c262d0ca12d239ad30fdb11cf6ce48ed7c63be8db75",
+    "unicode_compressed": "\ud83d\udd257aa5\ud83d\udcbb239a\ud83d\ude80e48e",
+    "escalation_levels": [
+      "script",
+      "microkernel",
+      "binary",
+      "container"
+    ],
+    "supabase_id": null
+  },
+  {
+    "task_id": "uuid-001-013-001",
+    "task_name": "Supply Chain Vulnerability ID",
+    "category": "Indirect Attack",
+    "hd4_phase": "Hunt",
+    "description": "Identifying vendor weaknesses for exploitation.",
+    "kali_tools": [],
+    "primitives": [],
+    "usim_hash": "2a50d4f50e3853d86f50bb2253678cb4d0ceb05f62fc4164",
+    "unicode_compressed": "\ud83d\udd252a50\ud83d\udcbb6f50\ud83d\ude80d0ce",
+    "escalation_levels": [
+      "script",
+      "microkernel",
+      "binary",
+      "container"
+    ],
+    "supabase_id": null
+  },
+  {
+    "task_id": "uuid-001-014-001",
+    "task_name": "OPSEC Countermeasures",
+    "category": "Counter-Surveillance",
+    "hd4_phase": "Hunt",
+    "description": "Using anonymization to avoid detection.",
+    "kali_tools": [],
+    "primitives": [],
+    "usim_hash": "0f11aec34246bacafe977942e14585b5142f2c1a83ed2ee2",
+    "unicode_compressed": "\ud83d\udd250f11\ud83d\udcbbfe97\ud83d\ude80142f",
+    "escalation_levels": [
+      "script",
+      "microkernel",
+      "binary",
+      "container"
+    ],
+    "supabase_id": null
+  },
+  {
+    "task_id": "uuid-001-015-001",
+    "task_name": "Attack Method Selection",
+    "category": "Attack Planning",
+    "hd4_phase": "Hunt",
+    "description": "Determining attack mechanisms.",
+    "kali_tools": [],
+    "primitives": [],
+    "usim_hash": "303c8546f25d1b1e85c63df160275597835ede99d8ac25b2",
+    "unicode_compressed": "\ud83d\udd25303c\ud83d\udcbb85c6\ud83d\ude80835e",
+    "escalation_levels": [
+      "script",
+      "microkernel",
+      "binary",
+      "container"
+    ],
+    "supabase_id": null
+  },
+  {
+    "task_id": "uuid-001-016-001",
+    "task_name": "Escape and Evasion Planning",
+    "category": "Evasion Planning",
+    "hd4_phase": "Hunt",
+    "description": "Developing exfiltration plans and deception.",
+    "kali_tools": [],
+    "primitives": [],
+    "usim_hash": "c5b58ce03515fdcc9d4c6765a4374a302abf79f63b2eced9",
+    "unicode_compressed": "\ud83d\udd25c5b5\ud83d\udcbb9d4c\ud83d\ude802abf",
+    "escalation_levels": [
+      "script",
+      "microkernel",
+      "binary",
+      "container"
+    ],
+    "supabase_id": null
+  },
+  {
+    "task_id": "uuid-001-017-001",
+    "task_name": "Multi-Actor Coordination",
+    "category": "Operational Coordination",
+    "hd4_phase": "Hunt",
+    "description": "Establishing secure comms for attack cells.",
+    "kali_tools": [],
+    "primitives": [],
+    "usim_hash": "389847cedf3d8fd592a911e5f9df94b4381eb8a7cb822c5c",
+    "unicode_compressed": "\ud83d\udd253898\ud83d\udcbb92a9\ud83d\ude80381e",
+    "escalation_levels": [
+      "script",
+      "microkernel",
+      "binary",
+      "container"
+    ],
+    "supabase_id": null
+  },
+  {
+    "task_id": "uuid-002-000-001",
+    "task_name": "Reconnaissance and Targeting",
+    "category": "Targeting",
+    "hd4_phase": "Hunt",
+    "description": "Conducting surveillance to identify opportunities.",
+    "kali_tools": [],
+    "primitives": [],
+    "usim_hash": "e049ce5b0a6dde9cc36c38f383c3dfcfc12228c94e206609",
+    "unicode_compressed": "\ud83d\udd25e049\ud83d\udcbbc36c\ud83d\ude80c122",
+    "escalation_levels": [
+      "script",
+      "microkernel",
+      "binary",
+      "container"
+    ],
+    "supabase_id": null
+  },
+  {
+    "task_id": "uuid-002-001-001",
+    "task_name": "OSINT Target Analysis",
+    "category": "Intelligence",
+    "hd4_phase": "Hunt",
+    "description": "Detailed intel collection on locations.",
+    "kali_tools": [],
+    "primitives": [],
+    "usim_hash": "60c0711624d706835ca2203d51b090d64066c11a6bc7ff43",
+    "unicode_compressed": "\ud83d\udd2560c0\ud83d\udcbb5ca2\ud83d\ude804066",
+    "escalation_levels": [
+      "script",
+      "microkernel",
+      "binary",
+      "container"
+    ],
+    "supabase_id": null
+  },
+  {
+    "task_id": "uuid-002-002-001",
+    "task_name": "Social Eng. Reconnaissance",
+    "category": "HUMINT",
+    "hd4_phase": "Hunt",
+    "description": "Using deception to extract security info.",
+    "kali_tools": [],
+    "primitives": [],
+    "usim_hash": "c5256108f093a5d07f5d3307a682a82e4eb949ca533f47e9",
+    "unicode_compressed": "\ud83d\udd25c525\ud83d\udcbb7f5d\ud83d\ude804eb9",
+    "escalation_levels": [
+      "script",
+      "microkernel",
+      "binary",
+      "container"
+    ],
+    "supabase_id": null
+  },
+  {
+    "task_id": "uuid-002-003-001",
+    "task_name": "Insider Threat Development",
+    "category": "HUMINT",
+    "hd4_phase": "Hunt",
+    "description": "Manipulating individuals for target access.",
+    "kali_tools": [],
+    "primitives": [],
+    "usim_hash": "91968c4fce6995d5e81b6decbcf0f748c9be3aa0bc2ea29e",
+    "unicode_compressed": "\ud83d\udd259196\ud83d\udcbbe81b\ud83d\ude80c9be",
+    "escalation_levels": [
+      "script",
+      "microkernel",
+      "binary",
+      "container"
+    ],
+    "supabase_id": null
+  },
+  {
+    "task_id": "uuid-002-004-001",
+    "task_name": "Physical Surveillance",
+    "category": "Reconnaissance",
+    "hd4_phase": "Hunt",
+    "description": "Observing target locations and response times.",
+    "kali_tools": [],
+    "primitives": [],
+    "usim_hash": "e39af62ad1eaf1f8613f02087a5d5f539e68b935b7d40419",
+    "unicode_compressed": "\ud83d\udd25e39a\ud83d\udcbb613f\ud83d\ude809e68",
+    "escalation_levels": [
+      "script",
+      "microkernel",
+      "binary",
+      "container"
+    ],
+    "supabase_id": null
+  },
+  {
+    "task_id": "uuid-002-005-001",
+    "task_name": "Cyber Reconnaissance",
+    "category": "Cyber Reconnaissance",
+    "hd4_phase": "Hunt",
+    "description": "Mapping network vulnerabilities.",
+    "kali_tools": [],
+    "primitives": [],
+    "usim_hash": "783d8a50471eaab4fc641db19d6898e34cec9f72658c2854",
+    "unicode_compressed": "\ud83d\udd25783d\ud83d\udcbbfc64\ud83d\ude804cec",
+    "escalation_levels": [
+      "script",
+      "microkernel",
+      "binary",
+      "container"
+    ],
+    "supabase_id": null
+  },
+  {
+    "task_id": "uuid-002-006-001",
+    "task_name": "Explosives Target Assessment",
+    "category": "Physical Reconnaissance",
+    "hd4_phase": "Hunt",
+    "description": "Analyzing structural vulnerabilities for IEDs.",
+    "kali_tools": [],
+    "primitives": [],
+    "usim_hash": "e1246879fe75e49e4f664d634d2cb317ed68a844ec7d8870",
+    "unicode_compressed": "\ud83d\udd25e124\ud83d\udcbb4f66\ud83d\ude80ed68",
+    "escalation_levels": [
+      "script",
+      "microkernel",
+      "binary",
+      "container"
+    ],
+    "supabase_id": null
+  },
+  {
+    "task_id": "uuid-002-007-001",
+    "task_name": "UAV Target Acquisition",
+    "category": "Physical Reconnaissance",
+    "hd4_phase": "Hunt",
+    "description": "Mapping drone routes and payload opportunities.",
+    "kali_tools": [],
+    "primitives": [],
+    "usim_hash": "9b3f56547a18e9da9042f2c260a9dca793ccbbc9e40638a0",
+    "unicode_compressed": "\ud83d\udd259b3f\ud83d\udcbb9042\ud83d\ude8093cc",
+    "escalation_levels": [
+      "script",
+      "microkernel",
+      "binary",
+      "container"
+    ],
+    "supabase_id": null
+  },
+  {
+    "task_id": "uuid-002-008-001",
+    "task_name": "CBRN Target Selection",
+    "category": "CBRN Reconnaissance",
+    "hd4_phase": "Hunt",
+    "description": "Assessing dispersion factors for CBRN attacks.",
+    "kali_tools": [],
+    "primitives": [],
+    "usim_hash": "f66b9890b57bb14087e1561517b40e5b57ab02d9c4e43a65",
+    "unicode_compressed": "\ud83d\udd25f66b\ud83d\udcbb87e1\ud83d\ude8057ab",
+    "escalation_levels": [
+      "script",
+      "microkernel",
+      "binary",
+      "container"
+    ],
+    "supabase_id": null
+  },
+  {
+    "task_id": "uuid-002-009-001",
+    "task_name": "EW Reconnaissance",
+    "category": "Cyber Reconnaissance",
+    "hd4_phase": "Hunt",
+    "description": "Identifying RF vulnerabilities and comms networks.",
+    "kali_tools": [],
+    "primitives": [],
+    "usim_hash": "d6340fd8bbd0d339edfe186cb7512b61edcbab29c816fab9",
+    "unicode_compressed": "\ud83d\udd25d634\ud83d\udcbbedfe\ud83d\ude80edcb",
+    "escalation_levels": [
+      "script",
+      "microkernel",
+      "binary",
+      "container"
+    ],
+    "supabase_id": null
+  },
+  {
+    "task_id": "uuid-002-010-001",
+    "task_name": "Supply Chain Targeting",
+    "category": "Indirect Attack",
+    "hd4_phase": "Hunt",
+    "description": "Infiltrating vendors for access or disruption.",
+    "kali_tools": [],
+    "primitives": [],
+    "usim_hash": "d410bdf50617213ed3d4f2909063a253827ab6b4838d4006",
+    "unicode_compressed": "\ud83d\udd25d410\ud83d\udcbbd3d4\ud83d\ude80827a",
+    "escalation_levels": [
+      "script",
+      "microkernel",
+      "binary",
+      "container"
+    ],
+    "supabase_id": null
+  },
+  {
+    "task_id": "uuid-003-000-001",
+    "task_name": "Operational Security",
+    "category": "Counter-Surveillance",
+    "hd4_phase": "Detect",
+    "description": "Protecting operations through encrypted comms.",
+    "kali_tools": [],
+    "primitives": [],
+    "usim_hash": "c059ebc5c71fdda91a04b1bc4bd155041ab7a1f9de16d42b",
+    "unicode_compressed": "\ud83d\udd25c059\ud83d\udcbb1a04\ud83d\ude801ab7",
+    "escalation_levels": [
+      "script",
+      "microkernel",
+      "binary",
+      "container"
+    ],
+    "supabase_id": null
+  },
+  {
+    "task_id": "uuid-003-001-001",
+    "task_name": "Encrypted Communication",
+    "category": "Digital OPSEC",
+    "hd4_phase": "Detect",
+    "description": "Using secure messaging to prevent interception.",
+    "kali_tools": [],
+    "primitives": [],
+    "usim_hash": "20edbb88c538729aeff13a5a73196075d01d6834ba375997",
+    "unicode_compressed": "\ud83d\udd2520ed\ud83d\udcbbeff1\ud83d\ude80d01d",
+    "escalation_levels": [
+      "script",
+      "microkernel",
+      "binary",
+      "container"
+    ],
+    "supabase_id": null
+  },
+  {
+    "task_id": "uuid-003-002-001",
+    "task_name": "Digital Anonymization",
+    "category": "Digital OPSEC",
+    "hd4_phase": "Detect",
+    "description": "Using TOR and burner identities to avoid detection.",
+    "kali_tools": [],
+    "primitives": [],
+    "usim_hash": "76df9dd41fba9a74c7e9fc846a1dc669fdf8abe9d04f462c",
+    "unicode_compressed": "\ud83d\udd2576df\ud83d\udcbbc7e9\ud83d\ude80fdf8",
+    "escalation_levels": [
+      "script",
+      "microkernel",
+      "binary",
+      "container"
+    ],
+    "supabase_id": null
+  },
+  {
+    "task_id": "uuid-003-003-001",
+    "task_name": "Physical Security Measures",
+    "category": "Physical OPSEC",
+    "hd4_phase": "Detect",
+    "description": "Using alarms and counter-surveillance tactics.",
+    "kali_tools": [],
+    "primitives": [],
+    "usim_hash": "0cc48e252b8d264b44879b98443bc0dde1b5d6e26e2287cd",
+    "unicode_compressed": "\ud83d\udd250cc4\ud83d\udcbb4487\ud83d\ude80e1b5",
+    "escalation_levels": [
+      "script",
+      "microkernel",
+      "binary",
+      "container"
+    ],
+    "supabase_id": null
+  },
+  {
+    "task_id": "uuid-003-004-001",
+    "task_name": "Detection Avoidance for CBRN",
+    "category": "Physical OPSEC",
+    "hd4_phase": "Detect",
+    "description": "Using shielding to prevent detection of CBRN materials.",
+    "kali_tools": [],
+    "primitives": [],
+    "usim_hash": "f77c427e280593f797c553c6cd3ccd51c0cc896c3617526c",
+    "unicode_compressed": "\ud83d\udd25f77c\ud83d\udcbb97c5\ud83d\ude80c0cc",
+    "escalation_levels": [
+      "script",
+      "microkernel",
+      "binary",
+      "container"
+    ],
+    "supabase_id": null
+  },
+  {
+    "task_id": "uuid-003-005-001",
+    "task_name": "Covert Storage and Transport",
+    "category": "Physical OPSEC",
+    "hd4_phase": "Detect",
+    "description": "Concealing weapons and data during transit.",
+    "kali_tools": [],
+    "primitives": [],
+    "usim_hash": "3bb2c4a13eae18a4283b7dd2fd678eff8db8b9ed2b225d90",
+    "unicode_compressed": "\ud83d\udd253bb2\ud83d\udcbb283b\ud83d\ude808db8",
+    "escalation_levels": [
+      "script",
+      "microkernel",
+      "binary",
+      "container"
+    ],
+    "supabase_id": null
+  },
+  {
+    "task_id": "uuid-003-006-001",
+    "task_name": "Operational Camouflage",
+    "category": "Deception OPSEC",
+    "hd4_phase": "Detect",
+    "description": "Creating false trails to disguise intentions.",
+    "kali_tools": [],
+    "primitives": [],
+    "usim_hash": "7a8e80d67af629a488aa277c5c302f6a345e7fb71eaf3494",
+    "unicode_compressed": "\ud83d\udd257a8e\ud83d\udcbb88aa\ud83d\ude80345e",
+    "escalation_levels": [
+      "script",
+      "microkernel",
+      "binary",
+      "container"
+    ],
+    "supabase_id": null
+  },
+  {
+    "task_id": "uuid-003-007-001",
+    "task_name": "Compartmentalized Infrastructure",
+    "category": "Digital OPSEC",
+    "hd4_phase": "Detect",
+    "description": "Using burner phones to prevent tracking.",
+    "kali_tools": [],
+    "primitives": [],
+    "usim_hash": "0c3c91952a291510367ad896797c8509b698570a472d36e6",
+    "unicode_compressed": "\ud83d\udd250c3c\ud83d\udcbb367a\ud83d\ude80b698",
+    "escalation_levels": [
+      "script",
+      "microkernel",
+      "binary",
+      "container"
+    ],
+    "supabase_id": null
+  },
+  {
+    "task_id": "uuid-004-000-001",
+    "task_name": "Obtain Operational Resources",
+    "category": "Resource Development",
+    "hd4_phase": "Detect",
+    "description": "Establishing financial and logistical resources.",
+    "kali_tools": [],
+    "primitives": [],
+    "usim_hash": "e9ab9e8872e473ddcfbb5e1b4f8302428f13a7962045564a",
+    "unicode_compressed": "\ud83d\udd25e9ab\ud83d\udcbbcfbb\ud83d\ude808f13",
+    "escalation_levels": [
+      "script",
+      "microkernel",
+      "binary",
+      "container"
+    ],
+    "supabase_id": null
+  },
+  {
+    "task_id": "uuid-004-001-001",
+    "task_name": "Financing Operations",
+    "category": "Financial Crimes",
+    "hd4_phase": "Detect",
+    "description": "Conducting financial ops to generate funds.",
+    "kali_tools": [],
+    "primitives": [],
+    "usim_hash": "3f841ef96cc63636144f1e141954ad0d8eb5a1a4d5660e09",
+    "unicode_compressed": "\ud83d\udd253f84\ud83d\udcbb144f\ud83d\ude808eb5",
+    "escalation_levels": [
+      "script",
+      "microkernel",
+      "binary",
+      "container"
+    ],
+    "supabase_id": null
+  },
+  {
+    "task_id": "uuid-004-001-002",
+    "task_name": "Crowdfunding Fraud",
+    "category": "Financial Crimes",
+    "hd4_phase": "Detect",
+    "description": "Raising funds under false pretenses online.",
+    "kali_tools": [],
+    "primitives": [],
+    "usim_hash": "81b4cc53f356931da19394650153af8d5b589f2c19521702",
+    "unicode_compressed": "\ud83d\udd2581b4\ud83d\udcbba193\ud83d\ude805b58",
+    "escalation_levels": [
+      "script",
+      "microkernel",
+      "binary",
+      "container"
+    ],
+    "supabase_id": null
+  },
+  {
+    "task_id": "uuid-004-001-003",
+    "task_name": "Cryptocurrency Laundering",
+    "category": "Financial Crimes",
+    "hd4_phase": "Detect",
+    "description": "Using mixers to obscure transactions.",
+    "kali_tools": [],
+    "primitives": [],
+    "usim_hash": "09ad31a0bc31e6b72cf407c0327ccbf25250f0709babd59b",
+    "unicode_compressed": "\ud83d\udd2509ad\ud83d\udcbb2cf4\ud83d\ude805250",
+    "escalation_levels": [
+      "script",
+      "microkernel",
+      "binary",
+      "container"
+    ],
+    "supabase_id": null
+  },
+  {
+    "task_id": "uuid-004-001-004",
+    "task_name": "Trade-Based Money Laundering",
+    "category": "Financial Crimes",
+    "hd4_phase": "Detect",
+    "description": "Laundering funds through trade invoices.",
+    "kali_tools": [],
+    "primitives": [],
+    "usim_hash": "340e894eecb7c8a748a24306875f6661b6550fa07e01ff4d",
+    "unicode_compressed": "\ud83d\udd25340e\ud83d\udcbb48a2\ud83d\ude80b655",
+    "escalation_levels": [
+      "script",
+      "microkernel",
+      "binary",
+      "container"
+    ],
+    "supabase_id": null
+  },
+  {
+    "task_id": "uuid-004-001-005",
+    "task_name": "Drug and Illicit Goods Trade",
+    "category": "Organized Crime",
+    "hd4_phase": "Detect",
+    "description": "Generating revenue through narcotics sales.",
+    "kali_tools": [],
+    "primitives": [],
+    "usim_hash": "0c7e2dfec83422e5b86b514624ec34947254814f8cb22369",
+    "unicode_compressed": "\ud83d\udd250c7e\ud83d\udcbbb86b\ud83d\ude807254",
+    "escalation_levels": [
+      "script",
+      "microkernel",
+      "binary",
+      "container"
+    ],
+    "supabase_id": null
+  },
+  {
+    "task_id": "uuid-004-001-006",
+    "task_name": "State-Sponsored Financing",
+    "category": "State-Sponsored Threats",
+    "hd4_phase": "Detect",
+    "description": "Using illicit government funding.",
+    "kali_tools": [],
+    "primitives": [],
+    "usim_hash": "2edabcef0c226e777366737577c12e2ed83d4b93b9cbcd4f",
+    "unicode_compressed": "\ud83d\udd252eda\ud83d\udcbb7366\ud83d\ude80d83d",
+    "escalation_levels": [
+      "script",
+      "microkernel",
+      "binary",
+      "container"
+    ],
+    "supabase_id": null
+  },
+  {
+    "task_id": "uuid-004-001-007",
+    "task_name": "Front Companies",
+    "category": "Financial Crimes",
+    "hd4_phase": "Detect",
+    "description": "Hiding financial flows through fake corporations.",
+    "kali_tools": [],
+    "primitives": [],
+    "usim_hash": "2a4f5457e88019d52e233f79c696cf487897a04ea23c44cd",
+    "unicode_compressed": "\ud83d\udd252a4f\ud83d\udcbb2e23\ud83d\ude807897",
+    "escalation_levels": [
+      "script",
+      "microkernel",
+      "binary",
+      "container"
+    ],
+    "supabase_id": null
+  },
+  {
+    "task_id": "uuid-004-001-008",
+    "task_name": "Cybercrime Revenue",
+    "category": "Cyber-Enabled Crime",
+    "hd4_phase": "Detect",
+    "description": "Funding via ransomware and fraud.",
+    "kali_tools": [],
+    "primitives": [],
+    "usim_hash": "116b6e24dc9584ef42a111768e46dd79ce1f7cd333de9199",
+    "unicode_compressed": "\ud83d\udd25116b\ud83d\udcbb42a1\ud83d\ude80ce1f",
+    "escalation_levels": [
+      "script",
+      "microkernel",
+      "binary",
+      "container"
+    ],
+    "supabase_id": null
+  },
+  {
+    "task_id": "uuid-004-001-009",
+    "task_name": "Bulk Cash Smuggling",
+    "category": "Financial Crimes",
+    "hd4_phase": "Detect",
+    "description": "Moving physical currency across borders.",
+    "kali_tools": [],
+    "primitives": [],
+    "usim_hash": "926abe21e76c45328dac1d6a50907719aabda336be3347ef",
+    "unicode_compressed": "\ud83d\udd25926a\ud83d\udcbb8dac\ud83d\ude80aabd",
+    "escalation_levels": [
+      "script",
+      "microkernel",
+      "binary",
+      "container"
+    ],
+    "supabase_id": null
+  },
+  {
+    "task_id": "uuid-004-001-010",
+    "task_name": "Dark Web Transactions",
+    "category": "Cyber-Enabled Crime",
+    "hd4_phase": "Detect",
+    "description": "Conducting illicit transactions on marketplaces.",
+    "kali_tools": [],
+    "primitives": [],
+    "usim_hash": "87e7f9c0401f59fafeb9353b088142449fd81e383b6be7eb",
+    "unicode_compressed": "\ud83d\udd2587e7\ud83d\udcbbfeb9\ud83d\ude809fd8",
+    "escalation_levels": [
+      "script",
+      "microkernel",
+      "binary",
+      "container"
+    ],
+    "supabase_id": null
+  },
+  {
+    "task_id": "uuid-004-001-011",
+    "task_name": "Structuring Transactions",
+    "category": "Financial Crimes",
+    "hd4_phase": "Detect",
+    "description": "Breaking transactions to avoid detection.",
+    "kali_tools": [],
+    "primitives": [],
+    "usim_hash": "2d6b640a273863cf66acad39ce646f4347d8e49febba5f39",
+    "unicode_compressed": "\ud83d\udd252d6b\ud83d\udcbb66ac\ud83d\ude8047d8",
+    "escalation_levels": [
+      "script",
+      "microkernel",
+      "binary",
+      "container"
+    ],
+    "supabase_id": null
+  },
+  {
+    "task_id": "uuid-004-001-012",
+    "task_name": "Money Mules",
+    "category": "Financial Crimes",
+    "hd4_phase": "Detect",
+    "description": "Using intermediaries to move funds.",
+    "kali_tools": [],
+    "primitives": [],
+    "usim_hash": "ab673756ce3096fbaf6f5f6a69137aa09c9fd439a766912c",
+    "unicode_compressed": "\ud83d\udd25ab67\ud83d\udcbbaf6f\ud83d\ude809c9f",
+    "escalation_levels": [
+      "script",
+      "microkernel",
+      "binary",
+      "container"
+    ],
+    "supabase_id": null
+  },
+  {
+    "task_id": "uuid-004-001-013",
+    "task_name": "Precious Metals Laundering",
+    "category": "Financial Crimes",
+    "hd4_phase": "Detect",
+    "description": "Converting funds into metals.",
+    "kali_tools": [],
+    "primitives": [],
+    "usim_hash": "1ab5551a71d245b062de877217ff7a9f8b8d1b3b7ef93519",
+    "unicode_compressed": "\ud83d\udd251ab5\ud83d\udcbb62de\ud83d\ude808b8d",
+    "escalation_levels": [
+      "script",
+      "microkernel",
+      "binary",
+      "container"
+    ],
+    "supabase_id": null
+  },
+  {
+    "task_id": "uuid-004-001-014",
+    "task_name": "Virtual Card Fraud",
+    "category": "Cyber-Enabled Crime",
+    "hd4_phase": "Detect",
+    "description": "Using virtual cards to launder proceeds.",
+    "kali_tools": [],
+    "primitives": [],
+    "usim_hash": "5a63005eef1dd632bc157e016324711977340333d6aa8f60",
+    "unicode_compressed": "\ud83d\udd255a63\ud83d\udcbbbc15\ud83d\ude807734",
+    "escalation_levels": [
+      "script",
+      "microkernel",
+      "binary",
+      "container"
+    ],
+    "supabase_id": null
+  },
+  {
+    "task_id": "uuid-004-001-015",
+    "task_name": "Gift Card Laundering",
+    "category": "Cyber-Enabled Crime",
+    "hd4_phase": "Detect",
+    "description": "Converting funds into gift cards.",
+    "kali_tools": [],
+    "primitives": [],
+    "usim_hash": "8e14369ec9c7f3d5ad76cfb805b4aeeddf34298a402a5b67",
+    "unicode_compressed": "\ud83d\udd258e14\ud83d\udcbbad76\ud83d\ude80df34",
+    "escalation_levels": [
+      "script",
+      "microkernel",
+      "binary",
+      "container"
+    ],
+    "supabase_id": null
+  },
+  {
+    "task_id": "uuid-004-001-016",
+    "task_name": "Retail Front Laundering",
+    "category": "Financial Crimes",
+    "hd4_phase": "Detect",
+    "description": "Using goods to disguise revenue.",
+    "kali_tools": [],
+    "primitives": [],
+    "usim_hash": "2a3524b1c10ace0da4e4e48f08f7be830e1e881b8335b4bc",
+    "unicode_compressed": "\ud83d\udd252a35\ud83d\udcbba4e4\ud83d\ude800e1e",
+    "escalation_levels": [
+      "script",
+      "microkernel",
+      "binary",
+      "container"
+    ],
+    "supabase_id": null
+  },
+  {
+    "task_id": "uuid-004-001-017",
+    "task_name": "Illicit Untaxed Goods Sales",
+    "category": "Financial Crimes",
+    "hd4_phase": "Detect",
+    "description": "Selling untaxed goods for revenue.",
+    "kali_tools": [],
+    "primitives": [],
+    "usim_hash": "8edf7beefb24ad7cfbb5c05db9015055e75b3c67a47edf1f",
+    "unicode_compressed": "\ud83d\udd258edf\ud83d\udcbbfbb5\ud83d\ude80e75b",
+    "escalation_levels": [
+      "script",
+      "microkernel",
+      "binary",
+      "container"
+    ],
+    "supabase_id": null
+  },
+  {
+    "task_id": "uuid-004-001-018",
+    "task_name": "Radicalizing Students",
+    "category": "HUMINT",
+    "hd4_phase": "Detect",
+    "description": "Recruiting students via OSINT/dark web.",
+    "kali_tools": [],
+    "primitives": [],
+    "usim_hash": "9c7ccaa4bc44a3408f4065586c0fb70ca00b44f41ded2a5a",
+    "unicode_compressed": "\ud83d\udd259c7c\ud83d\udcbb8f40\ud83d\ude80a00b",
+    "escalation_levels": [
+      "script",
+      "microkernel",
+      "binary",
+      "container"
+    ],
+    "supabase_id": null
+  },
+  {
+    "task_id": "uuid-004-001-019",
+    "task_name": "Compromising Officials",
+    "category": "Financial Crimes",
+    "hd4_phase": "Detect",
+    "description": "Bribing/extorting officials and students.",
+    "kali_tools": [],
+    "primitives": [],
+    "usim_hash": "deb0d6f561f770c3d868124b36f3322318e902c69af07677",
+    "unicode_compressed": "\ud83d\udd25deb0\ud83d\udcbbd868\ud83d\ude8018e9",
+    "escalation_levels": [
+      "script",
+      "microkernel",
+      "binary",
+      "container"
+    ],
+    "supabase_id": null
+  },
+  {
+    "task_id": "uuid-004-001-020",
+    "task_name": "Islamic Terror Cell Activation",
+    "category": "Operational Coordination",
+    "hd4_phase": "Detect",
+    "description": "Activating terror operatives with logistical support.",
+    "kali_tools": [],
+    "primitives": [],
+    "usim_hash": "27b0dd8f4c571186a1b589cd7be5db575a96b145dba9c239",
+    "unicode_compressed": "\ud83d\udd2527b0\ud83d\udcbba1b5\ud83d\ude805a96",
+    "escalation_levels": [
+      "script",
+      "microkernel",
+      "binary",
+      "container"
+    ],
+    "supabase_id": null
+  },
+  {
+    "task_id": "uuid-004-001-021",
+    "task_name": "Middle East Terror Funding",
+    "category": "Financial Crimes",
+    "hd4_phase": "Detect",
+    "description": "Securing funds from Middle East via crypto.",
+    "kali_tools": [],
+    "primitives": [],
+    "usim_hash": "db4def3cc13e50cbe6d3f5fbbed0b73ad3b13e7f9131bc09",
+    "unicode_compressed": "\ud83d\udd25db4d\ud83d\udcbbe6d3\ud83d\ude80d3b1",
+    "escalation_levels": [
+      "script",
+      "microkernel",
+      "binary",
+      "container"
+    ],
+    "supabase_id": null
+  },
+  {
+    "task_id": "uuid-005-000-001",
+    "task_name": "Reconnaissance and Targeting",
+    "category": "Targeting",
+    "hd4_phase": "Hunt",
+    "description": "Gathering intel on targets.",
+    "kali_tools": [],
+    "primitives": [],
+    "usim_hash": "f9881202ee88166b0cee8ac2005acc79f1afa8c56c8d616f",
+    "unicode_compressed": "\ud83d\udd25f988\ud83d\udcbb0cee\ud83d\ude80f1af",
+    "escalation_levels": [
+      "script",
+      "microkernel",
+      "binary",
+      "container"
+    ],
+    "supabase_id": null
+  },
+  {
+    "task_id": "uuid-005-001-001",
+    "task_name": "OSINT Collection",
+    "category": "Intelligence",
+    "hd4_phase": "Hunt",
+    "description": "Gathering personal/org intel.",
+    "kali_tools": [],
+    "primitives": [],
+    "usim_hash": "30f4616681c7a55d2e29219966dd8dc9a5d47568222ec9c0",
+    "unicode_compressed": "\ud83d\udd2530f4\ud83d\udcbb2e29\ud83d\ude80a5d4",
+    "escalation_levels": [
+      "script",
+      "microkernel",
+      "binary",
+      "container"
+    ],
+    "supabase_id": null
+  },
+  {
+    "task_id": "uuid-005-002-001",
+    "task_name": "Physical Surveillance",
+    "category": "Reconnaissance",
+    "hd4_phase": "Hunt",
+    "description": "Identifying response times and access points.",
+    "kali_tools": [],
+    "primitives": [],
+    "usim_hash": "a933da5ee0bd5c7f15310edf583bddd19780687471bf76f6",
+    "unicode_compressed": "\ud83d\udd25a933\ud83d\udcbb1531\ud83d\ude809780",
+    "escalation_levels": [
+      "script",
+      "microkernel",
+      "binary",
+      "container"
+    ],
+    "supabase_id": null
+  },
+  {
+    "task_id": "uuid-005-003-001",
+    "task_name": "Network Enumeration",
+    "category": "Cyber Reconnaissance",
+    "hd4_phase": "Hunt",
+    "description": "Identifying vulnerabilities in networks.",
+    "kali_tools": [],
+    "primitives": [],
+    "usim_hash": "aeb58bec90e25fb17ce05b1dd617477d86f3841e8d701cda",
+    "unicode_compressed": "\ud83d\udd25aeb5\ud83d\udcbb7ce0\ud83d\ude8086f3",
+    "escalation_levels": [
+      "script",
+      "microkernel",
+      "binary",
+      "container"
+    ],
+    "supabase_id": null
+  },
+  {
+    "task_id": "uuid-005-004-001",
+    "task_name": "Cloud Reconnaissance",
+    "category": "Cyber Reconnaissance",
+    "hd4_phase": "Hunt",
+    "description": "Mapping cloud-based vulnerabilities.",
+    "kali_tools": [],
+    "primitives": [],
+    "usim_hash": "9b9fb5edf6e0dd5d3bcd9558b4d9c659c1d6bf16d807fec8",
+    "unicode_compressed": "\ud83d\udd259b9f\ud83d\udcbb3bcd\ud83d\ude80c1d6",
+    "escalation_levels": [
+      "script",
+      "microkernel",
+      "binary",
+      "container"
+    ],
+    "supabase_id": null
+  },
+  {
+    "task_id": "uuid-005-005-001",
+    "task_name": "Target Vulnerability Assessment",
+    "category": "Targeting",
+    "hd4_phase": "Hunt",
+    "description": "Assessing digital and physical attack surfaces.",
+    "kali_tools": [],
+    "primitives": [],
+    "usim_hash": "881711292bd7bd85a91a1ac8e34eee1fb5ed03032f40a4ec",
+    "unicode_compressed": "\ud83d\udd258817\ud83d\udcbba91a\ud83d\ude80b5ed",
+    "escalation_levels": [
+      "script",
+      "microkernel",
+      "binary",
+      "container"
+    ],
+    "supabase_id": null
+  },
+  {
+    "task_id": "uuid-005-006-001",
+    "task_name": "Supply Chain Targeting",
+    "category": "Indirect Attack",
+    "hd4_phase": "Hunt",
+    "description": "Identifying third-party vendors for exploitation.",
+    "kali_tools": [],
+    "primitives": [],
+    "usim_hash": "2ad26699d0cb8399a9545b4e0bf248c5b81391abbac4c6bc",
+    "unicode_compressed": "\ud83d\udd252ad2\ud83d\udcbba954\ud83d\ude80b813",
+    "escalation_levels": [
+      "script",
+      "microkernel",
+      "binary",
+      "container"
+    ],
+    "supabase_id": null
+  },
+  {
+    "task_id": "uuid-005-007-001",
+    "task_name": "Insider Threat Development",
+    "category": "HUMINT",
+    "hd4_phase": "Hunt",
+    "description": "Co-opting insiders for pre-positioned access.",
+    "kali_tools": [],
+    "primitives": [],
+    "usim_hash": "fe6af57797317ddf9b217739510bc6a70a4fffc06bc328fb",
+    "unicode_compressed": "\ud83d\udd25fe6a\ud83d\udcbb9b21\ud83d\ude800a4f",
+    "escalation_levels": [
+      "script",
+      "microkernel",
+      "binary",
+      "container"
+    ],
+    "supabase_id": null
+  },
+  {
+    "task_id": "uuid-005-008-001",
+    "task_name": "Dark Web Intel Gathering",
+    "category": "Intelligence",
+    "hd4_phase": "Hunt",
+    "description": "Using forums for intelligence.",
+    "kali_tools": [],
+    "primitives": [],
+    "usim_hash": "2be5a84adbb6773500030e1314f7bf50a2df85b3e25419fc",
+    "unicode_compressed": "\ud83d\udd252be5\ud83d\udcbb0003\ud83d\ude80a2df",
+    "escalation_levels": [
+      "script",
+      "microkernel",
+      "binary",
+      "container"
+    ],
+    "supabase_id": null
+  },
+  {
+    "task_id": "uuid-005-009-001",
+    "task_name": "Geospatial Reconnaissance",
+    "category": "Reconnaissance",
+    "hd4_phase": "Hunt",
+    "description": "Using GIS to plan movements.",
+    "kali_tools": [],
+    "primitives": [],
+    "usim_hash": "6e0732b41325984e4aa06377c9d36ec16890a99451cf6b14",
+    "unicode_compressed": "\ud83d\udd256e07\ud83d\udcbb4aa0\ud83d\ude806890",
+    "escalation_levels": [
+      "script",
+      "microkernel",
+      "binary",
+      "container"
+    ],
+    "supabase_id": null
+  },
+  {
+    "task_id": "uuid-005-010-001",
+    "task_name": "Targeting Remote Work Systems",
+    "category": "Cyber Reconnaissance",
+    "hd4_phase": "Hunt",
+    "description": "Exploiting work-from-home setups.",
+    "kali_tools": [],
+    "primitives": [],
+    "usim_hash": "079610a9069ee05a4cbe36e8b2b263536ac3b3ae6eb7540b",
+    "unicode_compressed": "\ud83d\udd250796\ud83d\udcbb4cbe\ud83d\ude806ac3",
+    "escalation_levels": [
+      "script",
+      "microkernel",
+      "binary",
+      "container"
+    ],
+    "supabase_id": null
+  },
+  {
+    "task_id": "uuid-005-011-001",
+    "task_name": "Critical Infrastructure Targeting",
+    "category": "Targeting",
+    "hd4_phase": "Hunt",
+    "description": "Identifying high-value targets.",
+    "kali_tools": [],
+    "primitives": [],
+    "usim_hash": "43e218d6ac38c50e6e69e26976c5bbe9a2a96e4a82258654",
+    "unicode_compressed": "\ud83d\udd2543e2\ud83d\udcbb6e69\ud83d\ude80a2a9",
+    "escalation_levels": [
+      "script",
+      "microkernel",
+      "binary",
+      "container"
+    ],
+    "supabase_id": null
+  },
+  {
+    "task_id": "uuid-005-012-001",
+    "task_name": "Border Security Targeting",
+    "category": "Targeting",
+    "hd4_phase": "Hunt",
+    "description": "Identifying weaknesses in customs.",
+    "kali_tools": [],
+    "primitives": [],
+    "usim_hash": "1b4768933b10adea780fe7c40ac6703edf6a447df8e5c0eb",
+    "unicode_compressed": "\ud83d\udd251b47\ud83d\udcbb780f\ud83d\ude80df6a",
+    "escalation_levels": [
+      "script",
+      "microkernel",
+      "binary",
+      "container"
+    ],
+    "supabase_id": null
+  },
+  {
+    "task_id": "uuid-005-013-001",
+    "task_name": "Law Enforcement Surveillance",
+    "category": "Counterintelligence",
+    "hd4_phase": "Hunt",
+    "description": "Analyzing police tactics.",
+    "kali_tools": [],
+    "primitives": [],
+    "usim_hash": "abe97933d2c6d59c226c2042a5393862d24aee5f040a5116",
+    "unicode_compressed": "\ud83d\udd25abe9\ud83d\udcbb226c\ud83d\ude80d24a",
+    "escalation_levels": [
+      "script",
+      "microkernel",
+      "binary",
+      "container"
+    ],
+    "supabase_id": null
+  },
+  {
+    "task_id": "uuid-006-000-001",
+    "task_name": "Infiltration and Access",
+    "category": "Infiltration",
+    "hd4_phase": "Disrupt",
+    "description": "Gaining entry via cyber/physical means.",
+    "kali_tools": [],
+    "primitives": [],
+    "usim_hash": "65a6d5c6f11db73a9c334b47f2118564c39282da80ac6fb3",
+    "unicode_compressed": "\ud83d\udd2565a6\ud83d\udcbb9c33\ud83d\ude80c392",
+    "escalation_levels": [
+      "script",
+      "microkernel",
+      "binary",
+      "container"
+    ],
+    "supabase_id": null
+  },
+  {
+    "task_id": "uuid-006-001-001",
+    "task_name": "Physical Infiltration",
+    "category": "Infiltration",
+    "hd4_phase": "Disrupt",
+    "description": "Gaining covert entry via disguise.",
+    "kali_tools": [],
+    "primitives": [],
+    "usim_hash": "2219c832fae0832a54921eed6d466d4fc11692658e5503e6",
+    "unicode_compressed": "\ud83d\udd252219\ud83d\udcbb5492\ud83d\ude80c116",
+    "escalation_levels": [
+      "script",
+      "microkernel",
+      "binary",
+      "container"
+    ],
+    "supabase_id": null
+  },
+  {
+    "task_id": "uuid-006-002-001",
+    "task_name": "Cyber Exploitation for Access",
+    "category": "Cyber Warfare",
+    "hd4_phase": "Disrupt",
+    "description": "Using phishing and credential theft for footholds.",
+    "kali_tools": [],
+    "primitives": [],
+    "usim_hash": "89bb4979d438da0f3d908db93c80c1e49cf07b4e35aa0de0",
+    "unicode_compressed": "\ud83d\udd2589bb\ud83d\udcbb3d90\ud83d\ude809cf0",
+    "escalation_levels": [
+      "script",
+      "microkernel",
+      "binary",
+      "container"
+    ],
+    "supabase_id": null
+  },
+  {
+    "task_id": "uuid-006-003-001",
+    "task_name": "UAVs for ISR and Infiltration",
+    "category": "Physical Reconnaissance",
+    "hd4_phase": "Disrupt",
+    "description": "Deploying drones for recon and payload.",
+    "kali_tools": [],
+    "primitives": [],
+    "usim_hash": "f8a083c8636a05c22bed37f6323cea254c3aac618afee7ed",
+    "unicode_compressed": "\ud83d\udd25f8a0\ud83d\udcbb2bed\ud83d\ude804c3a",
+    "escalation_levels": [
+      "script",
+      "microkernel",
+      "binary",
+      "container"
+    ],
+    "supabase_id": null
+  },
+  {
+    "task_id": "uuid-006-004-001",
+    "task_name": "Network Trust Exploitation",
+    "category": "Cyber Warfare",
+    "hd4_phase": "Disrupt",
+    "description": "Abusing VPNs for access.",
+    "kali_tools": [],
+    "primitives": [],
+    "usim_hash": "96e209a907f75b84cbc2a0184f6451e9aef741938988db64",
+    "unicode_compressed": "\ud83d\udd2596e2\ud83d\udcbbcbc2\ud83d\ude80aef7",
+    "escalation_levels": [
+      "script",
+      "microkernel",
+      "binary",
+      "container"
+    ],
+    "supabase_id": null
+  },
+  {
+    "task_id": "uuid-006-005-001",
+    "task_name": "RF Jamming for Disruption",
+    "category": "Cyber Warfare",
+    "hd4_phase": "Disrupt",
+    "description": "Targeting security with RF interference.",
+    "kali_tools": [],
+    "primitives": [],
+    "usim_hash": "f26321f064b3d07472850fb9c9f4b631ef4e6b17c83d3781",
+    "unicode_compressed": "\ud83d\udd25f263\ud83d\udcbb7285\ud83d\ude80ef4e",
+    "escalation_levels": [
+      "script",
+      "microkernel",
+      "binary",
+      "container"
+    ],
+    "supabase_id": null
+  },
+  {
+    "task_id": "uuid-006-006-001",
+    "task_name": "UAV Comms Exploitation",
+    "category": "Cyber Warfare",
+    "hd4_phase": "Disrupt",
+    "description": "Hijacking enemy UAVs for intel.",
+    "kali_tools": [],
+    "primitives": [],
+    "usim_hash": "7da58ada423dda1821ade549eef0f5db95b158e6edbb626f",
+    "unicode_compressed": "\ud83d\udd257da5\ud83d\udcbb21ad\ud83d\ude8095b1",
+    "escalation_levels": [
+      "script",
+      "microkernel",
+      "binary",
+      "container"
+    ],
+    "supabase_id": null
+  },
+  {
+    "task_id": "uuid-006-007-001",
+    "task_name": "Insider Threats for Access",
+    "category": "HUMINT",
+    "hd4_phase": "Disrupt",
+    "description": "Leveraging insiders to bypass controls.",
+    "kali_tools": [],
+    "primitives": [],
+    "usim_hash": "dd0bfa4c6b9f14129ea9c1fb927a0d0799fe0cfc6c204b0d",
+    "unicode_compressed": "\ud83d\udd25dd0b\ud83d\udcbb9ea9\ud83d\ude8099fe",
+    "escalation_levels": [
+      "script",
+      "microkernel",
+      "binary",
+      "container"
+    ],
+    "supabase_id": null
+  },
+  {
+    "task_id": "uuid-006-008-001",
+    "task_name": "Supply Chain Infiltration",
+    "category": "Indirect Attack",
+    "hd4_phase": "Disrupt",
+    "description": "Embedding malicious components in supply chains.",
+    "kali_tools": [],
+    "primitives": [],
+    "usim_hash": "be5ae5d64b0c0981d27e632d845a4c1c40fecac827efdd1d",
+    "unicode_compressed": "\ud83d\udd25be5a\ud83d\udcbbd27e\ud83d\ude8040fe",
+    "escalation_levels": [
+      "script",
+      "microkernel",
+      "binary",
+      "container"
+    ],
+    "supabase_id": null
+  },
+  {
+    "task_id": "uuid-006-009-001",
+    "task_name": "Covert Data Exfiltration",
+    "category": "Cyber Warfare",
+    "hd4_phase": "Disrupt",
+    "description": "Using DNS tunneling to extract intel.",
+    "kali_tools": [],
+    "primitives": [],
+    "usim_hash": "058ee6ff5f4a19339a1b680855cbf7cf3c425d59c95c5fbf",
+    "unicode_compressed": "\ud83d\udd25058e\ud83d\udcbb9a1b\ud83d\ude803c42",
+    "escalation_levels": [
+      "script",
+      "microkernel",
+      "binary",
+      "container"
+    ],
+    "supabase_id": null
+  },
+  {
+    "task_id": "uuid-006-010-001",
+    "task_name": "Pre-Staged Cyber Implants",
+    "category": "Cyber Warfare",
+    "hd4_phase": "Disrupt",
+    "description": "Placing dormant malware before execution.",
+    "kali_tools": [],
+    "primitives": [],
+    "usim_hash": "9d0f6fcc8ff280015850c8c994249dd7d5a71beb062a2e4e",
+    "unicode_compressed": "\ud83d\udd259d0f\ud83d\udcbb5850\ud83d\ude80d5a7",
+    "escalation_levels": [
+      "script",
+      "microkernel",
+      "binary",
+      "container"
+    ],
+    "supabase_id": null
+  },
+  {
+    "task_id": "uuid-006-011-001",
+    "task_name": "UAV Cyber Payload Delivery",
+    "category": "Cyber Warfare",
+    "hd4_phase": "Disrupt",
+    "description": "Using drones to deliver malicious devices.",
+    "kali_tools": [],
+    "primitives": [],
+    "usim_hash": "a92025d837389a09ebabf8d2d637c12c3228f77ea2ab601e",
+    "unicode_compressed": "\ud83d\udd25a920\ud83d\udcbbebab\ud83d\ude803228",
+    "escalation_levels": [
+      "script",
+      "microkernel",
+      "binary",
+      "container"
+    ],
+    "supabase_id": null
+  },
+  {
+    "task_id": "uuid-006-012-001",
+    "task_name": "Tunneling Border Tactics",
+    "category": "Transnational Crime",
+    "hd4_phase": "Disrupt",
+    "description": "Using smuggling tunnels for access.",
+    "kali_tools": [],
+    "primitives": [],
+    "usim_hash": "5d12d1e53793b4cb3d90a23b8121e45667be699ba05e3c4e",
+    "unicode_compressed": "\ud83d\udd255d12\ud83d\udcbb3d90\ud83d\ude8067be",
+    "escalation_levels": [
+      "script",
+      "microkernel",
+      "binary",
+      "container"
+    ],
+    "supabase_id": null
+  },
+  {
+    "task_id": "uuid-006-013-001",
+    "task_name": "Mobile Device Compromise",
+    "category": "Cyber Warfare",
+    "hd4_phase": "Disrupt",
+    "description": "Exploiting phones for persistent access.",
+    "kali_tools": [],
+    "primitives": [],
+    "usim_hash": "b93d5f5cbe8cd0ecc8f06bf329caa9a5bfef1592318f264a",
+    "unicode_compressed": "\ud83d\udd25b93d\ud83d\udcbbc8f0\ud83d\ude80bfef",
+    "escalation_levels": [
+      "script",
+      "microkernel",
+      "binary",
+      "container"
+    ],
+    "supabase_id": null
+  },
+  {
+    "task_id": "uuid-006-013-002",
+    "task_name": "Pre-Positioned Operative Mobilization",
+    "category": "Operational Coordination",
+    "hd4_phase": "Disrupt",
+    "description": "Activating operatives from prior border entry.",
+    "kali_tools": [],
+    "primitives": [],
+    "usim_hash": "317ecba1065abc17d490b68485dbad8991eb742b3a9aafac",
+    "unicode_compressed": "\ud83d\udd25317e\ud83d\udcbbd490\ud83d\ude8091eb",
+    "escalation_levels": [
+      "script",
+      "microkernel",
+      "binary",
+      "container"
+    ],
+    "supabase_id": null
+  },
+  {
+    "task_id": "uuid-006-014-001",
+    "task_name": "Social Eng. for Access",
+    "category": "HUMINT",
+    "hd4_phase": "Disrupt",
+    "description": "Convincing personnel to grant access.",
+    "kali_tools": [],
+    "primitives": [],
+    "usim_hash": "8dec535770e009faff5c1296d7f7cd1b7857a3c767dd1b1e",
+    "unicode_compressed": "\ud83d\udd258dec\ud83d\udcbbff5c\ud83d\ude807857",
+    "escalation_levels": [
+      "script",
+      "microkernel",
+      "binary",
+      "container"
+    ],
+    "supabase_id": null
+  },
+  {
+    "task_id": "uuid-007-000-001",
+    "task_name": "Execution of Cyber Physical Attacks",
+    "category": "Execution",
+    "hd4_phase": "Disable",
+    "description": "Conducting direct attacks on infrastructure.",
+    "kali_tools": [],
+    "primitives": [],
+    "usim_hash": "a0f9de9c4e1d92e1f82f408b0d6d6fe36eadee015068ddd5",
+    "unicode_compressed": "\ud83d\udd25a0f9\ud83d\udcbbf82f\ud83d\ude806ead",
+    "escalation_levels": [
+      "script",
+      "microkernel",
+      "binary",
+      "container"
+    ],
+    "supabase_id": null
+  },
+  {
+    "task_id": "uuid-007-001-001",
+    "task_name": "Disabling Security Systems",
+    "category": "Exploitation",
+    "hd4_phase": "Disable",
+    "description": "Disabling cyber/physical security.",
+    "kali_tools": [],
+    "primitives": [],
+    "usim_hash": "fda03c4ff59fd7eeb91f6b5bd5ac6e286340edbd4dbc257c",
+    "unicode_compressed": "\ud83d\udd25fda0\ud83d\udcbbb91f\ud83d\ude806340",
+    "escalation_levels": [
+      "script",
+      "microkernel",
+      "binary",
+      "container"
+    ],
+    "supabase_id": null
+  },
+  {
+    "task_id": "uuid-007-002-001",
+    "task_name": "Diversionary Attacks",
+    "category": "Deception",
+    "hd4_phase": "Disrupt",
+    "description": "Executing actions to mislead response forces.",
+    "kali_tools": [],
+    "primitives": [],
+    "usim_hash": "412cb5623cea062525d7c2542898ec1a0c80e26326a9bfb4",
+    "unicode_compressed": "\ud83d\udd25412c\ud83d\udcbb25d7\ud83d\ude800c80",
+    "escalation_levels": [
+      "script",
+      "microkernel",
+      "binary",
+      "container"
+    ],
+    "supabase_id": null
+  },
+  {
+    "task_id": "uuid-007-003-001",
+    "task_name": "Targeting Critical Infrastructure",
+    "category": "Cyber Physical Warfare",
+    "hd4_phase": "Disable",
+    "description": "Attacking OT and ICS within sectors.",
+    "kali_tools": [],
+    "primitives": [],
+    "usim_hash": "9340cc4ea28725eac7dcab3c7d9606592d47c3b59b78cfed",
+    "unicode_compressed": "\ud83d\udd259340\ud83d\udcbbc7dc\ud83d\ude802d47",
+    "escalation_levels": [
+      "script",
+      "microkernel",
+      "binary",
+      "container"
+    ],
+    "supabase_id": null
+  },
+  {
+    "task_id": "uuid-007-003-002",
+    "task_name": "Assault on Soft Targets",
+    "category": "Civilian Targeting",
+    "hd4_phase": "Disable",
+    "description": "Attacking public spaces to maximize casualties.",
+    "kali_tools": [],
+    "primitives": [],
+    "usim_hash": "81dfcebed7c149f1a45f1cb85337abee2473c75bc6f8b850",
+    "unicode_compressed": "\ud83d\udd2581df\ud83d\udcbba45f\ud83d\ude802473",
+    "escalation_levels": [
+      "script",
+      "microkernel",
+      "binary",
+      "container"
+    ],
+    "supabase_id": null
+  },
+  {
+    "task_id": "uuid-007-003-003",
+    "task_name": "Emergency Services Disruption",
+    "category": "Cyber Physical Warfare",
+    "hd4_phase": "Disable",
+    "description": "Attacking law enforcement to degrade response.",
+    "kali_tools": [],
+    "primitives": [],
+    "usim_hash": "e957f0d0f350925ecd4f824f45f12a933e448c9a9808f5c8",
+    "unicode_compressed": "\ud83d\udd25e957\ud83d\udcbbcd4f\ud83d\ude803e44",
+    "escalation_levels": [
+      "script",
+      "microkernel",
+      "binary",
+      "container"
+    ],
+    "supabase_id": null
+  },
+  {
+    "task_id": "uuid-007-003-004",
+    "task_name": "Comms Tech Sabotage",
+    "category": "Cyber Physical Warfare",
+    "hd4_phase": "Disable",
+    "description": "Attacking telecoms and IT to disrupt ops.",
+    "kali_tools": [],
+    "primitives": [],
+    "usim_hash": "bc58eb6a03c687bb8d0494935285909247e806e43a0696fa",
+    "unicode_compressed": "\ud83d\udd25bc58\ud83d\udcbb8d04\ud83d\ude8047e8",
+    "escalation_levels": [
+      "script",
+      "microkernel",
+      "binary",
+      "container"
+    ],
+    "supabase_id": null
+  },
+  {
+    "task_id": "uuid-007-003-005",
+    "task_name": "Energy Utilities Compromise",
+    "category": "Cyber Physical Warfare",
+    "hd4_phase": "Disable",
+    "description": "Attacking grids for cascading failures.",
+    "kali_tools": [],
+    "primitives": [],
+    "usim_hash": "7c8225a2fecb85f5fae450642c211aafef25a7e13a045fd3",
+    "unicode_compressed": "\ud83d\udd257c82\ud83d\udcbbfae4\ud83d\ude80ef25",
+    "escalation_levels": [
+      "script",
+      "microkernel",
+      "binary",
+      "container"
+    ],
+    "supabase_id": null
+  },
+  {
+    "task_id": "uuid-007-003-006",
+    "task_name": "Transport Supply Chain Attacks",
+    "category": "Cyber Physical Warfare",
+    "hd4_phase": "Disable",
+    "description": "Attacking rail and shipping hubs.",
+    "kali_tools": [],
+    "primitives": [],
+    "usim_hash": "d1960015593784c7e4844952fc8ba64417ff79e39779801d",
+    "unicode_compressed": "\ud83d\udd25d196\ud83d\udcbbe484\ud83d\ude8017ff",
+    "escalation_levels": [
+      "script",
+      "microkernel",
+      "binary",
+      "container"
+    ],
+    "supabase_id": null
+  },
+  {
+    "task_id": "uuid-007-003-007",
+    "task_name": "Govt Defense Operations",
+    "category": "Cyber Physical Warfare",
+    "hd4_phase": "Disable",
+    "description": "Attacking military and govt facilities.",
+    "kali_tools": [],
+    "primitives": [],
+    "usim_hash": "ea29eb4f68f891df73626d0922bcb6fc1a0e7f2834344b59",
+    "unicode_compressed": "\ud83d\udd25ea29\ud83d\udcbb7362\ud83d\ude801a0e",
+    "escalation_levels": [
+      "script",
+      "microkernel",
+      "binary",
+      "container"
+    ],
+    "supabase_id": null
+  },
+  {
+    "task_id": "uuid-007-003-008",
+    "task_name": "Industrial Economic Disruption",
+    "category": "Cyber Physical Warfare",
+    "hd4_phase": "Disable",
+    "description": "Attacking industrial systems.",
+    "kali_tools": [],
+    "primitives": [],
+    "usim_hash": "8c471cc5298399de841f3aed9019e5aabeb61836d4faf648",
+    "unicode_compressed": "\ud83d\udd258c47\ud83d\udcbb841f\ud83d\ude80beb6",
+    "escalation_levels": [
+      "script",
+      "microkernel",
+      "binary",
+      "container"
+    ],
+    "supabase_id": null
+  },
+  {
+    "task_id": "uuid-007-004-001",
+    "task_name": "Cyber-Enabled Kinetic Attacks",
+    "category": "Hybrid Warfare",
+    "hd4_phase": "Disable",
+    "description": "Using cyber intrusions to enable attacks.",
+    "kali_tools": [],
+    "primitives": [],
+    "usim_hash": "f8a38faa7616894e10876be2e20d00cab4de18c0d8520afb",
+    "unicode_compressed": "\ud83d\udd25f8a3\ud83d\udcbb1087\ud83d\ude80b4de",
+    "escalation_levels": [
+      "script",
+      "microkernel",
+      "binary",
+      "container"
+    ],
+    "supabase_id": null
+  },
+  {
+    "task_id": "uuid-007-005-001",
+    "task_name": "Weaponized AI",
+    "category": "Cognitive Warfare",
+    "hd4_phase": "Disable",
+    "description": "Deploying AI for attack automation.",
+    "kali_tools": [],
+    "primitives": [],
+    "usim_hash": "9832199fb0055fe6116aa8f97645dd2e6f3f4fc982972684",
+    "unicode_compressed": "\ud83d\udd259832\ud83d\udcbb116a\ud83d\ude806f3f",
+    "escalation_levels": [
+      "script",
+      "microkernel",
+      "binary",
+      "container"
+    ],
+    "supabase_id": null
+  },
+  {
+    "task_id": "uuid-007-006-001",
+    "task_name": "Tactical Kinetic Operations",
+    "category": "Direct Action",
+    "hd4_phase": "Disable",
+    "description": "Conducting bombings and assaults.",
+    "kali_tools": [],
+    "primitives": [],
+    "usim_hash": "5cb5a2a6e427aa479d9236cb7619b24e6e0f7a455a03fe3f",
+    "unicode_compressed": "\ud83d\udd255cb5\ud83d\udcbb9d92\ud83d\ude806e0f",
+    "escalation_levels": [
+      "script",
+      "microkernel",
+      "binary",
+      "container"
+    ],
+    "supabase_id": null
+  },
+  {
+    "task_id": "uuid-007-007-001",
+    "task_name": "Hostage Crisis Initiation",
+    "category": "Direct Action",
+    "hd4_phase": "Disable",
+    "description": "Establishing control via hostages.",
+    "kali_tools": [],
+    "primitives": [],
+    "usim_hash": "3ab1f099549ff035fc95b94a4dff72ed02957ee4c69a71e0",
+    "unicode_compressed": "\ud83d\udd253ab1\ud83d\udcbbfc95\ud83d\ude800295",
+    "escalation_levels": [
+      "script",
+      "microkernel",
+      "binary",
+      "container"
+    ],
+    "supabase_id": null
+  },
+  {
+    "task_id": "uuid-008-000-001",
+    "task_name": "National Asset Assault",
+    "category": "Response Operations",
+    "hd4_phase": "Dominate",
+    "description": "Executing assault by national forces.",
+    "kali_tools": [],
+    "primitives": [],
+    "usim_hash": "260d8496553a15a6106a3f3ca04b292113f31fefb183124b",
+    "unicode_compressed": "\ud83d\udd25260d\ud83d\udcbb106a\ud83d\ude8013f3",
+    "escalation_levels": [
+      "script",
+      "microkernel",
+      "binary",
+      "container"
+    ],
+    "supabase_id": null
+  },
+  {
+    "task_id": "uuid-008-000-002",
+    "task_name": "Multi-Jurisdiction Contingent Assembly",
+    "category": "Response Operations",
+    "hd4_phase": "Dominate",
+    "description": "Assembling multi-agency law enforcement.",
+    "kali_tools": [],
+    "primitives": [],
+    "usim_hash": "c518a025ac5c1c635c59dc7a231b78570408184d39304f48",
+    "unicode_compressed": "\ud83d\udd25c518\ud83d\udcbb5c59\ud83d\ude800408",
+    "escalation_levels": [
+      "script",
+      "microkernel",
+      "binary",
+      "container"
+    ],
+    "supabase_id": null
+  },
+  {
+    "task_id": "uuid-008-001-001",
+    "task_name": "Deleting Evidence",
+    "category": "Cyber Evasion",
+    "hd4_phase": "Dominate",
+    "description": "Removing logs and forensic traces.",
+    "kali_tools": [],
+    "primitives": [],
+    "usim_hash": "64b9a40e6fdf1d9d2779ebfdcba9e4b8a834aa5a6494b591",
+    "unicode_compressed": "\ud83d\udd2564b9\ud83d\udcbb2779\ud83d\ude80a834",
+    "escalation_levels": [
+      "script",
+      "microkernel",
+      "binary",
+      "container"
+    ],
+    "supabase_id": null
+  },
+  {
+    "task_id": "uuid-008-002-001",
+    "task_name": "Rotating Identities",
+    "category": "Identity Evasion",
+    "hd4_phase": "Dominate",
+    "description": "Using multiple identities to avoid attribution.",
+    "kali_tools": [],
+    "primitives": [],
+    "usim_hash": "0c1e4d46ebafb08a4fc32118360090388f65264ab2e889d7",
+    "unicode_compressed": "\ud83d\udd250c1e\ud83d\udcbb4fc3\ud83d\ude808f65",
+    "escalation_levels": [
+      "script",
+      "microkernel",
+      "binary",
+      "container"
+    ],
+    "supabase_id": null
+  },
+  {
+    "task_id": "uuid-008-003-001",
+    "task_name": "Deploying Volatile Malware",
+    "category": "Cyber Evasion",
+    "hd4_phase": "Dominate",
+    "description": "Using memory-only malware to evade forensics.",
+    "kali_tools": [],
+    "primitives": [],
+    "usim_hash": "0c0cc48701f0ee3bf948b8def14f2b3d40d85ef6aabf66a0",
+    "unicode_compressed": "\ud83d\udd250c0c\ud83d\udcbbf948\ud83d\ude8040d8",
+    "escalation_levels": [
+      "script",
+      "microkernel",
+      "binary",
+      "container"
+    ],
+    "supabase_id": null
+  },
+  {
+    "task_id": "uuid-008-004-001",
+    "task_name": "Concealing Digital Footprints",
+    "category": "Cyber Evasion",
+    "hd4_phase": "Dominate",
+    "description": "Using encryption to hide activity.",
+    "kali_tools": [],
+    "primitives": [],
+    "usim_hash": "b8d1217a5070f9a98b3de907395fac4a6604df31d25ae1f2",
+    "unicode_compressed": "\ud83d\udd25b8d1\ud83d\udcbb8b3d\ud83d\ude806604",
+    "escalation_levels": [
+      "script",
+      "microkernel",
+      "binary",
+      "container"
+    ],
+    "supabase_id": null
+  },
+  {
+    "task_id": "uuid-008-005-001",
+    "task_name": "Redirecting Attribution",
+    "category": "Cyber Deception",
+    "hd4_phase": "Dominate",
+    "description": "Planting false flags to frame others.",
+    "kali_tools": [],
+    "primitives": [],
+    "usim_hash": "0c1acc9b11442b296065fab31a8d0d9b63fb1b0337817124",
+    "unicode_compressed": "\ud83d\udd250c1a\ud83d\udcbb6065\ud83d\ude8063fb",
+    "escalation_levels": [
+      "script",
+      "microkernel",
+      "binary",
+      "container"
+    ],
+    "supabase_id": null
+  },
+  {
+    "task_id": "uuid-008-006-001",
+    "task_name": "Using Safe Houses",
+    "category": "Physical Evasion",
+    "hd4_phase": "Dominate",
+    "description": "Relying on secure locations to evade capture.",
+    "kali_tools": [],
+    "primitives": [],
+    "usim_hash": "6ce968033278357c5e3164a16ec1096278e68dcde7317ed2",
+    "unicode_compressed": "\ud83d\udd256ce9\ud83d\udcbb5e31\ud83d\ude8078e6",
+    "escalation_levels": [
+      "script",
+      "microkernel",
+      "binary",
+      "container"
+    ],
+    "supabase_id": null
+  },
+  {
+    "task_id": "uuid-008-007-001",
+    "task_name": "Escaping Operational Areas",
+    "category": "Physical Evasion",
+    "hd4_phase": "Dominate",
+    "description": "Using escape routes to leave the area.",
+    "kali_tools": [],
+    "primitives": [],
+    "usim_hash": "84e89b505ced7f7fb2cb17659765f4e8e7e7506bb5f7278b",
+    "unicode_compressed": "\ud83d\udd2584e8\ud83d\udcbbb2cb\ud83d\ude80e7e7",
+    "escalation_levels": [
+      "script",
+      "microkernel",
+      "binary",
+      "container"
+    ],
+    "supabase_id": null
+  },
+  {
+    "task_id": "uuid-008-008-001",
+    "task_name": "Destroying Forensic Evidence",
+    "category": "Physical Concealment",
+    "hd4_phase": "Dominate",
+    "description": "Eliminating weapons to prevent ID.",
+    "kali_tools": [],
+    "primitives": [],
+    "usim_hash": "42701cbb4e9c54a16cc041a8fc08e68c07c6e2576e3b1167",
+    "unicode_compressed": "\ud83d\udd254270\ud83d\udcbb6cc0\ud83d\ude8007c6",
+    "escalation_levels": [
+      "script",
+      "microkernel",
+      "binary",
+      "container"
+    ],
+    "supabase_id": null
+  },
+  {
+    "task_id": "uuid-008-009-001",
+    "task_name": "Altering Appearance",
+    "category": "Identity Evasion",
+    "hd4_phase": "Dominate",
+    "description": "Using disguises to evade law enforcement.",
+    "kali_tools": [],
+    "primitives": [],
+    "usim_hash": "ab562b45190d8137ebc657c54d47b079f0675daa3221ca94",
+    "unicode_compressed": "\ud83d\udd25ab56\ud83d\udcbbebc6\ud83d\ude80f067",
+    "escalation_levels": [
+      "script",
+      "microkernel",
+      "binary",
+      "container"
+    ],
+    "supabase_id": null
+  },
+  {
+    "task_id": "uuid-008-010-001",
+    "task_name": "Disrupting Investigations",
+    "category": "Law Enforcement Counter",
+    "hd4_phase": "Dominate",
+    "description": "Spreading false info to mislead law enforcement.",
+    "kali_tools": [],
+    "primitives": [],
+    "usim_hash": "a8757a96270fa3de0475bd69a2622d8ca543cd18c244996d",
+    "unicode_compressed": "\ud83d\udd25a875\ud83d\udcbb0475\ud83d\ude80a543",
+    "escalation_levels": [
+      "script",
+      "microkernel",
+      "binary",
+      "container"
+    ],
+    "supabase_id": null
+  },
+  {
+    "task_id": "uuid-008-011-001",
+    "task_name": "Conducting False Flags",
+    "category": "Deception",
+    "hd4_phase": "Dominate",
+    "description": "Creating misleading evidence to shift blame.",
+    "kali_tools": [],
+    "primitives": [],
+    "usim_hash": "223d07309fa90fc526ba1166b35b2d47eef649b8d1c9ca4c",
+    "unicode_compressed": "\ud83d\udd25223d\ud83d\udcbb26ba\ud83d\ude80eef6",
+    "escalation_levels": [
+      "script",
+      "microkernel",
+      "binary",
+      "container"
+    ],
+    "supabase_id": null
+  },
+  {
+    "task_id": "uuid-008-012-001",
+    "task_name": "Exploiting Legal Systems",
+    "category": "Legal Exploitation",
+    "hd4_phase": "Dominate",
+    "description": "Using asylum loopholes to avoid prosecution.",
+    "kali_tools": [],
+    "primitives": [],
+    "usim_hash": "f4e74cec258a37318233a236d0a78540d3895ec9a6d55542",
+    "unicode_compressed": "\ud83d\udd25f4e7\ud83d\udcbb8233\ud83d\ude80d389",
+    "escalation_levels": [
+      "script",
+      "microkernel",
+      "binary",
+      "container"
+    ],
+    "supabase_id": null
+  },
+  {
+    "task_id": "uuid-008-013-001",
+    "task_name": "Controlling Propaganda",
+    "category": "Psychological Operation",
+    "hd4_phase": "Dominate",
+    "description": "Manipulating messaging to shape perception.",
+    "kali_tools": [],
+    "primitives": [],
+    "usim_hash": "732970b1da69ea6b36921b1d01819c35e462198ac46b35d0",
+    "unicode_compressed": "\ud83d\udd257329\ud83d\udcbb3692\ud83d\ude80e462",
+    "escalation_levels": [
+      "script",
+      "microkernel",
+      "binary",
+      "container"
+    ],
+    "supabase_id": null
+  },
+  {
+    "task_id": "uuid-009-000-001",
+    "task_name": "Major Crimes",
+    "category": "Criminal Operations",
+    "hd4_phase": "Dominate",
+    "description": "Using criminal activities for funding and disruption.",
+    "kali_tools": [],
+    "primitives": [],
+    "usim_hash": "c9456fd6031f3b137d17751ed05378008681a961ccddc94a",
+    "unicode_compressed": "\ud83d\udd25c945\ud83d\udcbb7d17\ud83d\ude808681",
+    "escalation_levels": [
+      "script",
+      "microkernel",
+      "binary",
+      "container"
+    ],
+    "supabase_id": null
+  },
+  {
+    "task_id": "uuid-009-001-001",
+    "task_name": "Homicide",
+    "category": "Violent Crime",
+    "hd4_phase": "Dominate",
+    "description": "Killing individuals through targeted violence.",
+    "kali_tools": [],
+    "primitives": [],
+    "usim_hash": "7fe9fa97259a00f2d8f42b79962be84169c2b9da53989e6e",
+    "unicode_compressed": "\ud83d\udd257fe9\ud83d\udcbbd8f4\ud83d\ude8069c2",
+    "escalation_levels": [
+      "script",
+      "microkernel",
+      "binary",
+      "container"
+    ],
+    "supabase_id": null
+  },
+  {
+    "task_id": "uuid-009-002-001",
+    "task_name": "Sexual Violence",
+    "category": "Violent Crime",
+    "hd4_phase": "Dominate",
+    "description": "Using rape as a tool of terror.",
+    "kali_tools": [],
+    "primitives": [],
+    "usim_hash": "4705cfd49543c1d554f812fe5f48d7f7e5b394b92e6f4fab",
+    "unicode_compressed": "\ud83d\udd254705\ud83d\udcbb54f8\ud83d\ude80e5b3",
+    "escalation_levels": [
+      "script",
+      "microkernel",
+      "binary",
+      "container"
+    ],
+    "supabase_id": null
+  },
+  {
+    "task_id": "uuid-009-003-001",
+    "task_name": "Aggravated Assault",
+    "category": "Violent Crime",
+    "hd4_phase": "Dominate",
+    "description": "Conducting severe attacks to intimidate.",
+    "kali_tools": [],
+    "primitives": [],
+    "usim_hash": "275d9ce2dcf50d464bcb19127ea22c6e97cc6fd24360487e",
+    "unicode_compressed": "\ud83d\udd25275d\ud83d\udcbb4bcb\ud83d\ude8097cc",
+    "escalation_levels": [
+      "script",
+      "microkernel",
+      "binary",
+      "container"
+    ],
+    "supabase_id": null
+  },
+  {
+    "task_id": "uuid-009-004-001",
+    "task_name": "Kidnapping",
+    "category": "Violent Crime",
+    "hd4_phase": "Dominate",
+    "description": "Capturing individuals for ransom.",
+    "kali_tools": [],
+    "primitives": [],
+    "usim_hash": "9b049b71bcf0d2979a44e65484643234eb044dbb369fc794",
+    "unicode_compressed": "\ud83d\udd259b04\ud83d\udcbb9a44\ud83d\ude80eb04",
+    "escalation_levels": [
+      "script",
+      "microkernel",
+      "binary",
+      "container"
+    ],
+    "supabase_id": null
+  },
+  {
+    "task_id": "uuid-009-005-001",
+    "task_name": "Robbery",
+    "category": "Financial Crime",
+    "hd4_phase": "Dominate",
+    "description": "Using force to steal assets.",
+    "kali_tools": [],
+    "primitives": [],
+    "usim_hash": "e4763d369b9bc2c38f4cc80f81bda0e0b8ff8a6f7e4a92cf",
+    "unicode_compressed": "\ud83d\udd25e476\ud83d\udcbb8f4c\ud83d\ude80b8ff",
+    "escalation_levels": [
+      "script",
+      "microkernel",
+      "binary",
+      "container"
+    ],
+    "supabase_id": null
+  },
+  {
+    "task_id": "uuid-009-006-001",
+    "task_name": "Burglary",
+    "category": "Financial Crime",
+    "hd4_phase": "Dominate",
+    "description": "Breaking into locations to steal resources.",
+    "kali_tools": [],
+    "primitives": [],
+    "usim_hash": "9fcc0cd40401004e261d57215121044f82182524cf840f27",
+    "unicode_compressed": "\ud83d\udd259fcc\ud83d\udcbb261d\ud83d\ude808218",
+    "escalation_levels": [
+      "script",
+      "microkernel",
+      "binary",
+      "container"
+    ],
+    "supabase_id": null
+  },
+  {
+    "task_id": "uuid-009-007-001",
+    "task_name": "Theft",
+    "category": "Financial Crime",
+    "hd4_phase": "Dominate",
+    "description": "Stealing assets non-confrontationally.",
+    "kali_tools": [],
+    "primitives": [],
+    "usim_hash": "c13abdd27eab6203bec244b33f8e5baaa02fe83485f8b075",
+    "unicode_compressed": "\ud83d\udd25c13a\ud83d\udcbbbec2\ud83d\ude80a02f",
+    "escalation_levels": [
+      "script",
+      "microkernel",
+      "binary",
+      "container"
+    ],
+    "supabase_id": null
+  },
+  {
+    "task_id": "uuid-009-008-001",
+    "task_name": "Vehicle Theft",
+    "category": "Operational Support",
+    "hd4_phase": "Dominate",
+    "description": "Stealing vehicles for operational use.",
+    "kali_tools": [],
+    "primitives": [],
+    "usim_hash": "57158da908b876b5152f94540eef0d27969bb037f8c0916f",
+    "unicode_compressed": "\ud83d\udd255715\ud83d\udcbb152f\ud83d\ude80969b",
+    "escalation_levels": [
+      "script",
+      "microkernel",
+      "binary",
+      "container"
+    ],
+    "supabase_id": null
+  },
+  {
+    "task_id": "uuid-009-009-001",
+    "task_name": "Arson",
+    "category": "Psychological Warfare",
+    "hd4_phase": "Dominate",
+    "description": "Using fire to destroy infrastructure.",
+    "kali_tools": [],
+    "primitives": [],
+    "usim_hash": "b088693bcf9ceaf0dc0a8698e03fe4fce23b882b4768f5e1",
+    "unicode_compressed": "\ud83d\udd25b088\ud83d\udcbbdc0a\ud83d\ude80e23b",
+    "escalation_levels": [
+      "script",
+      "microkernel",
+      "binary",
+      "container"
+    ],
+    "supabase_id": null
+  },
+  {
+    "task_id": "uuid-010-000-001",
+    "task_name": "Law Enforcement Evasion",
+    "category": "Counter-Surveillance",
+    "hd4_phase": "Dominate",
+    "description": "Tracking and mitigating law enforcement encounters.",
+    "kali_tools": [],
+    "primitives": [],
+    "usim_hash": "51bd02c281c2ccba4e3ae0da02a9db61890e21955cbdd9b3",
+    "unicode_compressed": "\ud83d\udd2551bd\ud83d\udcbb4e3a\ud83d\ude80890e",
+    "escalation_levels": [
+      "script",
+      "microkernel",
+      "binary",
+      "container"
+    ],
+    "supabase_id": null
+  },
+  {
+    "task_id": "uuid-010-001-001",
+    "task_name": "Traffic Violations",
+    "category": "Counter-Surveillance",
+    "hd4_phase": "Dominate",
+    "description": "Encountering police due to minor infractions.",
+    "kali_tools": [],
+    "primitives": [],
+    "usim_hash": "30aeca46b1524e3820c68a33defc5c955979c73eec8a530d",
+    "unicode_compressed": "\ud83d\udd2530ae\ud83d\udcbb20c6\ud83d\ude805979",
+    "escalation_levels": [
+      "script",
+      "microkernel",
+      "binary",
+      "container"
+    ],
+    "supabase_id": null
+  },
+  {
+    "task_id": "uuid-010-002-001",
+    "task_name": "Witness Questioning",
+    "category": "Counter-Surveillance",
+    "hd4_phase": "Dominate",
+    "description": "Responding to law enforcement as a witness.",
+    "kali_tools": [],
+    "primitives": [],
+    "usim_hash": "c7224095b2f558d78a8679dd8019677aaa01e8c19cf3abba",
+    "unicode_compressed": "\ud83d\udd25c722\ud83d\udcbb8a86\ud83d\ude80aa01",
+    "escalation_levels": [
+      "script",
+      "microkernel",
+      "binary",
+      "container"
+    ],
+    "supabase_id": null
+  },
+  {
+    "task_id": "uuid-010-003-001",
+    "task_name": "Criminal Investigation",
+    "category": "Defense Evasion",
+    "hd4_phase": "Dominate",
+    "description": "Evading investigative leads.",
+    "kali_tools": [],
+    "primitives": [],
+    "usim_hash": "6c010245766eb0c9c7009e58cec8f85eee1ed4d4fef51215",
+    "unicode_compressed": "\ud83d\udd256c01\ud83d\udcbbc700\ud83d\ude80ee1e",
+    "escalation_levels": [
+      "script",
+      "microkernel",
+      "binary",
+      "container"
+    ],
+    "supabase_id": null
+  },
+  {
+    "task_id": "uuid-010-004-001",
+    "task_name": "Arrest Avoidance",
+    "category": "Defense Evasion",
+    "hd4_phase": "Dominate",
+    "description": "Using deception to avoid capture.",
+    "kali_tools": [],
+    "primitives": [],
+    "usim_hash": "08a79fc70a7a1b61fb28a907aa2f3c14450444469a879ab1",
+    "unicode_compressed": "\ud83d\udd2508a7\ud83d\udcbbfb28\ud83d\ude804504",
+    "escalation_levels": [
+      "script",
+      "microkernel",
+      "binary",
+      "container"
+    ],
+    "supabase_id": null
+  },
+  {
+    "task_id": "uuid-010-005-001",
+    "task_name": "Police Counter-Surveillance",
+    "category": "Counterintelligence",
+    "hd4_phase": "Dominate",
+    "description": "Tracking and disrupting police surveillance.",
+    "kali_tools": [],
+    "primitives": [],
+    "usim_hash": "d08410c15c798e5be7c3b21dab1db8a84786af9248cf04c0",
+    "unicode_compressed": "\ud83d\udd25d084\ud83d\udcbbe7c3\ud83d\ude804786",
+    "escalation_levels": [
+      "script",
+      "microkernel",
+      "binary",
+      "container"
+    ],
+    "supabase_id": null
+  },
+  {
+    "task_id": "uuid-010-006-001",
+    "task_name": "Corrupting Officials",
+    "category": "Influence Operations",
+    "hd4_phase": "Dominate",
+    "description": "Using incentives to influence officials.",
+    "kali_tools": [],
+    "primitives": [],
+    "usim_hash": "82fa3429292fc0dbc1282bb4a09165e5a97d0ce31d61ad20",
+    "unicode_compressed": "\ud83d\udd2582fa\ud83d\udcbbc128\ud83d\ude80a97d",
+    "escalation_levels": [
+      "script",
+      "microkernel",
+      "binary",
+      "container"
+    ],
+    "supabase_id": null
+  },
+  {
+    "task_id": "uuid-010-007-001",
+    "task_name": "Exploiting Legal Loopholes",
+    "category": "Legal Exploitation",
+    "hd4_phase": "Dominate",
+    "description": "Using asylum to avoid prosecution.",
+    "kali_tools": [],
+    "primitives": [],
+    "usim_hash": "a7cf481543fb9c265eca4ab3430df7024858ed017870c225",
+    "unicode_compressed": "\ud83d\udd25a7cf\ud83d\udcbb5eca\ud83d\ude804858",
+    "escalation_levels": [
+      "script",
+      "microkernel",
+      "binary",
+      "container"
+    ],
+    "supabase_id": null
+  },
+  {
+    "task_id": "uuid-010-008-001",
+    "task_name": "Manipulating Law Enforcement",
+    "category": "Psychological Operations",
+    "hd4_phase": "Dominate",
+    "description": "Releasing misinformation to hinder investigations.",
+    "kali_tools": [],
+    "primitives": [],
+    "usim_hash": "6ea61461c06fd1d8b8d3e14579cda50ab244d0a48ed8e985",
+    "unicode_compressed": "\ud83d\udd256ea6\ud83d\udcbbb8d3\ud83d\ude80b244",
+    "escalation_levels": [
+      "script",
+      "microkernel",
+      "binary",
+      "container"
+    ],
+    "supabase_id": null
+  },
+  {
+    "task_id": "uuid-011-000-001",
+    "task_name": "Transnational Cartel Operations",
+    "category": "Transnational Crime",
+    "hd4_phase": "Dominate",
+    "description": "Conducting sustained operations via drug cartels.",
+    "kali_tools": [],
+    "primitives": [],
+    "usim_hash": "c9e2cc5d8a8bbdf4b5541cd5270f05b92f67c0e444d2fe64",
+    "unicode_compressed": "\ud83d\udd25c9e2\ud83d\udcbbb554\ud83d\ude802f67",
+    "escalation_levels": [
+      "script",
+      "microkernel",
+      "binary",
+      "container"
+    ],
+    "supabase_id": null
+  },
+  {
+    "task_id": "uuid-011-001-001",
+    "task_name": "Bribery Operations",
+    "category": "Corruption & Influence",
+    "hd4_phase": "Dominate",
+    "description": "Using corruption to influence law enforcement.",
+    "kali_tools": [],
+    "primitives": [],
+    "usim_hash": "c33928c0860ded1d3df2fb7df52f4154b6b96362f221139f",
+    "unicode_compressed": "\ud83d\udd25c339\ud83d\udcbb3df2\ud83d\ude80b6b9",
+    "escalation_levels": [
+      "script",
+      "microkernel",
+      "binary",
+      "container"
+    ],
+    "supabase_id": null
+  },
+  {
+    "task_id": "uuid-011-002-001",
+    "task_name": "Corrupting Law Enforcement",
+    "category": "Corruption & Influence",
+    "hd4_phase": "Dominate",
+    "description": "Leveraging bribery to avoid prosecution.",
+    "kali_tools": [],
+    "primitives": [],
+    "usim_hash": "367fc458ac5305632d10cc36265e86fcc5bc799c408410d3",
+    "unicode_compressed": "\ud83d\udd25367f\ud83d\udcbb2d10\ud83d\ude80c5bc",
+    "escalation_levels": [
+      "script",
+      "microkernel",
+      "binary",
+      "container"
+    ],
+    "supabase_id": null
+  },
+  {
+    "task_id": "uuid-011-003-001",
+    "task_name": "Exploiting Police Interactions",
+    "category": "Defense Evasion",
+    "hd4_phase": "Dominate",
+    "description": "Manipulating encounters for intel.",
+    "kali_tools": [],
+    "primitives": [],
+    "usim_hash": "4d1246f4793b66c4f2b197f9bf03017fa8c8edb7a05b6209",
+    "unicode_compressed": "\ud83d\udd254d12\ud83d\udcbbf2b1\ud83d\ude80a8c8",
+    "escalation_levels": [
+      "script",
+      "microkernel",
+      "binary",
+      "container"
+    ],
+    "supabase_id": null
+  },
+  {
+    "task_id": "uuid-011-004-001",
+    "task_name": "Human Smuggling",
+    "category": "Transnational Crime",
+    "hd4_phase": "Dominate",
+    "description": "Moving operatives across borders.",
+    "kali_tools": [],
+    "primitives": [],
+    "usim_hash": "12066494bcd5ab9f87171aaa0f725f6eff6f378456e6a447",
+    "unicode_compressed": "\ud83d\udd251206\ud83d\udcbb8717\ud83d\ude80ff6f",
+    "escalation_levels": [
+      "script",
+      "microkernel",
+      "binary",
+      "container"
+    ],
+    "supabase_id": null
+  },
+  {
+    "task_id": "uuid-011-005-001",
+    "task_name": "Drug Trafficking",
+    "category": "Financial Crimes",
+    "hd4_phase": "Dominate",
+    "description": "Generating revenue via drug supply chains.",
+    "kali_tools": [],
+    "primitives": [],
+    "usim_hash": "062cf2f8e8641f083271cc1506c2796acd42dded18cbd18d",
+    "unicode_compressed": "\ud83d\udd25062c\ud83d\udcbb3271\ud83d\ude80cd42",
+    "escalation_levels": [
+      "script",
+      "microkernel",
+      "binary",
+      "container"
+    ],
+    "supabase_id": null
+  },
+  {
+    "task_id": "uuid-011-006-001",
+    "task_name": "Arms Trafficking",
+    "category": "Operational Support",
+    "hd4_phase": "Dominate",
+    "description": "Acquiring illicit firearms and equipment.",
+    "kali_tools": [],
+    "primitives": [],
+    "usim_hash": "82da66b36e7f4462edcffd594d1de5b8a47a4045251330ed",
+    "unicode_compressed": "\ud83d\udd2582da\ud83d\udcbbedcf\ud83d\ude80a47a",
+    "escalation_levels": [
+      "script",
+      "microkernel",
+      "binary",
+      "container"
+    ],
+    "supabase_id": null
+  },
+  {
+    "task_id": "uuid-011-007-001",
+    "task_name": "Cartel Counterintelligence",
+    "category": "Counterintelligence",
+    "hd4_phase": "Dominate",
+    "description": "Neutralizing informants and surveillance.",
+    "kali_tools": [],
+    "primitives": [],
+    "usim_hash": "fc5f533c6705605574aa784233621786e1624e8ade88610b",
+    "unicode_compressed": "\ud83d\udd25fc5f\ud83d\udcbb74aa\ud83d\ude80e162",
+    "escalation_levels": [
+      "script",
+      "microkernel",
+      "binary",
+      "container"
+    ],
+    "supabase_id": null
+  },
+  {
+    "task_id": "uuid-011-008-001",
+    "task_name": "Coercion and Intimidation",
+    "category": "Psychological Warfare",
+    "hd4_phase": "Dominate",
+    "description": "Using violence to control rivals.",
+    "kali_tools": [],
+    "primitives": [],
+    "usim_hash": "c12f273a63fa84df62a1443161907b141ed6f78c4abcd83d",
+    "unicode_compressed": "\ud83d\udd25c12f\ud83d\udcbb62a1\ud83d\ude801ed6",
+    "escalation_levels": [
+      "script",
+      "microkernel",
+      "binary",
+      "container"
+    ],
+    "supabase_id": null
+  },
+  {
+    "task_id": "uuid-011-009-001",
+    "task_name": "False Flag Cartel Operations",
+    "category": "Deception & Misdirection",
+    "hd4_phase": "Dominate",
+    "description": "Conducting staged attacks to shift blame.",
+    "kali_tools": [],
+    "primitives": [],
+    "usim_hash": "cb725a5da6a81be802a6799afdcd4adc0abb1ecadcc4a7ed",
+    "unicode_compressed": "\ud83d\udd25cb72\ud83d\udcbb02a6\ud83d\ude800abb",
+    "escalation_levels": [
+      "script",
+      "microkernel",
+      "binary",
+      "container"
+    ],
+    "supabase_id": null
+  },
+  {
+    "task_id": "uuid-011-010-001",
+    "task_name": "Border Corruption",
+    "category": "Corruption & Influence",
+    "hd4_phase": "Dominate",
+    "description": "Bribing customs officials for smuggling.",
+    "kali_tools": [],
+    "primitives": [],
+    "usim_hash": "f51f6ebc3411836cedaa0ca8549e8aae92c329123e016573",
+    "unicode_compressed": "\ud83d\udd25f51f\ud83d\udcbbedaa\ud83d\ude8092c3",
+    "escalation_levels": [
+      "script",
+      "microkernel",
+      "binary",
+      "container"
+    ],
+    "supabase_id": null
+  },
+  {
+    "task_id": "uuid-011-011-001",
+    "task_name": "Border Tunnel Operations",
+    "category": "Transnational Crime",
+    "hd4_phase": "Dominate",
+    "description": "Using tunnels for smuggling drugs.",
+    "kali_tools": [],
+    "primitives": [],
+    "usim_hash": "486fd02099c9a4e3092b96100594ceab0a97e0857fde73bf",
+    "unicode_compressed": "\ud83d\udd25486f\ud83d\udcbb092b\ud83d\ude800a97",
+    "escalation_levels": [
+      "script",
+      "microkernel",
+      "binary",
+      "container"
+    ],
+    "supabase_id": null
+  },
+  {
+    "task_id": "uuid-011-012-001",
+    "task_name": "Maritime Smuggling",
+    "category": "Transnational Crime",
+    "hd4_phase": "Dominate",
+    "description": "Using vessels to transport contraband.",
+    "kali_tools": [],
+    "primitives": [],
+    "usim_hash": "e2bb4b1e0df5c73271e9a40443c0ad46d564353f43bde183",
+    "unicode_compressed": "\ud83d\udd25e2bb\ud83d\udcbb71e9\ud83d\ude80d564",
+    "escalation_levels": [
+      "script",
+      "microkernel",
+      "binary",
+      "container"
+    ],
+    "supabase_id": null
+  },
+  {
+    "task_id": "uuid-011-013-001",
+    "task_name": "Airspace Exploitation",
+    "category": "Transnational Crime",
+    "hd4_phase": "Dominate",
+    "description": "Using drones to transport goods.",
+    "kali_tools": [],
+    "primitives": [],
+    "usim_hash": "d79acf7edca27d26a2bafbe6a99b5f27631e52f4e2ecbf3b",
+    "unicode_compressed": "\ud83d\udd25d79a\ud83d\udcbba2ba\ud83d\ude80631e",
+    "escalation_levels": [
+      "script",
+      "microkernel",
+      "binary",
+      "container"
+    ],
+    "supabase_id": null
+  },
+  {
+    "task_id": "uuid-011-014-001",
+    "task_name": "Border Crossing Counter-Surveillance",
+    "category": "Counterintelligence",
+    "hd4_phase": "Dominate",
+    "description": "Recon on border security.",
+    "kali_tools": [],
+    "primitives": [],
+    "usim_hash": "23e7434170c14aad21dee28e63127120fb54f08cbea45ead",
+    "unicode_compressed": "\ud83d\udd2523e7\ud83d\udcbb21de\ud83d\ude80fb54",
+    "escalation_levels": [
+      "script",
+      "microkernel",
+      "binary",
+      "container"
+    ],
+    "supabase_id": null
+  },
+  {
+    "task_id": "uuid-011-015-001",
+    "task_name": "Document Forgery",
+    "category": "Operational Support",
+    "hd4_phase": "Dominate",
+    "description": "Producing fraudulent IDs.",
+    "kali_tools": [],
+    "primitives": [],
+    "usim_hash": "84bea170fdef0ed8733456c329e7803ebe17d039c9f1d573",
+    "unicode_compressed": "\ud83d\udd2584be\ud83d\udcbb7334\ud83d\ude80be17",
+    "escalation_levels": [
+      "script",
+      "microkernel",
+      "binary",
+      "container"
+    ],
+    "supabase_id": null
+  },
+  {
+    "task_id": "uuid-011-016-001",
+    "task_name": "Reserved Placeholder",
+    "category": "Financial Crimes",
+    "hd4_phase": "Dominate",
+    "description": "Potential future cartel task.",
+    "kali_tools": [],
+    "primitives": [],
+    "usim_hash": "719520229c6f3904325d7d1b0358828682c32e2ffdcacb90",
+    "unicode_compressed": "\ud83d\udd257195\ud83d\udcbb325d\ud83d\ude8082c3",
+    "escalation_levels": [
+      "script",
+      "microkernel",
+      "binary",
+      "container"
+    ],
+    "supabase_id": null
+  },
+  {
+    "task_id": "uuid-011-017-001",
+    "task_name": "Sicario Deployment",
+    "category": "Transnational Crime",
+    "hd4_phase": "Dominate",
+    "description": "Deploying trained sicarios for coercion and assassination.",
+    "kali_tools": [],
+    "primitives": [],
+    "usim_hash": "ff26503b22a4f2b86cbe1fc8f5206116935c604ffd5af315",
+    "unicode_compressed": "\ud83d\udd25ff26\ud83d\udcbb6cbe\ud83d\ude80935c",
+    "escalation_levels": [
+      "script",
+      "microkernel",
+      "binary",
+      "container"
+    ],
+    "supabase_id": null
+  }

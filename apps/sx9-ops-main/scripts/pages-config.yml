@@ -1,0 +1,95 @@
+- title: Dashboard
+  path: /
+  purpose: Main system overview and control center for CTAS operations
+  navigation:
+    - HD4 Framework sections
+    - Threat analysis views
+    - System status indicators
+  controls:
+    - View toggle (Map/Graph)
+    - Time range selector
+    - Threat level filters
+  dependencies:
+    - MongoDB connection
+    - Neo4j graph database
+    - Elasticsearch
+  sources:
+    - Real-time threat feeds
+    - System telemetry
+    - User activity logs
+  nextSteps:
+    - Configure alert thresholds
+    - Set up custom dashboards
+    - Connect external data sources
+
+- title: Hunt Interface
+  path: /hunt
+  purpose: Active threat hunting and reconnaissance operations
+  navigation:
+    - OSINT tools
+    - Target analysis
+    - Reconnaissance data
+  controls:
+    - Search filters
+    - Target selectors
+    - Data visualization options
+  dependencies:
+    - Shodan API
+    - OSINT databases
+    - Target mapping service
+  sources:
+    - External threat intelligence
+    - Network scanning results
+    - OSINT aggregation
+  nextSteps:
+    - Define target profiles
+    - Configure automated scanning
+    - Set up alert rules
+
+- title: Virtual Ravens
+  path: /dvm
+  purpose: Management interface for AI-driven autonomous agents
+  navigation:
+    - Agent status
+    - Deployment controls
+    - Performance metrics
+  controls:
+    - Deploy/Recall buttons
+    - Configuration editor
+    - Status monitors
+  dependencies:
+    - AI/ML models
+    - Kubernetes cluster
+    - Message queue
+  sources:
+    - Agent telemetry
+    - System logs
+    - Performance metrics
+  nextSteps:
+    - Train custom models
+    - Optimize deployment patterns
+    - Enhance monitoring
+
+- title: RAPTOR Stacks
+  path: /raptor-stacks
+  purpose: Container and infrastructure management interface
+  navigation:
+    - Stack status
+    - Deployment tools
+    - Resource monitoring
+  controls:
+    - Stack deployment
+    - Resource allocation
+    - Scaling controls
+  dependencies:
+    - Kubernetes
+    - Docker registry
+    - Load balancers
+  sources:
+    - Container metrics
+    - Resource usage
+    - Deployment logs
+  nextSteps:
+    - Optimize resource allocation
+    - Implement auto-scaling
+    - Enhance monitoring

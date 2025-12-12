@@ -3,9 +3,9 @@
 //! Single-producer, single-consumer (SPSC) lock-free ring buffer.
 //! Cache-line aligned to prevent false sharing between producer and consumer.
 
-use core::sync::atomic::{AtomicUsize, Ordering};
-use core::mem::MaybeUninit;
 use core::cell::UnsafeCell;
+use core::mem::MaybeUninit;
+use core::sync::atomic::{AtomicUsize, Ordering};
 
 /// Cache line size (64 bytes on x86_64, ARM64)
 const CACHE_LINE: usize = 64;
@@ -26,10 +26,10 @@ const CACHE_LINE: usize = 64;
 pub struct Ring<T, const N: usize> {
     // Producer cache line
     head: CacheAligned<AtomicUsize>,
-    
-    // Consumer cache line  
+
+    // Consumer cache line
     tail: CacheAligned<AtomicUsize>,
-    
+
     // Data buffer
     buffer: UnsafeCell<[MaybeUninit<T>; N]>,
 }
@@ -62,14 +62,14 @@ impl<T, const N: usize> Ring<T, N> {
     pub const fn new() -> Self {
         assert!(N.is_power_of_two(), "Ring size must be power of 2");
         assert!(N > 1, "Ring size must be > 1");
-        
+
         Self {
             head: CacheAligned::new(AtomicUsize::new(0)),
             tail: CacheAligned::new(AtomicUsize::new(0)),
             buffer: UnsafeCell::new(unsafe { MaybeUninit::uninit().assume_init() }),
         }
     }
-    
+
     /// Push an item into the ring buffer
     ///
     /// Returns `true` if successful, `false` if buffer is full.
@@ -78,23 +78,23 @@ impl<T, const N: usize> Ring<T, N> {
     pub fn push(&self, item: T) -> bool {
         let head = self.head.value.load(Ordering::Relaxed);
         let next = (head + 1) & (N - 1); // Fast modulo for power of 2
-        
+
         // Check if full (next would equal tail)
         if next == self.tail.value.load(Ordering::Acquire) {
             return false;
         }
-        
+
         // Write item
         unsafe {
             let buffer = &mut *self.buffer.get();
             buffer[head].write(item);
         }
-        
+
         // Publish new head
         self.head.value.store(next, Ordering::Release);
         true
     }
-    
+
     /// Pop an item from the ring buffer
     ///
     /// Returns `Some(item)` if available, `None` if buffer is empty.
@@ -102,31 +102,31 @@ impl<T, const N: usize> Ring<T, N> {
     #[inline]
     pub fn pop(&self) -> Option<T> {
         let tail = self.tail.value.load(Ordering::Relaxed);
-        
+
         // Check if empty (tail equals head)
         if tail == self.head.value.load(Ordering::Acquire) {
             return None;
         }
-        
+
         // Read item
         let item = unsafe {
             let buffer = &*self.buffer.get();
             buffer[tail].assume_init_read()
         };
-        
+
         // Publish new tail
         let next = (tail + 1) & (N - 1);
         self.tail.value.store(next, Ordering::Release);
-        
+
         Some(item)
     }
-    
+
     /// Check if the ring buffer is empty
     #[inline]
     pub fn is_empty(&self) -> bool {
         self.tail.value.load(Ordering::Acquire) == self.head.value.load(Ordering::Acquire)
     }
-    
+
     /// Check if the ring buffer is full
     #[inline]
     pub fn is_full(&self) -> bool {
@@ -134,32 +134,32 @@ impl<T, const N: usize> Ring<T, N> {
         let next = (head + 1) & (N - 1);
         next == self.tail.value.load(Ordering::Acquire)
     }
-    
+
     /// Get the number of items in the buffer
     #[inline]
     pub fn len(&self) -> usize {
         let head = self.head.value.load(Ordering::Acquire);
         let tail = self.tail.value.load(Ordering::Acquire);
-        
+
         if head >= tail {
             head - tail
         } else {
             N - tail + head
         }
     }
-    
+
     /// Get the capacity of the buffer
     #[inline]
     pub const fn capacity(&self) -> usize {
         N - 1 // One slot always empty to distinguish full from empty
     }
-    
+
     /// Get the current fill ratio (0.0 to 1.0)
     #[inline]
     pub fn pressure(&self) -> f32 {
         self.len() as f32 / self.capacity() as f32
     }
-    
+
     /// Clear all items from the buffer
     ///
     /// # Safety
@@ -178,49 +178,49 @@ impl<T, const N: usize> Default for Ring<T, N> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    
+
     #[test]
     fn test_push_pop() {
         let ring: Ring<u64, 16> = Ring::new();
-        
+
         assert!(ring.is_empty());
         assert!(ring.push(42));
         assert!(!ring.is_empty());
         assert_eq!(ring.pop(), Some(42));
         assert!(ring.is_empty());
     }
-    
+
     #[test]
     fn test_full() {
         let ring: Ring<u64, 4> = Ring::new();
-        
+
         assert!(ring.push(1));
         assert!(ring.push(2));
         assert!(ring.push(3));
         assert!(ring.is_full());
         assert!(!ring.push(4)); // Should fail
-        
+
         assert_eq!(ring.pop(), Some(1));
         assert!(ring.push(4)); // Now succeeds
     }
-    
+
     #[test]
     fn test_fifo_order() {
         let ring: Ring<u64, 8> = Ring::new();
-        
+
         for i in 0..5 {
             ring.push(i);
         }
-        
+
         for i in 0..5 {
             assert_eq!(ring.pop(), Some(i));
         }
     }
-    
+
     #[test]
     fn test_pressure() {
         let ring: Ring<u64, 8> = Ring::new();
-        
+
         assert_eq!(ring.pressure(), 0.0);
         ring.push(1);
         ring.push(2);
@@ -229,7 +229,3 @@ mod tests {
         assert!(ring.pressure() > 0.4 && ring.pressure() < 0.5);
     }
 }
-
-
-
-

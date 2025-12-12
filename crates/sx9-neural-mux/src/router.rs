@@ -3,16 +3,16 @@
 //! RFC-9004: Neural Mux Specification
 //! RFC-9002: Routing Protocol
 
-use std::sync::Arc;
-use dashmap::DashMap;
 use anyhow::Result;
+use dashmap::DashMap;
+use std::sync::Arc;
 
-use crate::route_table::{RouteTable, RouteEntry};
+use crate::route_table::{RouteEntry, RouteTable};
 use crate::NeuralMuxConfig;
 
 // Import PrimaryTrivariate if available (optional dependency)
 #[cfg(feature = "foundation-core")]
-use ctas7_foundation_core::hash::PrimaryTrivariate;
+use sx9_foundation_core::hash::PrimaryTrivariate;
 
 /// Primary trivariate hash for routing decisions
 pub type HashValue = u128;
@@ -101,12 +101,18 @@ impl NeuralRouter {
 
         if self.config.metrics_enabled {
             let elapsed = start.elapsed().as_nanos() as u64;
-            self.metrics.routes_processed.fetch_add(1, std::sync::atomic::Ordering::Relaxed);
+            self.metrics
+                .routes_processed
+                .fetch_add(1, std::sync::atomic::Ordering::Relaxed);
 
             if result.is_some() {
-                self.metrics.cache_hits.fetch_add(1, std::sync::atomic::Ordering::Relaxed);
+                self.metrics
+                    .cache_hits
+                    .fetch_add(1, std::sync::atomic::Ordering::Relaxed);
             } else {
-                self.metrics.cache_misses.fetch_add(1, std::sync::atomic::Ordering::Relaxed);
+                self.metrics
+                    .cache_misses
+                    .fetch_add(1, std::sync::atomic::Ordering::Relaxed);
             }
         }
 
@@ -125,7 +131,7 @@ impl NeuralRouter {
         // Extract SCH prefix (top 16 bits) for routing
         // This enables O(1) lookup with minimal computation
         let sch_prefix = (hash.sch_t >> 112) as u16;
-        
+
         // Use existing route method with extracted components
         let result = self.route(hash.sch_t, hash.cuid_t);
 
@@ -133,8 +139,10 @@ impl NeuralRouter {
         if self.config.metrics_enabled {
             let elapsed = start.elapsed().as_nanos() as u64;
             if elapsed > self.config.latency_threshold_ns {
-                eprintln!("BERNOULLI ZONE A VIOLATION: Route took {}ns (threshold: {}ns)", 
-                    elapsed, self.config.latency_threshold_ns);
+                eprintln!(
+                    "BERNOULLI ZONE A VIOLATION: Route took {}ns (threshold: {}ns)",
+                    elapsed, self.config.latency_threshold_ns
+                );
             }
         }
 
@@ -184,6 +192,10 @@ mod tests {
         let elapsed = start.elapsed();
 
         // Allow some overhead for test infrastructure
-        assert!(elapsed.as_micros() < 10, "Route lookup too slow: {:?}", elapsed);
+        assert!(
+            elapsed.as_micros() < 10,
+            "Route lookup too slow: {:?}",
+            elapsed
+        );
     }
 }

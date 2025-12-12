@@ -13,18 +13,21 @@ pub struct WasmRuntime {
 impl WasmRuntime {
     pub fn new() -> Result<Self> {
         let engine = Engine::default();
-        
-        Ok(Self {
-            engine,
-        })
+
+        Ok(Self { engine })
     }
 
     /// Execute WASM module
-    pub async fn execute(&self, wasm_bytes: &[u8], function: &str, args: &[i32]) -> Result<Vec<i32>> {
+    pub async fn execute(
+        &self,
+        wasm_bytes: &[u8],
+        function: &str,
+        args: &[i32],
+    ) -> Result<Vec<i32>> {
         // Simplified WASM execution - full WASI integration requires more setup
         // For now, this is a placeholder that can be expanded later
         let _module = Module::new(&self.engine, wasm_bytes)?;
-        
+
         // TODO: Implement full WASI integration
         // This requires proper WASI context setup and linker configuration
         Ok(vec![0]) // Placeholder return
@@ -43,4 +46,3 @@ impl Default for WasmRuntime {
         Self::new().unwrap()
     }
 }
-

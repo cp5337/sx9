@@ -30,13 +30,12 @@
 //! └─────────────────────────────────────────────────────────────────┘
 //! ```
 
-pub mod protocol;
-pub mod handlers;
-pub mod state;
-pub mod server;
 pub mod glaf_client;
+pub mod handlers;
+pub mod protocol;
+pub mod server;
+pub mod state;
 
-pub use protocol::{WsMessage, WsResponse, Database};
-pub use state::GatewayState;
+pub use protocol::{Database, WsMessage, WsResponse};
 pub use server::{run_gateway, DEFAULT_PORT};
-
+pub use state::GatewayState;

@@ -10,19 +10,19 @@ pub enum Platform {
     Apple {
         device_type: AppleDevice,
         os_version: String,
-        capabilities: AppleCapabilities
+        capabilities: AppleCapabilities,
     },
     Windows {
         version: String,
-        teams_native: bool
+        teams_native: bool,
     },
     Linux {
         distribution: String,
-        audio_system: String
+        audio_system: String,
     },
     Web {
         browser: String,
-        webrtc_support: bool
+        webrtc_support: bool,
     },
 }
 
@@ -30,9 +30,9 @@ pub enum Platform {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub enum AppleDevice {
     MacBook { model: String, year: u32 },
-    iMac { model: String, year: u32 },
-    iPad { model: String, generation: u32 },
-    iPhone { model: String, generation: u32 },
+    IMac { model: String, year: u32 },
+    IPad { model: String, generation: u32 },
+    IPhone { model: String, generation: u32 },
     AppleTV { generation: u32 },
     VisionPro,
 }
@@ -65,7 +65,7 @@ impl Platform {
             Ok(Platform::Apple {
                 device_type: device,
                 os_version,
-                capabilities
+                capabilities,
             })
         }
 
@@ -76,7 +76,7 @@ impl Platform {
 
             Ok(Platform::Windows {
                 version,
-                teams_native
+                teams_native,
             })
         }
 
@@ -88,7 +88,7 @@ impl Platform {
 
             Ok(Platform::Linux {
                 distribution,
-                audio_system
+                audio_system,
             })
         }
 
@@ -99,7 +99,7 @@ impl Platform {
 
             Ok(Platform::Web {
                 browser,
-                webrtc_support
+                webrtc_support,
             })
         }
     }
@@ -124,7 +124,7 @@ impl Platform {
         } else if info.contains("iMac") {
             let model = Self::extract_model_info(&info, "iMac")?;
             let year = Self::extract_year_info(&info)?;
-            Ok(AppleDevice::iMac { model, year })
+            Ok(AppleDevice::IMac { model, year })
         } else {
             Err(PlatformError::UnsupportedDevice)
         }
@@ -220,7 +220,7 @@ impl Platform {
         Ok(format!("{} Pro", device_type)) // Simplified
     }
 
-    fn extract_year_info(info: &str) -> Result<u32, PlatformError> {
+    fn extract_year_info(_info: &str) -> Result<u32, PlatformError> {
         // Year extraction logic
         Ok(2023) // Simplified
     }

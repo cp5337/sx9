@@ -5,22 +5,21 @@
 //! and APOC++ procedure integration.
 
 pub mod convergence;
-pub mod teth;
+pub mod glaf_core;
+pub mod hawkes;
 pub mod hmm;
 pub mod matroid;
-pub mod hawkes;
-pub mod glaf_core;
+pub mod teth;
 
-pub use convergence::{ConvergenceMonitor, ConvergenceEvent, calculate_operational_convergence, calculate_semantic_convergence};
-pub use teth::{TethAnalyzer, calculate_entropy};
-pub use hmm::{HmmPhaseDetector, detect_phase, Phase};
-pub use matroid::{MatroidRank, calculate_rank, calculate_rank_delta};
-pub use hawkes::{HawkesIntensity, calculate_intensity};
+pub use convergence::{
+    calculate_operational_convergence, calculate_semantic_convergence, ConvergenceEvent,
+    ConvergenceMonitor,
+};
 pub use glaf_core::{GLAFCore, GlafNode, GlafRelationship};
-
-use anyhow::Result;
-use chrono::{DateTime, Utc};
-use serde::{Serialize, Deserialize};
+pub use hawkes::{calculate_intensity, HawkesIntensity};
+pub use hmm::{detect_phase, HmmPhaseDetector, Phase};
+pub use matroid::{calculate_rank, calculate_rank_delta, MatroidRank};
+pub use teth::{calculate_entropy, TethAnalyzer};
 
 /// GLAF neural operations configuration
 #[derive(Debug, Clone, Default)]

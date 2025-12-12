@@ -8,7 +8,7 @@ use tokio::sync::RwLock;
 use tracing::{debug, info, warn, error};
 
 use crate::{Persona, PersonaId, PersonaRegistry, TrustLevel};
-use ctas7_agentic_core::{AgentId, Result, AgentError, AgentStatus, AgentMetadata};
+use crate::types::{AgentId, Result, AgentError, AgentStatus, AgentMetadata};
 
 /// Persona lifecycle states
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]

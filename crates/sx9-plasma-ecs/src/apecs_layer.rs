@@ -37,7 +37,11 @@ impl ApecsPlasmaWorld {
         Ok(entity_id)
     }
 
-    pub async fn update_plasma_entity(&self, entity_id: u64, component: PlasmaComponent) -> Result<()> {
+    pub async fn update_plasma_entity(
+        &self,
+        entity_id: u64,
+        component: PlasmaComponent,
+    ) -> Result<()> {
         let mut entities = self.entities.write().await;
         if let Some(existing) = entities.get_mut(&entity_id) {
             *existing = component;
@@ -58,4 +62,3 @@ impl ApecsPlasmaWorld {
         Ok(())
     }
 }
-

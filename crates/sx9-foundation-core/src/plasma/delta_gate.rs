@@ -71,11 +71,7 @@ impl DeltaGate {
     }
 
     /// Gate a payload based on delta measurement
-    pub fn gate<T: Clone>(
-        &self,
-        payload: T,
-        delta: &DeltaMeasurement,
-    ) -> GatedPayload<T> {
+    pub fn gate<T: Clone>(&self, payload: T, delta: &DeltaMeasurement) -> GatedPayload<T> {
         if !self.enabled {
             // Pass through unchanged if disabled
             return GatedPayload {
@@ -174,14 +170,14 @@ mod tests {
         let high_noise = DeltaMeasurement::new(90.0, 0.8, 0.9);
         let payload = "test".to_string();
         let gated = gate.gate(payload.clone(), &high_noise);
-        
+
         assert!(gated.gated_weight < 1.0);
         assert!(gated.passed); // Still passes but with reduced weight
 
         // Low noise: should pass through
         let low_noise = DeltaMeasurement::new(5.0, 0.1, 0.2);
         let gated = gate.gate(payload, &low_noise);
-        
+
         assert_eq!(gated.gated_weight, 1.0);
         assert!(gated.passed);
     }
@@ -200,7 +196,7 @@ mod tests {
         let high_noise = DeltaMeasurement::new(90.0, 0.8, 0.9);
         let payload = "test".to_string();
         let gated = gate.gate(payload, &high_noise);
-        
+
         assert!(gated.gated_weight > 1.0);
         assert!(gated.gated_weight <= 2.0); // Capped at 2x
     }
@@ -218,18 +214,18 @@ mod tests {
         let noise = DeltaMeasurement::new(45.0, 0.6, 0.7);
         let payload = "test".to_string();
         let gated = gate.gate(payload, &noise);
-        
+
         assert!(gated.gated_weight > 0.0 && gated.gated_weight <= 1.0);
     }
 
     #[test]
     fn test_disabled_gate() {
         let gate = DeltaGate::with_default_config(false);
-        
+
         let noise = DeltaMeasurement::new(90.0, 0.8, 0.9);
         let payload = "test".to_string();
         let gated = gate.gate(payload, &noise);
-        
+
         assert_eq!(gated.gated_weight, 1.0);
         assert!(gated.passed);
     }
@@ -238,7 +234,7 @@ mod tests {
     fn test_tunable_levels() {
         // Test suppression at different levels
         let levels = vec![0.1, 0.3, 0.7, 0.9];
-        
+
         for level in levels {
             let config = DeltaGateConfig {
                 threshold: level,
@@ -247,15 +243,13 @@ mod tests {
                 suppression_factor: 0.5,
             };
             let gate = DeltaGate::new(config, true);
-            
+
             let noise = DeltaMeasurement::new(90.0, 0.8, 0.9);
             let payload = "test".to_string();
             let gated = gate.gate(payload, &noise);
-            
+
             // Higher threshold = less suppression (more passes through)
             assert!(gated.gated_weight >= 0.0 && gated.gated_weight <= 1.0);
         }
     }
 }
-
-

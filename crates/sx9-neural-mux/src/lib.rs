@@ -13,12 +13,12 @@
 //! - RFC-9004: Neural Mux Specification
 //! - RFC-9002: Routing Protocol
 
-pub mod router;
-pub mod route_table;
 pub mod metrics;
+pub mod route_table;
+pub mod router;
 
-pub use router::NeuralRouter;
 pub use route_table::RouteTable;
+pub use router::NeuralRouter;
 
 /// Neural Mux configuration
 #[derive(Debug, Clone)]

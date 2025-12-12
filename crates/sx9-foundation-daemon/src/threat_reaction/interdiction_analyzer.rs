@@ -7,15 +7,15 @@ use anyhow::Result;
 use serde::{Deserialize, Serialize};
 use tracing::info;
 
-use crate::threat_reaction::recognize::{GLAFGraph, DualTrivariateHash, ATTACKTechnique};
 use crate::threat_reaction::glaf_correlation::GLAFClient;
+use crate::threat_reaction::recognize::{ATTACKTechnique, DualTrivariateHash, GLAFGraph};
 
 /// Interdiction point in attack chain
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct InterdictionPoint {
     pub step: AttackStep,
-    pub position: usize,  // Position in attack chain (0 = earliest)
-    pub leftness_score: f64,  // Higher = further left = better
+    pub position: usize,     // Position in attack chain (0 = earliest)
+    pub leftness_score: f64, // Higher = further left = better
     pub technique_id: String,
     pub hash: DualTrivariateHash,
     pub unicode_op: char,
@@ -70,14 +70,20 @@ pub struct AttackChain {
 /// Interdiction Point Analyzer
 pub struct InterdictionPointAnalyzer {
     glaf_client: GLAFClient,
-    attack_chain_analyzer: AttackChainAnalyzer,
+    _attack_chain_analyzer: AttackChainAnalyzer,
+}
+
+impl Default for InterdictionPointAnalyzer {
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 impl InterdictionPointAnalyzer {
     pub fn new() -> Self {
         Self {
             glaf_client: GLAFClient::new("http://localhost:8090".to_string()),
-            attack_chain_analyzer: AttackChainAnalyzer::new(),
+            _attack_chain_analyzer: AttackChainAnalyzer::new(),
         }
     }
 
@@ -87,17 +93,17 @@ impl InterdictionPointAnalyzer {
         execution_graph: &GLAFGraph,
     ) -> Result<Vec<InterdictionPoint>> {
         info!("Analyzing attack chain for interdiction points");
-        
+
         // 1. Extract attack chain from GLAF graph
         let attack_chain = self.extract_attack_chain(execution_graph).await?;
-        
+
         // 2. Identify potential interdiction points
         let mut interdiction_points = Vec::new();
-        
+
         for (step_idx, step) in attack_chain.steps.iter().enumerate() {
             // Calculate "leftness" (earlier = higher score)
             let leftness = 1.0 - (step_idx as f64 / attack_chain.steps.len() as f64);
-            
+
             // Check if step is interdiction-capable
             if self.can_interdict(step).await? {
                 interdiction_points.push(InterdictionPoint {
@@ -111,12 +117,11 @@ impl InterdictionPointAnalyzer {
                 });
             }
         }
-        
+
         // 3. Rank by leftness (further left = better)
-        interdiction_points.sort_by(|a, b| {
-            b.leftness_score.partial_cmp(&a.leftness_score).unwrap()
-        });
-        
+        interdiction_points
+            .sort_by(|a, b| b.leftness_score.partial_cmp(&a.leftness_score).unwrap());
+
         info!("Found {} interdiction points", interdiction_points.len());
         Ok(interdiction_points)
     }
@@ -125,7 +130,8 @@ impl InterdictionPointAnalyzer {
     async fn extract_attack_chain(&self, graph: &GLAFGraph) -> Result<AttackChain> {
         // TODO: Implement actual chain extraction from GLAF graph
         // For now, create a mock chain
-        let steps: Vec<AttackStep> = graph.nodes
+        let steps: Vec<AttackStep> = graph
+            .nodes
             .iter()
             .enumerate()
             .map(|(idx, node)| {
@@ -134,13 +140,13 @@ impl InterdictionPointAnalyzer {
                     name: format!("Attack Step {}", idx + 1),
                     trivariate_hash: node.dual_hash.clone(),
                     unicode_operation: node.unicode_op,
-                    step_type: AttackStepType::Execution,  // Default
+                    step_type: AttackStepType::Execution, // Default
                 }
             })
             .collect();
-        
+
         Ok(AttackChain {
-            technique_id: "T1003".to_string(),  // Default
+            technique_id: "T1003".to_string(), // Default
             steps,
         })
     }
@@ -151,10 +157,11 @@ impl InterdictionPointAnalyzer {
         technique: &ATTACKTechnique,
     ) -> Result<Vec<InterdictionPoint>> {
         // Query GLAF for technique execution graph
-        let execution_graph = self.glaf_client.query_technique_graph(
-            &technique.technique_id,
-        ).await?;
-        
+        let execution_graph = self
+            .glaf_client
+            .query_technique_graph(&technique.technique_id)
+            .await?;
+
         // Analyze chain
         self.analyze_chain(&execution_graph).await
     }
@@ -167,7 +174,10 @@ impl InterdictionPointAnalyzer {
     }
 
     /// Determine interdiction method for step
-    async fn determine_interdiction_method(&self, _step: &AttackStep) -> Result<InterdictionMethod> {
+    async fn determine_interdiction_method(
+        &self,
+        _step: &AttackStep,
+    ) -> Result<InterdictionMethod> {
         // TODO: Implement actual method determination based on step type
         // For now, default to Block
         Ok(InterdictionMethod::Block)
@@ -177,23 +187,25 @@ impl InterdictionPointAnalyzer {
     pub fn calculate_leftness_score(&self, point: &InterdictionPoint) -> f64 {
         // Base score from position (earlier = higher)
         let position_score = 1.0 - (point.position as f64 / 100.0);
-        
+
         // Bonus for hash/Unicode correlation strength
-        let correlation_bonus = 0.1;  // TODO: Calculate from actual correlation
-        
+        let correlation_bonus = 0.1; // TODO: Calculate from actual correlation
+
         // Bonus for technique-specific early detection
-        let technique_bonus = 0.05;  // TODO: Calculate from technique metadata
-        
+        let technique_bonus = 0.05; // TODO: Calculate from technique metadata
+
         position_score + correlation_bonus + technique_bonus
     }
 
     /// Get correlation strength for point
+    #[allow(dead_code)]
     fn get_correlation_strength(&self, _point: &InterdictionPoint) -> Option<f64> {
         // TODO: Implement actual correlation strength calculation
         Some(0.5)
     }
 
     /// Get technique bonus for early detection
+    #[allow(dead_code)]
     fn get_technique_bonus(&self, _technique_id: &str) -> Option<f64> {
         // TODO: Implement technique-specific bonus calculation
         Some(0.05)
@@ -203,9 +215,14 @@ impl InterdictionPointAnalyzer {
 /// Attack Chain Analyzer
 pub struct AttackChainAnalyzer;
 
+impl Default for AttackChainAnalyzer {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl AttackChainAnalyzer {
     pub fn new() -> Self {
         Self
     }
 }
-

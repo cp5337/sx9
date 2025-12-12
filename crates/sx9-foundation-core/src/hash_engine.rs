@@ -3,8 +3,8 @@
 //! CTAS-7 v7.2 Trivariate hashing system integrated into the CTAS-7 ecosystem
 //! Single source of truth for all hashing operations to avoid redundant compute
 
-use crate::trivariate_hash::{TrivariteHashEngine, EnvironmentalMasks};
-use crate::data::{Serialize, Deserialize};
+use crate::data::{Deserialize, Serialize};
+use crate::trivariate_hash_v731::{ContextFrame, ExecEnv, ExecState, TrivariateHashEngineV731};
 use std::collections::HashMap;
 use std::time::{SystemTime, UNIX_EPOCH};
 
@@ -84,13 +84,19 @@ pub struct HashVerification {
 
 impl HashEngine {
     /// Creates new lightweight hash engine
+    /// Creates new lightweight hash engine
     pub fn new() -> Self {
-        let trivariate_engine = TrivariteHashEngine::new();
-        let ecosystem_hash = trivariate_engine.generate_trivariate_hash(
+        let trivariate_engine = TrivariateHashEngineV731::new();
+        let context = ContextFrame::new(ExecEnv::Native, 0, ExecState::Hot);
+
+        let hash_struct = trivariate_engine.generate_trivariate(
             "CTAS7_ECOSYSTEM_INIT",
-            "system_initialization",
-            "HashEngine"
+            "System",
+            "Core",
+            "Init",
+            &context,
         );
+        let ecosystem_hash = hash_struct.to_canonical_format(); // Use canonical format: triv:SCH_CUID_UUID
 
         Self {
             ecosystem_hash: ecosystem_hash.clone(),
@@ -99,7 +105,10 @@ impl HashEngine {
                 sequence: 0,
                 previous_hash: "genesis".to_string(),
                 current_hash: ecosystem_hash,
-                timestamp: SystemTime::now().duration_since(UNIX_EPOCH).unwrap().as_secs(),
+                timestamp: SystemTime::now()
+                    .duration_since(UNIX_EPOCH)
+                    .unwrap()
+                    .as_secs(),
                 components: vec!["genesis".to_string()],
             }],
         }
@@ -112,13 +121,26 @@ impl HashEngine {
         data: &[u8],
         component_type: ComponentType,
     ) -> String {
-        let trivariate_engine = TrivariteHashEngine::new();
+        let trivariate_engine = TrivariateHashEngineV731::new();
         let data_str = String::from_utf8_lossy(data);
-        let hash_str = trivariate_engine.generate_trivariate_hash(
+
+        let context = ContextFrame::new(ExecEnv::Native, 0, ExecState::Hot);
+
+        // Map component type to domain
+        let domain = match component_type {
+            ComponentType::Data => "Data",
+            ComponentType::Tactical | ComponentType::Orchestrator => "Tactical",
+            _ => "Core",
+        };
+
+        let hash_struct = trivariate_engine.generate_trivariate(
             &data_str,
             component_id,
-            "ComponentUpdate"
+            domain,
+            "Update",
+            &context,
         );
+        let hash_str = hash_struct.to_canonical_format();
 
         // Analyze hash for health indicators (lightweight)
         let health_status = self.analyze_hash_health(&hash_str, &component_type);
@@ -126,12 +148,16 @@ impl HashEngine {
         let component_hash = ComponentHash {
             component_id: component_id.to_string(),
             hash: hash_str.clone(),
-            updated_at: SystemTime::now().duration_since(UNIX_EPOCH).unwrap().as_secs(),
+            updated_at: SystemTime::now()
+                .duration_since(UNIX_EPOCH)
+                .unwrap()
+                .as_secs(),
             component_type,
             health_status,
         };
 
-        self.component_hashes.insert(component_id.to_string(), component_hash);
+        self.component_hashes
+            .insert(component_id.to_string(), component_hash);
 
         // Update ecosystem hash (minimal computation)
         self.update_ecosystem_hash();
@@ -185,12 +211,21 @@ impl HashEngine {
         let mut state = HashMap::new();
 
         state.insert("ecosystem_hash".to_string(), self.get_ecosystem_hash());
-        state.insert("chain_length".to_string(), self.get_hash_chain_length().to_string());
-        state.insert("component_count".to_string(), self.component_hashes.len().to_string());
+        state.insert(
+            "chain_length".to_string(),
+            self.get_hash_chain_length().to_string(),
+        );
+        state.insert(
+            "component_count".to_string(),
+            self.component_hashes.len().to_string(),
+        );
 
         // Add critical component hashes only
         for (id, component) in &self.component_hashes {
-            if matches!(component.component_type, ComponentType::Foundation | ComponentType::Orchestrator) {
+            if matches!(
+                component.component_type,
+                ComponentType::Foundation | ComponentType::Orchestrator
+            ) {
                 state.insert(format!("component_{}", id), component.hash.clone());
             }
         }
@@ -200,12 +235,18 @@ impl HashEngine {
 
     /// Update ecosystem hash with minimal computation
     fn update_ecosystem_hash(&mut self) {
-        let trivariate_engine = TrivariteHashEngine::new();
+        let trivariate_engine = TrivariateHashEngineV731::new();
 
         // Hash only critical components to keep computation light
-        let mut critical_hashes: Vec<String> = self.component_hashes
+        let mut critical_hashes: Vec<String> = self
+            .component_hashes
             .values()
-            .filter(|c| matches!(c.component_type, ComponentType::Foundation | ComponentType::Orchestrator))
+            .filter(|c| {
+                matches!(
+                    c.component_type,
+                    ComponentType::Foundation | ComponentType::Orchestrator
+                )
+            })
             .map(|c| c.hash.clone())
             .collect();
 
@@ -213,11 +254,16 @@ impl HashEngine {
         let combined_hashes = critical_hashes.join(":");
         let combined_data = format!("{}:{}", self.ecosystem_hash, combined_hashes);
 
-        let new_hash = trivariate_engine.generate_trivariate_hash(
+        let context = ContextFrame::new(ExecEnv::Native, 0, ExecState::Hot);
+
+        let hash_struct = trivariate_engine.generate_trivariate(
             &combined_data,
-            "ecosystem_update",
-            "EcosystemHash"
+            "Ecosystem",
+            "Core",
+            "Sync",
+            &context,
         );
+        let new_hash = hash_struct.to_canonical_format();
 
         // Add to hash chain if significantly different
         if new_hash != self.ecosystem_hash {
@@ -225,7 +271,10 @@ impl HashEngine {
                 sequence: self.hash_chain.len() as u64,
                 previous_hash: self.ecosystem_hash.clone(),
                 current_hash: new_hash.clone(),
-                timestamp: SystemTime::now().duration_since(UNIX_EPOCH).unwrap().as_secs(),
+                timestamp: SystemTime::now()
+                    .duration_since(UNIX_EPOCH)
+                    .unwrap()
+                    .as_secs(),
                 components: critical_hashes,
             };
 

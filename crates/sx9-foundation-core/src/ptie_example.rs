@@ -2,7 +2,7 @@
 //!
 //! Demonstrates the autonomous OODA loop engine integrated into CTAS 7.0
 
-use ctas7_foundation_core::{
+use sx9_foundation_core::{
     ProactiveThreatIntelligenceEngine, PTIEConfig, EEIRequest, Context,
     UniversalSymbolicInformationMessage, USIMBuilder, MotionState
 };

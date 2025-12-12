@@ -2,7 +2,7 @@
 //!
 //! Handles persona configuration, routing, and lifecycle management
 
-use crate::data::{Deserialize, Serialize, Utc, DateTime};
+use crate::data::{DateTime, Deserialize, Serialize, Utc};
 use std::time::Duration;
 
 /// Default gRPC port range for personas
@@ -81,7 +81,7 @@ impl Persona {
             persona,
         }
     }
-    
+
     /// Parse TTL string into Duration
     pub fn ttl_duration(&self) -> crate::diagnostics::Result<Duration> {
         let ttl_str = self.ttl.trim_end_matches('h');
@@ -93,7 +93,8 @@ impl Persona {
     pub fn is_expired(&self, created_at: DateTime<Utc>) -> bool {
         match self.ttl_duration() {
             Ok(ttl) => {
-                let expires_at = created_at + crate::data::Duration::from_std(ttl).unwrap_or_default();
+                let expires_at =
+                    created_at + crate::data::Duration::from_std(ttl).unwrap_or_default();
                 Utc::now() > expires_at
             }
             Err(_) => true, // If we can't parse TTL, consider expired
@@ -121,12 +122,12 @@ impl PersonaConfig {
         std::fs::write(path, content)?;
         Ok(())
     }
-    
+
     /// Find persona by CUID
     pub fn find_persona(&self, cuid: &str) -> Option<&Persona> {
         self.personas.iter().find(|p| p.cuid == cuid)
     }
-    
+
     /// Get all personas with trust level >= threshold
     pub fn trusted_personas(&self, min_trust: TrustLevel) -> Vec<&Persona> {
         self.personas
@@ -162,4 +163,3 @@ impl Default for PersonaConfig {
         }
     }
 }
-

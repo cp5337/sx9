@@ -4,7 +4,7 @@
 //! to ensure the foundation service meets performance requirements.
 
 use criterion::{black_box, criterion_group, criterion_main, Criterion, BenchmarkId};
-use ctas7_interface_foundation::*;
+use sx9_foundation_interface::*;
 use serde_json::json;
 
 fn benchmark_url_parsing(c: &mut Criterion) {

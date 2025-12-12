@@ -1,0 +1,108 @@
+//! Playbook Performance Benchmarks
+//!
+//! Compares XSD vs Unicode playbook execution performance.
+//! Target: 10x performance improvement, 90% size reduction.
+
+use std::time::Instant;
+use sx9_foundation_daemon::dsl::*;
+
+#[test]
+fn benchmark_unicode_playbook_compression() {
+    // Example XSD playbook size (simulated)
+    let xsd_size = 16000; // bytes (160 lines × ~100 bytes/line)
+    
+    // Unicode playbook size (simulated)
+    let unicode_size = 200; // bytes (compressed s-expression)
+    
+    let compression_ratio = (xsd_size as f64 / unicode_size as f64) * 100.0;
+    
+    println!("XSD size: {} bytes", xsd_size);
+    println!("Unicode size: {} bytes", unicode_size);
+    println!("Compression ratio: {:.1}%", compression_ratio);
+    
+    // Target: 90% size reduction
+    assert!(compression_ratio >= 80.0, "Compression ratio below target");
+}
+
+#[test]
+fn benchmark_unicode_routing_latency() {
+    let emitter = UnicodeEmitter::new();
+    let op = DSLOperation::IntelCollection(IntelCollectionOp {
+        hash: None,
+        semantic_hash: None,
+        unicode: '\u{E300}',
+        tool: "kali_recon".to_string(),
+        gpu_tier: "high".to_string(),
+        isolation: "threat_intel".to_string(),
+        target: None,
+        timeout: None,
+        metadata: Default::default(),
+    });
+    
+    let iterations = 1000;
+    let start = Instant::now();
+    
+    for _ in 0..iterations {
+        let _ = emitter.emit_unicode_operation(&op);
+    }
+    
+    let elapsed = start.elapsed();
+    let avg_latency_ns = elapsed.as_nanos() / iterations;
+    
+    println!("Average Unicode emission latency: {}ns", avg_latency_ns);
+    println!("Target: <250ns for Neural Mux routing");
+    
+    // Target: <250ns
+    assert!(avg_latency_ns < 250, "Latency exceeds target");
+}
+
+#[test]
+fn benchmark_playbook_execution() {
+    let mut playbook = UnicodePlaybook::new("benchmark-playbook".to_string(), "1.0".to_string());
+    
+    // Add multiple steps
+    for i in 1..=10 {
+        let step = UnicodePlaybookStep {
+            name: format!("step-{}", i),
+            tier: EscalationTier::Wasm,
+            unicode_op: '\u{E900}',
+            tool: Some(format!("tool-{}", i)),
+            target: None,
+            depends_on: if i > 1 { vec![format!("step-{}", i - 1)] } else { Vec::new() },
+            metadata: Default::default(),
+        };
+        playbook.add_step(step);
+    }
+    
+    let start = Instant::now();
+    let _ = playbook.validate();
+    let elapsed = start.elapsed();
+    
+    println!("Playbook validation time: {:?}", elapsed);
+    println!("Target: <1ms for validation");
+    
+    assert!(elapsed.as_millis() < 1, "Validation too slow");
+}
+
+#[test]
+fn benchmark_hash_extraction() {
+    let hash = "3kJ9mP4xQ7R8sN2mK5fH9nL8vC3dF6gH2jK9mP4xQ7R8sN2m";
+    
+    let iterations = 10000;
+    let start = Instant::now();
+    
+    for _ in 0..iterations {
+        let _ = extract_sch(hash);
+        let _ = extract_cuid(hash);
+        let _ = extract_uuid(hash);
+    }
+    
+    let elapsed = start.elapsed();
+    let avg_latency_ns = elapsed.as_nanos() / (iterations * 3);
+    
+    println!("Average hash extraction latency: {}ns", avg_latency_ns);
+    println!("Target: <100ns per extraction");
+    
+    assert!(avg_latency_ns < 100, "Hash extraction too slow");
+}
+

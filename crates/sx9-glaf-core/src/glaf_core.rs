@@ -2,7 +2,7 @@
 //!
 //! Provides graph storage and query interface for neural operations
 
-use serde::{Serialize, Deserialize};
+use serde::{Deserialize, Serialize};
 use serde_json::Value;
 use std::collections::HashMap;
 use std::sync::Arc;
@@ -63,9 +63,11 @@ impl GLAFCore {
     pub async fn get_activity_sequence(&self) -> Vec<String> {
         // Extract activity sequence from nodes
         let nodes = self.nodes.read().await;
-        nodes.values()
+        nodes
+            .values()
             .filter_map(|n| {
-                n.properties.get("activity")
+                n.properties
+                    .get("activity")
                     .and_then(|v| v.as_str())
                     .map(|s| s.to_string())
             })
@@ -83,4 +85,3 @@ impl Default for GLAFCore {
         Self::new()
     }
 }
-

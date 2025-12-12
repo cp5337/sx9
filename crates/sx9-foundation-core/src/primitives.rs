@@ -215,11 +215,9 @@ impl Primitive {
 
     /// Check if this primitive requires approval (RFC-9003)
     pub fn requires_approval(&self) -> bool {
-        matches!(self,
-            Primitive::Delete |
-            Primitive::Lock |
-            Primitive::Terminate |
-            Primitive::Alert
+        matches!(
+            self,
+            Primitive::Delete | Primitive::Lock | Primitive::Terminate | Primitive::Alert
         )
     }
 }
@@ -256,36 +254,52 @@ impl PrimitiveCategory {
     pub fn primitives(&self) -> &'static [Primitive] {
         match self {
             PrimitiveCategory::Crud => &[
-                Primitive::Create, Primitive::Read,
-                Primitive::Update, Primitive::Delete
+                Primitive::Create,
+                Primitive::Read,
+                Primitive::Update,
+                Primitive::Delete,
             ],
             PrimitiveCategory::Data => &[
-                Primitive::Transform, Primitive::Validate,
-                Primitive::Compress, Primitive::Encrypt
+                Primitive::Transform,
+                Primitive::Validate,
+                Primitive::Compress,
+                Primitive::Encrypt,
             ],
             PrimitiveCategory::Network => &[
-                Primitive::Route, Primitive::Broadcast,
-                Primitive::Subscribe, Primitive::Publish
+                Primitive::Route,
+                Primitive::Broadcast,
+                Primitive::Subscribe,
+                Primitive::Publish,
             ],
             PrimitiveCategory::Analysis => &[
-                Primitive::Analyze, Primitive::Correlate,
-                Primitive::Score, Primitive::Predict
+                Primitive::Analyze,
+                Primitive::Correlate,
+                Primitive::Score,
+                Primitive::Predict,
             ],
             PrimitiveCategory::Cognitive => &[
-                Primitive::Observe, Primitive::Orient,
-                Primitive::Decide, Primitive::Act
+                Primitive::Observe,
+                Primitive::Orient,
+                Primitive::Decide,
+                Primitive::Act,
             ],
             PrimitiveCategory::Control => &[
-                Primitive::Lock, Primitive::Unlock,
-                Primitive::Spawn, Primitive::Terminate
+                Primitive::Lock,
+                Primitive::Unlock,
+                Primitive::Spawn,
+                Primitive::Terminate,
             ],
             PrimitiveCategory::State => &[
-                Primitive::Checkpoint, Primitive::Restore,
-                Primitive::Sync, Primitive::Merge
+                Primitive::Checkpoint,
+                Primitive::Restore,
+                Primitive::Sync,
+                Primitive::Merge,
             ],
             PrimitiveCategory::Meta => &[
-                Primitive::Measure, Primitive::Log,
-                Primitive::Alert, Primitive::Noop
+                Primitive::Measure,
+                Primitive::Log,
+                Primitive::Alert,
+                Primitive::Noop,
             ],
         }
     }
@@ -357,14 +371,38 @@ impl TacticalInstruction {
 
 /// All 32 primitives as array (for iteration)
 pub const ALL_PRIMITIVES: [Primitive; 32] = [
-    Primitive::Create, Primitive::Read, Primitive::Update, Primitive::Delete,
-    Primitive::Transform, Primitive::Validate, Primitive::Compress, Primitive::Encrypt,
-    Primitive::Route, Primitive::Broadcast, Primitive::Subscribe, Primitive::Publish,
-    Primitive::Analyze, Primitive::Correlate, Primitive::Score, Primitive::Predict,
-    Primitive::Observe, Primitive::Orient, Primitive::Decide, Primitive::Act,
-    Primitive::Lock, Primitive::Unlock, Primitive::Spawn, Primitive::Terminate,
-    Primitive::Checkpoint, Primitive::Restore, Primitive::Sync, Primitive::Merge,
-    Primitive::Measure, Primitive::Log, Primitive::Alert, Primitive::Noop,
+    Primitive::Create,
+    Primitive::Read,
+    Primitive::Update,
+    Primitive::Delete,
+    Primitive::Transform,
+    Primitive::Validate,
+    Primitive::Compress,
+    Primitive::Encrypt,
+    Primitive::Route,
+    Primitive::Broadcast,
+    Primitive::Subscribe,
+    Primitive::Publish,
+    Primitive::Analyze,
+    Primitive::Correlate,
+    Primitive::Score,
+    Primitive::Predict,
+    Primitive::Observe,
+    Primitive::Orient,
+    Primitive::Decide,
+    Primitive::Act,
+    Primitive::Lock,
+    Primitive::Unlock,
+    Primitive::Spawn,
+    Primitive::Terminate,
+    Primitive::Checkpoint,
+    Primitive::Restore,
+    Primitive::Sync,
+    Primitive::Merge,
+    Primitive::Measure,
+    Primitive::Log,
+    Primitive::Alert,
+    Primitive::Noop,
 ];
 
 #[cfg(test)]

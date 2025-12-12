@@ -126,33 +126,34 @@ impl UnicodePlaybook {
             steps: Vec::new(),
         }
     }
-    
+
     /// Add step to playbook
     pub fn add_step(&mut self, step: UnicodePlaybookStep) {
         self.steps.push(step);
     }
-    
+
     /// Get steps for a specific tier
     pub fn steps_for_tier(&self, tier: EscalationTier) -> Vec<&UnicodePlaybookStep> {
-        self.steps
-            .iter()
-            .filter(|step| step.tier == tier)
-            .collect()
+        self.steps.iter().filter(|step| step.tier == tier).collect()
     }
-    
+
     /// Validate playbook structure
     pub fn validate(&self) -> Result<(), String> {
         // Check that steps have valid dependencies
-        let step_names: std::collections::HashSet<&str> = self.steps.iter().map(|s| s.name.as_str()).collect();
-        
+        let step_names: std::collections::HashSet<&str> =
+            self.steps.iter().map(|s| s.name.as_str()).collect();
+
         for step in &self.steps {
             for dep in &step.depends_on {
                 if !step_names.contains(dep.as_str()) {
-                    return Err(format!("Step '{}' depends on unknown step '{}'", step.name, dep));
+                    return Err(format!(
+                        "Step '{}' depends on unknown step '{}'",
+                        step.name, dep
+                    ));
                 }
             }
         }
-        
+
         Ok(())
     }
 }
@@ -163,7 +164,7 @@ pub fn to_s_expression(playbook: &UnicodePlaybook) -> String {
     expr.push_str("(playbook\n");
     expr.push_str(&format!("  (name \"{}\")\n", playbook.name));
     expr.push_str(&format!("  (version \"{}\")\n", playbook.version));
-    
+
     if let Some(ref hash) = playbook.trivariate_hash {
         expr.push_str("  (trivariate_hash\n");
         expr.push_str(&format!("    (sch \"{}\")\n", hash.sch));
@@ -171,22 +172,25 @@ pub fn to_s_expression(playbook: &UnicodePlaybook) -> String {
         expr.push_str(&format!("    (uuid \"{}\")\n", hash.uuid));
         expr.push_str("  )\n");
     }
-    
+
     expr.push_str("  (steps\n");
     for step in &playbook.steps {
         expr.push_str(&format!("    (step\n"));
         expr.push_str(&format!("      (name \"{}\")\n", step.name));
         expr.push_str(&format!("      (tier {})\n", step.tier as u8));
-        expr.push_str(&format!("      (unicode_op \"\\u{{{:04X}}}\")\n", step.unicode_op as u32));
-        
+        expr.push_str(&format!(
+            "      (unicode_op \"\\u{{{:04X}}}\")\n",
+            step.unicode_op as u32
+        ));
+
         if let Some(ref tool) = step.tool {
             expr.push_str(&format!("      (tool \"{}\")\n", tool));
         }
-        
+
         if let Some(ref target) = step.target {
             expr.push_str(&format!("      (target \"{}\")\n", target));
         }
-        
+
         if !step.depends_on.is_empty() {
             expr.push_str("      (depends_on");
             for dep in &step.depends_on {
@@ -194,23 +198,23 @@ pub fn to_s_expression(playbook: &UnicodePlaybook) -> String {
             }
             expr.push_str(")\n");
         }
-        
+
         expr.push_str("    )\n");
     }
     expr.push_str("  )\n");
     expr.push_str(")\n");
-    
+
     expr
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
-    
+
     #[test]
     fn test_unicode_playbook_creation() {
         let mut playbook = UnicodePlaybook::new("test-playbook".to_string(), "1.0".to_string());
-        
+
         let step = UnicodePlaybookStep {
             name: "test-step".to_string(),
             tier: EscalationTier::Wasm,
@@ -220,15 +224,15 @@ mod tests {
             depends_on: Vec::new(),
             metadata: HashMap::new(),
         };
-        
+
         playbook.add_step(step);
         assert_eq!(playbook.steps.len(), 1);
     }
-    
+
     #[test]
     fn test_validate_playbook() {
         let mut playbook = UnicodePlaybook::new("test".to_string(), "1.0".to_string());
-        
+
         let step1 = UnicodePlaybookStep {
             name: "step1".to_string(),
             tier: EscalationTier::Wasm,
@@ -238,7 +242,7 @@ mod tests {
             depends_on: Vec::new(),
             metadata: HashMap::new(),
         };
-        
+
         let step2 = UnicodePlaybookStep {
             name: "step2".to_string(),
             tier: EscalationTier::Microkernel,
@@ -248,17 +252,17 @@ mod tests {
             depends_on: vec!["step1".to_string()],
             metadata: HashMap::new(),
         };
-        
+
         playbook.add_step(step1);
         playbook.add_step(step2);
-        
+
         assert!(playbook.validate().is_ok());
     }
-    
+
     #[test]
     fn test_invalid_dependency() {
         let mut playbook = UnicodePlaybook::new("test".to_string(), "1.0".to_string());
-        
+
         let step = UnicodePlaybookStep {
             name: "step1".to_string(),
             tier: EscalationTier::Wasm,
@@ -268,7 +272,7 @@ mod tests {
             depends_on: vec!["nonexistent".to_string()],
             metadata: HashMap::new(),
         };
-        
+
         playbook.add_step(step);
         assert!(playbook.validate().is_err());
     }

@@ -11,8 +11,8 @@ use axum::{
     Json, Router,
 };
 
+use crate::{TacticalError, TacticalResult};
 use serde::{Deserialize, Serialize};
-use crate::{TacticalResult, TacticalError};
 
 /// CDN Bridge configuration
 #[derive(Debug, Clone)]
@@ -81,25 +81,28 @@ impl CdnBridge {
     }
 
     /// Process message from frontend
-    pub async fn process_frontend_message(&self, message: FrontendMessage) -> TacticalResult<serde_json::Value> {
+    pub async fn process_frontend_message(
+        &self,
+        message: FrontendMessage,
+    ) -> TacticalResult<serde_json::Value> {
         let start = std::time::Instant::now();
-        
+
         match message.message_type.as_str() {
             "hash_mission_execute" => {
                 // Route to hash mission system
                 TacticalResult::success(
                     serde_json::json!({"message": "Hash mission queued"}),
-                    start.elapsed().as_millis() as f64
+                    start.elapsed().as_millis() as f64,
                 )
-            },
+            }
             "cognigraph_validate" => {
                 // Route to cognigraph system
                 TacticalResult::success(
                     serde_json::json!({"validation": "passed"}),
-                    start.elapsed().as_millis() as f64
+                    start.elapsed().as_millis() as f64,
                 )
-            },
-            _ => TacticalResult::failure(format!("Unknown message type: {}", message.message_type))
+            }
+            _ => TacticalResult::failure(format!("Unknown message type: {}", message.message_type)),
         }
     }
 }
@@ -124,7 +127,7 @@ async fn handle_tactical_request(
         data: Some(serde_json::json!({"acknowledged": message.message_type})),
         error: None,
     };
-    
+
     Ok(Json(response))
 }
 

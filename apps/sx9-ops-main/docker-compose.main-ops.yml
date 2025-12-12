@@ -1,0 +1,126 @@
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# CTAS Main Ops (v6.6) - Clean Container Setup
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# Simple, reliable, no experiments
+# Database Stack: SurrealDB, Supabase, Sled, Sledis, SlotGraph
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+version: '3.8'
+
+services:
+  # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  # Main Ops Frontend (React + Vite)
+  # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  main-ops-frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: sx9-ops-main-frontend
+    ports:
+      - "15174:15174"  # Primary port
+      - "25174:15174"  # Mirror port
+    environment:
+      - NODE_ENV=development
+      - VITE_NEURAL_MUX_URL=http://neural-mux:50051
+      - VITE_SURREALDB_URL=http://surrealdb:8000
+      - VITE_SLEDIS_URL=http://sledis:19014
+      - VITE_MAPBOX_TOKEN=${VITE_MAPBOX_TOKEN}
+    volumes:
+      - ./src:/app/src:ro
+      - ./public:/app/public:ro
+    networks:
+      - ctas_network
+    depends_on:
+      - neural-mux
+      - surrealdb
+      - sledis
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:15174"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  # Neural Mux (gRPC + gRPC-Web)
+  # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  neural-mux:
+    image: ctas7/neural-mux:latest
+    container_name: ctas-neural-mux
+    ports:
+      - "50051:50051"  # gRPC
+      - "15001:15001"  # gRPC-Web bridge
+    environment:
+      - RUST_LOG=info
+      - GRPC_PORT=50051
+      - GRPC_WEB_PORT=15001
+    networks:
+      - ctas_network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "grpc_health_probe", "-addr=:50051"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  # SurrealDB (Primary database)
+  # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  surrealdb:
+    image: surrealdb/surrealdb:latest
+    container_name: ctas-surrealdb
+    ports:
+      - "8000:8000"
+    command: start --log info --user root --pass root file:/data/database.db
+    volumes:
+      - surrealdb_data:/data
+    networks:
+      - ctas_network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  # Sledis (Memory Mesh v2.0 RC1 - Redis protocol on Sled)
+  # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  sledis:
+    build:
+      context: ../ctas7-sledis
+      dockerfile: Dockerfile
+    container_name: ctas-sledis-cache
+    ports:
+      - "19014:19014"  # Redis protocol + Memory Mesh
+      - "20014:20014"  # gRPC Health monitoring (port + 1000)
+    environment:
+      - RUST_LOG=info
+      - SLEDIS_MODE=production
+      - MEMORY_MESH_VERSION=2.0-RC1
+    volumes:
+      - sledis_data:/app/data
+    networks:
+      - ctas_network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "-p", "19014", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# Volumes
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+volumes:
+  surrealdb_data:
+    driver: local
+  sledis_data:
+    driver: local
+
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# Network
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+networks:
+  ctas_network:
+    driver: bridge

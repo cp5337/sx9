@@ -3,7 +3,7 @@
 //! These tests verify the complete functionality of the interface foundation service
 //! including HTTP client, WebSocket handling, CLI parsing, and URL manipulation.
 
-use ctas7_interface_foundation::*;
+use sx9_foundation_interface::*;
 use std::time::Duration;
 use clap::{Parser, Subcommand};
 

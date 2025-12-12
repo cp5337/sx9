@@ -6,8 +6,8 @@ use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use uuid::Uuid;
 
-use crate::storage::{Storage, StorageBackend};
 use crate::hash::TrivariateHashEngine;
+use crate::storage::{Storage, StorageBackend};
 
 /// Persistent data record with CTAS-7 v7.2 compliance
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -101,7 +101,9 @@ impl PersistenceManager {
 
         // Store hash index
         let hash_key = format!("hash:{}", hash);
-        self.storage.store(&hash_key, &record.id.to_string()).await?;
+        self.storage
+            .store(&hash_key, &record.id.to_string())
+            .await?;
 
         Ok(hash)
     }
@@ -131,7 +133,11 @@ impl PersistenceManager {
     }
 
     /// Update existing record
-    pub async fn update_record(&self, id: Uuid, content: serde_json::Value) -> Result<Option<String>> {
+    pub async fn update_record(
+        &self,
+        id: Uuid,
+        content: serde_json::Value,
+    ) -> Result<Option<String>> {
         if let Some(mut record) = self.get_record(id).await? {
             record.update_content(content);
             let new_hash = self.store_record(record).await?;
@@ -222,15 +228,23 @@ impl PersistenceManager {
                         let record_key = format!("record:{}", record.id);
                         let serialized = serde_json::to_string(&record.content)?;
 
-                        if self.hash_engine.verify_hash(&record_key, &serialized, &record.data_hash)? {
+                        if self.hash_engine.verify_hash(
+                            &record_key,
+                            &serialized,
+                            &record.data_hash,
+                        )? {
                             report.valid_records += 1;
                         } else {
                             report.invalid_records += 1;
-                            report.errors.push(format!("Invalid hash for record {}", record.id));
+                            report
+                                .errors
+                                .push(format!("Invalid hash for record {}", record.id));
                         }
                     } else {
                         report.corrupted_records += 1;
-                        report.errors.push(format!("Corrupted record data for key {}", key));
+                        report
+                            .errors
+                            .push(format!("Corrupted record data for key {}", key));
                     }
                 }
             }

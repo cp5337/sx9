@@ -3,8 +3,8 @@
 //! RFC-9021: Detects adversary behavior phases
 //! Hidden States: [Recon] → [Staging] → [Execution] → [Exfil]
 
-use serde::{Serialize, Deserialize};
 use anyhow::Result;
+use serde::{Deserialize, Serialize};
 
 /// Adversary phase states
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
@@ -36,10 +36,10 @@ impl HmmPhaseDetector {
         let transition_matrix = [
             [0.6, 0.3, 0.05, 0.05], // From Recon
             [0.1, 0.5, 0.3, 0.1],   // From Staging
-            [0.05, 0.1, 0.6, 0.25],  // From Execution
-            [0.0, 0.0, 0.1, 0.9],    // From Exfil (terminal)
+            [0.05, 0.1, 0.6, 0.25], // From Execution
+            [0.0, 0.0, 0.1, 0.9],   // From Exfil (terminal)
         ];
-        
+
         Self { transition_matrix }
     }
 
@@ -54,7 +54,7 @@ impl HmmPhaseDetector {
 
         // Simple heuristic: classify based on activity keywords
         let last_activity = activities.last().unwrap().to_lowercase();
-        
+
         let (phase, prob) = if last_activity.contains("scan") || last_activity.contains("recon") {
             (Phase::Recon, 0.8)
         } else if last_activity.contains("download") || last_activity.contains("stage") {
@@ -97,4 +97,3 @@ pub async fn detect_phase(activities: &[String]) -> PhaseResult {
     let detector = HmmPhaseDetector::new();
     detector.detect(activities)
 }
-

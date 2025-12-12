@@ -8,17 +8,24 @@
 //! **Ground Truth**: Murmur3 trivariate hashing ONLY (NO Blake3)
 
 use axum::{
-    extract::{State, ws::{WebSocket, WebSocketUpgrade}},
+    extract::{
+        ws::{WebSocket, WebSocketUpgrade},
+        State,
+    },
     http::StatusCode,
     response::{Json, Response},
     routing::{get, post},
     Router,
 };
 use futures::{sink::SinkExt, stream::StreamExt};
-use ctas7_foundation_core::hashing::TrivariteHashEngine;
 use serde::{Deserialize, Serialize};
-// SHA256 removed - Ground Truth: Murmur3 ONLY
 use std::sync::Arc;
+use sx9_foundation_core::{
+    ContextFrame,
+    ExecEnv,
+    ExecState,
+    TrivariateHashEngine, // V7.3.1 (Correct spelling)
+};
 use tokio::sync::RwLock;
 use tower_http::cors::CorsLayer;
 use tracing::info;
@@ -26,7 +33,7 @@ use tracing::info;
 /// Service state
 #[derive(Clone)]
 struct AppState {
-    hash_engine: Arc<RwLock<TrivariteHashEngine>>,
+    hash_engine: Arc<RwLock<TrivariateHashEngine>>,
     request_count: Arc<RwLock<u64>>,
 }
 
@@ -34,11 +41,10 @@ struct AppState {
 #[derive(Debug, Deserialize)]
 struct HashRequest {
     content: String,
-    context: String,
-    primitive_type: String,
+    context: String,        // Treat as domain/tag string
+    primitive_type: String, // Treat as exec_class
     #[serde(default)]
     compress_unicode: bool,
-    // TODO: Add environmental masks support when foundation-core exports them with Deserialize
 }
 
 /// Hash generation response
@@ -60,13 +66,13 @@ struct BatchHashRequest {
     compress_unicode: bool,
     #[serde(default)]
     preserve_context: bool,
-    batch_context: Option<String>, // e.g., "ground_stations_257", "kali_tools_list"
+    batch_context: Option<String>,
 }
 
 /// Individual item in batch
 #[derive(Debug, Deserialize)]
 struct BatchItem {
-    id: String, // e.g., "station_001", "nmap"
+    id: String,
     content: String,
     context: String,
     primitive_type: String,
@@ -75,7 +81,7 @@ struct BatchItem {
 /// Batch hash response
 #[derive(Debug, Serialize)]
 struct BatchHashResponse {
-    batch_hash: String, // Hash of the entire batch
+    batch_hash: String,
     batch_context: Option<String>,
     items: Vec<BatchHashItem>,
     total_generation_time_ms: f64,
@@ -116,7 +122,7 @@ async fn main() -> anyhow::Result<()> {
 
     // Initialize state
     let state = AppState {
-        hash_engine: Arc::new(RwLock::new(TrivariteHashEngine::new())),
+        hash_engine: Arc::new(RwLock::new(TrivariateHashEngine::new())),
         request_count: Arc::new(RwLock::new(0)),
     };
 
@@ -135,17 +141,49 @@ async fn main() -> anyhow::Result<()> {
     // Start REST server
     let rest_addr = "0.0.0.0:8002";
     info!("🌐 REST API listening on {}", rest_addr);
-    
+
     let listener = tokio::net::TcpListener::bind(rest_addr).await?;
     axum::serve(listener, app).await?;
 
     Ok(())
 }
 
+// --- Helper: Map String Context to Strict ContextFrame ---
+fn map_context_to_frame(context_str: &str) -> ContextFrame {
+    let normalized = context_str.to_lowercase();
+
+    // Heuristic ExecEnv detection
+    let exec_env = if normalized.contains("wasm") {
+        ExecEnv::Wasm
+    } else if normalized.contains("container") || normalized.contains("docker") {
+        ExecEnv::Container
+    } else if normalized.contains("kernel") {
+        ExecEnv::Kernel
+    } else {
+        ExecEnv::Native // Default fallback
+    };
+
+    // Heuristic State detection
+    let state = if normalized.contains("cold") {
+        ExecState::Cold
+    } else if normalized.contains("warm") {
+        ExecState::Warm
+    } else {
+        ExecState::Hot // Assume active execution
+    };
+
+    // Agent ID from simple hash of context string (modulo 65536)
+    let agent_id = normalized
+        .chars()
+        .fold(0u16, |acc, c| acc.wrapping_add(c as u16));
+
+    ContextFrame::new(exec_env, agent_id, state)
+}
+
 /// Health check endpoint
 async fn health_check(State(state): State<AppState>) -> Json<HealthResponse> {
     let count = *state.request_count.read().await;
-    
+
     Json(HealthResponse {
         status: "healthy".to_string(),
         version: "7.3.1".to_string(),
@@ -160,77 +198,82 @@ async fn generate_hash(
     Json(request): Json<HashRequest>,
 ) -> Result<Json<HashResponse>, StatusCode> {
     let start = std::time::Instant::now();
-    
-    // Increment request counter
+
     {
         let mut count = state.request_count.write().await;
         *count += 1;
     }
-    
-    // Get hash engine
+
     let engine = state.hash_engine.read().await;
-    
-    // Generate hash
-    let trivariate_hash = engine.generate_trivariate_hash(
+
+    // Map inputs to v7.3.1 requirements
+    let context_frame = map_context_to_frame(&request.context);
+
+    // Generate canonical trivariate
+    let trivariate = engine.generate_trivariate(
         &request.content,
-        &request.context,
-        &request.primitive_type,
+        "service",               // node_type
+        &request.context,        // domain (heuristic: usage of context string as domain)
+        &request.primitive_type, // exec_class
+        &context_frame,
     );
-    
-    let sch = trivariate_hash[0..16].to_string();
-    let cuid = trivariate_hash[16..32].to_string();
-    let uuid = trivariate_hash[32..48].to_string();
-    
+
+    let hash_str = trivariate.to_48char_hash();
+
     // Optional Unicode compression
     let unicode_compressed = if request.compress_unicode {
-        Some(engine.generate_unicode_compressed(&sch, &cuid, &uuid))
+        // Re-generate CUID slots for strict unicode alignment if needed,
+        // or just use slot method if available.
+        // For now, we manually reconstruct slots since engine exposes generate_cuid which returns string.
+        // But TrivariateHash struct doesn't have the slots.
+        // However, ContextFrame -> CuidSlots -> to_unicode_runes works.
+        // We will do a best-effort compression matching the internal logic.
+        let slots = sx9_foundation_core::CuidSlots::from(&context_frame);
+        Some(slots.to_unicode_runes())
     } else {
         None
     };
-    
+
     let generation_time_ms = start.elapsed().as_micros() as f64 / 1000.0;
-    
+
     info!(
         "✅ Generated hash in {:.3}ms: {}... (unicode: {})",
         generation_time_ms,
-        &trivariate_hash[0..12],
+        &hash_str[0..12],
         unicode_compressed.is_some()
     );
-    
+
     Ok(Json(HashResponse {
-        trivariate_hash,
-        sch,
-        cuid,
-        uuid,
+        trivariate_hash: hash_str,
+        sch: trivariate.sch,
+        cuid: trivariate.cuid,
+        uuid: trivariate.uuid,
         unicode_compressed,
         generation_time_ms,
     }))
 }
 
-/// Generate batch of hashes with context preservation
+/// Generate batch of hashes
 async fn generate_hash_batch(
     State(state): State<AppState>,
     Json(request): Json<BatchHashRequest>,
 ) -> Result<Json<BatchHashResponse>, StatusCode> {
     let start = std::time::Instant::now();
-    
-    // Increment request counter
+
     {
         let mut count = state.request_count.write().await;
         *count += 1;
     }
-    
-    // Get hash engine
+
     let engine = state.hash_engine.read().await;
-    
+
     let mut batch_items = Vec::new();
     let mut all_hashes = String::new();
-    
-    // Process each item in batch
+
     for (index, item) in request.items.iter().enumerate() {
-        // Generate hash with batch context if requested
-        let context = if request.preserve_context {
-            format!("{}:{}:{}", 
+        let context_str = if request.preserve_context {
+            format!(
+                "{}:{}:{}",
                 request.batch_context.as_deref().unwrap_or("batch"),
                 index,
                 item.context
@@ -238,48 +281,54 @@ async fn generate_hash_batch(
         } else {
             item.context.clone()
         };
-        
-        let trivariate_hash = engine.generate_trivariate_hash(
+
+        let context_frame = map_context_to_frame(&context_str);
+
+        let trivariate = engine.generate_trivariate(
             &item.content,
-            &context,
+            "service",
+            &context_str,
             &item.primitive_type,
+            &context_frame,
         );
-        
-        let sch = trivariate_hash[0..16].to_string();
-        let cuid = trivariate_hash[16..32].to_string();
-        let uuid = trivariate_hash[32..48].to_string();
-        
-        // Optional Unicode compression
+
+        let hash_str = trivariate.to_48char_hash();
+
         let unicode_compressed = if request.compress_unicode {
-                        Some(engine.generate_unicode_compressed(&sch, &cuid, &uuid))
-                    } else {
-                        None
-                    };
-        
-        // Accumulate for batch hash
-        all_hashes.push_str(&trivariate_hash);
-        
+            let slots = sx9_foundation_core::CuidSlots::from(&context_frame);
+            Some(slots.to_unicode_runes())
+        } else {
+            None
+        };
+
+        all_hashes.push_str(&hash_str);
+
         batch_items.push(BatchHashItem {
             id: item.id.clone(),
-            trivariate_hash,
-            sch,
-            cuid,
-            uuid,
+            trivariate_hash: hash_str.clone(),
+            sch: trivariate.sch,
+            cuid: trivariate.cuid,
+            uuid: trivariate.uuid,
             unicode_compressed,
             batch_index: index,
         });
     }
-    
-    // Generate hash of entire batch
-    let batch_hash = engine.generate_trivariate_hash(
+
+    // Batch summary hash
+    let batch_ctx_str = request.batch_context.as_deref().unwrap_or("batch");
+    let batch_frame = map_context_to_frame(batch_ctx_str);
+    let batch_hash_obj = engine.generate_trivariate(
         &all_hashes,
-        request.batch_context.as_deref().unwrap_or("batch"),
+        "batch",
+        batch_ctx_str,
         "BATCH_HASH",
+        &batch_frame,
     );
-    
+    let batch_hash = batch_hash_obj.to_48char_hash();
+
     let total_time_ms = start.elapsed().as_micros() as f64 / 1000.0;
     let items_per_second = (request.items.len() as f64 / total_time_ms) * 1000.0;
-    
+
     info!(
         "✅ Generated {} hashes in {:.3}ms ({:.0} items/sec) - Batch: {}...",
         request.items.len(),
@@ -287,7 +336,7 @@ async fn generate_hash_batch(
         items_per_second,
         &batch_hash[0..12]
     );
-    
+
     Ok(Json(BatchHashResponse {
         batch_hash,
         batch_context: request.batch_context,
@@ -298,64 +347,56 @@ async fn generate_hash_batch(
 }
 
 /// WebSocket streaming hash handler
-async fn hash_stream_handler(
-    ws: WebSocketUpgrade,
-    State(state): State<AppState>,
-) -> Response {
+async fn hash_stream_handler(ws: WebSocketUpgrade, State(state): State<AppState>) -> Response {
     ws.on_upgrade(|socket| hash_stream(socket, state))
 }
 
-/// Handle streaming hash generation over WebSocket
 async fn hash_stream(stream: WebSocket, state: AppState) {
     let (mut sender, mut receiver) = stream.split();
-    
     info!("🌊 WebSocket stream connected");
-    
+
     while let Some(msg) = receiver.next().await {
         if let Ok(msg) = msg {
             if let Ok(text) = msg.to_text() {
-                // Parse streaming hash request
                 if let Ok(request) = serde_json::from_str::<StreamHashRequest>(text) {
-                    // Increment counter
                     {
                         let mut count = state.request_count.write().await;
                         *count += 1;
                     }
-                    
-                    // Generate hash
+
                     let engine = state.hash_engine.read().await;
                     let start = std::time::Instant::now();
-                    
-                    let trivariate_hash = engine.generate_trivariate_hash(
+
+                    let context_frame = map_context_to_frame(&request.context);
+                    let trivariate = engine.generate_trivariate(
                         &request.content,
+                        "stream",
                         &request.context,
                         &request.primitive_type,
+                        &context_frame,
                     );
-                    
-                    let sch = trivariate_hash[0..16].to_string();
-                    let cuid = trivariate_hash[16..32].to_string();
-                    let uuid = trivariate_hash[32..48].to_string();
-                    
+                    let hash_str = trivariate.to_48char_hash();
+
                     let unicode_compressed = if request.compress_unicode {
-                        Some(engine.generate_unicode_compressed(&sch, &cuid, &uuid))
+                        let slots = sx9_foundation_core::CuidSlots::from(&context_frame);
+                        Some(slots.to_unicode_runes())
                     } else {
                         None
                     };
-                    
+
                     let generation_time_ms = start.elapsed().as_micros() as f64 / 1000.0;
-                    
-                    // Send response back
+
                     let response = StreamHashResponse {
                         stream_id: request.stream_id,
-                        trivariate_hash,
-                        sch,
-                        cuid,
-                        uuid,
+                        trivariate_hash: hash_str.clone(),
+                        sch: trivariate.sch,
+                        cuid: trivariate.cuid,
+                        uuid: trivariate.uuid,
                         unicode_compressed,
                         generation_time_ms,
                         timestamp: chrono::Utc::now().timestamp_millis(),
                     };
-                    
+
                     if let Ok(json) = serde_json::to_string(&response) {
                         let _ = sender.send(axum::extract::ws::Message::Text(json)).await;
                     }
@@ -363,11 +404,9 @@ async fn hash_stream(stream: WebSocket, state: AppState) {
             }
         }
     }
-    
     info!("🌊 WebSocket stream disconnected");
 }
 
-/// Streaming hash request
 #[derive(Debug, Deserialize)]
 struct StreamHashRequest {
     stream_id: String,
@@ -378,7 +417,6 @@ struct StreamHashRequest {
     compress_unicode: bool,
 }
 
-/// Streaming hash response
 #[derive(Debug, Serialize)]
 struct StreamHashResponse {
     stream_id: String,
@@ -391,103 +429,101 @@ struct StreamHashResponse {
     timestamp: i64,
 }
 
-/// Generate USIM (Universal Symbolic Message)
+/// Generate USIM
 async fn generate_usim(
     State(state): State<AppState>,
     Json(request): Json<UsimRequest>,
 ) -> Result<Json<UsimResponse>, StatusCode> {
     let start = std::time::Instant::now();
-    
-    // Increment counter
+
     {
         let mut count = state.request_count.write().await;
         *count += 1;
     }
-    
-    // Get hash engine
+
     let engine = state.hash_engine.read().await;
-    
-    // Generate Murmur3 trivariate hash for USIM addressing
-    let usim_hash = engine.generate_trivariate_hash(
+
+    // USIM hashing
+    let context_frame = map_context_to_frame(&request.domain);
+    let usim_obj = engine.generate_trivariate(
         &request.file_path,
-        &request.domain,
         "USIM",
+        &request.domain,
+        "usim_node",
+        &context_frame,
     );
-    
-    // Generate Murmur3 hash for file integrity (NO SHA256)
-    // We use the trivariate engine but with a specific context for integrity
-    let integrity_hash = engine.generate_trivariate_hash(
+    let usim_hash = usim_obj.to_48char_hash();
+
+    // Integrity Hashing (Murmur3)
+    let integrity_obj = engine.generate_trivariate(
         &request.content,
+        "integrity",
+        "checksum",
         "integrity_check",
-        "murmur3_integrity"
+        &context_frame,
     );
-    // Use the full hash as the integrity check
-    let integrity_hex = integrity_hash.clone();
-    
-    // Unicode compression
-    let sch = usim_hash[0..16].to_string();
-    let cuid = usim_hash[16..32].to_string();
-    let uuid = usim_hash[32..48].to_string();
-    let unicode_compressed = engine.generate_unicode_compressed(&sch, &cuid, &uuid);
-    
+    let integrity_hash = integrity_obj.to_48char_hash();
+
+    let slots = sx9_foundation_core::CuidSlots::from(&context_frame);
+    let unicode_compressed = slots.to_unicode_runes();
+
     let generation_time_ms = start.elapsed().as_micros() as f64 / 1000.0;
-    
+
     info!(
         "✅ Generated USIM in {:.3}ms: {}... (unicode: {})",
         generation_time_ms,
         &usim_hash[0..12],
         unicode_compressed
     );
-    
+
     Ok(Json(UsimResponse {
-        usim_hash,
-        integrity_hash: integrity_hex,
+        usim_hash: usim_hash.clone(),
+        integrity_hash,
         unicode_compressed,
-        sch,
-        cuid,
-        uuid,
+        sch: usim_obj.sch,
+        cuid: usim_obj.cuid,
+        uuid: usim_obj.uuid,
         generation_time_ms,
     }))
 }
 
-/// Generate printable USIM header for inventory/documentation
+/// Generate USIM header
 async fn generate_usim_header(
     State(state): State<AppState>,
     Json(request): Json<UsimHeaderRequest>,
 ) -> Result<Json<UsimHeaderResponse>, StatusCode> {
     let start = std::time::Instant::now();
-    
-    // Increment counter
+
     {
         let mut count = state.request_count.write().await;
         *count += 1;
     }
-    
-    // Get hash engine
+
     let engine = state.hash_engine.read().await;
-    
-    // Generate hashes
-    let usim_hash = engine.generate_trivariate_hash(
+
+    let context_frame = map_context_to_frame(&request.domain);
+
+    let usim_obj = engine.generate_trivariate(
         &request.file_path,
-        &request.domain,
         "USIM",
+        &request.domain,
+        "usim_node",
+        &context_frame,
     );
-    
-    // Generate Murmur3 hash for file integrity (NO SHA256)
-    let integrity_hash = engine.generate_trivariate_hash(
+    let usim_hash = usim_obj.to_48char_hash();
+
+    let integrity_obj = engine.generate_trivariate(
         &request.content,
+        "integrity",
+        "checksum",
         "integrity_check",
-        "murmur3_integrity"
+        &context_frame,
     );
-    let integrity_hex = integrity_hash.clone();
-    
-    // Unicode compression
-    let sch = usim_hash[0..16].to_string();
-    let cuid = usim_hash[16..32].to_string();
-    let uuid = usim_hash[32..48].to_string();
-    let unicode_compressed = engine.generate_unicode_compressed(&sch, &cuid, &uuid);
-    
-    // Generate header based on format
+    let integrity_hash = integrity_obj.to_48char_hash();
+
+    let slots = sx9_foundation_core::CuidSlots::from(&context_frame);
+    let unicode_compressed = slots.to_unicode_runes();
+
     let header = match request.format {
         UsimHeaderFormat::Full => format!(
             r#"/*
@@ -509,7 +545,7 @@ async fn generate_usim_header(
 // └─────────────────────────────────────────────────────────────┘
 */"#,
             usim_hash,
-            &integrity_hex[0..32],
+            &integrity_hash[0..32],
             unicode_compressed,
             request.domain,
             request.description,
@@ -518,9 +554,11 @@ async fn generate_usim_header(
             request.language.unwrap_or_else(|| "Unknown".to_string()),
             request.file_type.unwrap_or_else(|| "Unknown".to_string()),
             request.complexity.unwrap_or(0.0),
-            request.ttl_policy.unwrap_or_else(|| "Persistent".to_string()),
+            request
+                .ttl_policy
+                .unwrap_or_else(|| "Persistent".to_string()),
         ),
-        
+
         UsimHeaderFormat::Footer => format!(
             r#"
 ────────────────────────────────────────────────────────────────────
@@ -530,12 +568,12 @@ Index: {}
 Domain: {} | {}
 ────────────────────────────────────────────────────────────────────"#,
             usim_hash,
-            &integrity_hex[0..16],
+            &integrity_hash[0..16],
             unicode_compressed,
             request.domain,
             request.description,
         ),
-        
+
         UsimHeaderFormat::Index => format!(
             r#"[{}] {} - {}
     📦 {} | 🔐 {}... | 📁 {}"#,
@@ -543,36 +581,34 @@ Domain: {} | {}
             request.file_path,
             request.description,
             usim_hash,
-            &integrity_hex[0..16],
+            &integrity_hash[0..16],
             request.domain,
         ),
-        
+
         UsimHeaderFormat::Minimal => format!(
-            r#"USIM: {} | Unicode: {} | SHA256: {}..."#,
+            r#"USIM: {} | Unicode: {} | Integrity: {}..."#,
             usim_hash,
             unicode_compressed,
-            &integrity_hex[0..16],
+            &integrity_hash[0..16],
         ),
     };
-    
+
     let generation_time_ms = start.elapsed().as_micros() as f64 / 1000.0;
-    
+
     info!(
         "✅ Generated USIM header in {:.3}ms for {}",
-        generation_time_ms,
-        request.file_path
+        generation_time_ms, request.file_path
     );
-    
+
     Ok(Json(UsimHeaderResponse {
         header,
         usim_hash,
-        integrity_hash: integrity_hex,
+        integrity_hash,
         unicode_compressed,
         generation_time_ms,
     }))
 }
 
-/// USIM request
 #[derive(Debug, Deserialize)]
 struct UsimRequest {
     file_path: String,
@@ -580,7 +616,6 @@ struct UsimRequest {
     domain: String,
 }
 
-/// USIM response
 #[derive(Debug, Serialize)]
 struct UsimResponse {
     usim_hash: String,
@@ -592,7 +627,6 @@ struct UsimResponse {
     generation_time_ms: f64,
 }
 
-/// USIM header request
 #[derive(Debug, Deserialize)]
 struct UsimHeaderRequest {
     file_path: String,
@@ -609,18 +643,16 @@ struct UsimHeaderRequest {
     format: UsimHeaderFormat,
 }
 
-/// USIM header format options
 #[derive(Debug, Deserialize, Default)]
 #[serde(rename_all = "lowercase")]
 enum UsimHeaderFormat {
     #[default]
-    Full,      // Full header with all metadata
-    Footer,    // Compact footer for legal docs
-    Index,     // Index-style for catalogs
-    Minimal,   // Just hash + unicode
+    Full,
+    Footer,
+    Index,
+    Minimal,
 }
 
-/// USIM header response
 #[derive(Debug, Serialize)]
 struct UsimHeaderResponse {
     header: String,
@@ -630,10 +662,9 @@ struct UsimHeaderResponse {
     generation_time_ms: f64,
 }
 
-/// Prometheus metrics endpoint
 async fn metrics(State(state): State<AppState>) -> String {
     let count = *state.request_count.read().await;
-    
+
     format!(
         "# HELP ctas7_hash_requests_total Total hash generation requests\n\
          # TYPE ctas7_hash_requests_total counter\n\
@@ -641,4 +672,3 @@ async fn metrics(State(state): State<AppState>) -> String {
         count
     )
 }
-

@@ -1,5 +1,5 @@
 use chrono::{DateTime, Utc};
-use serde::{Serialize, Deserialize};
+use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct AnnContext {
@@ -14,5 +14,3 @@ pub struct AnnAdvisory {
     pub reason_trace: Vec<String>,
     pub timestamp: DateTime<Utc>,
 }
-
-

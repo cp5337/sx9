@@ -2,24 +2,17 @@
 //!
 //! Uses compression, timeout, body limit, and trace layers for performance
 
-use axum::{
-    Router,
-    routing::get,
-    extract::State,
-    response::Json,
-};
-use tower::ServiceBuilder;
-use tower_http::{
-    compression::CompressionLayer,
-    timeout::TimeoutLayer,
-    limit::RequestBodyLimitLayer,
-    trace::TraceLayer,
-};
-use sx9_atlas_bus::PlasmaState;
+use crate::config::DefenderConfig;
+use crate::plasma_bus::PlasmaBus;
+use axum::{extract::State, response::Json, routing::get, Router};
 use std::sync::Arc;
 use std::time::Duration;
-use crate::plasma_bus::PlasmaBus;
-use crate::config::DefenderConfig;
+use sx9_atlas_bus::PlasmaState;
+use tower::ServiceBuilder;
+use tower_http::{
+    compression::CompressionLayer, limit::RequestBodyLimitLayer, timeout::TimeoutLayer,
+    trace::TraceLayer,
+};
 
 pub struct PlasmaDefenderServer {
     router: Router,
@@ -42,11 +35,13 @@ impl PlasmaDefenderServer {
             .route("/crystal/resonance", get(crystal_resonance_handler))
             .route("/crystal/family", get(crystal_family_handler))
             .layer(CompressionLayer::new())
-            .layer(TimeoutLayer::new(Duration::from_secs(config.request_timeout_secs)))
+            .layer(TimeoutLayer::new(Duration::from_secs(
+                config.request_timeout_secs,
+            )))
             .layer(RequestBodyLimitLayer::new(config.body_size_limit))
             .layer(TraceLayer::new_for_http())
             .with_state((plasma.clone(), plasma_bus.clone()));
-        
+
         Ok(Self {
             router,
             health_endpoint: config.health_endpoint.clone(),
@@ -55,7 +50,7 @@ impl PlasmaDefenderServer {
             plasma_bus,
         })
     }
-    
+
     pub async fn start(&self, addr: &str) -> anyhow::Result<()> {
         let listener = tokio::net::TcpListener::bind(addr).await?;
         tracing::info!("🚀 Plasma Defender server listening on {}", addr);
@@ -119,4 +114,3 @@ async fn crystal_family_handler(
         "crystal_family": "GroundStation", // From config
     }))
 }
-

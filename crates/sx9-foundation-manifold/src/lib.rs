@@ -4,51 +4,51 @@
 //! across the CTAS-7 network using trivariate hash-based decisions.
 //! Enhanced with HFT hash routing integration, neural mux AI, and on-demand asset escalation.
 
+use anyhow::Result;
+use chrono::{DateTime, Utc};
+use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::sync::Arc;
 use std::time::Duration;
-use anyhow::Result;
-use serde::{Serialize, Deserialize};
-use tokio::sync::{RwLock, mpsc};
-use chrono::{DateTime, Utc};
-use tracing::{info, warn, error, debug};
+use tokio::sync::RwLock;
+use tracing::{debug, info, warn};
 
 // ═══════════════════════════════════════════════════════════════════════════
 // Foundation Crate Re-exports (per RFC-9004)
 // ═══════════════════════════════════════════════════════════════════════════
 
 // Core foundation - always available
-pub use ctas7_foundation_core as core;
-pub use ctas7_foundation_interface as interface;
+pub use sx9_foundation_core as core;
+pub use sx9_foundation_interface as interface;
 
 // Elastic feature crates
 #[cfg(feature = "elastic")]
-pub use ctas7_foundation_data as data;
+pub use sx9_atlas_daemon as atlas;
 #[cfg(feature = "elastic")]
-pub use ctas7_foundation_math as math;
+pub use sx9_foundation_data as data;
 #[cfg(feature = "elastic")]
-pub use ctas7_foundation_tactical as tactical;
+pub use sx9_foundation_math as math;
 #[cfg(feature = "elastic")]
-pub use ctas7_atlas_daemon as atlas;
+pub use sx9_foundation_tactical as tactical;
 #[cfg(feature = "elastic")]
-pub use ctas7_neural_mux as neural_mux;
+pub use sx9_neural_mux as neural_mux;
 
 // ═══════════════════════════════════════════════════════════════════════════
 // Foundation Integration Imports
 // ═══════════════════════════════════════════════════════════════════════════
 
 // Core types (always available)
-use ctas7_foundation_core::TrivariteHashEngine;
-use ctas7_foundation_core::neural_mux::NeuralMuxRouter as UnicodeAssemblyProcessor;
-use ctas7_foundation_interface::InterfaceService as InterfaceManager;
+use sx9_foundation_core::neural_mux::NeuralMuxRouter as UnicodeAssemblyProcessor;
+use sx9_foundation_core::{ContextFrame, ExecEnv, ExecState, TrivariateHashEngine};
+use sx9_foundation_interface::InterfaceService as InterfaceManager;
 
 // Elastic feature types
 #[cfg(feature = "elastic")]
-use ctas7_foundation_data::FoundationDataManager as FoundationDataStorage;
+use sx9_atlas_daemon::AtlasDaemon as TacticalOperationsEngine;
 #[cfg(feature = "elastic")]
-use ctas7_foundation_math::MathematicalFoundationConsciousness;
+use sx9_foundation_data::FoundationDataManager as FoundationDataStorage;
 #[cfg(feature = "elastic")]
-use ctas7_atlas_daemon::AtlasDaemon as TacticalOperationsEngine;
+use sx9_foundation_math::MathematicalFoundationConsciousness;
 
 /// Manifold routing engine for deterministic packet routing
 #[derive(Debug, Clone)]
@@ -135,14 +135,18 @@ impl ManifoldRouter {
 
     /// Find optimal route based on score and destination type
     fn find_optimal_route(&self, destination_type: &str, score: f64) -> Result<String> {
-        let candidates: Vec<_> = self.routing_table
+        let candidates: Vec<_> = self
+            .routing_table
             .iter()
             .filter(|(_, entry)| entry.destination.contains(destination_type))
             .filter(|(_, entry)| entry.health_score > self.health_monitor.health_threshold)
             .collect();
 
         if candidates.is_empty() {
-            return Err(anyhow::anyhow!("No healthy routes found for {}", destination_type));
+            return Err(anyhow::anyhow!(
+                "No healthy routes found for {}",
+                destination_type
+            ));
         }
 
         // Select route based on score and load
@@ -151,7 +155,9 @@ impl ManifoldRouter {
             .min_by(|a, b| {
                 let score_a = (score - a.1.load_factor).abs();
                 let score_b = (score - b.1.load_factor).abs();
-                score_a.partial_cmp(&score_b).unwrap_or(std::cmp::Ordering::Equal)
+                score_a
+                    .partial_cmp(&score_b)
+                    .unwrap_or(std::cmp::Ordering::Equal)
             })
             .unwrap();
 
@@ -198,7 +204,7 @@ pub mod deterministic {
 #[derive(Clone)]
 pub struct FoundationOrchestrator {
     /// Core foundation systems
-    pub hash_engine: Arc<TrivariteHashEngine>,
+    pub hash_engine: Arc<TrivariateHashEngine>,
     pub data_storage: Arc<FoundationDataStorage>,
     pub math_engine: Arc<MathematicalFoundationConsciousness>,
     pub tactical_engine: Arc<TacticalOperationsEngine>,
@@ -303,10 +309,10 @@ pub struct AssetDemandMonitor {
 pub struct AssetStatus {
     pub asset_id: String,
     pub asset_type: String,
-    pub availability: f64,           // 0.0-1.0
-    pub current_load: f64,          // 0.0-1.0
-    pub health_score: f64,          // 0.0-1.0
-    pub weather_impact: f64,        // Weather influence on performance
+    pub availability: f64,   // 0.0-1.0
+    pub current_load: f64,   // 0.0-1.0
+    pub health_score: f64,   // 0.0-1.0
+    pub weather_impact: f64, // Weather influence on performance
     pub last_updated: DateTime<Utc>,
 }
 
@@ -338,10 +344,10 @@ pub struct AIDecision {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct GraphNode {
     pub node_id: String,
-    pub node_type: String,          // "asset", "user", "demand", "weather"
-    pub features: Vec<f64>,         // Feature vector for GNN
-    pub connections: Vec<String>,   // Connected node IDs
-    pub weight: f64,               // Node importance
+    pub node_type: String,        // "asset", "user", "demand", "weather"
+    pub features: Vec<f64>,       // Feature vector for GNN
+    pub connections: Vec<String>, // Connected node IDs
+    pub weight: f64,              // Node importance
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -349,15 +355,15 @@ pub struct GraphEdge {
     pub edge_id: String,
     pub source_node: String,
     pub target_node: String,
-    pub edge_type: String,          // "uses", "depends_on", "influences"
-    pub weight: f64,               // Edge strength
+    pub edge_type: String, // "uses", "depends_on", "influences"
+    pub weight: f64,       // Edge strength
     pub properties: HashMap<String, f64>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct PredictionModel {
     pub model_id: String,
-    pub model_type: String,         // "GNN", "LSTM", "Transformer"
+    pub model_type: String, // "GNN", "LSTM", "Transformer"
     pub accuracy: f64,
     pub last_trained: DateTime<Utc>,
     pub parameters: HashMap<String, f64>,
@@ -367,9 +373,9 @@ pub struct PredictionModel {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct AssetPrediction {
     pub asset_id: String,
-    pub predicted_demand: f64,      // Predicted demand level
-    pub demand_confidence: f64,     // Prediction confidence
-    pub time_horizon_hours: f64,    // Prediction time horizon
+    pub predicted_demand: f64,   // Predicted demand level
+    pub demand_confidence: f64,  // Prediction confidence
+    pub time_horizon_hours: f64, // Prediction time horizon
     pub escalation_recommendation: String,
     pub predicted_at: DateTime<Utc>,
 }
@@ -380,7 +386,7 @@ pub struct AssetEscalation {
     pub escalation_id: String,
     pub asset_type: String,
     pub trigger_hash: String,
-    pub escalation_level: u8,       // 1-5 escalation levels
+    pub escalation_level: u8, // 1-5 escalation levels
     pub resources_allocated: u32,
     pub estimated_duration_hours: f64,
     pub cost_estimate: f64,
@@ -404,7 +410,7 @@ pub struct AssetPool {
 pub struct EscalationPolicy {
     pub policy_id: String,
     pub asset_type: String,
-    pub demand_threshold: f64,      // When to escalate
+    pub demand_threshold: f64, // When to escalate
     pub max_escalation_level: u8,
     pub auto_escalate: bool,
     pub approval_required: bool,
@@ -433,7 +439,7 @@ pub struct UtilizationMetrics {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct DemandTrend {
     pub asset_type: String,
-    pub trend_direction: String,    // "increasing", "decreasing", "stable"
+    pub trend_direction: String, // "increasing", "decreasing", "stable"
     pub rate_of_change: f64,
     pub seasonal_pattern: bool,
     pub anomaly_detected: bool,
@@ -445,7 +451,7 @@ impl FoundationOrchestrator {
         info!("🚀 Initializing CTAS-7 Foundation Orchestrator with HFT + Neural Mux + GNN integration");
 
         // Initialize foundation systems with real crate types
-        let hash_engine = Arc::new(TrivariteHashEngine::new());
+        let hash_engine = Arc::new(TrivariateHashEngine::new());
 
         // FoundationDataManager::new() returns Result<Self> (sync)
         #[cfg(feature = "elastic")]
@@ -458,21 +464,19 @@ impl FoundationOrchestrator {
         // AtlasDaemon requires config and broadcast sender - create placeholder
         // Real integration would get these from the runtime
         #[cfg(feature = "elastic")]
-        let (outcome_tx, _outcome_rx) = tokio::sync::broadcast::channel(100);
         #[cfg(feature = "elastic")]
         let tactical_engine = Arc::new(TacticalOperationsEngine::new(
-            ctas7_atlas_daemon::AtlasConfig::default(),
-            outcome_tx
+            sx9_atlas_daemon::AtlasConfig::default(),
         ));
 
         // InterfaceService requires InterfaceConfig
         let interface_manager = Arc::new(InterfaceManager::new(
-            ctas7_foundation_interface::InterfaceConfig::default()
+            sx9_foundation_interface::InterfaceConfig::default(),
         )?);
 
         // Initialize Unicode Assembly processor (NeuralMuxRouter)
         let unicode_assembly = Arc::new(UnicodeAssemblyProcessor::new(
-            ctas7_foundation_core::neural_mux::NeuralMuxConfig::default()
+            sx9_foundation_core::neural_mux::NeuralMuxConfig::default(),
         ));
 
         // Initialize HFT routing integration
@@ -549,37 +553,55 @@ impl FoundationOrchestrator {
     }
 
     /// Execute intelligent asset escalation based on demand
-    pub async fn execute_asset_escalation(&self, demand_hash: &str, asset_type: &str) -> Result<AssetEscalation> {
+    pub async fn execute_asset_escalation(
+        &self,
+        demand_hash: &str,
+        asset_type: &str,
+    ) -> Result<AssetEscalation> {
         let start_time = std::time::Instant::now();
 
         // 1. Analyze demand using trivariate hash
-        let demand_signature = self.hash_engine.generate_trivariate_hash(
+        // 1. Analyze demand using trivariate hash
+        let context_frame = ContextFrame::new(ExecEnv::Native, 0, ExecState::Hot);
+        let demand_trivariate = self.hash_engine.generate_trivariate(
             demand_hash,
+            "asset_escalation",
             asset_type,
-            "asset_escalation_request"
+            "request",
+            &context_frame,
         );
+        let demand_signature = demand_trivariate.to_48char_hash();
 
         // 2. Get AI recommendation from neural mux
-        let ai_decision = self.neural_mux_client.request_escalation_decision(&demand_signature).await?;
+        let ai_decision = self
+            .neural_mux_client
+            .request_escalation_decision(&demand_signature)
+            .await?;
 
         // 3. Get GNN prediction for demand pattern
-        let gnn_prediction = self.gnn_predictor.read().await
-            .predictions.get(asset_type)
+        let gnn_prediction = self
+            .gnn_predictor
+            .read()
+            .await
+            .predictions
+            .get(asset_type)
             .cloned()
             .unwrap_or_default();
 
         // 4. Check weather impact on routing
-        let weather_impact = self.weather_router.read().await
-            .atmospheric_impact.get(asset_type)
+        let weather_impact = self
+            .weather_router
+            .read()
+            .await
+            .atmospheric_impact
+            .get(asset_type)
             .copied()
             .unwrap_or(1.0);
 
         // 5. Calculate optimal escalation level
-        let escalation_level = self.calculate_escalation_level(
-            &ai_decision,
-            &gnn_prediction,
-            weather_impact
-        ).await?;
+        let escalation_level = self
+            .calculate_escalation_level(&ai_decision, &gnn_prediction, weather_impact)
+            .await?;
 
         // 6. Execute escalation
         let escalation = AssetEscalation {
@@ -594,15 +616,20 @@ impl FoundationOrchestrator {
         };
 
         // 7. Register escalation
-        self.asset_manager.write().await
-            .active_escalations.insert(escalation.escalation_id.clone(), escalation.clone());
+        self.asset_manager
+            .write()
+            .await
+            .active_escalations
+            .insert(escalation.escalation_id.clone(), escalation.clone());
 
         // 8. Update HFT routing weights
         self.update_hft_routing_weights(&escalation).await?;
 
         let execution_time = start_time.elapsed().as_millis();
-        info!("🚀 Asset escalation executed in {}ms: {} -> Level {}",
-            execution_time, asset_type, escalation_level);
+        info!(
+            "🚀 Asset escalation executed in {}ms: {} -> Level {}",
+            execution_time, asset_type, escalation_level
+        );
 
         Ok(escalation)
     }
@@ -612,18 +639,24 @@ impl FoundationOrchestrator {
         &self,
         ai_decision: &AIDecision,
         gnn_prediction: &AssetPrediction,
-        weather_impact: f64
+        weather_impact: f64,
     ) -> Result<u8> {
         // Base escalation from AI confidence
         let ai_level = (ai_decision.confidence * 5.0) as u8;
 
         // Adjust for GNN demand prediction
-        let demand_multiplier = if gnn_prediction.predicted_demand > 0.8 { 2 } else { 1 };
+        let demand_multiplier = if gnn_prediction.predicted_demand > 0.8 {
+            2
+        } else {
+            1
+        };
 
         // Adjust for weather impact
         let weather_adjustment = if weather_impact < 0.5 { 1 } else { 0 };
 
-        let final_level = (ai_level * demand_multiplier + weather_adjustment).min(5).max(1);
+        let final_level = (ai_level * demand_multiplier + weather_adjustment)
+            .min(5)
+            .max(1);
 
         Ok(final_level)
     }
@@ -633,17 +666,22 @@ impl FoundationOrchestrator {
         let mut hft_router = self.hft_router.write().await;
 
         // Increase routing weight for escalated asset type
-        let current_weight = hft_router.routing_weights
+        let current_weight = hft_router
+            .routing_weights
             .get(&escalation.asset_type)
             .copied()
             .unwrap_or(1.0);
 
         let new_weight = current_weight * (1.0 + escalation.escalation_level as f64 * 0.2);
 
-        hft_router.routing_weights.insert(escalation.asset_type.clone(), new_weight);
+        hft_router
+            .routing_weights
+            .insert(escalation.asset_type.clone(), new_weight);
 
-        debug!("Updated HFT routing weight for {}: {} -> {}",
-            escalation.asset_type, current_weight, new_weight);
+        debug!(
+            "Updated HFT routing weight for {}: {} -> {}",
+            escalation.asset_type, current_weight, new_weight
+        );
 
         Ok(())
     }
@@ -659,16 +697,25 @@ impl FoundationOrchestrator {
             let demand_monitor = self.demand_monitor.read().await;
 
             for (asset_type, demand_level) in &demand_monitor.demand_levels {
-                if *demand_level > 0.8 { // High demand threshold
+                if *demand_level > 0.8 {
+                    // High demand threshold
                     // Generate demand hash for escalation
-                    let demand_hash = self.hash_engine.generate_trivariate_hash(
+                    // Generate demand hash for escalation
+                    let context_frame = ContextFrame::new(ExecEnv::Native, 0, ExecState::Hot);
+                    let demand_trivariate = self.hash_engine.generate_trivariate(
                         asset_type,
-                        &demand_level.to_string(),
-                        "high_demand_detected"
+                        "monitor",
+                        "demand_monitor",
+                        "high_demand",
+                        &context_frame,
                     );
+                    let demand_hash = demand_trivariate.to_48char_hash();
 
                     // Trigger escalation
-                    if let Err(e) = self.execute_asset_escalation(&demand_hash, asset_type).await {
+                    if let Err(e) = self
+                        .execute_asset_escalation(&demand_hash, asset_type)
+                        .await
+                    {
                         warn!("Failed to escalate {}: {}", asset_type, e);
                     }
                 }
@@ -730,21 +777,27 @@ mod tests {
     #[tokio::test]
     async fn test_foundation_orchestrator_creation() {
         let orchestrator = FoundationOrchestrator::new().await;
-        assert!(orchestrator.is_ok(), "Foundation orchestrator should initialize successfully");
+        assert!(
+            orchestrator.is_ok(),
+            "Foundation orchestrator should initialize successfully"
+        );
     }
 
     #[tokio::test]
     async fn test_asset_escalation() {
         let orchestrator = FoundationOrchestrator::new().await.unwrap();
 
-        let escalation = orchestrator.execute_asset_escalation(
-            "test_demand_hash",
-            "voice_synthesis"
-        ).await;
+        let escalation = orchestrator
+            .execute_asset_escalation("test_demand_hash", "voice_synthesis")
+            .await;
 
-        assert!(escalation.is_ok(), "Asset escalation should execute successfully");
+        assert!(
+            escalation.is_ok(),
+            "Asset escalation should execute successfully"
+        );
         let escalation = escalation.unwrap();
         assert_eq!(escalation.asset_type, "voice_synthesis");
         assert!(escalation.escalation_level >= 1 && escalation.escalation_level <= 5);
     }
-}pub mod foundation_integration;
+}
+pub mod foundation_integration;

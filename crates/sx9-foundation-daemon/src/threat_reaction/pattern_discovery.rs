@@ -4,14 +4,14 @@
 
 use anyhow::Result;
 use serde::{Deserialize, Serialize};
-use tracing::{info, debug};
+use tracing::{debug, info};
 use uuid::Uuid;
 
-use crate::threat_reaction::recognize::{GLAFGraph, RecognizedThreat, ATTACKTechnique};
 use crate::threat_reaction::glaf_correlation::{
-    GLAFClient, HistoricalPattern, DiscoveredPatterns, PredictionPattern, 
-    EmulationPattern, GNNPattern,
+    DiscoveredPatterns, EmulationPattern, GLAFClient, GNNPattern, HistoricalPattern,
+    PredictionPattern,
 };
+use crate::threat_reaction::recognize::{ATTACKTechnique, GLAFGraph, RecognizedThreat};
 
 /// Pattern Discovery Engine
 pub struct PatternDiscoveryEngine {
@@ -19,6 +19,12 @@ pub struct PatternDiscoveryEngine {
     gnn_model: GNNModel,
     prediction_engine: PredictionEngine,
     emulation_engine: EmulationEngine,
+}
+
+impl Default for PatternDiscoveryEngine {
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 impl PatternDiscoveryEngine {
@@ -37,19 +43,22 @@ impl PatternDiscoveryEngine {
         correlation_graph: &GLAFGraph,
     ) -> Result<DiscoveredPatterns> {
         info!("Discovering patterns in GLAF correlation graph");
-        
+
         // 1. Run GNN pattern detection in GLAF
         let gnn_patterns = self.gnn_model.detect_patterns(correlation_graph).await?;
         debug!("Detected {} GNN patterns", gnn_patterns.len());
-        
+
         // 2. Extract patterns for prediction
         let prediction_patterns = self.extract_prediction_patterns(&gnn_patterns).await?;
-        debug!("Extracted {} prediction patterns", prediction_patterns.len());
-        
+        debug!(
+            "Extracted {} prediction patterns",
+            prediction_patterns.len()
+        );
+
         // 3. Extract patterns for emulation
         let emulation_patterns = self.extract_emulation_patterns(&gnn_patterns).await?;
         debug!("Extracted {} emulation patterns", emulation_patterns.len());
-        
+
         Ok(DiscoveredPatterns {
             prediction_patterns,
             emulation_patterns,
@@ -68,13 +77,13 @@ impl PatternDiscoveryEngine {
             .map(|p| {
                 PredictionPattern {
                     pattern_id: p.pattern_id.clone(),
-                    technique_id: "T1003".to_string(),  // Default
+                    technique_id: "T1003".to_string(), // Default
                     confidence: p.confidence,
                     next_steps: vec!["next_step_1".to_string(), "next_step_2".to_string()],
                 }
             })
             .collect();
-        
+
         Ok(patterns)
     }
 
@@ -89,13 +98,13 @@ impl PatternDiscoveryEngine {
             .map(|p| {
                 EmulationPattern {
                     pattern_id: p.pattern_id.clone(),
-                    technique_id: "T1003".to_string(),  // Default
+                    technique_id: "T1003".to_string(), // Default
                     playbook_template: "emulation_playbook_template".to_string(),
                     confidence: p.confidence,
                 }
             })
             .collect();
-        
+
         Ok(patterns)
     }
 
@@ -104,15 +113,18 @@ impl PatternDiscoveryEngine {
         &self,
         current_threats: &[RecognizedThreat],
     ) -> Result<Vec<PredictedAttack>> {
-        info!("Predicting attacks from {} current threats", current_threats.len());
-        
+        info!(
+            "Predicting attacks from {} current threats",
+            current_threats.len()
+        );
+
         // 1. Correlate current threats in GLAF
         // Note: This would typically use GLAFCorrelationEngine, but for now we'll do it here
         let correlation_graph = GLAFGraph {
             nodes: vec![],
             edges: vec![],
         };
-        
+
         // 2. Query GLAF for similar historical patterns
         let patterns = DiscoveredPatterns {
             prediction_patterns: vec![],
@@ -120,13 +132,13 @@ impl PatternDiscoveryEngine {
             gnn_patterns: vec![],
         };
         let historical_patterns = self.glaf_client.query_similar_patterns(&patterns).await?;
-        
+
         // 3. Use GNN to predict next steps
-        let predictions = self.prediction_engine.predict(
-            &correlation_graph,
-            &historical_patterns,
-        ).await?;
-        
+        let predictions = self
+            .prediction_engine
+            .predict(&correlation_graph, &historical_patterns)
+            .await?;
+
         Ok(predictions)
     }
 
@@ -137,22 +149,25 @@ impl PatternDiscoveryEngine {
         patterns: &DiscoveredPatterns,
     ) -> Result<EmulationResult> {
         info!("Emulating technique: {}", technique.technique_id);
-        
+
         // 1. Find emulation pattern for technique
-        let emulation_pattern = patterns.emulation_patterns
+        let emulation_pattern = patterns
+            .emulation_patterns
             .iter()
             .find(|p| p.technique_id == technique.technique_id)
-            .ok_or_else(|| anyhow::anyhow!("Pattern not found for technique {}", technique.technique_id))?;
-        
+            .ok_or_else(|| {
+                anyhow::anyhow!("Pattern not found for technique {}", technique.technique_id)
+            })?;
+
         // 2. Generate emulation playbook from pattern
-        let playbook = self.emulation_engine.generate_playbook(
-            technique,
-            emulation_pattern,
-        ).await?;
-        
+        let playbook = self
+            .emulation_engine
+            .generate_playbook(technique, emulation_pattern)
+            .await?;
+
         // 3. Execute emulation in safe environment
         let result = self.emulation_engine.execute_emulation(&playbook).await?;
-        
+
         Ok(result)
     }
 }
@@ -180,6 +195,12 @@ pub struct EmulationResult {
 /// GNN Model (placeholder)
 pub struct GNNModel;
 
+impl Default for GNNModel {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl GNNModel {
     pub fn new() -> Self {
         Self
@@ -193,6 +214,12 @@ impl GNNModel {
 
 /// Prediction Engine
 pub struct PredictionEngine;
+
+impl Default for PredictionEngine {
+    fn default() -> Self {
+        Self::new()
+    }
+}
 
 impl PredictionEngine {
     pub fn new() -> Self {
@@ -211,6 +238,12 @@ impl PredictionEngine {
 
 /// Emulation Engine
 pub struct EmulationEngine;
+
+impl Default for EmulationEngine {
+    fn default() -> Self {
+        Self::new()
+    }
+}
 
 impl EmulationEngine {
     pub fn new() -> Self {
@@ -237,4 +270,3 @@ impl EmulationEngine {
         })
     }
 }
-

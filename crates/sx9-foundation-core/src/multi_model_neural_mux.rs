@@ -2,13 +2,13 @@
 //!
 //! Connects to actual Docker services defined in docker-compose.leptose-models.yml
 
-use crate::neural_mux::{Priority, OperationRoute, ExecutionContext};
-use crate::data::{Serialize, Deserialize, DateTime, Utc};
+use crate::data::{DateTime, Deserialize, Serialize, Utc};
+use crate::neural_mux::{ExecutionContext, OperationRoute, Priority};
+use reqwest::Client;
+use serde_json::Value;
 use std::collections::HashMap;
 use std::sync::Arc;
 use tokio::sync::RwLock;
-use serde_json::Value;
-use reqwest::Client;
 
 /// Multi-model inference backend
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -16,15 +16,25 @@ pub enum ModelBackend {
     /// Microsoft Phi-3/4 models
     Phi { version: String, worker_id: u32 },
     /// Ollama local models
-    Ollama { model_name: String, endpoint: String },
+    Ollama {
+        model_name: String,
+        endpoint: String,
+    },
     /// Hugging Face Transformers
     HuggingFace { model_id: String, endpoint: String },
     /// Docker containerized models
-    Docker { container_id: String, model_type: String, endpoint: String },
+    Docker {
+        container_id: String,
+        model_type: String,
+        endpoint: String,
+    },
     /// WASM runtime models
     Wasm { runtime: String, model_path: String },
     /// Embedded Firefly models
-    Firefly { model_id: String, runtime_endpoint: String },
+    Firefly {
+        model_id: String,
+        runtime_endpoint: String,
+    },
 }
 
 /// Model capability and specialization
@@ -95,9 +105,15 @@ pub enum ExecutionStrategy {
     /// Single model decision
     Single { model: ModelBackend },
     /// Ensemble of multiple models
-    Ensemble { models: Vec<ModelBackend>, voting: VotingStrategy },
+    Ensemble {
+        models: Vec<ModelBackend>,
+        voting: VotingStrategy,
+    },
     /// Cascade: try primary, fallback to secondary
-    Cascade { primary: ModelBackend, fallbacks: Vec<ModelBackend> },
+    Cascade {
+        primary: ModelBackend,
+        fallbacks: Vec<ModelBackend>,
+    },
     /// Race: fastest model wins
     Race { models: Vec<ModelBackend> },
 }
@@ -245,8 +261,14 @@ impl MultiModelNeuralMux {
                     endpoint: endpoint.to_string(),
                 },
                 capabilities: match model_name {
-                    "codellama" => vec![ModelCapability::CodeGeneration, ModelCapability::FastInference],
-                    "mistral" => vec![ModelCapability::GeneralRouting, ModelCapability::NaturalLanguage],
+                    "codellama" => vec![
+                        ModelCapability::CodeGeneration,
+                        ModelCapability::FastInference,
+                    ],
+                    "mistral" => vec![
+                        ModelCapability::GeneralRouting,
+                        ModelCapability::NaturalLanguage,
+                    ],
                     _ => vec![ModelCapability::GeneralRouting],
                 },
                 metrics: ModelMetrics::default(),
@@ -264,7 +286,10 @@ impl MultiModelNeuralMux {
                 model_id: "microsoft/DialoGPT-medium".to_string(),
                 endpoint: "http://ctas-hf-tgi:80".to_string(),
             },
-            capabilities: vec![ModelCapability::NaturalLanguage, ModelCapability::HighAccuracy],
+            capabilities: vec![
+                ModelCapability::NaturalLanguage,
+                ModelCapability::HighAccuracy,
+            ],
             metrics: ModelMetrics::default(),
             health_status: HealthStatus::Healthy,
             endpoint: "http://ctas-hf-tgi:80".to_string(),
@@ -294,7 +319,10 @@ impl MultiModelNeuralMux {
                 model_id: "embedded-phi-3".to_string(),
                 runtime_endpoint: "http://firefly-runtime:8080".to_string(),
             },
-            capabilities: vec![ModelCapability::FastInference, ModelCapability::GeneralRouting],
+            capabilities: vec![
+                ModelCapability::FastInference,
+                ModelCapability::GeneralRouting,
+            ],
             metrics: ModelMetrics::default(),
             health_status: HealthStatus::Healthy,
             endpoint: "http://firefly-runtime:8080".to_string(),
@@ -317,12 +345,18 @@ impl MultiModelNeuralMux {
         };
         registry.insert(embedding_instance.id.clone(), embedding_instance);
 
-        crate::diagnostics::info!("🤖 Registered {} AI models for multi-model routing", registry.len());
+        crate::diagnostics::info!(
+            "🤖 Registered {} AI models for multi-model routing",
+            registry.len()
+        );
         Ok(())
     }
 
     /// Intelligent model selection for routing decision
-    pub async fn route_with_optimal_model(&mut self, unicode_char: char) -> Result<MultiModelRoute, String> {
+    pub async fn route_with_optimal_model(
+        &mut self,
+        unicode_char: char,
+    ) -> Result<MultiModelRoute, String> {
         let start_time = std::time::Instant::now();
 
         // Check cache first
@@ -337,7 +371,9 @@ impl MultiModelNeuralMux {
         let optimal_model = self.select_optimal_model(unicode_char).await?;
 
         // Get routing decision from selected model
-        let decision = self.get_model_decision(unicode_char, &optimal_model).await?;
+        let decision = self
+            .get_model_decision(unicode_char, &optimal_model)
+            .await?;
 
         // Create multi-model route
         let route = MultiModelRoute {
@@ -349,10 +385,12 @@ impl MultiModelNeuralMux {
                 context_awareness: true,
             },
             model_decision: decision,
-            confidence_score: 0.95, // Calculated from model ensemble
+            confidence_score: 0.95,    // Calculated from model ensemble
             predicted_latency_us: 100, // Predicted based on model performance
             backup_models: self.get_backup_models(&optimal_model).await,
-            execution_strategy: ExecutionStrategy::Single { model: optimal_model },
+            execution_strategy: ExecutionStrategy::Single {
+                model: optimal_model,
+            },
         };
 
         // Cache the route
@@ -363,13 +401,17 @@ impl MultiModelNeuralMux {
 
         // Record performance metrics
         let routing_time = start_time.elapsed();
-        self.record_routing_event(unicode_char, &route, routing_time).await;
+        self.record_routing_event(unicode_char, &route, routing_time)
+            .await;
 
         Ok(route)
     }
 
     /// Ensemble routing with multiple models
-    pub async fn route_with_ensemble(&mut self, unicode_char: char) -> Result<MultiModelRoute, String> {
+    pub async fn route_with_ensemble(
+        &mut self,
+        unicode_char: char,
+    ) -> Result<MultiModelRoute, String> {
         if !self.config.enable_ensemble {
             return self.route_with_optimal_model(unicode_char).await;
         }
@@ -396,7 +438,7 @@ impl MultiModelNeuralMux {
                 context_awareness: true,
             },
             model_decision: final_decision,
-            confidence_score: 0.98, // Higher confidence from ensemble
+            confidence_score: 0.98,    // Higher confidence from ensemble
             predicted_latency_us: 150, // Slightly higher due to ensemble overhead
             backup_models: Vec::new(),
             execution_strategy: ExecutionStrategy::Ensemble {
@@ -429,13 +471,13 @@ impl MultiModelNeuralMux {
             match insight.insight_type {
                 InsightType::ModelPerformance => {
                     self.optimize_model_selection().await?;
-                },
+                }
                 InsightType::LoadDistribution => {
                     self.rebalance_model_load().await?;
-                },
+                }
                 InsightType::LatencyOptimization => {
                     self.optimize_routing_latency().await?;
-                },
+                }
                 _ => {}
             }
         }
@@ -451,7 +493,9 @@ impl MultiModelNeuralMux {
         // Find models with matching capabilities
         let mut candidate_models = Vec::new();
         for (_, model) in registry.iter() {
-            if model.is_available && self.model_supports_operation(&model.capabilities, &operation_type) {
+            if model.is_available
+                && self.model_supports_operation(&model.capabilities, &operation_type)
+            {
                 let score = self.calculate_model_score(model, &operation_type);
                 candidate_models.push((model.backend.clone(), score));
             }
@@ -459,7 +503,8 @@ impl MultiModelNeuralMux {
 
         // Select best model
         candidate_models.sort_by(|a, b| b.1.partial_cmp(&a.1).unwrap());
-        candidate_models.first()
+        candidate_models
+            .first()
             .map(|(model, _)| model.clone())
             .ok_or_else(|| "No suitable model found".to_string())
     }
@@ -477,7 +522,11 @@ impl MultiModelNeuralMux {
         }
     }
 
-    fn model_supports_operation(&self, capabilities: &[ModelCapability], operation: &ModelCapability) -> bool {
+    fn model_supports_operation(
+        &self,
+        capabilities: &[ModelCapability],
+        operation: &ModelCapability,
+    ) -> bool {
         capabilities.iter().any(|cap| match (cap, operation) {
             (ModelCapability::GeneralRouting, _) => true, // General routing supports all
             (a, b) => std::mem::discriminant(a) == std::mem::discriminant(b),
@@ -488,46 +537,83 @@ impl MultiModelNeuralMux {
         let mut score = 0.0;
 
         // Base score from metrics
-        score += (model.metrics.accuracy_score * 0.4);
-        score += ((1000.0 - model.metrics.average_latency_ms.min(1000.0)) / 1000.0 * 0.3);
-        score += (model.metrics.availability * 0.2);
-        score += ((1.0 - model.metrics.error_rate) * 0.1);
+        // Base score from metrics
+        score += model.metrics.accuracy_score * 0.4;
+        score += (1000.0 - model.metrics.average_latency_ms.min(1000.0)) / 1000.0 * 0.3;
+        score += model.metrics.availability * 0.2;
+        score += (1.0 - model.metrics.error_rate) * 0.1;
 
         // Capability match bonus
-        if model.capabilities.iter().any(|cap| std::mem::discriminant(cap) == std::mem::discriminant(operation)) {
+        if model
+            .capabilities
+            .iter()
+            .any(|cap| std::mem::discriminant(cap) == std::mem::discriminant(operation))
+        {
             score += 0.2;
         }
 
         score
     }
 
-    async fn get_model_decision(&self, unicode_char: char, model: &ModelBackend) -> Result<ModelDecision, String> {
+    async fn get_model_decision(
+        &self,
+        unicode_char: char,
+        model: &ModelBackend,
+    ) -> Result<ModelDecision, String> {
         match model {
-            ModelBackend::Ollama { model_name, endpoint } => {
-                self.query_ollama_model(unicode_char, model_name, endpoint).await
-            },
+            ModelBackend::Ollama {
+                model_name,
+                endpoint,
+            } => {
+                self.query_ollama_model(unicode_char, model_name, endpoint)
+                    .await
+            }
             ModelBackend::HuggingFace { model_id, endpoint } => {
-                self.query_huggingface_model(unicode_char, model_id, endpoint).await
-            },
-            ModelBackend::Wasm { runtime, model_path } => {
-                self.query_wasm_model(unicode_char, runtime, model_path).await
-            },
-            ModelBackend::Firefly { model_id, runtime_endpoint } => {
-                self.query_firefly_model(unicode_char, model_id, runtime_endpoint).await
-            },
+                self.query_huggingface_model(unicode_char, model_id, endpoint)
+                    .await
+            }
+            ModelBackend::Wasm {
+                runtime,
+                model_path,
+            } => {
+                self.query_wasm_model(unicode_char, runtime, model_path)
+                    .await
+            }
+            ModelBackend::Firefly {
+                model_id,
+                runtime_endpoint,
+            } => {
+                self.query_firefly_model(unicode_char, model_id, runtime_endpoint)
+                    .await
+            }
             ModelBackend::Phi { version, worker_id } => {
-                self.query_phi_model(unicode_char, version, *worker_id).await
-            },
-            ModelBackend::Docker { container_id, model_type, endpoint } => {
-                self.query_docker_model(unicode_char, container_id, model_type, endpoint).await
-            },
+                self.query_phi_model(unicode_char, version, *worker_id)
+                    .await
+            }
+            ModelBackend::Docker {
+                container_id,
+                model_type,
+                endpoint,
+            } => {
+                self.query_docker_model(unicode_char, container_id, model_type, endpoint)
+                    .await
+            }
         }
     }
 
-    async fn query_ollama_model(&self, unicode_char: char, model_name: &str, endpoint: &str) -> Result<ModelDecision, String> {
-        let prompt = format!("Route Unicode character U+{:04X} to optimal processor", unicode_char as u32);
+    async fn query_ollama_model(
+        &self,
+        unicode_char: char,
+        model_name: &str,
+        endpoint: &str,
+    ) -> Result<ModelDecision, String> {
+        let prompt = format!(
+            "Route Unicode character U+{:04X} to optimal processor",
+            unicode_char as u32
+        );
 
-        let response = self.http_client
+        let response = self
+            .http_client
             .post(format!("{}/api/generate", endpoint))
             .json(&serde_json::json!({
                 "model": model_name,
@@ -538,7 +624,8 @@ impl MultiModelNeuralMux {
             .await
             .map_err(|e| format!("Ollama request failed: {}", e))?;
 
-        let _ollama_response: Value = response.json()
+        let _ollama_response: Value = response
+            .json()
             .await
             .map_err(|e| format!("Failed to parse Ollama response: {}", e))?;
 
@@ -547,7 +634,10 @@ impl MultiModelNeuralMux {
                 model_name: model_name.to_string(),
                 endpoint: endpoint.to_string(),
             },
-            reasoning: format!("Ollama {} analysis: Unicode operation optimally routed based on local inference", model_name),
+            reasoning: format!(
+                "Ollama {} analysis: Unicode operation optimally routed based on local inference",
+                model_name
+            ),
             alternative_models: Vec::new(),
             decision_factors: HashMap::from([
                 ("local_inference".to_string(), 0.9),
@@ -556,10 +646,19 @@ impl MultiModelNeuralMux {
         })
     }
 
-    async fn query_huggingface_model(&self, unicode_char: char, model_id: &str, endpoint: &str) -> Result<ModelDecision, String> {
-        let prompt = format!("Analyze Unicode character U+{:04X} for optimal routing", unicode_char as u32);
+    async fn query_huggingface_model(
+        &self,
+        unicode_char: char,
+        model_id: &str,
+        endpoint: &str,
+    ) -> Result<ModelDecision, String> {
+        let prompt = format!(
+            "Analyze Unicode character U+{:04X} for optimal routing",
+            unicode_char as u32
+        );
 
-        let response = self.http_client
+        let response = self
+            .http_client
             .post(format!("{}/generate", endpoint))
             .json(&serde_json::json!({
                 "inputs": prompt,
@@ -572,7 +671,8 @@ impl MultiModelNeuralMux {
             .await
             .map_err(|e| format!("HuggingFace request failed: {}", e))?;
 
-        let _hf_response: Value = response.json()
+        let _hf_response: Value = response
+            .json()
             .await
             .map_err(|e| format!("Failed to parse HuggingFace response: {}", e))?;
 
@@ -581,7 +681,10 @@ impl MultiModelNeuralMux {
                 model_id: model_id.to_string(),
                 endpoint: endpoint.to_string(),
             },
-            reasoning: format!("HuggingFace {} analysis: High-accuracy routing decision", model_id),
+            reasoning: format!(
+                "HuggingFace {} analysis: High-accuracy routing decision",
+                model_id
+            ),
             alternative_models: Vec::new(),
             decision_factors: HashMap::from([
                 ("accuracy".to_string(), 0.95),
@@ -590,7 +693,12 @@ impl MultiModelNeuralMux {
         })
     }
 
-    async fn query_wasm_model(&self, unicode_char: char, runtime: &str, model_path: &str) -> Result<ModelDecision, String> {
+    async fn query_wasm_model(
+        &self,
+        unicode_char: char,
+        runtime: &str,
+        model_path: &str,
+    ) -> Result<ModelDecision, String> {
         // Simulate WASM runtime inference
         Ok(ModelDecision {
             selected_model: ModelBackend::Wasm {
@@ -606,7 +714,12 @@ impl MultiModelNeuralMux {
         })
     }
 
-    async fn query_firefly_model(&self, unicode_char: char, model_id: &str, runtime_endpoint: &str) -> Result<ModelDecision, String> {
+    async fn query_firefly_model(
+        &self,
+        unicode_char: char,
+        model_id: &str,
+        runtime_endpoint: &str,
+    ) -> Result<ModelDecision, String> {
         // Simulate Firefly embedded runtime
         Ok(ModelDecision {
             selected_model: ModelBackend::Firefly {
@@ -622,14 +735,22 @@ impl MultiModelNeuralMux {
         })
     }
 
-    async fn query_phi_model(&self, unicode_char: char, version: &str, worker_id: u32) -> Result<ModelDecision, String> {
+    async fn query_phi_model(
+        &self,
+        unicode_char: char,
+        version: &str,
+        worker_id: u32,
+    ) -> Result<ModelDecision, String> {
         // Simulate Phi-3/4 inference
         Ok(ModelDecision {
             selected_model: ModelBackend::Phi {
                 version: version.to_string(),
                 worker_id,
             },
-            reasoning: format!("Phi-{} analysis: Advanced reasoning for complex routing", version),
+            reasoning: format!(
+                "Phi-{} analysis: Advanced reasoning for complex routing",
+                version
+            ),
             alternative_models: Vec::new(),
             decision_factors: HashMap::from([
                 ("reasoning_quality".to_string(), 0.96),
@@ -638,7 +759,13 @@ impl MultiModelNeuralMux {
         })
     }
 
-    async fn query_docker_model(&self, unicode_char: char, container_id: &str, model_type: &str, endpoint: &str) -> Result<ModelDecision, String> {
+    async fn query_docker_model(
+        &self,
+        unicode_char: char,
+        container_id: &str,
+        model_type: &str,
+        endpoint: &str,
+    ) -> Result<ModelDecision, String> {
         // Simulate Docker containerized model
         Ok(ModelDecision {
             selected_model: ModelBackend::Docker {
@@ -668,14 +795,20 @@ impl MultiModelNeuralMux {
     async fn get_backup_models(&self, primary: &ModelBackend) -> Vec<ModelBackend> {
         // Return complementary models as backups
         let registry = self.model_registry.read().await;
-        registry.values()
+        registry
+            .values()
             .filter(|model| model.is_available && !std::ptr::eq(&model.backend, primary))
             .take(2)
             .map(|model| model.backend.clone())
             .collect()
     }
 
-    async fn record_routing_event(&mut self, unicode_char: char, route: &MultiModelRoute, duration: std::time::Duration) {
+    async fn record_routing_event(
+        &mut self,
+        unicode_char: char,
+        route: &MultiModelRoute,
+        duration: std::time::Duration,
+    ) {
         let event = RoutingEvent {
             timestamp: Utc::now(),
             unicode_char,
@@ -693,7 +826,10 @@ impl MultiModelNeuralMux {
         }
     }
 
-    async fn select_ensemble_models(&self, unicode_char: char) -> Result<Vec<ModelBackend>, String> {
+    async fn select_ensemble_models(
+        &self,
+        unicode_char: char,
+    ) -> Result<Vec<ModelBackend>, String> {
         let registry = self.model_registry.read().await;
         let operation_type = self.classify_operation(unicode_char);
 
@@ -706,7 +842,8 @@ impl MultiModelNeuralMux {
                 if self.model_supports_operation(&model.capabilities, &operation_type) {
                     ensemble.push(model.backend.clone());
                     used_types.insert(std::mem::discriminant(&model.backend));
-                    if ensemble.len() >= 3 { // Limit ensemble size
+                    if ensemble.len() >= 3 {
+                        // Limit ensemble size
                         break;
                     }
                 }
@@ -720,20 +857,25 @@ impl MultiModelNeuralMux {
         Ok(ensemble)
     }
 
-    async fn aggregate_ensemble_decisions(&self, decisions: Vec<Result<ModelDecision, String>>) -> Result<ModelDecision, String> {
-        let valid_decisions: Vec<ModelDecision> = decisions.into_iter()
-            .filter_map(|d| d.ok())
-            .collect();
+    async fn aggregate_ensemble_decisions(
+        &self,
+        decisions: Vec<Result<ModelDecision, String>>,
+    ) -> Result<ModelDecision, String> {
+        let valid_decisions: Vec<ModelDecision> =
+            decisions.into_iter().filter_map(|d| d.ok()).collect();
 
         if valid_decisions.is_empty() {
             return Err("No valid decisions from ensemble".to_string());
         }
 
         // Simple majority voting (in real implementation, would be more sophisticated)
-        let best_decision = valid_decisions.into_iter()
+        let best_decision = valid_decisions
+            .into_iter()
             .max_by(|a, b| {
-                let a_score: f64 = a.decision_factors.values().sum::<f64>() / a.decision_factors.len() as f64;
-                let b_score: f64 = b.decision_factors.values().sum::<f64>() / b.decision_factors.len() as f64;
+                let a_score: f64 =
+                    a.decision_factors.values().sum::<f64>() / a.decision_factors.len() as f64;
+                let b_score: f64 =
+                    b.decision_factors.values().sum::<f64>() / b.decision_factors.len() as f64;
                 a_score.partial_cmp(&b_score).unwrap()
             })
             .unwrap();
@@ -754,20 +896,24 @@ impl MultiModelNeuralMux {
         let mut insights = Vec::new();
 
         // Analyze recent routing history
-        let recent_events: Vec<_> = self.performance_tracker.routing_history
+        let recent_events: Vec<_> = self
+            .performance_tracker
+            .routing_history
             .iter()
             .rev()
             .take(1000)
             .collect();
 
         // Check for high latency patterns
-        let avg_latency: f64 = recent_events.iter().map(|e| e.latency_ms).sum::<f64>() / recent_events.len() as f64;
+        let avg_latency: f64 =
+            recent_events.iter().map(|e| e.latency_ms).sum::<f64>() / recent_events.len() as f64;
         if avg_latency > 100.0 {
             insights.push(OptimizationInsight {
                 insight_type: InsightType::LatencyOptimization,
                 description: "High average routing latency detected".to_string(),
                 confidence: 0.9,
-                recommended_action: "Consider switching to faster models for frequent operations".to_string(),
+                recommended_action: "Consider switching to faster models for frequent operations"
+                    .to_string(),
                 estimated_improvement: 0.3,
             });
         }
@@ -796,7 +942,9 @@ impl ModelBackend {
         match self {
             ModelBackend::Phi { version, .. } => format!("phi_{}_processor", version),
             ModelBackend::Ollama { model_name, .. } => format!("ollama_{}_processor", model_name),
-            ModelBackend::HuggingFace { model_id, .. } => format!("hf_{}_processor", model_id.replace("/", "_")),
+            ModelBackend::HuggingFace { model_id, .. } => {
+                format!("hf_{}_processor", model_id.replace("/", "_"))
+            }
             ModelBackend::Docker { model_type, .. } => format!("docker_{}_processor", model_type),
             ModelBackend::Wasm { runtime, .. } => format!("wasm_{}_processor", runtime),
             ModelBackend::Firefly { model_id, .. } => format!("firefly_{}_processor", model_id),
@@ -822,14 +970,24 @@ impl Default for MultiModelConfig {
     fn default() -> Self {
         Self {
             preferred_backends: vec![
-                ModelBackend::Firefly { model_id: "phi-3".to_string(), runtime_endpoint: "http://firefly:8080".to_string() },
-                ModelBackend::Ollama { model_name: "mistral".to_string(), endpoint: "http://mistral:11434".to_string() },
+                ModelBackend::Firefly {
+                    model_id: "phi-3".to_string(),
+                    runtime_endpoint: "http://firefly:8080".to_string(),
+                },
+                ModelBackend::Ollama {
+                    model_name: "mistral".to_string(),
+                    endpoint: "http://mistral:11434".to_string(),
+                },
             ],
             fallback_strategy: ExecutionStrategy::Cascade {
-                primary: ModelBackend::Firefly { model_id: "phi-3".to_string(), runtime_endpoint: "http://firefly:8080".to_string() },
-                fallbacks: vec![
-                    ModelBackend::Ollama { model_name: "llama2".to_string(), endpoint: "http://ollama:11434".to_string() },
-                ],
+                primary: ModelBackend::Firefly {
+                    model_id: "phi-3".to_string(),
+                    runtime_endpoint: "http://firefly:8080".to_string(),
+                },
+                fallbacks: vec![ModelBackend::Ollama {
+                    model_name: "llama2".to_string(),
+                    endpoint: "http://ollama:11434".to_string(),
+                }],
             },
             cache_ttl_seconds: 300,
             max_concurrent_requests: 100,
@@ -878,12 +1036,15 @@ mod tests {
         let mut mux = MultiModelNeuralMux::new().await.unwrap();
 
         let route = mux.route_with_ensemble('\u{E300}').await.unwrap();
-        assert!(matches!(route.execution_strategy, ExecutionStrategy::Ensemble { .. }));
+        assert!(matches!(
+            route.execution_strategy,
+            ExecutionStrategy::Ensemble { .. }
+        ));
     }
 
     #[tokio::test]
     async fn test_model_discovery() {
-        let mut mux = MultiModelNeuralMux::new().await.unwrap();
+        let mux = MultiModelNeuralMux::new().await.unwrap();
 
         let registry = mux.model_registry.read().await;
         assert!(registry.len() > 0);

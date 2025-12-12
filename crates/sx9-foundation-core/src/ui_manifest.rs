@@ -84,36 +84,36 @@ pub struct HashIsUIConfig {
 /// Position mappings for Hash-IS-UI
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct PositionMappings {
-    pub sch_visual_properties: SCHVisualMapping,    // Positions 1-16
+    pub sch_visual_properties: SCHVisualMapping, // Positions 1-16
     pub cuid_animation_properties: CUIDAnimationMapping, // Positions 17-32
-    pub uuid_state_properties: UUIDStateMapping,    // Positions 33-48
+    pub uuid_state_properties: UUIDStateMapping, // Positions 33-48
 }
 
 /// SCH Visual Mapping (Positions 1-16)
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct SCHVisualMapping {
-    pub primary_color_positions: Vec<u8>,    // Positions 1-3
-    pub secondary_color_positions: Vec<u8>,  // Positions 4-6
-    pub symbol_set_positions: Vec<u8>,       // Positions 8-10
-    pub icon_style_positions: Vec<u8>,       // Positions 12-14
+    pub primary_color_positions: Vec<u8>,   // Positions 1-3
+    pub secondary_color_positions: Vec<u8>, // Positions 4-6
+    pub symbol_set_positions: Vec<u8>,      // Positions 8-10
+    pub icon_style_positions: Vec<u8>,      // Positions 12-14
 }
 
 /// CUID Animation Mapping (Positions 17-32)
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct CUIDAnimationMapping {
-    pub animation_type_positions: Vec<u8>,   // Positions 17-18
-    pub duration_positions: Vec<u8>,         // Positions 19-20
-    pub easing_positions: Vec<u8>,           // Positions 21-22
-    pub loop_behavior_positions: Vec<u8>,    // Positions 23-24
+    pub animation_type_positions: Vec<u8>, // Positions 17-18
+    pub duration_positions: Vec<u8>,       // Positions 19-20
+    pub easing_positions: Vec<u8>,         // Positions 21-22
+    pub loop_behavior_positions: Vec<u8>,  // Positions 23-24
 }
 
 /// UUID State Mapping (Positions 33-48)
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct UUIDStateMapping {
-    pub persistence_indicators: Vec<u8>,     // Positions 33-36
-    pub audit_trail_markers: Vec<u8>,        // Positions 37-40
-    pub chain_custody_positions: Vec<u8>,    // Positions 41-44
-    pub integrity_positions: Vec<u8>,        // Positions 45-48
+    pub persistence_indicators: Vec<u8>,  // Positions 33-36
+    pub audit_trail_markers: Vec<u8>,     // Positions 37-40
+    pub chain_custody_positions: Vec<u8>, // Positions 41-44
+    pub integrity_positions: Vec<u8>,     // Positions 45-48
 }
 
 /// UI Component Styling
@@ -282,7 +282,10 @@ impl UIManifest {
         // Generate UI components
         self.generate_ui_components();
 
-        println!("🖥️  UI Manifest generated with {} components", self.ui_components.len());
+        println!(
+            "🖥️  UI Manifest generated with {} components",
+            self.ui_components.len()
+        );
         Ok(())
     }
 
@@ -295,10 +298,10 @@ impl UIManifest {
         color_lut.insert("011".to_string(), "#FFFF00".to_string()); // Yellow
 
         let mut symbol_lut = HashMap::new();
-        symbol_lut.insert("0000".to_string(), "●".to_string());     // Circle
-        symbol_lut.insert("0001".to_string(), "■".to_string());     // Square
-        symbol_lut.insert("0010".to_string(), "▲".to_string());     // Triangle
-        symbol_lut.insert("0011".to_string(), "♦".to_string());     // Diamond
+        symbol_lut.insert("0000".to_string(), "●".to_string()); // Circle
+        symbol_lut.insert("0001".to_string(), "■".to_string()); // Square
+        symbol_lut.insert("0010".to_string(), "▲".to_string()); // Triangle
+        symbol_lut.insert("0011".to_string(), "♦".to_string()); // Diamond
 
         let mut animation_lut = HashMap::new();
         animation_lut.insert("00".to_string(), "fade".to_string());
@@ -344,20 +347,18 @@ impl UIManifest {
                 "/gis/layers/tactical".to_string(),
                 "/gis/analysis/spatial".to_string(),
             ],
-            layer_configs: vec![
-                GISLayer {
-                    layer_name: "tactical_overlay".to_string(),
-                    layer_type: "vector".to_string(),
-                    data_source: "/gis/data/tactical".to_string(),
-                    styling: GISLayerStyling {
-                        fill_color: "#FF000080".to_string(),
-                        stroke_color: "#FF0000".to_string(),
-                        opacity: 0.7,
-                        symbol_size: 12,
-                    },
-                    interactive: true,
+            layer_configs: vec![GISLayer {
+                layer_name: "tactical_overlay".to_string(),
+                layer_type: "vector".to_string(),
+                data_source: "/gis/data/tactical".to_string(),
+                styling: GISLayerStyling {
+                    fill_color: "#FF000080".to_string(),
+                    stroke_color: "#FF0000".to_string(),
+                    opacity: 0.7,
+                    symbol_size: 12,
                 },
-            ],
+                interactive: true,
+            }],
             spatial_analysis: SpatialAnalysis {
                 enabled: true,
                 analysis_types: vec![
@@ -413,23 +414,21 @@ impl UIManifest {
                 "memory_efficiency".to_string(),
                 "user_experience".to_string(),
             ],
-            test_scenarios: vec![
-                TestScenario {
-                    scenario_name: "Large Dataset Visualization".to_string(),
-                    description: "Render 10k+ data points with real-time updates".to_string(),
-                    test_steps: vec![
-                        "Load dataset".to_string(),
-                        "Render visualization".to_string(),
-                        "Apply real-time updates".to_string(),
-                        "Measure performance".to_string(),
-                    ],
-                    success_criteria: vec![
-                        "60fps rendering".to_string(),
-                        "<100ms update latency".to_string(),
-                        "<50MB memory usage".to_string(),
-                    ],
-                },
-            ],
+            test_scenarios: vec![TestScenario {
+                scenario_name: "Large Dataset Visualization".to_string(),
+                description: "Render 10k+ data points with real-time updates".to_string(),
+                test_steps: vec![
+                    "Load dataset".to_string(),
+                    "Render visualization".to_string(),
+                    "Apply real-time updates".to_string(),
+                    "Measure performance".to_string(),
+                ],
+                success_criteria: vec![
+                    "60fps rendering".to_string(),
+                    "<100ms update latency".to_string(),
+                    "<50MB memory usage".to_string(),
+                ],
+            }],
         };
     }
 
@@ -437,30 +436,21 @@ impl UIManifest {
     fn configure_apple_ui_integration(&mut self) {
         self.apple_ui_integration = AppleUIIntegration {
             enabled: true,
-            swiftui_components: vec![
-                SwiftUIComponent {
-                    component_name: "FoundationDashboard".to_string(),
-                    swift_code: "struct FoundationDashboard: View { /* SwiftUI code */ }".to_string(),
-                    data_bindings: vec![
-                        "foundation_health".to_string(),
-                        "cte_status".to_string(),
-                    ],
-                },
-            ],
-            uikit_components: vec![
-                UIKitComponent {
-                    component_name: "TacticalMapView".to_string(),
-                    class_name: "CTASTacticalMapViewController".to_string(),
-                    interface_builder: true,
-                },
-            ],
-            appkit_components: vec![
-                AppKitComponent {
-                    component_name: "DeveloperConsole".to_string(),
-                    class_name: "CTASDeveloperConsoleController".to_string(),
-                    menu_integration: true,
-                },
-            ],
+            swiftui_components: vec![SwiftUIComponent {
+                component_name: "FoundationDashboard".to_string(),
+                swift_code: "struct FoundationDashboard: View { /* SwiftUI code */ }".to_string(),
+                data_bindings: vec!["foundation_health".to_string(), "cte_status".to_string()],
+            }],
+            uikit_components: vec![UIKitComponent {
+                component_name: "TacticalMapView".to_string(),
+                class_name: "CTASTacticalMapViewController".to_string(),
+                interface_builder: true,
+            }],
+            appkit_components: vec![AppKitComponent {
+                component_name: "DeveloperConsole".to_string(),
+                class_name: "CTASDeveloperConsoleController".to_string(),
+                menu_integration: true,
+            }],
             native_styling: NativeStyling {
                 follows_human_interface_guidelines: true,
                 dark_mode_support: true,
@@ -514,23 +504,19 @@ impl UIManifest {
             interactivity: UIInteractivity {
                 interactive: true,
                 event_handlers: vec!["onClick".to_string(), "onHover".to_string()],
-                keyboard_shortcuts: vec![
-                    KeyboardShortcut {
-                        key_combination: "Cmd+H".to_string(),
-                        action: "toggle_hash_view".to_string(),
-                        description: "Toggle hash visualization".to_string(),
-                    },
-                ],
+                keyboard_shortcuts: vec![KeyboardShortcut {
+                    key_combination: "Cmd+H".to_string(),
+                    action: "toggle_hash_view".to_string(),
+                    description: "Toggle hash visualization".to_string(),
+                }],
                 touch_gestures: vec!["pinch_zoom".to_string(), "pan".to_string()],
             },
-            data_bindings: vec![
-                DataBinding {
-                    binding_name: "hash_data".to_string(),
-                    data_source: "/api/foundation/hash".to_string(),
-                    update_frequency: "real_time".to_string(),
-                    transform_function: Some("format_hash_display".to_string()),
-                },
-            ],
+            data_bindings: vec![DataBinding {
+                binding_name: "hash_data".to_string(),
+                data_source: "/api/foundation/hash".to_string(),
+                update_frequency: "real_time".to_string(),
+                transform_function: Some("format_hash_display".to_string()),
+            }],
         });
     }
 

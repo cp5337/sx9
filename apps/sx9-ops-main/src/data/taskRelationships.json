@@ -1,0 +1,88 @@
+{
+  "tasks_to_hd4_hunt": [
+    {
+      "task_id": 1.1,
+      "task_name": "OSINT Collection",
+      "hd4_hunt_actions": ["Detect", "Hunt"],
+      "description": "OSINT Collection is used to Hunt for potential vulnerabilities or threats by gathering publicly available information and Detect adversary activities."
+    },
+    {
+      "task_id": 1.2,
+      "task_name": "Phishing and Spear-Phishing Campaigns",
+      "hd4_hunt_actions": ["Detect", "Disable", "Hunt"],
+      "description": "Phishing is used to Hunt for weak points, Detect credentials, and Disable systems by gaining unauthorized access."
+    },
+    {
+      "task_id": 1.3,
+      "task_name": "Network Scanning",
+      "hd4_hunt_actions": ["Detect", "Hunt"],
+      "description": "Network Scanning is an active way to Hunt for vulnerabilities and Detect open attack surfaces."
+    },
+    {
+      "task_id": 1.4,
+      "task_name": "Account Takeover",
+      "hd4_hunt_actions": ["Disable", "Disrupt"],
+      "description": "Account Takeover is used to Disable target accounts and Disrupt ongoing operations by exploiting access."
+    },
+    {
+      "task_id": 1.5,
+      "task_name": "Advanced Persistent Threat (APT)",
+      "hd4_hunt_actions": ["Detect", "Disable", "Disrupt", "Dominate", "Hunt"],
+      "description": "APTs Hunt for long-term vulnerabilities, Detect entry points, Disable security, Disrupt operations, and Dominate networks for espionage."
+    },
+    {
+      "task_id": 1.6,
+      "task_name": "Cloud Access Management",
+      "hd4_hunt_actions": ["Detect", "Disable", "Hunt"],
+      "description": "Hunting for misconfigurations in cloud setups helps Detect weak points and Disable access to sensitive data."
+    },
+    {
+      "task_id": 2.1,
+      "task_name": "Weapon Assembly and Modifications",
+      "hd4_hunt_actions": ["Hunt", "Disrupt", "Dominate"],
+      "description": "Weapon assembly is part of a broader strategy to Hunt for weaknesses in physical security, Disrupt targets, and Dominate by customizing capabilities."
+    },
+    {
+      "task_id": 2.2,
+      "task_name": "IED Design and Assembly",
+      "hd4_hunt_actions": ["Hunt", "Disrupt"],
+      "description": "IEDs are designed after Hunting for targets, with the aim to Disrupt physical environments and cause damage."
+    },
+    {
+      "task_id": 2.4,
+      "task_name": "Exploitation Frameworks",
+      "hd4_hunt_actions": ["Detect", "Hunt", "Disrupt", "Dominate"],
+      "description": "Cyber exploitation frameworks are used to Hunt for vulnerabilities, Detect gaps in defenses, Disrupt systems, and Dominate networks."
+    },
+    {
+      "task_id": 3.1,
+      "task_name": "Use of Encrypted Messaging Apps",
+      "hd4_hunt_actions": ["Detect", "Hunt", "Disrupt"],
+      "description": "Hunting for adversary communications over encrypted apps allows Detecting and Disrupting their plans."
+    },
+    {
+      "task_id": 5.1,
+      "task_name": "Network Enumeration",
+      "hd4_hunt_actions": ["Detect", "Hunt"],
+      "description": "Network Enumeration is used to Hunt for open targets and Detect security vulnerabilities across a network."
+    },
+    {
+      "task_id": 5.2,
+      "task_name": "Vulnerability Exploitation",
+      "hd4_hunt_actions": ["Disable", "Disrupt", "Dominate"],
+      "description": "Exploiting vulnerabilities is key to Disabling defenses, Disrupting operations, and Dominating systems."
+    },
+    {
+      "task_id": 6.1,
+      "task_name": "Developing Attack Strategies",
+      "hd4_hunt_actions": ["Hunt", "Dominate"],
+      "description": "Developing strategies involves Hunting for intelligence and planning to Dominate the target's defenses."
+    },
+    {
+      "task_id": 6.5,
+      "task_name": "Synchronizing Cyber and Physical Attacks",
+      "hd4_hunt_actions": ["Hunt", "Disrupt", "Dominate"],
+      "description": "Hunting for the right timing and conditions to synchronize attacks leads to Disrupting adversaries and Dominate across multiple domains."
+    }
+  ]
+}

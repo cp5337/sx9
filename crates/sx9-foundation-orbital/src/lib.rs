@@ -6,18 +6,21 @@
 //! - Ground station network optimization with 259 global stations
 //! - Atmospheric FSO link budget analysis
 //! - ITU orbital slot coordination
+//!
+#![allow(deprecated)] // CTAS-7.2 Foundation Types (TrivariteHashEngine) are deprecated but used heavily here.
+                      // Migration to V731 (SCH) requires API signature update (3 args -> 5 args).
 
-use sx9_foundation_core::TrivariteHashEngine;
-use sx9_foundation_math::MathematicalFoundationConsciousness;
-use ctas7_foundation_data::FoundationDataManager;
+use anyhow::Result;
+use chrono::{DateTime, Utc};
+use nalgebra::{Matrix3, Vector3};
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::sync::Arc;
+use sx9_foundation_core::TrivariteHashEngine;
+use sx9_foundation_data::FoundationDataManager;
+use sx9_foundation_math::MathematicalFoundationConsciousness;
 use tokio::sync::RwLock;
 use uuid::Uuid;
-use chrono::{DateTime, Utc};
-use nalgebra::{Vector3, Matrix3};
-use anyhow::Result;
 
 /// Main orbital mechanics engine with foundation integration
 pub struct OrbitalFoundationEngine {
@@ -66,24 +69,24 @@ pub struct Satellite {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct OrbitalElements {
     pub epoch: DateTime<Utc>,
-    pub mean_motion: f64,           // revolutions per day
+    pub mean_motion: f64, // revolutions per day
     pub eccentricity: f64,
-    pub inclination: f64,           // degrees
-    pub raan: f64,                  // right ascension of ascending node (degrees)
-    pub arg_of_perigee: f64,        // degrees
-    pub mean_anomaly: f64,          // degrees
-    pub bstar: f64,                 // drag coefficient
+    pub inclination: f64,    // degrees
+    pub raan: f64,           // right ascension of ascending node (degrees)
+    pub arg_of_perigee: f64, // degrees
+    pub mean_anomaly: f64,   // degrees
+    pub bstar: f64,          // drag coefficient
     pub element_set_number: u32,
 }
 
 /// Current satellite state vector
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct SatelliteState {
-    pub position: Vector3<f64>,     // km (ECI)
-    pub velocity: Vector3<f64>,     // km/s (ECI)
-    pub latitude: f64,              // degrees
-    pub longitude: f64,             // degrees
-    pub altitude: f64,              // km above earth
+    pub position: Vector3<f64>, // km (ECI)
+    pub velocity: Vector3<f64>, // km/s (ECI)
+    pub latitude: f64,          // degrees
+    pub longitude: f64,         // degrees
+    pub altitude: f64,          // km above earth
     pub computed_at: DateTime<Utc>,
 }
 
@@ -91,11 +94,22 @@ pub struct SatelliteState {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub enum ConstellationPattern {
     /// Walker Δ(t, p, f) pattern - LaserLight uses Δ(12/3/1)
-    WalkerDelta { total_sats: u32, planes: u32, phasing: u32 },
+    WalkerDelta {
+        total_sats: u32,
+        planes: u32,
+        phasing: u32,
+    },
     /// Walker T (rosette) pattern
-    WalkerT { total_sats: u32, planes: u32, phasing: u32 },
+    WalkerT {
+        total_sats: u32,
+        planes: u32,
+        phasing: u32,
+    },
     /// Custom constellation pattern
-    Custom { pattern_name: String, parameters: HashMap<String, f64> },
+    Custom {
+        pattern_name: String,
+        parameters: HashMap<String, f64>,
+    },
 }
 
 /// Ground station for FSO communications
@@ -105,31 +119,31 @@ pub struct GroundStation {
     pub trivariate_hash: String,
     pub name: String,
     pub location: GeographicLocation,
-    pub elevation_mask: f64,        // minimum elevation (degrees)
+    pub elevation_mask: f64, // minimum elevation (degrees)
     pub fso_equipment: FSOEquipment,
     pub weather_capabilities: WeatherSensorSuite,
     pub status: StationStatus,
-    pub throughput_capacity: f64,   // Gbps
+    pub throughput_capacity: f64, // Gbps
 }
 
 /// Geographic location with coordinate system support
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct GeographicLocation {
-    pub latitude: f64,              // degrees
-    pub longitude: f64,             // degrees
-    pub altitude: f64,              // meters above sea level
-    pub coordinate_system: String,  // "WGS84", "ECEF", etc.
+    pub latitude: f64,             // degrees
+    pub longitude: f64,            // degrees
+    pub altitude: f64,             // meters above sea level
+    pub coordinate_system: String, // "WGS84", "ECEF", etc.
 }
 
 /// Free Space Optical equipment configuration
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct FSOEquipment {
-    pub telescope_diameter: f64,    // meters
-    pub wavelength: f64,            // nanometers (1550nm for telecom)
-    pub transmit_power: f64,        // watts
-    pub receiver_sensitivity: f64,  // watts
-    pub pointing_accuracy: f64,     // arcseconds
-    pub acquisition_time: f64,      // seconds
+    pub telescope_diameter: f64,   // meters
+    pub wavelength: f64,           // nanometers (1550nm for telecom)
+    pub transmit_power: f64,       // watts
+    pub receiver_sensitivity: f64, // watts
+    pub pointing_accuracy: f64,    // arcseconds
+    pub acquisition_time: f64,     // seconds
 }
 
 /// Satellite FSO capabilities
@@ -138,9 +152,9 @@ pub struct FSOCapabilities {
     pub inter_satellite_links: u32, // number of simultaneous ISLs
     pub ground_link_capable: bool,
     pub data_rate_gbps: f64,
-    pub link_budget_margin: f64,    // dB
-    pub beam_divergence: f64,       // microradians
-    pub pointing_stability: f64,    // arcseconds RMS
+    pub link_budget_margin: f64, // dB
+    pub beam_divergence: f64,    // microradians
+    pub pointing_stability: f64, // arcseconds RMS
 }
 
 /// Weather sensor suite for atmospheric FSO analysis
@@ -151,7 +165,7 @@ pub struct WeatherSensorSuite {
     pub atmospheric_turbulence: bool,
     pub humidity_sensor: bool,
     pub wind_profiler: bool,
-    pub scintillometer: bool,       // for atmospheric turbulence
+    pub scintillometer: bool, // for atmospheric turbulence
 }
 
 /// FSO link analysis engine
@@ -167,10 +181,10 @@ pub struct FSOLinkAnalyzer {
 pub struct FSOLink {
     pub link_id: String,
     pub trivariate_hash: String,
-    pub source_id: String,          // satellite or ground station
-    pub target_id: String,          // satellite or ground station
+    pub source_id: String, // satellite or ground station
+    pub target_id: String, // satellite or ground station
     pub link_type: FSOLinkType,
-    pub current_quality: f64,       // 0.0 - 1.0
+    pub current_quality: f64, // 0.0 - 1.0
     pub data_rate_gbps: f64,
     pub link_budget: LinkBudgetAnalysis,
     pub atmospheric_conditions: AtmosphericConditions,
@@ -208,7 +222,7 @@ pub struct AtmosphericConditions {
     pub temperature_celsius: f64,
     pub pressure_hpa: f64,
     pub wind_speed_ms: f64,
-    pub turbulence_strength: f64,   // Cn2 structure parameter
+    pub turbulence_strength: f64, // Cn2 structure parameter
     pub scintillation_index: f64,
 }
 
@@ -235,8 +249,8 @@ pub struct AtmosphereLayer {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct OrbitalSlot {
     pub slot_id: String,
-    pub longitude: f64,             // degrees
-    pub orbital_arc: f64,           // degrees
+    pub longitude: f64,   // degrees
+    pub orbital_arc: f64, // degrees
     pub frequency_bands: Vec<FrequencyBand>,
     pub coordination_status: CoordinationStatus,
     pub filing_date: DateTime<Utc>,
@@ -307,7 +321,7 @@ impl OrbitalFoundationEngine {
         let trivariate_hash = self.hash_engine.generate_trivariate_hash(
             "LaserLight_Constellation",
             &constellation_id,
-            "Walker_Delta_12_3_1"
+            "Walker_Delta_12_3_1",
         );
 
         let constellation = SatelliteConstellation {
@@ -319,15 +333,23 @@ impl OrbitalFoundationEngine {
                 planes: 3,
                 phasing: 1,
             },
-            satellites: self.generate_walker_delta_satellites(12, 3, 1, 8000.0).await?,
+            satellites: self
+                .generate_walker_delta_satellites(12, 3, 1, 8000.0)
+                .await?,
             orbital_slots: Vec::new(),
             created_at: Utc::now(),
             last_updated: Utc::now(),
         };
 
-        self.constellations.write().await.insert(constellation_id.clone(), constellation);
+        self.constellations
+            .write()
+            .await
+            .insert(constellation_id.clone(), constellation);
 
-        tracing::info!("Created LaserLight constellation with hash: {}", trivariate_hash);
+        tracing::info!(
+            "Created LaserLight constellation with hash: {}",
+            trivariate_hash
+        );
         Ok(constellation_id)
     }
 
@@ -344,7 +366,8 @@ impl OrbitalFoundationEngine {
 
         for plane in 0..planes {
             for sat_in_plane in 0..sats_per_plane {
-                let sat_id = format!("SAT-{}-{}",
+                let sat_id = format!(
+                    "SAT-{}-{}",
                     char::from(b'A' + plane as u8),
                     sat_in_plane + 1
                 );
@@ -352,14 +375,14 @@ impl OrbitalFoundationEngine {
                 let trivariate_hash = self.hash_engine.generate_trivariate_hash(
                     "LaserLight_Satellite",
                     &sat_id,
-                    &format!("Plane_{}_Position_{}", plane, sat_in_plane)
+                    &format!("Plane_{}_Position_{}", plane, sat_in_plane),
                 );
 
                 // Calculate orbital elements for Walker Delta pattern
                 let inclination = 98.0; // Sun-synchronous orbit
                 let raan = (plane as f64) * (360.0 / planes as f64);
-                let mean_anomaly = (sat_in_plane as f64) * (360.0 / sats_per_plane as f64) +
-                                   (plane as f64) * (360.0 * phasing as f64) / (planes * sats_per_plane) as f64;
+                let mean_anomaly = (sat_in_plane as f64) * (360.0 / sats_per_plane as f64)
+                    + (plane as f64) * (360.0 * phasing as f64) / (planes * sats_per_plane) as f64;
 
                 let orbital_elements = OrbitalElements {
                     epoch: Utc::now(),
@@ -386,7 +409,7 @@ impl OrbitalFoundationEngine {
                         ground_link_capable: true,
                         data_rate_gbps: 10.0,
                         link_budget_margin: 6.0,
-                        beam_divergence: 10.0, // microradians
+                        beam_divergence: 10.0,   // microradians
                         pointing_stability: 1.0, // arcseconds
                     },
                     last_telemetry: Utc::now(),
@@ -405,7 +428,8 @@ impl OrbitalFoundationEngine {
         const MU_EARTH: f64 = 398600.4418; // km³/s²
 
         let semi_major_axis = EARTH_RADIUS_KM + altitude_km;
-        let period_seconds = 2.0 * std::f64::consts::PI * (semi_major_axis.powi(3) / MU_EARTH).sqrt();
+        let period_seconds =
+            2.0 * std::f64::consts::PI * (semi_major_axis.powi(3) / MU_EARTH).sqrt();
         let period_minutes = period_seconds / 60.0;
         let revolutions_per_day = 1440.0 / period_minutes;
 
@@ -413,7 +437,11 @@ impl OrbitalFoundationEngine {
     }
 
     /// SGP4 orbital propagation (simplified implementation)
-    async fn propagate_sgp4(&self, elements: &OrbitalElements, target_time: DateTime<Utc>) -> Result<SatelliteState> {
+    async fn propagate_sgp4(
+        &self,
+        elements: &OrbitalElements,
+        target_time: DateTime<Utc>,
+    ) -> Result<SatelliteState> {
         // This is a simplified SGP4 implementation
         // In production, would use a full SGP4 library with perturbation models
 
@@ -421,14 +449,22 @@ impl OrbitalFoundationEngine {
         let mean_motion_rad_min = elements.mean_motion * 2.0 * std::f64::consts::PI / 1440.0;
 
         // Simple Keplerian propagation (SGP4 would include perturbations)
-        let current_mean_anomaly = (elements.mean_anomaly.to_radians() +
-                                    mean_motion_rad_min * time_since_epoch) % (2.0 * std::f64::consts::PI);
+        let current_mean_anomaly = (elements.mean_anomaly.to_radians()
+            + mean_motion_rad_min * time_since_epoch)
+            % (2.0 * std::f64::consts::PI);
 
         // Convert to position/velocity vectors (simplified)
-        let a = (398600.4418 / (mean_motion_rad_min.powi(2))).powf(1.0/3.0);
-        let position = Vector3::new(a * current_mean_anomaly.cos(), a * current_mean_anomaly.sin(), 0.0);
-        let velocity = Vector3::new(-mean_motion_rad_min * a * current_mean_anomaly.sin(),
-                                    mean_motion_rad_min * a * current_mean_anomaly.cos(), 0.0);
+        let a = (398600.4418 / (mean_motion_rad_min.powi(2))).powf(1.0 / 3.0);
+        let position = Vector3::new(
+            a * current_mean_anomaly.cos(),
+            a * current_mean_anomaly.sin(),
+            0.0,
+        );
+        let velocity = Vector3::new(
+            -mean_motion_rad_min * a * current_mean_anomaly.sin(),
+            mean_motion_rad_min * a * current_mean_anomaly.cos(),
+            0.0,
+        );
 
         // Convert to lat/lon/alt (simplified)
         let latitude = (position.z / position.magnitude()).asin().to_degrees();
@@ -451,10 +487,28 @@ impl OrbitalFoundationEngine {
         // For now, create a few representative stations
 
         let stations = vec![
-            ("CTAS-GS-001", "Poker Flat, Alaska", 65.1292, -147.4797, 501.0),
+            (
+                "CTAS-GS-001",
+                "Poker Flat, Alaska",
+                65.1292,
+                -147.4797,
+                501.0,
+            ),
             ("CTAS-GS-002", "Wallops, Virginia", 37.8407, -75.4883, 15.0),
-            ("CTAS-GS-003", "Vandenberg, California", 34.7420, -120.5724, 112.0),
-            ("CTAS-GS-004", "Kourou, French Guiana", 5.2362, -52.7683, 17.0),
+            (
+                "CTAS-GS-003",
+                "Vandenberg, California",
+                34.7420,
+                -120.5724,
+                112.0,
+            ),
+            (
+                "CTAS-GS-004",
+                "Kourou, French Guiana",
+                5.2362,
+                -52.7683,
+                17.0,
+            ),
             ("CTAS-GS-005", "Svalbard, Norway", 78.9238, 11.9308, 458.0),
         ];
 
@@ -464,7 +518,7 @@ impl OrbitalFoundationEngine {
             let trivariate_hash = self.hash_engine.generate_trivariate_hash(
                 "Ground_Station",
                 station_id,
-                &format!("{}_{}", lat, lon)
+                &format!("{}_{}", lat, lon),
             );
 
             let station = GroundStation {
@@ -479,12 +533,12 @@ impl OrbitalFoundationEngine {
                 },
                 elevation_mask: 10.0, // degrees
                 fso_equipment: FSOEquipment {
-                    telescope_diameter: 1.0, // meters
-                    wavelength: 1550.0, // nm
-                    transmit_power: 10.0, // watts
+                    telescope_diameter: 1.0,     // meters
+                    wavelength: 1550.0,          // nm
+                    transmit_power: 10.0,        // watts
                     receiver_sensitivity: 1e-12, // watts
-                    pointing_accuracy: 1.0, // arcseconds
-                    acquisition_time: 30.0, // seconds
+                    pointing_accuracy: 1.0,      // arcseconds
+                    acquisition_time: 30.0,      // seconds
                 },
                 weather_capabilities: WeatherSensorSuite {
                     visibility_sensor: true,
@@ -506,30 +560,34 @@ impl OrbitalFoundationEngine {
     }
 
     /// Analyze FSO link between two endpoints
-    pub async fn analyze_fso_link(&self, source_id: &str, target_id: &str) -> Result<LinkBudgetAnalysis> {
+    pub async fn analyze_fso_link(
+        &self,
+        _source_id: &str,
+        _target_id: &str,
+    ) -> Result<LinkBudgetAnalysis> {
         // Simplified FSO link budget analysis
         // In production, would include detailed atmospheric modeling
 
         let link_budget = LinkBudgetAnalysis {
-            transmit_power_dbm: 40.0, // 10W = 40 dBm
+            transmit_power_dbm: 40.0,       // 10W = 40 dBm
             transmit_antenna_gain_db: 60.0, // 1m telescope
-            path_loss_db: -180.0, // ~400km range at 1550nm
-            atmospheric_loss_db: -3.0, // clear sky
-            scintillation_margin_db: -6.0, // atmospheric turbulence
+            path_loss_db: -180.0,           // ~400km range at 1550nm
+            atmospheric_loss_db: -3.0,      // clear sky
+            scintillation_margin_db: -6.0,  // atmospheric turbulence
             receiver_antenna_gain_db: 60.0, // 1m telescope
-            system_margin_db: 3.0, // implementation losses
-            total_link_margin_db: 0.0, // calculated below
+            system_margin_db: 3.0,          // implementation losses
+            total_link_margin_db: 0.0,      // calculated below
             computed_at: Utc::now(),
         };
 
         // Calculate total link margin
-        let total_margin = link_budget.transmit_power_dbm +
-                          link_budget.transmit_antenna_gain_db +
-                          link_budget.path_loss_db +
-                          link_budget.atmospheric_loss_db +
-                          link_budget.scintillation_margin_db +
-                          link_budget.receiver_antenna_gain_db +
-                          link_budget.system_margin_db;
+        let total_margin = link_budget.transmit_power_dbm
+            + link_budget.transmit_antenna_gain_db
+            + link_budget.path_loss_db
+            + link_budget.atmospheric_loss_db
+            + link_budget.scintillation_margin_db
+            + link_budget.receiver_antenna_gain_db
+            + link_budget.system_margin_db;
 
         Ok(LinkBudgetAnalysis {
             total_link_margin_db: total_margin,
@@ -539,4 +597,5 @@ impl OrbitalFoundationEngine {
 }
 
 // Re-export key types for foundation-manifold integration
-pub use OrbitalFoundationEngine as OrbitalEngine;pub mod foundation_integration;
+pub use OrbitalFoundationEngine as OrbitalEngine;
+pub mod foundation_integration;

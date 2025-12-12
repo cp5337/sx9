@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
-use uuid::Uuid;
+
 use chrono::{DateTime, Utc};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -119,39 +119,54 @@ impl ToolRegistry {
 
     fn default_categories() -> HashMap<String, Vec<String>> {
         let mut categories = HashMap::new();
-        
-        categories.insert("osint".to_string(), vec![
-            "domain_recon".to_string(),
-            "social_media".to_string(),
-            "email_recon".to_string(),
-            "ip_geolocation".to_string(),
-            "dns_enumeration".to_string(),
-        ]);
-        
-        categories.insert("exploitation".to_string(), vec![
-            "vulnerability_scanning".to_string(),
-            "exploit_frameworks".to_string(),
-            "web_testing".to_string(),
-        ]);
-        
-        categories.insert("password_testing".to_string(), vec![
-            "credential_testing".to_string(),
-            "breach_databases".to_string(),
-            "wordlist_generation".to_string(),
-        ]);
-        
-        categories.insert("intelligence".to_string(), vec![
-            "threat_intel".to_string(),
-            "geolocation".to_string(),
-            "malware_analysis".to_string(),
-        ]);
-        
-        categories.insert("data_processing".to_string(), vec![
-            "etl".to_string(),
-            "data_validation".to_string(),
-            "transformations".to_string(),
-        ]);
-        
+
+        categories.insert(
+            "osint".to_string(),
+            vec![
+                "domain_recon".to_string(),
+                "social_media".to_string(),
+                "email_recon".to_string(),
+                "ip_geolocation".to_string(),
+                "dns_enumeration".to_string(),
+            ],
+        );
+
+        categories.insert(
+            "exploitation".to_string(),
+            vec![
+                "vulnerability_scanning".to_string(),
+                "exploit_frameworks".to_string(),
+                "web_testing".to_string(),
+            ],
+        );
+
+        categories.insert(
+            "password_testing".to_string(),
+            vec![
+                "credential_testing".to_string(),
+                "breach_databases".to_string(),
+                "wordlist_generation".to_string(),
+            ],
+        );
+
+        categories.insert(
+            "intelligence".to_string(),
+            vec![
+                "threat_intel".to_string(),
+                "geolocation".to_string(),
+                "malware_analysis".to_string(),
+            ],
+        );
+
+        categories.insert(
+            "data_processing".to_string(),
+            vec![
+                "etl".to_string(),
+                "data_validation".to_string(),
+                "transformations".to_string(),
+            ],
+        );
+
         categories
     }
 

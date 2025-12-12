@@ -27,7 +27,7 @@ impl Database {
             Database::Nats => 18020,
         }
     }
-    
+
     pub fn brand_color(&self) -> &'static str {
         match self {
             Database::Supabase => "#3ecf8e",
@@ -81,7 +81,6 @@ pub enum WsMessage {
     // DATABASE OPERATIONS
     // Maps to: Supabase, SurrealDB, Sled, Sledis drivers
     // ═══════════════════════════════════════════════════════════════════
-    
     /// Execute a query against a specific database
     Query {
         db: Database,
@@ -89,7 +88,7 @@ pub enum WsMessage {
         /// Optional parameters for prepared statements
         params: Option<serde_json::Value>,
     },
-    
+
     /// Subscribe to real-time changes on a table/collection
     Subscribe {
         db: Database,
@@ -97,85 +96,68 @@ pub enum WsMessage {
         /// Optional filter condition
         filter: Option<String>,
     },
-    
+
     /// Unsubscribe from a table
-    Unsubscribe {
-        db: Database,
-        table: String,
-    },
-    
+    Unsubscribe { db: Database, table: String },
+
     // ═══════════════════════════════════════════════════════════════════
     // GRAPH OPERATIONS
     // Maps to: SurrealDB graph queries + GLAF correlation
     // ═══════════════════════════════════════════════════════════════════
-    
     /// Get graph data with optional filtering
-    GetGraph {
-        filter: GraphFilter,
-    },
-    
+    GetGraph { filter: GraphFilter },
+
     /// Get fusion nodes (cross-database correlations)
     GetFusionNodes {
         /// Minimum confidence threshold (0.0-1.0)
         threshold: f32,
     },
-    
+
     /// Expand a node to show its neighbors
-    ExpandNode {
-        node_id: String,
-        depth: u32,
-    },
-    
+    ExpandNode { node_id: String, depth: u32 },
+
     /// Run GLAF correlation analysis
     RunCorrelation {
         /// Source nodes to correlate
         source_ids: Vec<String>,
     },
-    
+
     // ═══════════════════════════════════════════════════════════════════
     // WORKFLOW OPERATIONS
     // Maps to: sx9-atlas-bus, Forge Engine
     // ═══════════════════════════════════════════════════════════════════
-    
     /// List all workflows
     GetWorkflows,
-    
+
     /// Get a specific workflow's state
-    GetWorkflow {
-        id: WorkflowId,
-    },
-    
+    GetWorkflow { id: WorkflowId },
+
     /// Start a workflow
     StartWorkflow {
         id: WorkflowId,
         /// Optional input parameters
         input: Option<serde_json::Value>,
     },
-    
+
     /// Stop a running workflow
-    StopWorkflow {
-        id: WorkflowId,
-    },
-    
+    StopWorkflow { id: WorkflowId },
+
     /// Get current PlasmaState (delta_angle, entropy, SDT gate)
     GetPlasmaState,
-    
+
     /// Subscribe to PlasmaState changes
     SubscribePlasma,
-    
+
     // ═══════════════════════════════════════════════════════════════════
     // HEALTH & CONNECTION
     // Maps to: NATS health subjects
     // ═══════════════════════════════════════════════════════════════════
-    
     /// Get connection status for all databases
     GetConnections,
-    
+
     /// Test connection to a specific database
-    TestConnection {
-        db: Database,
-    },
-    
+    TestConnection { db: Database },
+
     /// Ping (keepalive)
     Ping,
 }
@@ -187,7 +169,6 @@ pub enum WsResponse {
     // ═══════════════════════════════════════════════════════════════════
     // SUCCESS RESPONSES
     // ═══════════════════════════════════════════════════════════════════
-    
     /// Query result
     QueryResult {
         db: Database,
@@ -195,7 +176,7 @@ pub enum WsResponse {
         latency_ms: f64,
         cached: bool,
     },
-    
+
     /// Real-time update from subscription
     SubscriptionUpdate {
         db: Database,
@@ -203,28 +184,22 @@ pub enum WsResponse {
         event: SubscriptionEvent,
         data: serde_json::Value,
     },
-    
+
     /// Graph data
     GraphData {
         nodes: Vec<GraphNode>,
         edges: Vec<GraphEdge>,
     },
-    
+
     /// Fusion nodes
-    FusionNodes {
-        nodes: Vec<FusionNode>,
-    },
-    
+    FusionNodes { nodes: Vec<FusionNode> },
+
     /// Workflow list
-    Workflows {
-        workflows: Vec<WorkflowSummary>,
-    },
-    
+    Workflows { workflows: Vec<WorkflowSummary> },
+
     /// Workflow detail
-    WorkflowDetail {
-        workflow: WorkflowDetail,
-    },
-    
+    WorkflowDetail { workflow: WorkflowDetail },
+
     /// PlasmaState snapshot
     PlasmaState {
         delta_angle: u16,
@@ -234,21 +209,16 @@ pub enum WsResponse {
         ring_strength: f64,
         delta_class: String,
     },
-    
+
     /// Connection status for all databases
-    Connections {
-        statuses: Vec<ConnectionStatus>,
-    },
-    
+    Connections { statuses: Vec<ConnectionStatus> },
+
     /// Pong response
-    Pong {
-        server_time: u64,
-    },
-    
+    Pong { server_time: u64 },
+
     // ═══════════════════════════════════════════════════════════════════
     // ERROR RESPONSES
     // ═══════════════════════════════════════════════════════════════════
-    
     /// Error response
     Error {
         code: String,
@@ -399,11 +369,11 @@ mod tests {
             query: "SELECT * FROM entity".to_string(),
             params: None,
         };
-        
+
         let json = serde_json::to_string(&msg).unwrap();
         assert!(json.contains("\"type\":\"Query\""));
         assert!(json.contains("\"db\":\"surrealdb\""));
-        
+
         let parsed: WsMessage = serde_json::from_str(&json).unwrap();
         match parsed {
             WsMessage::Query { db, query, .. } => {
@@ -424,10 +394,9 @@ mod tests {
             ring_strength: 0.95,
             delta_class: "Micro".to_string(),
         };
-        
+
         let json = serde_json::to_string(&resp).unwrap();
         assert!(json.contains("\"type\":\"PlasmaState\""));
         assert!(json.contains("\"delta_angle\":180"));
     }
 }
-

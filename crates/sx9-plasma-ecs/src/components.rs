@@ -3,7 +3,7 @@
 //! Defines component types for Plasma entities with serde support.
 //! Uses local serializable versions of atlas-bus types.
 
-use serde::{Serialize, Deserialize};
+use serde::{Deserialize, Serialize};
 
 // Local serializable versions of atlas-bus types
 // These mirror the atlas-bus types but with serde derives

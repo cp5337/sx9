@@ -2,16 +2,10 @@
 //!
 //! Implements H1 (Operational) and H2 (Semantic) convergence scoring
 
+use crate::glaf_core::GLAFCore;
 use anyhow::Result;
 use chrono::{DateTime, Utc};
-use serde::{Serialize, Deserialize};
-use std::sync::Arc;
-use tokio::sync::RwLock;
-
-use crate::teth::TethAnalyzer;
-use crate::hmm::HmmPhaseDetector;
-use crate::matroid::MatroidRank;
-use crate::hawkes::HawkesIntensity;
+use serde::{Deserialize, Serialize};
 
 /// Convergence event when both H1 and H2 exceed thresholds
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -68,7 +62,7 @@ impl ConvergenceMonitor {
 pub async fn calculate_operational_convergence(glaf_core: &crate::glaf_core::GLAFCore) -> f64 {
     // Get all nodes from graph
     let nodes = glaf_core.get_all_nodes().await;
-    
+
     if nodes.is_empty() {
         return 0.0;
     }
@@ -81,7 +75,7 @@ pub async fn calculate_operational_convergence(glaf_core: &crate::glaf_core::GLA
     }
 
     let avg_entropy = entropy_sum / nodes.len() as f64;
-    
+
     // Convert entropy to convergence score (inverse relationship)
     // High entropy (5.0) = 0% convergence, Low entropy (0.0) = 100% convergence
     (1.0 - (avg_entropy / 5.0)).max(0.0).min(1.0)
@@ -94,14 +88,14 @@ pub async fn calculate_operational_convergence(glaf_core: &crate::glaf_core::GLA
 pub async fn calculate_semantic_convergence(glaf_core: &crate::glaf_core::GLAFCore) -> f64 {
     // Get activity sequence from graph
     let activities = glaf_core.get_activity_sequence().await;
-    
+
     if activities.is_empty() {
         return 0.0;
     }
 
     // Detect phase using HMM
     let phase_result = crate::hmm::detect_phase(&activities).await;
-    
+
     // Use transition probability as H2 score
     phase_result.transition_probability
 }
@@ -109,7 +103,7 @@ pub async fn calculate_semantic_convergence(glaf_core: &crate::glaf_core::GLAFCo
 /// Recommend action based on convergence scores
 fn recommend_action(h1: f64, h2: f64) -> String {
     let combined = (h1 + h2) / 2.0;
-    
+
     if combined > 0.90 {
         "ACT_NOW".to_string()
     } else if combined > 0.75 {
@@ -120,4 +114,3 @@ fn recommend_action(h1: f64, h2: f64) -> String {
         "HUNT".to_string()
     }
 }
-

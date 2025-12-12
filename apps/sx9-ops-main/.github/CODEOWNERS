@@ -1,0 +1,17 @@
+# Core system components
+/src/core/ @lead-developer
+/src/utils/ @lead-developer
+
+# HD4 Framework components
+/src/components/HD4* @security-team
+
+# Database integrations
+/src/database/ @database-team
+
+# Security-critical files
+/src/utils/encryption.ts @security-team
+/src/contexts/AuthContext.tsx @security-team
+/k8s/ @devops-team
+
+# Documentation
+/docs/ @tech-writers

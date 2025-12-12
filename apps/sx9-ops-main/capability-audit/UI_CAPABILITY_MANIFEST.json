@@ -1,0 +1,1551 @@
+[
+  {
+    "page": "Dashboard",
+    "path": "/",
+    "capabilities": {
+      "actions": [
+        "Send",
+        "Network View",
+        "Task Graph",
+        "Sectors",
+        "Filters",
+        "Data Sources",
+        "GIS Layers",
+        "OSINT Nodes",
+        "Threat Intel",
+        "Infrastructure",
+        "GeoIP",
+        "Supabase",
+        "SurrealDB",
+        "GEE (KMZ)"
+      ],
+      "navigation": [
+        {
+          "text": "Dashboard",
+          "href": "/"
+        },
+        {
+          "text": "Kill Chain",
+          "href": "/kill-chain"
+        },
+        {
+          "text": "Hunt",
+          "href": "/hunt"
+        },
+        {
+          "text": "Detect",
+          "href": "/detect"
+        },
+        {
+          "text": "Disrupt",
+          "href": "/disrupt"
+        },
+        {
+          "text": "Disable",
+          "href": "/disable"
+        },
+        {
+          "text": "Dominate",
+          "href": "/dominate"
+        },
+        {
+          "text": "Tasks",
+          "href": "/tasks"
+        },
+        {
+          "text": "Streams",
+          "href": "/info-streams"
+        },
+        {
+          "text": "Plasma",
+          "href": "/plasma"
+        },
+        {
+          "text": "Raptor",
+          "href": "/raptor"
+        },
+        {
+          "text": "vKali",
+          "href": "/vkali"
+        },
+        {
+          "text": "Containers",
+          "href": "/containers"
+        },
+        {
+          "text": "Exploit DB",
+          "href": "/exploit-db"
+        },
+        {
+          "text": "AI CLI",
+          "href": "/cli"
+        },
+        {
+          "text": "DVM",
+          "href": "/dvm"
+        },
+        {
+          "text": "Databases",
+          "href": "/database"
+        },
+        {
+          "text": "Scripts",
+          "href": "/setup-scripts"
+        },
+        {
+          "text": "Demo Report",
+          "href": "/demo-report"
+        },
+        {
+          "text": "Component Showcase",
+          "href": "/component-showcase"
+        },
+        {
+          "text": "Components",
+          "href": "/shared-components"
+        },
+        {
+          "text": "Settings",
+          "href": "/settings"
+        }
+      ],
+      "inputs": [
+        {
+          "type": "text",
+          "placeholder": "Ask Natasha about all..."
+        }
+      ]
+    }
+  },
+  {
+    "page": "Hunt Phase",
+    "path": "/hunt",
+    "capabilities": {
+      "actions": [
+        "Overview",
+        "Kali Tools",
+        "Playbooks",
+        "Red Team",
+        "Phase Mapping",
+        "Tasks",
+        "+",
+        "−",
+        "Tasks",
+        "Agents",
+        "Refresh",
+        "Show CLI",
+        "Network View",
+        "Task Graph",
+        "Sectors",
+        "Filters",
+        "Data Sources",
+        "GIS Layers",
+        "OSINT Nodes",
+        "Threat Intel",
+        "Infrastructure",
+        "GeoIP",
+        "Supabase",
+        "SurrealDB",
+        "GEE (KMZ)"
+      ],
+      "navigation": [
+        {
+          "text": "Dashboard",
+          "href": "/"
+        },
+        {
+          "text": "Kill Chain",
+          "href": "/kill-chain"
+        },
+        {
+          "text": "Hunt",
+          "href": "/hunt"
+        },
+        {
+          "text": "Detect",
+          "href": "/detect"
+        },
+        {
+          "text": "Disrupt",
+          "href": "/disrupt"
+        },
+        {
+          "text": "Disable",
+          "href": "/disable"
+        },
+        {
+          "text": "Dominate",
+          "href": "/dominate"
+        },
+        {
+          "text": "Tasks",
+          "href": "/tasks"
+        },
+        {
+          "text": "Streams",
+          "href": "/info-streams"
+        },
+        {
+          "text": "Plasma",
+          "href": "/plasma"
+        },
+        {
+          "text": "Raptor",
+          "href": "/raptor"
+        },
+        {
+          "text": "vKali",
+          "href": "/vkali"
+        },
+        {
+          "text": "Containers",
+          "href": "/containers"
+        },
+        {
+          "text": "Exploit DB",
+          "href": "/exploit-db"
+        },
+        {
+          "text": "AI CLI",
+          "href": "/cli"
+        },
+        {
+          "text": "DVM",
+          "href": "/dvm"
+        },
+        {
+          "text": "Databases",
+          "href": "/database"
+        },
+        {
+          "text": "Scripts",
+          "href": "/setup-scripts"
+        },
+        {
+          "text": "Demo Report",
+          "href": "/demo-report"
+        },
+        {
+          "text": "Component Showcase",
+          "href": "/component-showcase"
+        },
+        {
+          "text": "Components",
+          "href": "/shared-components"
+        },
+        {
+          "text": "Settings",
+          "href": "/settings"
+        }
+      ],
+      "inputs": []
+    }
+  },
+  {
+    "page": "Detect Phase",
+    "path": "/detect",
+    "capabilities": {
+      "actions": [
+        "Overview",
+        "Kali Tools",
+        "Playbooks",
+        "Red Team",
+        "Phase Mapping",
+        "Tasks",
+        "+",
+        "−",
+        "Tasks",
+        "Agents",
+        "Refresh",
+        "Show CLI",
+        "Network View",
+        "Task Graph",
+        "Sectors",
+        "Filters",
+        "Data Sources",
+        "GIS Layers",
+        "OSINT Nodes",
+        "Threat Intel",
+        "Infrastructure",
+        "GeoIP",
+        "Supabase",
+        "SurrealDB",
+        "GEE (KMZ)"
+      ],
+      "navigation": [
+        {
+          "text": "Dashboard",
+          "href": "/"
+        },
+        {
+          "text": "Kill Chain",
+          "href": "/kill-chain"
+        },
+        {
+          "text": "Hunt",
+          "href": "/hunt"
+        },
+        {
+          "text": "Detect",
+          "href": "/detect"
+        },
+        {
+          "text": "Disrupt",
+          "href": "/disrupt"
+        },
+        {
+          "text": "Disable",
+          "href": "/disable"
+        },
+        {
+          "text": "Dominate",
+          "href": "/dominate"
+        },
+        {
+          "text": "Tasks",
+          "href": "/tasks"
+        },
+        {
+          "text": "Streams",
+          "href": "/info-streams"
+        },
+        {
+          "text": "Plasma",
+          "href": "/plasma"
+        },
+        {
+          "text": "Raptor",
+          "href": "/raptor"
+        },
+        {
+          "text": "vKali",
+          "href": "/vkali"
+        },
+        {
+          "text": "Containers",
+          "href": "/containers"
+        },
+        {
+          "text": "Exploit DB",
+          "href": "/exploit-db"
+        },
+        {
+          "text": "AI CLI",
+          "href": "/cli"
+        },
+        {
+          "text": "DVM",
+          "href": "/dvm"
+        },
+        {
+          "text": "Databases",
+          "href": "/database"
+        },
+        {
+          "text": "Scripts",
+          "href": "/setup-scripts"
+        },
+        {
+          "text": "Demo Report",
+          "href": "/demo-report"
+        },
+        {
+          "text": "Component Showcase",
+          "href": "/component-showcase"
+        },
+        {
+          "text": "Components",
+          "href": "/shared-components"
+        },
+        {
+          "text": "Settings",
+          "href": "/settings"
+        }
+      ],
+      "inputs": []
+    }
+  },
+  {
+    "page": "Disrupt Phase",
+    "path": "/disrupt",
+    "capabilities": {
+      "actions": [
+        "Overview",
+        "Kali Tools",
+        "Playbooks",
+        "Red Team",
+        "Phase Mapping",
+        "Tasks",
+        "+",
+        "−",
+        "Tasks",
+        "Agents",
+        "Refresh",
+        "Show CLI",
+        "Network View",
+        "Task Graph",
+        "Sectors",
+        "Filters",
+        "Data Sources",
+        "GIS Layers",
+        "OSINT Nodes",
+        "Threat Intel",
+        "Infrastructure",
+        "GeoIP",
+        "Supabase",
+        "SurrealDB",
+        "GEE (KMZ)"
+      ],
+      "navigation": [
+        {
+          "text": "Dashboard",
+          "href": "/"
+        },
+        {
+          "text": "Kill Chain",
+          "href": "/kill-chain"
+        },
+        {
+          "text": "Hunt",
+          "href": "/hunt"
+        },
+        {
+          "text": "Detect",
+          "href": "/detect"
+        },
+        {
+          "text": "Disrupt",
+          "href": "/disrupt"
+        },
+        {
+          "text": "Disable",
+          "href": "/disable"
+        },
+        {
+          "text": "Dominate",
+          "href": "/dominate"
+        },
+        {
+          "text": "Tasks",
+          "href": "/tasks"
+        },
+        {
+          "text": "Streams",
+          "href": "/info-streams"
+        },
+        {
+          "text": "Plasma",
+          "href": "/plasma"
+        },
+        {
+          "text": "Raptor",
+          "href": "/raptor"
+        },
+        {
+          "text": "vKali",
+          "href": "/vkali"
+        },
+        {
+          "text": "Containers",
+          "href": "/containers"
+        },
+        {
+          "text": "Exploit DB",
+          "href": "/exploit-db"
+        },
+        {
+          "text": "AI CLI",
+          "href": "/cli"
+        },
+        {
+          "text": "DVM",
+          "href": "/dvm"
+        },
+        {
+          "text": "Databases",
+          "href": "/database"
+        },
+        {
+          "text": "Scripts",
+          "href": "/setup-scripts"
+        },
+        {
+          "text": "Demo Report",
+          "href": "/demo-report"
+        },
+        {
+          "text": "Component Showcase",
+          "href": "/component-showcase"
+        },
+        {
+          "text": "Components",
+          "href": "/shared-components"
+        },
+        {
+          "text": "Settings",
+          "href": "/settings"
+        }
+      ],
+      "inputs": []
+    }
+  },
+  {
+    "page": "Disable Phase",
+    "path": "/disable",
+    "capabilities": {
+      "actions": [
+        "Overview",
+        "Kali Tools",
+        "Playbooks",
+        "Red Team",
+        "Phase Mapping",
+        "Tasks",
+        "+",
+        "−",
+        "Tasks",
+        "Agents",
+        "Refresh",
+        "Show CLI",
+        "Network View",
+        "Task Graph",
+        "Sectors",
+        "Filters",
+        "Data Sources",
+        "GIS Layers",
+        "OSINT Nodes",
+        "Threat Intel",
+        "Infrastructure",
+        "GeoIP",
+        "Supabase",
+        "SurrealDB",
+        "GEE (KMZ)"
+      ],
+      "navigation": [
+        {
+          "text": "Dashboard",
+          "href": "/"
+        },
+        {
+          "text": "Kill Chain",
+          "href": "/kill-chain"
+        },
+        {
+          "text": "Hunt",
+          "href": "/hunt"
+        },
+        {
+          "text": "Detect",
+          "href": "/detect"
+        },
+        {
+          "text": "Disrupt",
+          "href": "/disrupt"
+        },
+        {
+          "text": "Disable",
+          "href": "/disable"
+        },
+        {
+          "text": "Dominate",
+          "href": "/dominate"
+        },
+        {
+          "text": "Tasks",
+          "href": "/tasks"
+        },
+        {
+          "text": "Streams",
+          "href": "/info-streams"
+        },
+        {
+          "text": "Plasma",
+          "href": "/plasma"
+        },
+        {
+          "text": "Raptor",
+          "href": "/raptor"
+        },
+        {
+          "text": "vKali",
+          "href": "/vkali"
+        },
+        {
+          "text": "Containers",
+          "href": "/containers"
+        },
+        {
+          "text": "Exploit DB",
+          "href": "/exploit-db"
+        },
+        {
+          "text": "AI CLI",
+          "href": "/cli"
+        },
+        {
+          "text": "DVM",
+          "href": "/dvm"
+        },
+        {
+          "text": "Databases",
+          "href": "/database"
+        },
+        {
+          "text": "Scripts",
+          "href": "/setup-scripts"
+        },
+        {
+          "text": "Demo Report",
+          "href": "/demo-report"
+        },
+        {
+          "text": "Component Showcase",
+          "href": "/component-showcase"
+        },
+        {
+          "text": "Components",
+          "href": "/shared-components"
+        },
+        {
+          "text": "Settings",
+          "href": "/settings"
+        }
+      ],
+      "inputs": []
+    }
+  },
+  {
+    "page": "Dominate Phase",
+    "path": "/dominate",
+    "capabilities": {
+      "actions": [
+        "Overview",
+        "Kali Tools",
+        "Playbooks",
+        "Red Team",
+        "Phase Mapping",
+        "Tasks",
+        "+",
+        "−",
+        "Tasks",
+        "Agents",
+        "Refresh",
+        "Show CLI",
+        "Network View",
+        "Task Graph",
+        "Sectors",
+        "Filters",
+        "Data Sources",
+        "GIS Layers",
+        "OSINT Nodes",
+        "Threat Intel",
+        "Infrastructure",
+        "GeoIP",
+        "Supabase",
+        "SurrealDB",
+        "GEE (KMZ)"
+      ],
+      "navigation": [
+        {
+          "text": "Dashboard",
+          "href": "/"
+        },
+        {
+          "text": "Kill Chain",
+          "href": "/kill-chain"
+        },
+        {
+          "text": "Hunt",
+          "href": "/hunt"
+        },
+        {
+          "text": "Detect",
+          "href": "/detect"
+        },
+        {
+          "text": "Disrupt",
+          "href": "/disrupt"
+        },
+        {
+          "text": "Disable",
+          "href": "/disable"
+        },
+        {
+          "text": "Dominate",
+          "href": "/dominate"
+        },
+        {
+          "text": "Tasks",
+          "href": "/tasks"
+        },
+        {
+          "text": "Streams",
+          "href": "/info-streams"
+        },
+        {
+          "text": "Plasma",
+          "href": "/plasma"
+        },
+        {
+          "text": "Raptor",
+          "href": "/raptor"
+        },
+        {
+          "text": "vKali",
+          "href": "/vkali"
+        },
+        {
+          "text": "Containers",
+          "href": "/containers"
+        },
+        {
+          "text": "Exploit DB",
+          "href": "/exploit-db"
+        },
+        {
+          "text": "AI CLI",
+          "href": "/cli"
+        },
+        {
+          "text": "DVM",
+          "href": "/dvm"
+        },
+        {
+          "text": "Databases",
+          "href": "/database"
+        },
+        {
+          "text": "Scripts",
+          "href": "/setup-scripts"
+        },
+        {
+          "text": "Demo Report",
+          "href": "/demo-report"
+        },
+        {
+          "text": "Component Showcase",
+          "href": "/component-showcase"
+        },
+        {
+          "text": "Components",
+          "href": "/shared-components"
+        },
+        {
+          "text": "Settings",
+          "href": "/settings"
+        }
+      ],
+      "inputs": []
+    }
+  },
+  {
+    "page": "Tasks",
+    "path": "/tasks",
+    "capabilities": {
+      "actions": [
+        "Network View",
+        "Task Graph",
+        "Sectors",
+        "Filters",
+        "Data Sources",
+        "GIS Layers",
+        "OSINT Nodes",
+        "Threat Intel",
+        "Infrastructure",
+        "GeoIP",
+        "Supabase",
+        "SurrealDB",
+        "GEE (KMZ)"
+      ],
+      "navigation": [
+        {
+          "text": "Dashboard",
+          "href": "/"
+        },
+        {
+          "text": "Kill Chain",
+          "href": "/kill-chain"
+        },
+        {
+          "text": "Hunt",
+          "href": "/hunt"
+        },
+        {
+          "text": "Detect",
+          "href": "/detect"
+        },
+        {
+          "text": "Disrupt",
+          "href": "/disrupt"
+        },
+        {
+          "text": "Disable",
+          "href": "/disable"
+        },
+        {
+          "text": "Dominate",
+          "href": "/dominate"
+        },
+        {
+          "text": "Tasks",
+          "href": "/tasks"
+        },
+        {
+          "text": "Streams",
+          "href": "/info-streams"
+        },
+        {
+          "text": "Plasma",
+          "href": "/plasma"
+        },
+        {
+          "text": "Raptor",
+          "href": "/raptor"
+        },
+        {
+          "text": "vKali",
+          "href": "/vkali"
+        },
+        {
+          "text": "Containers",
+          "href": "/containers"
+        },
+        {
+          "text": "Exploit DB",
+          "href": "/exploit-db"
+        },
+        {
+          "text": "AI CLI",
+          "href": "/cli"
+        },
+        {
+          "text": "DVM",
+          "href": "/dvm"
+        },
+        {
+          "text": "Databases",
+          "href": "/database"
+        },
+        {
+          "text": "Scripts",
+          "href": "/setup-scripts"
+        },
+        {
+          "text": "Demo Report",
+          "href": "/demo-report"
+        },
+        {
+          "text": "Component Showcase",
+          "href": "/component-showcase"
+        },
+        {
+          "text": "Components",
+          "href": "/shared-components"
+        },
+        {
+          "text": "Settings",
+          "href": "/settings"
+        }
+      ],
+      "inputs": []
+    }
+  },
+  {
+    "page": "Graph Visualization",
+    "path": "/graph",
+    "capabilities": {
+      "actions": [
+        "All Tasks",
+        "Hunt Phase",
+        "Detect Phase",
+        "Network View",
+        "Task Graph",
+        "Sectors",
+        "Filters",
+        "Data Sources",
+        "GIS Layers",
+        "OSINT Nodes",
+        "Threat Intel",
+        "Infrastructure",
+        "GeoIP",
+        "Supabase",
+        "SurrealDB",
+        "GEE (KMZ)"
+      ],
+      "navigation": [
+        {
+          "text": "Dashboard",
+          "href": "/"
+        },
+        {
+          "text": "Kill Chain",
+          "href": "/kill-chain"
+        },
+        {
+          "text": "Hunt",
+          "href": "/hunt"
+        },
+        {
+          "text": "Detect",
+          "href": "/detect"
+        },
+        {
+          "text": "Disrupt",
+          "href": "/disrupt"
+        },
+        {
+          "text": "Disable",
+          "href": "/disable"
+        },
+        {
+          "text": "Dominate",
+          "href": "/dominate"
+        },
+        {
+          "text": "Tasks",
+          "href": "/tasks"
+        },
+        {
+          "text": "Streams",
+          "href": "/info-streams"
+        },
+        {
+          "text": "Plasma",
+          "href": "/plasma"
+        },
+        {
+          "text": "Raptor",
+          "href": "/raptor"
+        },
+        {
+          "text": "vKali",
+          "href": "/vkali"
+        },
+        {
+          "text": "Containers",
+          "href": "/containers"
+        },
+        {
+          "text": "Exploit DB",
+          "href": "/exploit-db"
+        },
+        {
+          "text": "AI CLI",
+          "href": "/cli"
+        },
+        {
+          "text": "DVM",
+          "href": "/dvm"
+        },
+        {
+          "text": "Databases",
+          "href": "/database"
+        },
+        {
+          "text": "Scripts",
+          "href": "/setup-scripts"
+        },
+        {
+          "text": "Demo Report",
+          "href": "/demo-report"
+        },
+        {
+          "text": "Component Showcase",
+          "href": "/component-showcase"
+        },
+        {
+          "text": "Components",
+          "href": "/shared-components"
+        },
+        {
+          "text": "Settings",
+          "href": "/settings"
+        }
+      ],
+      "inputs": []
+    }
+  },
+  {
+    "page": "Info Streams",
+    "path": "/info-streams",
+    "capabilities": {
+      "actions": [
+        "All (0)",
+        "Critical (0)",
+        "High (0)",
+        "Medium (0)",
+        "List View",
+        "Map View",
+        "Network View",
+        "Task Graph",
+        "Sectors",
+        "Filters",
+        "Data Sources",
+        "GIS Layers",
+        "OSINT Nodes",
+        "Threat Intel",
+        "Infrastructure",
+        "GeoIP",
+        "Supabase",
+        "SurrealDB",
+        "GEE (KMZ)"
+      ],
+      "navigation": [
+        {
+          "text": "Dashboard",
+          "href": "/"
+        },
+        {
+          "text": "Kill Chain",
+          "href": "/kill-chain"
+        },
+        {
+          "text": "Hunt",
+          "href": "/hunt"
+        },
+        {
+          "text": "Detect",
+          "href": "/detect"
+        },
+        {
+          "text": "Disrupt",
+          "href": "/disrupt"
+        },
+        {
+          "text": "Disable",
+          "href": "/disable"
+        },
+        {
+          "text": "Dominate",
+          "href": "/dominate"
+        },
+        {
+          "text": "Tasks",
+          "href": "/tasks"
+        },
+        {
+          "text": "Streams",
+          "href": "/info-streams"
+        },
+        {
+          "text": "Plasma",
+          "href": "/plasma"
+        },
+        {
+          "text": "Raptor",
+          "href": "/raptor"
+        },
+        {
+          "text": "vKali",
+          "href": "/vkali"
+        },
+        {
+          "text": "Containers",
+          "href": "/containers"
+        },
+        {
+          "text": "Exploit DB",
+          "href": "/exploit-db"
+        },
+        {
+          "text": "AI CLI",
+          "href": "/cli"
+        },
+        {
+          "text": "DVM",
+          "href": "/dvm"
+        },
+        {
+          "text": "Databases",
+          "href": "/database"
+        },
+        {
+          "text": "Scripts",
+          "href": "/setup-scripts"
+        },
+        {
+          "text": "Demo Report",
+          "href": "/demo-report"
+        },
+        {
+          "text": "Component Showcase",
+          "href": "/component-showcase"
+        },
+        {
+          "text": "Components",
+          "href": "/shared-components"
+        },
+        {
+          "text": "Settings",
+          "href": "/settings"
+        }
+      ],
+      "inputs": []
+    }
+  },
+  {
+    "page": "Containers",
+    "path": "/containers",
+    "capabilities": {
+      "actions": [
+        "Simulate Exploit",
+        "Simulate Exploit",
+        "Simulate Exploit",
+        "Simulate Exploit",
+        "Simulate Exploit",
+        "Simulate Exploit",
+        "Simulate Exploit",
+        "Network View",
+        "Task Graph",
+        "Sectors",
+        "Filters",
+        "Data Sources",
+        "GIS Layers",
+        "OSINT Nodes",
+        "Threat Intel",
+        "Infrastructure",
+        "GeoIP",
+        "Supabase",
+        "SurrealDB",
+        "GEE (KMZ)"
+      ],
+      "navigation": [
+        {
+          "text": "Dashboard",
+          "href": "/"
+        },
+        {
+          "text": "Kill Chain",
+          "href": "/kill-chain"
+        },
+        {
+          "text": "Hunt",
+          "href": "/hunt"
+        },
+        {
+          "text": "Detect",
+          "href": "/detect"
+        },
+        {
+          "text": "Disrupt",
+          "href": "/disrupt"
+        },
+        {
+          "text": "Disable",
+          "href": "/disable"
+        },
+        {
+          "text": "Dominate",
+          "href": "/dominate"
+        },
+        {
+          "text": "Tasks",
+          "href": "/tasks"
+        },
+        {
+          "text": "Streams",
+          "href": "/info-streams"
+        },
+        {
+          "text": "Plasma",
+          "href": "/plasma"
+        },
+        {
+          "text": "Raptor",
+          "href": "/raptor"
+        },
+        {
+          "text": "vKali",
+          "href": "/vkali"
+        },
+        {
+          "text": "Containers",
+          "href": "/containers"
+        },
+        {
+          "text": "Exploit DB",
+          "href": "/exploit-db"
+        },
+        {
+          "text": "AI CLI",
+          "href": "/cli"
+        },
+        {
+          "text": "DVM",
+          "href": "/dvm"
+        },
+        {
+          "text": "Databases",
+          "href": "/database"
+        },
+        {
+          "text": "Scripts",
+          "href": "/setup-scripts"
+        },
+        {
+          "text": "Demo Report",
+          "href": "/demo-report"
+        },
+        {
+          "text": "Component Showcase",
+          "href": "/component-showcase"
+        },
+        {
+          "text": "Components",
+          "href": "/shared-components"
+        },
+        {
+          "text": "Settings",
+          "href": "/settings"
+        }
+      ],
+      "inputs": []
+    }
+  },
+  {
+    "page": "Database",
+    "path": "/database",
+    "capabilities": {
+      "actions": [
+        "Supabase",
+        "SurrealDB",
+        "Sled KVR",
+        "SlotGraph",
+        "Bevy Interface",
+        "Create New Project",
+        "Backup Database",
+        "View Analytics",
+        "Network View",
+        "Task Graph",
+        "Sectors",
+        "Filters",
+        "Data Sources",
+        "GIS Layers",
+        "OSINT Nodes",
+        "Threat Intel",
+        "Infrastructure",
+        "GeoIP",
+        "Supabase",
+        "SurrealDB",
+        "GEE (KMZ)"
+      ],
+      "navigation": [
+        {
+          "text": "Dashboard",
+          "href": "/"
+        },
+        {
+          "text": "Kill Chain",
+          "href": "/kill-chain"
+        },
+        {
+          "text": "Hunt",
+          "href": "/hunt"
+        },
+        {
+          "text": "Detect",
+          "href": "/detect"
+        },
+        {
+          "text": "Disrupt",
+          "href": "/disrupt"
+        },
+        {
+          "text": "Disable",
+          "href": "/disable"
+        },
+        {
+          "text": "Dominate",
+          "href": "/dominate"
+        },
+        {
+          "text": "Tasks",
+          "href": "/tasks"
+        },
+        {
+          "text": "Streams",
+          "href": "/info-streams"
+        },
+        {
+          "text": "Plasma",
+          "href": "/plasma"
+        },
+        {
+          "text": "Raptor",
+          "href": "/raptor"
+        },
+        {
+          "text": "vKali",
+          "href": "/vkali"
+        },
+        {
+          "text": "Containers",
+          "href": "/containers"
+        },
+        {
+          "text": "Exploit DB",
+          "href": "/exploit-db"
+        },
+        {
+          "text": "AI CLI",
+          "href": "/cli"
+        },
+        {
+          "text": "DVM",
+          "href": "/dvm"
+        },
+        {
+          "text": "Databases",
+          "href": "/database"
+        },
+        {
+          "text": "Scripts",
+          "href": "/setup-scripts"
+        },
+        {
+          "text": "Demo Report",
+          "href": "/demo-report"
+        },
+        {
+          "text": "Component Showcase",
+          "href": "/component-showcase"
+        },
+        {
+          "text": "Components",
+          "href": "/shared-components"
+        },
+        {
+          "text": "Settings",
+          "href": "/settings"
+        }
+      ],
+      "inputs": []
+    }
+  },
+  {
+    "page": "Map",
+    "path": "/map",
+    "capabilities": {
+      "actions": [
+        "Diagnostic",
+        "Direct Test",
+        "Show Test",
+        "Network View",
+        "Task Graph",
+        "Sectors",
+        "Filters",
+        "Data Sources",
+        "GIS Layers",
+        "OSINT Nodes",
+        "Threat Intel",
+        "Infrastructure",
+        "GeoIP",
+        "Supabase",
+        "SurrealDB",
+        "GEE (KMZ)"
+      ],
+      "navigation": [
+        {
+          "text": "Dashboard",
+          "href": "/"
+        },
+        {
+          "text": "Kill Chain",
+          "href": "/kill-chain"
+        },
+        {
+          "text": "Hunt",
+          "href": "/hunt"
+        },
+        {
+          "text": "Detect",
+          "href": "/detect"
+        },
+        {
+          "text": "Disrupt",
+          "href": "/disrupt"
+        },
+        {
+          "text": "Disable",
+          "href": "/disable"
+        },
+        {
+          "text": "Dominate",
+          "href": "/dominate"
+        },
+        {
+          "text": "Tasks",
+          "href": "/tasks"
+        },
+        {
+          "text": "Streams",
+          "href": "/info-streams"
+        },
+        {
+          "text": "Plasma",
+          "href": "/plasma"
+        },
+        {
+          "text": "Raptor",
+          "href": "/raptor"
+        },
+        {
+          "text": "vKali",
+          "href": "/vkali"
+        },
+        {
+          "text": "Containers",
+          "href": "/containers"
+        },
+        {
+          "text": "Exploit DB",
+          "href": "/exploit-db"
+        },
+        {
+          "text": "AI CLI",
+          "href": "/cli"
+        },
+        {
+          "text": "DVM",
+          "href": "/dvm"
+        },
+        {
+          "text": "Databases",
+          "href": "/database"
+        },
+        {
+          "text": "Scripts",
+          "href": "/setup-scripts"
+        },
+        {
+          "text": "Demo Report",
+          "href": "/demo-report"
+        },
+        {
+          "text": "Component Showcase",
+          "href": "/component-showcase"
+        },
+        {
+          "text": "Components",
+          "href": "/shared-components"
+        },
+        {
+          "text": "Settings",
+          "href": "/settings"
+        }
+      ],
+      "inputs": []
+    }
+  },
+  {
+    "page": "Settings",
+    "path": "/settings",
+    "capabilities": {
+      "actions": [
+        "Network View",
+        "Task Graph",
+        "Sectors",
+        "Filters",
+        "Data Sources",
+        "GIS Layers",
+        "OSINT Nodes",
+        "Threat Intel",
+        "Infrastructure",
+        "GeoIP",
+        "Supabase",
+        "SurrealDB",
+        "GEE (KMZ)"
+      ],
+      "navigation": [
+        {
+          "text": "Dashboard",
+          "href": "/"
+        },
+        {
+          "text": "Kill Chain",
+          "href": "/kill-chain"
+        },
+        {
+          "text": "Hunt",
+          "href": "/hunt"
+        },
+        {
+          "text": "Detect",
+          "href": "/detect"
+        },
+        {
+          "text": "Disrupt",
+          "href": "/disrupt"
+        },
+        {
+          "text": "Disable",
+          "href": "/disable"
+        },
+        {
+          "text": "Dominate",
+          "href": "/dominate"
+        },
+        {
+          "text": "Tasks",
+          "href": "/tasks"
+        },
+        {
+          "text": "Streams",
+          "href": "/info-streams"
+        },
+        {
+          "text": "Plasma",
+          "href": "/plasma"
+        },
+        {
+          "text": "Raptor",
+          "href": "/raptor"
+        },
+        {
+          "text": "vKali",
+          "href": "/vkali"
+        },
+        {
+          "text": "Containers",
+          "href": "/containers"
+        },
+        {
+          "text": "Exploit DB",
+          "href": "/exploit-db"
+        },
+        {
+          "text": "AI CLI",
+          "href": "/cli"
+        },
+        {
+          "text": "DVM",
+          "href": "/dvm"
+        },
+        {
+          "text": "Databases",
+          "href": "/database"
+        },
+        {
+          "text": "Scripts",
+          "href": "/setup-scripts"
+        },
+        {
+          "text": "Demo Report",
+          "href": "/demo-report"
+        },
+        {
+          "text": "Component Showcase",
+          "href": "/component-showcase"
+        },
+        {
+          "text": "Components",
+          "href": "/shared-components"
+        },
+        {
+          "text": "Settings",
+          "href": "/settings"
+        }
+      ],
+      "inputs": []
+    }
+  }
+]

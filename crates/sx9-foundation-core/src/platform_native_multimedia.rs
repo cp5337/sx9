@@ -1,11 +1,11 @@
 //! Platform-Native Multimedia Integration
 //! Apple Native (AVFoundation, CallKit, ReplayKit) + Teams/WebRTC for cross-platform
 
+use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use tokio::sync::RwLock;
 use uuid::Uuid;
-use chrono::{DateTime, Utc};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct PlatformMultimediaEngine {
@@ -20,19 +20,19 @@ pub enum Platform {
     Apple {
         device_type: AppleDevice,
         os_version: String,
-        capabilities: AppleCapabilities
+        capabilities: AppleCapabilities,
     },
     Windows {
         version: String,
-        teams_native: bool
+        teams_native: bool,
     },
     Linux {
         distribution: String,
-        audio_system: String
+        audio_system: String,
     },
     Web {
         browser: String,
-        webrtc_support: bool
+        webrtc_support: bool,
     },
 }
 
@@ -186,7 +186,7 @@ pub struct VideoResolution {
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct VideoCodec {
-    pub primary: String,   // "H.265", "H.264", "AV1", "VP9"
+    pub primary: String, // "H.265", "H.264", "AV1", "VP9"
     pub fallback: String,
     pub hardware_encoding: bool,
     pub profile: String,
@@ -215,9 +215,9 @@ pub struct PerformanceOptimizations {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct SecurityFeatures {
     pub end_to_end_encryption: bool,
-    pub secure_enclave: bool,     // Apple Secure Enclave
-    pub biometric_auth: bool,     // Touch ID / Face ID
-    pub app_attestation: bool,    // App integrity verification
+    pub secure_enclave: bool,  // Apple Secure Enclave
+    pub biometric_auth: bool,  // Touch ID / Face ID
+    pub app_attestation: bool, // App integrity verification
     pub network_isolation: bool,
     pub recording_protection: bool,
 }
@@ -459,7 +459,7 @@ pub struct SessionQualityMetrics {
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct AudioQualityMetrics {
-    pub mos_score: f32,           // Mean Opinion Score
+    pub mos_score: f32, // Mean Opinion Score
     pub audio_level: f32,
     pub background_noise: f32,
     pub echo_return_loss: f32,
@@ -650,13 +650,18 @@ impl PlatformMultimediaEngine {
             },
         };
 
-        self.native_integrations.insert(integration_id.clone(), apple_integration);
+        self.native_integrations
+            .insert(integration_id.clone(), apple_integration);
 
         tracing::info!("🍎 Apple Native multimedia integration configured");
         Ok(integration_id)
     }
 
-    pub async fn setup_teams_integration(&mut self, tenant_id: String, app_id: String) -> anyhow::Result<String> {
+    pub async fn setup_teams_integration(
+        &mut self,
+        tenant_id: String,
+        app_id: String,
+    ) -> anyhow::Result<String> {
         let solution_id = Uuid::new_v4().to_string();
 
         let teams_solution = ConferenceSolution {
@@ -690,9 +695,7 @@ impl PlatformMultimediaEngine {
                     concurrent_connections: 100,
                     bandwidth_limit_mbps: 100.0,
                 },
-                webhook_endpoints: vec![
-                    "https://ctas7-streaming.local/teams/webhook".to_string()
-                ],
+                webhook_endpoints: vec!["https://ctas7-streaming.local/teams/webhook".to_string()],
                 supported_events: vec![
                     "meeting.started".to_string(),
                     "meeting.ended".to_string(),
@@ -712,7 +715,8 @@ impl PlatformMultimediaEngine {
             }),
         };
 
-        self.conference_solutions.insert(solution_id.clone(), teams_solution);
+        self.conference_solutions
+            .insert(solution_id.clone(), teams_solution);
 
         tracing::info!("📞 Microsoft Teams integration configured");
         Ok(solution_id)
@@ -762,17 +766,23 @@ impl PlatformMultimediaEngine {
             sip_config: None,
         };
 
-        self.conference_solutions.insert(solution_id.clone(), webrtc_solution);
+        self.conference_solutions
+            .insert(solution_id.clone(), webrtc_solution);
 
         tracing::info!("🌐 WebRTC fallback integration configured");
         Ok(solution_id)
     }
 
-    pub async fn create_tactical_session(&mut self, session_type: SessionType, participants: Vec<String>) -> anyhow::Result<String> {
+    pub async fn create_tactical_session(
+        &mut self,
+        session_type: SessionType,
+        participants: Vec<String>,
+    ) -> anyhow::Result<String> {
         let session_id = Uuid::new_v4().to_string();
 
         // Choose best integration based on platform and requirements
-        let (platform_integration, conference_integration) = self.select_best_integrations(&session_type).await;
+        let (platform_integration, conference_integration) =
+            self.select_best_integrations(&session_type).await;
 
         let session_participants: Vec<SessionParticipant> = participants
             .into_iter()
@@ -780,7 +790,11 @@ impl PlatformMultimediaEngine {
             .map(|(i, participant_id)| SessionParticipant {
                 participant_id: participant_id.clone(),
                 display_name: format!("User {}", i + 1),
-                role: if i == 0 { ParticipantRole::Commander } else { ParticipantRole::Operator },
+                role: if i == 0 {
+                    ParticipantRole::Commander
+                } else {
+                    ParticipantRole::Operator
+                },
                 platform: self.platform.clone(),
                 audio_status: AudioStatus {
                     enabled: true,
@@ -864,13 +878,17 @@ impl PlatformMultimediaEngine {
             status: SessionStatus::Active,
         };
 
-        self.active_sessions.insert(session_id.clone(), multimedia_session);
+        self.active_sessions
+            .insert(session_id.clone(), multimedia_session);
 
         tracing::info!("🎯 Tactical multimedia session created: {}", session_id);
         Ok(session_id)
     }
 
-    async fn select_best_integrations(&self, session_type: &SessionType) -> (String, Option<String>) {
+    async fn select_best_integrations(
+        &self,
+        session_type: &SessionType,
+    ) -> (String, Option<String>) {
         // Platform-specific selection logic
         match &self.platform {
             Platform::Apple { capabilities, .. } => {
@@ -881,17 +899,15 @@ impl PlatformMultimediaEngine {
                     // Use Apple + Teams for video
                     ("apple_native".to_string(), Some("teams".to_string()))
                 }
-            },
+            }
             Platform::Windows { teams_native, .. } => {
                 if *teams_native {
                     ("windows_native".to_string(), Some("teams".to_string()))
                 } else {
                     ("webrtc".to_string(), None)
                 }
-            },
-            _ => {
-                ("webrtc".to_string(), None)
             }
+            _ => ("webrtc".to_string(), None),
         }
     }
 
@@ -909,10 +925,10 @@ pub async fn setup_platform_native_endpoint() -> axum::Json<serde_json::Value> {
     let mut engine = PlatformMultimediaEngine::new().await;
 
     let apple_integration = engine.setup_apple_native().await.unwrap_or_default();
-    let teams_integration = engine.setup_teams_integration(
-        "your-tenant-id".to_string(),
-        "your-app-id".to_string()
-    ).await.unwrap_or_default();
+    let teams_integration = engine
+        .setup_teams_integration("your-tenant-id".to_string(), "your-app-id".to_string())
+        .await
+        .unwrap_or_default();
     let webrtc_fallback = engine.setup_webrtc_fallback().await.unwrap_or_default();
 
     axum::Json(serde_json::json!({
@@ -952,7 +968,10 @@ pub async fn create_platform_session_endpoint(
         .filter_map(|v| v.as_str().map(|s| s.to_string()))
         .collect();
 
-    match engine.create_tactical_session(session_type, participants).await {
+    match engine
+        .create_tactical_session(session_type, participants)
+        .await
+    {
         Ok(session_id) => axum::Json(serde_json::json!({
             "status": "created",
             "session_id": session_id,
@@ -968,7 +987,7 @@ pub async fn create_platform_session_endpoint(
         Err(e) => axum::Json(serde_json::json!({
             "status": "error",
             "error": e.to_string()
-        }))
+        })),
     }
 }
 

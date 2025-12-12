@@ -1,8 +1,8 @@
 //! Configuration for Plasma Defender
 
-use sx9_atlas_bus::CrystalFamily;
-use serde::{Deserialize, Serialize};
 use crate::agents::AgentType;
+use serde::{Deserialize, Serialize};
+use sx9_atlas_bus::CrystalFamily;
 
 // Local ThyristorConfig wrapper for serialization
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -80,8 +80,11 @@ impl Default for DefenderConfig {
             health_endpoint: "/health".to_string(),
             metrics_endpoint: "/metrics".to_string(),
             nats_url: "nats://localhost:4222".to_string(),
+            ann_enabled: false,
             crystal_family: Some(CrystalFamily::GroundStation),
-            sdt_config: Some(ThyristorConfigWrapper::from(sx9_atlas_bus::ThyristorConfig::default())),
+            sdt_config: Some(ThyristorConfigWrapper::from(
+                sx9_atlas_bus::ThyristorConfig::default(),
+            )),
             agents: vec![
                 AgentConfig {
                     id: "network-monitor".to_string(),
@@ -102,4 +105,3 @@ impl Default for DefenderConfig {
         }
     }
 }
-

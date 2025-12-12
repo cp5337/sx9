@@ -6,7 +6,7 @@ authors = ["CTAS Development Team"]
 description = "CTAS 7.0 Tactical Foundation - Steve Jobs-level UX bridge for Universal Cognigraph operations"
 
 [lib]
-name = "ctas7_foundation_tactical"
+name = "sx9_foundation_tactical"
 
 [dependencies]
 # Foundation dependencies (RFC-9001 hashing via foundation-core)

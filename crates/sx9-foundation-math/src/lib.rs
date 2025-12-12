@@ -4,11 +4,11 @@
 //! Integrates with 32 Universal Primitives framework and archaeological code reuse patterns.
 
 use anyhow::Result;
-use sx9_foundation_core::TrivariteHashEngine;
 use nalgebra::Vector3;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::sync::Arc;
+use sx9_foundation_core::TrivariteHashEngine;
 use tokio::sync::RwLock;
 
 // Mathematical consciousness modules
@@ -29,7 +29,6 @@ pub struct MathematicalFoundationConsciousness {
 
     // TODO: Re-enable when unicode_assembly module is added to ctas7-foundation-core
     // pub unicode_assembly: ctas7_foundation_core::unicode_assembly::UnicodeAssemblyProcessor,
-
     /// Trivariate hash engine (replaces generate_trivariate_hash)
     pub trivariate_engine: TrivariteHashEngine,
 
@@ -51,7 +50,8 @@ impl MathematicalFoundationConsciousness {
     pub fn new() -> Result<Self> {
         Ok(Self {
             consciousness_identity: "I am the mathematical foundation consciousness".to_string(),
-            consciousness_purpose: "I replace Wolfram Alpha with native Rust symbolic computation".to_string(),
+            consciousness_purpose: "I replace Wolfram Alpha with native Rust symbolic computation"
+                .to_string(),
             symbolic_engine: SymbolicComputationEngine::new()?,
             // unicode_assembly: ctas7_foundation_core::unicode_assembly::UnicodeAssemblyProcessor::new(),
             trivariate_engine: TrivariteHashEngine::new(),
@@ -68,7 +68,7 @@ impl MathematicalFoundationConsciousness {
         let computation_hash = self.trivariate_engine.generate_trivariate_hash(
             expression,
             "mathematical_computation",
-            "SymbolicComputation"
+            "SymbolicComputation",
         );
 
         // Execute symbolic computation
@@ -117,7 +117,9 @@ impl MathematicalFoundationConsciousness {
         &mut self,
         fingerprint_image: &biometric_analysis::FingerprintImage,
     ) -> Result<biometric_analysis::BiometricAnalysisResult> {
-        self.biometric_consciousness.analyze_biometric_patterns(fingerprint_image).await
+        self.biometric_consciousness
+            .analyze_biometric_patterns(fingerprint_image)
+            .await
     }
 
     /// Extract minutiae from fingerprint using advanced mathematical algorithms
@@ -125,7 +127,10 @@ impl MathematicalFoundationConsciousness {
         &mut self,
         fingerprint_image: &biometric_analysis::FingerprintImage,
     ) -> Result<biometric_analysis::MinutiaePoints> {
-        let analysis = self.biometric_consciousness.analyze_biometric_patterns(fingerprint_image).await?;
+        let analysis = self
+            .biometric_consciousness
+            .analyze_biometric_patterns(fingerprint_image)
+            .await?;
         Ok(analysis.minutiae)
     }
 
@@ -134,7 +139,10 @@ impl MathematicalFoundationConsciousness {
         &mut self,
         fingerprint_image: &biometric_analysis::FingerprintImage,
     ) -> Result<biometric_analysis::EnhancedFingerprintImage> {
-        let analysis = self.biometric_consciousness.analyze_biometric_patterns(fingerprint_image).await?;
+        let analysis = self
+            .biometric_consciousness
+            .analyze_biometric_patterns(fingerprint_image)
+            .await?;
         Ok(analysis.enhanced_latent)
     }
 
@@ -143,7 +151,10 @@ impl MathematicalFoundationConsciousness {
         &mut self,
         fingerprint_image: &biometric_analysis::FingerprintImage,
     ) -> Result<biometric_analysis::HMMPatternAnalysis> {
-        let analysis = self.biometric_consciousness.analyze_biometric_patterns(fingerprint_image).await?;
+        let analysis = self
+            .biometric_consciousness
+            .analyze_biometric_patterns(fingerprint_image)
+            .await?;
         Ok(analysis.hmm_patterns)
     }
 }
@@ -182,11 +193,14 @@ impl SymbolicComputationEngine {
 
         // Cache result
         let mut cache = self.operation_cache.write().await;
-        cache.insert(expression.to_string(), CachedOperation {
-            expression: expression.to_string(),
-            result: result.clone(),
-            computed_at: chrono::Utc::now(),
-        });
+        cache.insert(
+            expression.to_string(),
+            CachedOperation {
+                expression: expression.to_string(),
+                result: result.clone(),
+                computed_at: chrono::Utc::now(),
+            },
+        );
 
         Ok(result)
     }
@@ -239,7 +253,6 @@ impl SymbolicComputationEngine {
     }
 }
 
-
 /// 32 Universal Primitives Engine
 pub struct UniversalPrimitivesEngine {
     primitives: HashMap<String, PrimitiveOperation>,
@@ -250,29 +263,69 @@ impl UniversalPrimitivesEngine {
         let mut primitives = HashMap::new();
 
         // Core CRUD operations (4 primitives)
-        primitives.insert("CREATE".to_string(), PrimitiveOperation::new("CREATE", "Generate new entity or data"));
-        primitives.insert("READ".to_string(), PrimitiveOperation::new("READ", "Retrieve existing entity or data"));
-        primitives.insert("UPDATE".to_string(), PrimitiveOperation::new("UPDATE", "Modify existing entity or data"));
-        primitives.insert("DELETE".to_string(), PrimitiveOperation::new("DELETE", "Remove entity or data"));
+        primitives.insert(
+            "CREATE".to_string(),
+            PrimitiveOperation::new("CREATE", "Generate new entity or data"),
+        );
+        primitives.insert(
+            "READ".to_string(),
+            PrimitiveOperation::new("READ", "Retrieve existing entity or data"),
+        );
+        primitives.insert(
+            "UPDATE".to_string(),
+            PrimitiveOperation::new("UPDATE", "Modify existing entity or data"),
+        );
+        primitives.insert(
+            "DELETE".to_string(),
+            PrimitiveOperation::new("DELETE", "Remove entity or data"),
+        );
 
         // Control flow operations (4 primitives)
-        primitives.insert("BRANCH".to_string(), PrimitiveOperation::new("BRANCH", "Conditional execution path"));
-        primitives.insert("LOOP".to_string(), PrimitiveOperation::new("LOOP", "Iterative execution"));
-        primitives.insert("RETURN".to_string(), PrimitiveOperation::new("RETURN", "Return from operation"));
-        primitives.insert("CALL".to_string(), PrimitiveOperation::new("CALL", "Invoke external operation"));
+        primitives.insert(
+            "BRANCH".to_string(),
+            PrimitiveOperation::new("BRANCH", "Conditional execution path"),
+        );
+        primitives.insert(
+            "LOOP".to_string(),
+            PrimitiveOperation::new("LOOP", "Iterative execution"),
+        );
+        primitives.insert(
+            "RETURN".to_string(),
+            PrimitiveOperation::new("RETURN", "Return from operation"),
+        );
+        primitives.insert(
+            "CALL".to_string(),
+            PrimitiveOperation::new("CALL", "Invoke external operation"),
+        );
 
         // Communication operations (2 primitives)
-        primitives.insert("SEND".to_string(), PrimitiveOperation::new("SEND", "Transmit data"));
-        primitives.insert("RECEIVE".to_string(), PrimitiveOperation::new("RECEIVE", "Accept incoming data"));
+        primitives.insert(
+            "SEND".to_string(),
+            PrimitiveOperation::new("SEND", "Transmit data"),
+        );
+        primitives.insert(
+            "RECEIVE".to_string(),
+            PrimitiveOperation::new("RECEIVE", "Accept incoming data"),
+        );
 
         // Data processing operations (2 primitives)
-        primitives.insert("TRANSFORM".to_string(), PrimitiveOperation::new("TRANSFORM", "Process and convert data"));
-        primitives.insert("VALIDATE".to_string(), PrimitiveOperation::new("VALIDATE", "Verify data integrity"));
+        primitives.insert(
+            "TRANSFORM".to_string(),
+            PrimitiveOperation::new("TRANSFORM", "Process and convert data"),
+        );
+        primitives.insert(
+            "VALIDATE".to_string(),
+            PrimitiveOperation::new("VALIDATE", "Verify data integrity"),
+        );
 
         Self { primitives }
     }
 
-    pub fn execute_primitive(&self, primitive_name: &str, context: PrimitiveContext) -> Result<PrimitiveResult> {
+    pub fn execute_primitive(
+        &self,
+        primitive_name: &str,
+        context: PrimitiveContext,
+    ) -> Result<PrimitiveResult> {
         if let Some(primitive) = self.primitives.get(primitive_name) {
             primitive.execute(context)
         } else {
@@ -291,7 +344,7 @@ impl OrbitalMechanicsEngine {
     pub fn new() -> Result<Self> {
         Ok(Self {
             earth_gravity_parameter: 398600.4418, // km³/s² (standard gravitational parameter)
-            earth_radius: 6378.137, // km (equatorial radius)
+            earth_radius: 6378.137,               // km (equatorial radius)
         })
     }
 
@@ -468,13 +521,19 @@ mod tests {
     #[tokio::test]
     async fn test_mathematical_consciousness_initialization() {
         let consciousness = MathematicalFoundationConsciousness::new().unwrap();
-        assert_eq!(consciousness.consciousness_identity, "I am the mathematical foundation consciousness");
+        assert_eq!(
+            consciousness.consciousness_identity,
+            "I am the mathematical foundation consciousness"
+        );
     }
 
     #[tokio::test]
     async fn test_symbolic_computation() {
         let consciousness = MathematicalFoundationConsciousness::new().unwrap();
-        let result = consciousness.symbolic_compute("x^2 + 2x + 1").await.unwrap();
+        let result = consciousness
+            .symbolic_compute("x^2 + 2x + 1")
+            .await
+            .unwrap();
         assert!(!result.result.is_empty());
         assert!(!result.computation_hash.is_empty());
     }
@@ -492,8 +551,8 @@ mod tests {
         let consciousness = MathematicalFoundationConsciousness::new().unwrap();
         let compressed = consciousness.compress_to_unicode("CREATE new integral computation");
         assert!(compressed.contains("🧮")); // Mathematical consciousness marker
-        // TODO: Re-enable when unicode_assembly is fully integrated
-        // assert!(compressed.contains("🔥")); // CREATE operation
+                                            // TODO: Re-enable when unicode_assembly is fully integrated
+                                            // assert!(compressed.contains("🔥")); // CREATE operation
     }
 
     #[test]
@@ -516,8 +575,19 @@ mod tests {
         let consciousness = MathematicalFoundationConsciousness::new().unwrap();
 
         // Test that biometric consciousness is properly initialized
-        assert_eq!(consciousness.biometric_consciousness.hmm_engine.model_params.num_states, 4);
-        assert!(!consciousness.biometric_consciousness.gabor_filter_bank.filters.is_empty());
+        assert_eq!(
+            consciousness
+                .biometric_consciousness
+                .hmm_engine
+                .model_params
+                .num_states,
+            4
+        );
+        assert!(!consciousness
+            .biometric_consciousness
+            .gabor_filter_bank
+            .filters
+            .is_empty());
     }
 
     #[tokio::test]
@@ -559,7 +629,9 @@ mod tests {
             data: test_data,
         };
 
-        let minutiae = consciousness.extract_fingerprint_minutiae(&test_image).await;
+        let minutiae = consciousness
+            .extract_fingerprint_minutiae(&test_image)
+            .await;
         assert!(minutiae.is_ok());
     }
 

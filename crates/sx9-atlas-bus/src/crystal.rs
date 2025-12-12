@@ -42,13 +42,13 @@ impl Default for CrystalFamily {
 #[derive(Debug, Clone, Copy)]
 pub struct ResonanceProfile {
     /// Minimum ring strength for "None" class (perfect)
-    pub perfect_thresh: f32,    // >= this → None class
+    pub perfect_thresh: f32, // >= this → None class
     /// Minimum for "Micro" class
-    pub micro_thresh: f32,      // >= this → Micro class
+    pub micro_thresh: f32, // >= this → Micro class
     /// Minimum for "Soft" class  
-    pub soft_thresh: f32,       // >= this → Soft class
+    pub soft_thresh: f32, // >= this → Soft class
     /// Minimum for "Hard" class
-    pub hard_thresh: f32,       // >= this → Hard class
+    pub hard_thresh: f32, // >= this → Hard class
     /// Below this → Critical (crystal silent)
     pub critical_thresh: f32,
     /// Entropy weight in resonance calculation
@@ -71,7 +71,7 @@ impl ResonanceProfile {
         delta_weight: 0.5,
         hash_weight: 0.3,
     };
-    
+
     /// Ground station - strict, stable
     pub const GROUND_STATION: Self = Self {
         perfect_thresh: 0.98,
@@ -83,19 +83,19 @@ impl ResonanceProfile {
         delta_weight: 0.4,
         hash_weight: 0.3,
     };
-    
+
     /// Tar pit - inverted, rings on anomalies
     pub const TAR_PIT: Self = Self {
-        perfect_thresh: 0.20,  // Inverted! Low coherence = ring
+        perfect_thresh: 0.20, // Inverted! Low coherence = ring
         micro_thresh: 0.35,
         soft_thresh: 0.50,
         hard_thresh: 0.70,
         critical_thresh: 0.85,
-        entropy_weight: 0.5,  // High entropy sensitivity
+        entropy_weight: 0.5, // High entropy sensitivity
         delta_weight: 0.3,
         hash_weight: 0.2,
     };
-    
+
     /// Silent - only perfect matches
     pub const SILENT: Self = Self {
         perfect_thresh: 0.995,
@@ -107,7 +107,7 @@ impl ResonanceProfile {
         delta_weight: 0.6,
         hash_weight: 0.3,
     };
-    
+
     /// Adaptive baseline (adjusted at runtime)
     pub const ADAPTIVE: Self = Self {
         perfect_thresh: 0.96,
@@ -119,7 +119,7 @@ impl ResonanceProfile {
         delta_weight: 0.34,
         hash_weight: 0.33,
     };
-    
+
     /// Get profile for family
     pub fn for_family(family: CrystalFamily) -> Self {
         match family {
@@ -162,22 +162,22 @@ impl Default for VotingPolicy {
 pub struct Crystal {
     /// Crystal family determines resonance behavior
     family: CrystalFamily,
-    
+
     /// Resonance profile (thresholds and weights)
     profile: ResonanceProfile,
-    
+
     /// Weight in polycrystal voting (0.0 - 1.0)
     weight: f32,
-    
+
     /// Running entropy accumulator (Monte Carlo)
     entropy_acc: AtomicU32,
-    
+
     /// Last resonance score (for trend detection)
     last_ring: AtomicU32, // f32 as bits
-    
+
     /// Ring count (for adaptive tuning)
     ring_count: AtomicU64,
-    
+
     /// Silent count (no ring)
     silent_count: AtomicU64,
 }
@@ -206,7 +206,7 @@ impl Crystal {
             CrystalFamily::Silent => ResonanceProfile::SILENT,
             CrystalFamily::Adaptive => ResonanceProfile::ADAPTIVE,
         };
-        
+
         Self {
             family,
             profile,
@@ -217,7 +217,7 @@ impl Crystal {
             silent_count: AtomicU64::new(0),
         }
     }
-    
+
     /// Create with custom weight for polycrystal voting
     pub const fn with_weight(family: CrystalFamily, weight: f32) -> Self {
         let profile = match family {
@@ -227,7 +227,7 @@ impl Crystal {
             CrystalFamily::Silent => ResonanceProfile::SILENT,
             CrystalFamily::Adaptive => ResonanceProfile::ADAPTIVE,
         };
-        
+
         Self {
             family,
             profile,
@@ -238,7 +238,7 @@ impl Crystal {
             silent_count: AtomicU64::new(0),
         }
     }
-    
+
     /// Create with custom profile
     pub const fn with_profile(family: CrystalFamily, profile: ResonanceProfile) -> Self {
         Self {
@@ -251,7 +251,7 @@ impl Crystal {
             silent_count: AtomicU64::new(0),
         }
     }
-    
+
     /// Create with custom profile and weight
     pub const fn with_profile_and_weight(
         family: CrystalFamily,
@@ -268,13 +268,13 @@ impl Crystal {
             silent_count: AtomicU64::new(0),
         }
     }
-    
+
     /// Get crystal weight
     #[inline]
     pub fn weight(&self) -> f32 {
         self.weight
     }
-    
+
     /// Core resonance calculation
     ///
     /// # Arguments
@@ -290,28 +290,30 @@ impl Crystal {
         let e = (entropy as f32) / (u32::MAX as f32);
         let d = 1.0 - ((delta_angle as f32) / 65535.0); // Lower delta = better
         let h = self.hash_coherence(hash);
-        
+
         // Weighted combination
         let raw = self.profile.entropy_weight * e
-                + self.profile.delta_weight * d
-                + self.profile.hash_weight * h;
-        
+            + self.profile.delta_weight * d
+            + self.profile.hash_weight * h;
+
         // Clamp to 0.0 - 1.0
         let ring_strength = raw.clamp(0.0, 1.0);
-        
+
         // Update accumulators
-        self.entropy_acc.fetch_add(entropy.wrapping_shr(16) as u32, Ordering::Relaxed);
-        self.last_ring.store(ring_strength.to_bits(), Ordering::Release);
-        
+        self.entropy_acc
+            .fetch_add(entropy.wrapping_shr(16) as u32, Ordering::Relaxed);
+        self.last_ring
+            .store(ring_strength.to_bits(), Ordering::Release);
+
         if ring_strength >= self.profile.hard_thresh {
             self.ring_count.fetch_add(1, Ordering::Relaxed);
         } else {
             self.silent_count.fetch_add(1, Ordering::Relaxed);
         }
-        
+
         ring_strength
     }
-    
+
     /// Simplified resonance with just payload bytes
     #[inline]
     pub fn resonate_payload(&self, payload: &[u8], delta_angle: u16) -> f32 {
@@ -319,7 +321,7 @@ impl Crystal {
         let entropy = self.payload_entropy(payload);
         self.resonate(entropy, delta_angle, hash)
     }
-    
+
     /// Get delta class from ring strength
     #[inline]
     pub fn delta_class(&self, ring_strength: f32) -> DeltaClass {
@@ -335,49 +337,49 @@ impl Crystal {
             DeltaClass::Critical
         }
     }
-    
+
     /// Check if crystal is ringing (above hard threshold)
     #[inline]
     pub fn is_ringing(&self, ring_strength: f32) -> bool {
         ring_strength >= self.profile.hard_thresh
     }
-    
+
     /// Get last ring strength
     #[inline]
     pub fn last_ring_strength(&self) -> f32 {
         f32::from_bits(self.last_ring.load(Ordering::Acquire))
     }
-    
+
     /// Get ring ratio (rings / total)
     #[inline]
     pub fn ring_ratio(&self) -> f32 {
         let rings = self.ring_count.load(Ordering::Relaxed);
         let silent = self.silent_count.load(Ordering::Relaxed);
         let total = rings + silent;
-        
+
         if total == 0 {
             0.0
         } else {
             rings as f32 / total as f32
         }
     }
-    
+
     /// Get family
     #[inline]
     pub fn family(&self) -> CrystalFamily {
         self.family
     }
-    
+
     /// Get profile
     #[inline]
     pub fn profile(&self) -> &ResonanceProfile {
         &self.profile
     }
-    
+
     // ========================================================================
     // Hash / Entropy helpers (public for Polycrystal use)
     // ========================================================================
-    
+
     /// Quick hash for payload (Murmur3-like)
     #[inline]
     pub fn quick_hash(&self, payload: &[u8]) -> u64 {
@@ -396,24 +398,24 @@ impl Crystal {
         h ^= h >> 33;
         h
     }
-    
+
     /// Estimate payload entropy (no_std compatible)
     #[inline]
     pub fn payload_entropy(&self, payload: &[u8]) -> u32 {
         if payload.is_empty() {
             return 0;
         }
-        
+
         // Quick byte frequency estimation
         let mut counts = [0u32; 256];
         for &b in payload {
             counts[b as usize] += 1;
         }
-        
+
         // Count unique bytes (simpler than Shannon, but no_std compatible)
         let mut unique = 0u32;
         let mut max_count = 0u32;
-        
+
         for &count in &counts {
             if count > 0 {
                 unique += 1;
@@ -422,7 +424,7 @@ impl Crystal {
                 }
             }
         }
-        
+
         // Entropy approximation based on:
         // - unique byte count (more unique = higher entropy)
         // - distribution evenness (max_count close to avg = higher entropy)
@@ -433,19 +435,19 @@ impl Crystal {
         } else {
             0
         };
-        
+
         // Combine: unique bytes (0-256) + evenness (0-256)
         // Scale to u32 range
         let raw = (unique.min(256) << 8) | evenness.min(256);
         raw.wrapping_mul(0x10000)
     }
-    
+
     /// Hash coherence (how "structured" the hash looks)
     #[inline]
     fn hash_coherence(&self, hash: u64) -> f32 {
         // Count bit transitions (structured data has fewer)
         let transitions = (hash ^ (hash >> 1)).count_ones();
-        
+
         // Normalize: 32 transitions = random, 0 = perfect structure
         1.0 - (transitions as f32 / 32.0)
     }
@@ -535,7 +537,7 @@ impl Polycrystal {
             threshold: 0.90,
         }
     }
-    
+
     /// Create with threshold for weighted average
     pub const fn with_threshold(policy: VotingPolicy, threshold: f32) -> Self {
         Self {
@@ -545,7 +547,7 @@ impl Polycrystal {
             threshold,
         }
     }
-    
+
     /// Add a crystal to the array
     ///
     /// Returns false if array is full
@@ -557,19 +559,19 @@ impl Polycrystal {
         self.count += 1;
         true
     }
-    
+
     /// Get number of crystals
     #[inline]
     pub fn len(&self) -> usize {
         self.count
     }
-    
+
     /// Check if empty
     #[inline]
     pub fn is_empty(&self) -> bool {
         self.count == 0
     }
-    
+
     /// Resonate payload through all crystals and vote
     ///
     /// This is THE polycrystal resonance function.
@@ -583,32 +585,32 @@ impl Polycrystal {
                 passed: false,
             };
         }
-        
+
         let mut fired_count = 0;
         let mut weighted_sum = 0.0;
         let mut total_weight = 0.0;
-        
+
         for i in 0..self.count {
             if let Some(ref crystal) = self.crystals[i] {
                 let strength = crystal.resonate(entropy, delta_angle, hash);
                 let weight = crystal.weight();
-                
+
                 weighted_sum += strength * weight;
                 total_weight += weight;
-                
+
                 if crystal.is_ringing(strength) {
                     fired_count += 1;
                 }
             }
         }
-        
+
         // Normalize
         let ring_strength = if total_weight > 0.0 {
             weighted_sum / total_weight
         } else {
             0.0
         };
-        
+
         // Apply voting policy
         let passed = match self.policy {
             VotingPolicy::Any => fired_count > 0,
@@ -617,7 +619,7 @@ impl Polycrystal {
             VotingPolicy::WeightedAverage => ring_strength >= self.threshold,
             VotingPolicy::Quorum { required } => fired_count >= required as usize,
         };
-        
+
         PolycrystalResult {
             ring_strength,
             fired_count,
@@ -626,7 +628,7 @@ impl Polycrystal {
             passed,
         }
     }
-    
+
     /// Simplified resonance with just payload bytes
     pub fn resonate_payload(&self, payload: &[u8], delta_angle: u16) -> PolycrystalResult {
         if self.count == 0 {
@@ -638,7 +640,7 @@ impl Polycrystal {
                 passed: false,
             };
         }
-        
+
         // Use first crystal's hash/entropy functions
         if let Some(ref first) = self.crystals[0] {
             let hash = first.quick_hash(payload);
@@ -675,7 +677,7 @@ impl Polycrystal {
         p.add(Crystal::with_weight(CrystalFamily::GroundStation, 1.0));
         p
     }
-    
+
     /// Strict corporate (ALL must fire → pass)
     /// Good for: healthz, corporate compliance
     pub fn corporate_strict() -> Self {
@@ -684,7 +686,7 @@ impl Polycrystal {
         p.add(Crystal::with_weight(CrystalFamily::TarPit, 1.0));
         p
     }
-    
+
     /// Van Allen orbital entropy harvest
     /// Good for: sx9.sdt.van-allen
     pub fn van_allen() -> Self {
@@ -694,7 +696,7 @@ impl Polycrystal {
         p.add(Crystal::with_weight(CrystalFamily::Silent, 0.2));
         p
     }
-    
+
     /// Normal operations (weighted, mostly corporate)
     /// Good for: sx9.atlas.cmd.normal
     pub fn normal_ops() -> Self {
@@ -703,7 +705,7 @@ impl Polycrystal {
         p.add(Crystal::with_weight(CrystalFamily::Adaptive, 0.2));
         p
     }
-    
+
     /// Honeypot mode (inverted, catches anomalies)
     /// Good for: tar pits, deception networks
     pub fn honeypot() -> Self {
@@ -717,11 +719,11 @@ impl Polycrystal {
 #[cfg(test)]
 mod tests {
     use super::*;
-    
+
     #[test]
     fn test_crystal_resonance() {
         let crystal = Crystal::new(CrystalFamily::GroundStation);
-        
+
         // Perfect resonance: high entropy, low delta, structured hash (alternating bits)
         // Hash 0xAAAA... has 0 transitions = perfect coherence (1.0)
         // Delta 0 = 1.0 (inverted)
@@ -729,106 +731,117 @@ mod tests {
         // Weights: 0.3 * 1.0 + 0.4 * 1.0 + 0.3 * 1.0 = 1.0
         let strength = crystal.resonate(u32::MAX, 0, 0xAAAAAAAAAAAAAAAA);
         assert!(strength > 0.3, "Expected > 0.3, got {}", strength);
-        
+
         // Poor resonance: low entropy, high delta, random hash
         let strength = crystal.resonate(0, 65535, 0x123456789ABCDEF0);
         // Low entropy + high delta + random hash = low strength
         // Should be lower than good case
         assert!(strength < 0.5, "Expected < 0.5, got {}", strength);
-        
+
         // Good input should be better than bad input
         let good = crystal.resonate(u32::MAX, 0, 0xAAAAAAAAAAAAAAAA);
         let bad = crystal.resonate(0, 65535, 0x123456789ABCDEF0);
         assert!(good > bad, "Expected good ({}) > bad ({})", good, bad);
     }
-    
+
     #[test]
     fn test_delta_class() {
         let crystal = Crystal::new(CrystalFamily::GroundStation);
-        
+
         assert_eq!(crystal.delta_class(0.99), DeltaClass::None);
         assert_eq!(crystal.delta_class(0.92), DeltaClass::Micro);
         assert_eq!(crystal.delta_class(0.80), DeltaClass::Soft);
         assert_eq!(crystal.delta_class(0.55), DeltaClass::Hard);
         assert_eq!(crystal.delta_class(0.30), DeltaClass::Critical);
     }
-    
+
     #[test]
     fn test_tar_pit_inverted() {
         let crystal = Crystal::new(CrystalFamily::TarPit);
-        
+
         // Tar pit has INVERTED thresholds - low coherence = ring
         // With medium inputs, should get a non-extreme class
         let strength = crystal.resonate(u32::MAX / 2, 32768, 0xDEADBEEF);
-        
+
         // Tar pit thresholds are inverted, so check the strength is reasonable
-        assert!(strength > 0.0 && strength < 1.0, "Expected 0 < strength < 1, got {}", strength);
+        assert!(
+            strength > 0.0 && strength < 1.0,
+            "Expected 0 < strength < 1, got {}",
+            strength
+        );
     }
-    
+
     #[test]
     fn test_payload_resonance() {
         let crystal = Crystal::new(CrystalFamily::GroundStation);
-        
+
         // Structured payload (low entropy - single byte repeated)
         let structured = b"AAAAAAAAAAAAAAAA";
         let s1 = crystal.resonate_payload(structured, 1000);
-        
+
         // Random payload (high entropy - many unique bytes)
         let random = b"\x12\x34\x56\x78\x9A\xBC\xDE\xF0\x11\x22\x33\x44\x55\x66\x77\x88";
         let s2 = crystal.resonate_payload(random, 1000);
-        
+
         // Both should produce valid strengths
         assert!(s1 >= 0.0 && s1 <= 1.0);
         assert!(s2 >= 0.0 && s2 <= 1.0);
     }
-    
+
     #[test]
     fn test_polycrystal_any() {
         let poly = Polycrystal::tripwire();
-        
+
         // With high entropy, low delta, good hash - should fire at least one
         let result = poly.resonate_all(u32::MAX, 0, 0xAAAAAAAAAAAAAAAA);
-        
+
         // Check we have crystals
         assert!(result.total_count > 0);
-        
+
         // Ring strength should be reasonable
         assert!(result.ring_strength >= 0.0 && result.ring_strength <= 1.0);
     }
-    
+
     #[test]
     fn test_polycrystal_all() {
         let poly = Polycrystal::corporate_strict();
-        
+
         // Perfect input - should pass ALL
         let result = poly.resonate_all(u32::MAX, 0, 0xAAAAAAAAAAAAAAAA);
         // May or may not pass depending on tar pit inversion
         assert!(result.total_count == 2);
     }
-    
+
     #[test]
     fn test_polycrystal_weighted() {
         let poly = Polycrystal::normal_ops();
-        
+
         // Good input - high entropy, low delta
         let result = poly.resonate_all(u32::MAX, 0, 0xAAAAAAAAAAAAAAAA);
-        assert!(result.ring_strength > 0.0, "Expected > 0, got {}", result.ring_strength);
-        
+        assert!(
+            result.ring_strength > 0.0,
+            "Expected > 0, got {}",
+            result.ring_strength
+        );
+
         // Bad input - zero entropy, max delta
         let result = poly.resonate_all(0, 65535, 0x123456789ABCDEF0);
         // Should be lower than good input
-        assert!(result.ring_strength < 0.7, "Expected < 0.7, got {}", result.ring_strength);
+        assert!(
+            result.ring_strength < 0.7,
+            "Expected < 0.7, got {}",
+            result.ring_strength
+        );
     }
-    
+
     #[test]
     fn test_van_allen() {
         let poly = Polycrystal::van_allen();
-        
+
         assert_eq!(poly.len(), 3);
-        
+
         // Orbital entropy harvest
         let result = poly.resonate_all(u32::MAX / 2, 10000, 0xDEADBEEFCAFEBABE);
         assert!(result.total_count == 3);
     }
 }
-

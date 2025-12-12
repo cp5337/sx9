@@ -41,7 +41,10 @@ impl HD4Phase {
 
     /// Check if this phase requires strict approval (RFC-9003)
     pub fn requires_approval(&self) -> bool {
-        matches!(self, HD4Phase::Disable | HD4Phase::Disrupt | HD4Phase::Dominate)
+        matches!(
+            self,
+            HD4Phase::Disable | HD4Phase::Disrupt | HD4Phase::Dominate
+        )
     }
 
     /// Get phase index (0-4)
@@ -170,9 +173,10 @@ mod tests {
 
     #[test]
     fn test_vertical_escalation() {
-        assert_eq!(VerticalLevel::Tactical.escalate(), VerticalLevel::Operational);
+        assert_eq!(
+            VerticalLevel::Tactical.escalate(),
+            VerticalLevel::Operational
+        );
         assert_eq!(VerticalLevel::National.escalate(), VerticalLevel::National);
     }
 }
-
-

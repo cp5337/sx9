@@ -14,9 +14,7 @@ pub struct MatroidRank {
 
 impl MatroidRank {
     pub fn new() -> Self {
-        Self {
-            previous_rank: 0.0,
-        }
+        Self { previous_rank: 0.0 }
     }
 
     /// Calculate rank for a set of nodes
@@ -26,10 +24,11 @@ impl MatroidRank {
         // Simplified: rank is number of unique information sources
         // Count nodes with unique properties
         let mut unique_sources = std::collections::HashSet::new();
-        
+
         for node in nodes {
             // Use node ID + primary label as uniqueness key
-            let key = format!("{}:{}", 
+            let key = format!(
+                "{}:{}",
                 node.id,
                 node.labels.first().unwrap_or(&"Unknown".to_string())
             );
@@ -57,4 +56,3 @@ pub async fn calculate_rank(nodes: &[GlafNode]) -> f64 {
 pub async fn calculate_rank_delta(previous_rank: f64, current_rank: f64) -> f64 {
     current_rank - previous_rank
 }
-

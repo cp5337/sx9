@@ -1,7 +1,7 @@
 //! Metrics Collection
 
-use sx9_atlas_bus::PlasmaState;
 use std::sync::Arc;
+use sx9_atlas_bus::PlasmaState;
 
 #[derive(Debug, Clone)]
 pub struct Metrics {
@@ -21,7 +21,7 @@ impl MetricsCollector {
     pub fn new(plasma: Arc<PlasmaState>) -> Self {
         Self { plasma }
     }
-    
+
     pub fn collect(&self) -> Metrics {
         Metrics {
             delta_angle: self.plasma.delta_angle_raw(),
@@ -33,4 +33,3 @@ impl MetricsCollector {
         }
     }
 }
-

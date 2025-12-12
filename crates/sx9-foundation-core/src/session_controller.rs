@@ -2,14 +2,13 @@
 //! Tesla-compliant module: <200 LOC, focused responsibility
 //! Manages active sessions, state transitions, and coordination
 
+use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use tokio::sync::RwLock;
 use uuid::Uuid;
-use chrono::{DateTime, Utc};
 
 use crate::platform_detection::Platform;
-use crate::native_integration::NativeIntegration;
 
 // Session Controller [MANAGE] Lifecycle [COORDINATE] States
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -94,11 +93,11 @@ pub struct MediaStatus {
 // Connection Quality [MEASURE] Performance [ASSESS] Health
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ConnectionQuality {
-    pub signal_strength: f32,    // 0.0 - 1.0
-    pub packet_loss: f32,        // percentage
-    pub round_trip_time: u32,    // milliseconds
-    pub bandwidth_usage: u32,    // kbps
-    pub quality_score: f32,      // 0.0 - 5.0
+    pub signal_strength: f32, // 0.0 - 1.0
+    pub packet_loss: f32,     // percentage
+    pub round_trip_time: u32, // milliseconds
+    pub bandwidth_usage: u32, // kbps
+    pub quality_score: f32,   // 0.0 - 5.0
 }
 
 // Media Stream [HANDLE] Data [PROCESS] Content
@@ -143,7 +142,7 @@ pub struct QualityMetrics {
 // Audio Quality [MEASURE] Clarity [ASSESS] Performance
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct AudioQuality {
-    pub mos_score: f32,          // Mean Opinion Score
+    pub mos_score: f32, // Mean Opinion Score
     pub packet_loss: f32,
     pub jitter: f32,
     pub echo_present: bool,
@@ -182,15 +181,13 @@ pub struct UserExperience {
 // Session Controller Implementation [PROVIDE] Management [EXECUTE] Operations
 pub struct SessionController {
     active_sessions: RwLock<HashMap<String, MultimediaSession>>,
-    platform_config: Platform,
 }
 
 impl SessionController {
     // Controller Creation [INITIALIZE] Manager [SETUP] Configuration
-    pub fn new(platform: Platform) -> Self {
+    pub fn new() -> Self {
         Self {
             active_sessions: RwLock::new(HashMap::new()),
-            platform_config: platform,
         }
     }
 

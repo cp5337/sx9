@@ -1,0 +1,35 @@
+{
+  "sessions": [],
+  "total_cost": 0,
+  "total_tokens": 0,
+  "pricing": {
+    "claude_sonnet_4.5": {
+      "input_per_million": 3.0,
+      "output_per_million": 15.0
+    },
+    "gpt4": {
+      "input_per_million": 30.0,
+      "output_per_million": 60.0
+    },
+    "gemini_2m": {
+      "input_per_million": 0.15,
+      "output_per_million": 0.60
+    },
+    "grok": {
+      "input_per_million": 5.0,
+      "output_per_million": 15.0
+    }
+  },
+  "commits": [
+    {
+      "commit": "12df899",
+      "message": "test: Verify post-commit hook automation",
+      "timestamp": "2025-11-10T04:13:33Z"
+    },
+    {
+      "commit": "7d7568a",
+      "message": "feat(git): Add automated post-commit hook for documentation and ABE\n\n- Auto-organize documentation into folders (architecture, api, components, deployment)\n- Generate documentation index with commit info\n- Create ABE package (zip) in drop zone for processing\n- Generate USIM header with commit metadata\n- Update session cost tracker with commit history\n- Hook runs automatically on every commit\n\nHook creates:\n- docs/INDEX.md (auto-generated index)\n- .usim (USIM metadata header)\n- ABE package in ~/Desktop/ABE-DropZone/\n\nNext: ABE processes packages automatically for knowledge extraction",
+      "timestamp": "2025-11-10T04:13:43Z"
+    }
+  ]
+}

@@ -4,14 +4,14 @@
 //! file watching, and hot reload capabilities.
 
 pub mod dsl;
-pub mod wasm_runtime;
-pub mod file_watcher;
 pub mod executor;
+pub mod file_watcher;
+pub mod wasm_runtime;
 
-pub use dsl::{DSLEngine, DSLOperation, DSLResult, DSLError};
+pub use dsl::{DSLEngine, DSLError, DSLOperation, DSLResult};
 pub use executor::DSLExecutor;
-pub use wasm_runtime::WasmRuntime;
 pub use file_watcher::FileWatcher;
+pub use wasm_runtime::WasmRuntime;
 
 use anyhow::Result;
 

@@ -2,10 +2,8 @@
 // Validates data flow speeds, hash performance, and system latency
 
 use serde::{Deserialize, Serialize};
-use std::time::{Duration, Instant};
 use std::collections::HashMap;
-use tokio::sync::mpsc;
-use uuid::Uuid;
+use std::time::{Duration, Instant};
 
 /// Performance Test Suite - Comprehensive validation
 #[derive(Debug)]
@@ -18,12 +16,12 @@ pub struct PerformanceTestHarness {
 
 #[derive(Debug, Clone)]
 pub struct TestConfiguration {
-    pub hash_performance_target: f64,  // MB/sec (15,240 for MurmurHash3)
-    pub routing_latency_target: f64,   // nanoseconds (<250ns)
-    pub service_response_target: f64,  // milliseconds
-    pub throughput_target: u64,        // operations per second
+    pub hash_performance_target: f64, // MB/sec (15,240 for MurmurHash3)
+    pub routing_latency_target: f64,  // nanoseconds (<250ns)
+    pub service_response_target: f64, // milliseconds
+    pub throughput_target: u64,       // operations per second
     pub test_duration: Duration,
-    pub payload_sizes: Vec<usize>,     // Test different data sizes
+    pub payload_sizes: Vec<usize>, // Test different data sizes
     pub concurrent_connections: usize,
 }
 
@@ -165,10 +163,10 @@ pub struct IntelligenceTestCase {
 
 #[derive(Debug, Clone)]
 pub enum ComplexityLevel {
-    Simple,    // Single indicator
-    Medium,    // Multiple indicators
-    Complex,   // Cross-domain correlation
-    Critical,  // Real-time threat analysis
+    Simple,   // Single indicator
+    Medium,   // Multiple indicators
+    Complex,  // Cross-domain correlation
+    Critical, // Real-time threat analysis
 }
 
 #[derive(Debug)]
@@ -214,10 +212,12 @@ impl PerformanceTestHarness {
     /// Run comprehensive performance test suite
     pub async fn run_full_test_suite(&mut self) -> Result<TestResults, Box<dyn std::error::Error>> {
         println!("🚀 Starting CTAS-7 Performance Test Suite");
-        println!("📊 Targets: Hash {:.0} MB/s, Routing <{:.0}ns, Response <{:.0}ms",
-                 self.test_config.hash_performance_target,
-                 self.test_config.routing_latency_target,
-                 self.test_config.service_response_target);
+        println!(
+            "📊 Targets: Hash {:.0} MB/s, Routing <{:.0}ns, Response <{:.0}ms",
+            self.test_config.hash_performance_target,
+            self.test_config.routing_latency_target,
+            self.test_config.service_response_target
+        );
 
         let start_time = Instant::now();
 
@@ -261,14 +261,19 @@ impl PerformanceTestHarness {
         };
 
         let total_time = start_time.elapsed();
-        println!("\n✅ Test Suite Complete in {:.2}s", total_time.as_secs_f64());
+        println!(
+            "\n✅ Test Suite Complete in {:.2}s",
+            total_time.as_secs_f64()
+        );
         println!("📊 Overall Score: {:.1}/100", overall_score);
 
         Ok(self.results.clone())
     }
 
     /// Test Hash Performance (MurmurHash3 target: 15,240 MB/sec)
-    pub async fn test_hash_performance(&self) -> Result<HashPerformanceResults, Box<dyn std::error::Error>> {
+    pub async fn test_hash_performance(
+        &self,
+    ) -> Result<HashPerformanceResults, Box<dyn std::error::Error>> {
         let mut payload_results = Vec::new();
         let mut total_operations = 0u64;
         let mut total_data_mb = 0.0;
@@ -300,8 +305,10 @@ impl PerformanceTestHarness {
 
             total_data_mb += payload_mb;
 
-            println!("  📦 {} bytes: {:.0} MB/s, {:.1}ns avg latency",
-                     payload_size, throughput, avg_latency_ns);
+            println!(
+                "  📦 {} bytes: {:.0} MB/s, {:.1}ns avg latency",
+                payload_size, throughput, avg_latency_ns
+            );
         }
 
         let total_duration = start_time.elapsed();
@@ -322,7 +329,9 @@ impl PerformanceTestHarness {
     }
 
     /// Test Routing Latency (target: <250ns for HFT)
-    pub async fn test_routing_latency(&self) -> Result<RoutingLatencyResults, Box<dyn std::error::Error>> {
+    pub async fn test_routing_latency(
+        &self,
+    ) -> Result<RoutingLatencyResults, Box<dyn std::error::Error>> {
         let mut latencies = Vec::new();
         let test_iterations = 100_000;
 
@@ -368,8 +377,10 @@ impl PerformanceTestHarness {
             },
         ];
 
-        println!("  ⚡ Avg: {:.1}ns, P95: {:.1}ns, P99: {:.1}ns",
-                 average, p95_latency, p99_latency);
+        println!(
+            "  ⚡ Avg: {:.1}ns, P95: {:.1}ns, P99: {:.1}ns",
+            average, p95_latency, p99_latency
+        );
 
         Ok(RoutingLatencyResults {
             average_latency_ns: average,
@@ -383,7 +394,9 @@ impl PerformanceTestHarness {
     }
 
     /// Test Service Response Times
-    pub async fn test_service_responses(&self) -> Result<ServiceResponseResults, Box<dyn std::error::Error>> {
+    pub async fn test_service_responses(
+        &self,
+    ) -> Result<ServiceResponseResults, Box<dyn std::error::Error>> {
         let mut service_tests = HashMap::new();
 
         // Define services to test
@@ -408,19 +421,24 @@ impl PerformanceTestHarness {
                     successful_tests += 1;
                     service_tests.insert(service_name.to_string(), test_result);
 
-                    println!("  ✅ {}: {:.1}ms", service_name,
-                             service_tests[service_name].response_time_ms);
+                    println!(
+                        "  ✅ {}: {:.1}ms",
+                        service_name, service_tests[service_name].response_time_ms
+                    );
                 }
                 Err(e) => {
                     println!("  ❌ {}: Error - {}", service_name, e);
-                    service_tests.insert(service_name.to_string(), ServiceTestResult {
-                        service_name: service_name.to_string(),
-                        port,
-                        response_time_ms: f64::INFINITY,
-                        success_rate: 0.0,
-                        throughput_ops_per_sec: 0,
-                        error_rate: 100.0,
-                    });
+                    service_tests.insert(
+                        service_name.to_string(),
+                        ServiceTestResult {
+                            service_name: service_name.to_string(),
+                            port,
+                            response_time_ms: f64::INFINITY,
+                            success_rate: 0.0,
+                            throughput_ops_per_sec: 0,
+                            error_rate: 100.0,
+                        },
+                    );
                 }
             }
         }
@@ -434,29 +452,50 @@ impl PerformanceTestHarness {
         Ok(ServiceResponseResults {
             service_tests,
             average_response_time_ms: average_response_time,
-            discovery_latency_ms: 15.0, // Simulated
+            discovery_latency_ms: 15.0,    // Simulated
             coordination_latency_ms: 25.0, // Simulated
         })
     }
 
     /// Test System Throughput Under Load
-    async fn test_system_throughput(&self) -> Result<ThroughputResults, Box<dyn std::error::Error>> {
+    /// Test System Throughput Under Load
+    pub async fn test_system_throughput(
+        &self,
+    ) -> Result<ThroughputResults, Box<dyn std::error::Error>> {
+        use std::sync::atomic::{AtomicU64, Ordering};
+        use std::sync::Arc;
+        use std::time::{Duration, Instant};
+        use tokio::sync::mpsc;
+
         let test_duration = Duration::from_secs(30);
         let start_time = Instant::now();
-        let mut total_operations = 0u64;
+        let _total_operations = 0u64;
 
         // Simulate concurrent load
         let (tx, mut rx) = mpsc::channel(1000);
+        let tx = Arc::new(tx);
+
+        let success_count = Arc::new(AtomicU64::new(0));
 
         // Spawn concurrent workers
-        for i in 0..self.test_config.concurrent_connections {
+        for _i in 0..self.test_config.concurrent_connections {
             let tx_clone = tx.clone();
+            let success = success_count.clone();
+
             tokio::spawn(async move {
-                let mut ops_count = 0u64;
                 let worker_start = Instant::now();
+                let mut ops_count = 0u64;
 
                 while worker_start.elapsed() < test_duration {
-                    // Simulate operation
+                    // Simulate operation - utilizing CPU slightly
+                    let mut hash = 0u64;
+                    for k in 0..100 {
+                        hash = hash.wrapping_add(k);
+                    }
+                    if hash > 0 {
+                        success.fetch_add(1, Ordering::Relaxed);
+                    }
+
                     tokio::time::sleep(Duration::from_micros(100)).await;
                     ops_count += 1;
                 }
@@ -465,24 +504,36 @@ impl PerformanceTestHarness {
             });
         }
 
-        // Drop original sender
+        // Drop local sender so rx can close
         drop(tx);
 
+        let mut total_ops = 0;
         // Collect results
-        while let Some(ops_count) = rx.recv().await {
-            total_operations += ops_count;
+        while let Some(ops) = rx.recv().await {
+            total_ops += ops;
         }
 
         let actual_duration = start_time.elapsed();
-        let ops_per_second = total_operations / actual_duration.as_secs();
-        let data_processed_mb = (total_operations as f64 * 1024.0) / (1024.0 * 1024.0);
+        // safe div
+        let duration_secs = actual_duration.as_secs_f64();
+        let ops_per_second = if duration_secs > 0.0 {
+            total_ops as f64 / duration_secs
+        } else {
+            0.0
+        };
+        let ops_per_second_u64 = ops_per_second as u64;
 
-        println!("  📈 {:.0} ops/sec, {:.1} MB processed",
-                 ops_per_second, data_processed_mb);
+        // Approximate MB processed (assuming 1KB per op)
+        let data_processed_mb = (total_ops as f64 * 1024.0) / (1024.0 * 1024.0);
+
+        println!(
+            "  📈 {:.0} ops/sec, {:.1} MB processed",
+            ops_per_second, data_processed_mb
+        );
 
         Ok(ThroughputResults {
-            total_operations,
-            operations_per_second: ops_per_second,
+            total_operations: total_ops,
+            operations_per_second: ops_per_second_u64,
             data_processed_mb,
             concurrent_streams: self.test_config.concurrent_connections,
             saturation_point: None,
@@ -490,13 +541,15 @@ impl PerformanceTestHarness {
     }
 
     /// Test GLAF Intelligence Performance
-    pub async fn test_glaf_performance(&self) -> Result<GLAFPerformanceResults, Box<dyn std::error::Error>> {
+    pub async fn test_glaf_performance(
+        &self,
+    ) -> Result<GLAFPerformanceResults, Box<dyn std::error::Error>> {
         let mut intelligence_times = Vec::new();
         let mut correlation_times = Vec::new();
         let mut alert_times = Vec::new();
 
         for test_case in &self.glaf_integration.test_intelligence_data {
-            let start_time = Instant::now();
+            let _start_time = Instant::now();
 
             // Simulate intelligence processing
             let intelligence_time = self.simulate_intelligence_processing(&test_case).await;
@@ -511,14 +564,18 @@ impl PerformanceTestHarness {
             alert_times.push(alert_time);
         }
 
-        let avg_intelligence = intelligence_times.iter().sum::<f64>() / intelligence_times.len() as f64;
-        let avg_correlation = correlation_times.iter().sum::<f64>() / correlation_times.len() as f64;
+        let avg_intelligence =
+            intelligence_times.iter().sum::<f64>() / intelligence_times.len() as f64;
+        let avg_correlation =
+            correlation_times.iter().sum::<f64>() / correlation_times.len() as f64;
         let avg_alert = alert_times.iter().sum::<f64>() / alert_times.len() as f64;
 
         let total_pipeline = avg_intelligence + avg_correlation + avg_alert + 50.0; // PLASMA integration overhead
 
-        println!("  🧠 Intelligence: {:.1}ms, Correlation: {:.1}ms, Alerts: {:.1}ms",
-                 avg_intelligence, avg_correlation, avg_alert);
+        println!(
+            "  🧠 Intelligence: {:.1}ms, Correlation: {:.1}ms, Alerts: {:.1}ms",
+            avg_intelligence, avg_correlation, avg_alert
+        );
 
         Ok(GLAFPerformanceResults {
             intelligence_processing_ms: avg_intelligence,
@@ -548,7 +605,11 @@ impl PerformanceTestHarness {
         "backend_mcp_route".to_string()
     }
 
-    async fn test_service_endpoint(&self, service_name: &str, port: u16) -> Result<ServiceTestResult, Box<dyn std::error::Error>> {
+    async fn test_service_endpoint(
+        &self,
+        service_name: &str,
+        port: u16,
+    ) -> Result<ServiceTestResult, Box<dyn std::error::Error>> {
         let start_time = Instant::now();
 
         // Simulate HTTP health check
@@ -595,27 +656,35 @@ impl PerformanceTestHarness {
         let mut score = 0.0;
 
         // Hash performance (25% weight)
-        score += if hash.meets_target { 25.0 } else {
+        score += if hash.meets_target {
+            25.0
+        } else {
             (hash.throughput_mb_per_sec / self.test_config.hash_performance_target * 25.0).min(25.0)
         };
 
         // Routing latency (25% weight)
-        score += if routing.meets_hft_target { 25.0 } else {
-            ((self.test_config.routing_latency_target / routing.average_latency_ns) * 25.0).min(25.0)
+        score += if routing.meets_hft_target {
+            25.0
+        } else {
+            ((self.test_config.routing_latency_target / routing.average_latency_ns) * 25.0)
+                .min(25.0)
         };
 
         // Service response (20% weight)
         score += if service.average_response_time_ms <= self.test_config.service_response_target {
             20.0
         } else {
-            ((self.test_config.service_response_target / service.average_response_time_ms) * 20.0).min(20.0)
+            ((self.test_config.service_response_target / service.average_response_time_ms) * 20.0)
+                .min(20.0)
         };
 
         // Throughput (15% weight)
         score += if throughput.operations_per_second >= self.test_config.throughput_target {
             15.0
         } else {
-            ((throughput.operations_per_second as f64 / self.test_config.throughput_target as f64) * 15.0).min(15.0)
+            ((throughput.operations_per_second as f64 / self.test_config.throughput_target as f64)
+                * 15.0)
+                .min(15.0)
         };
 
         // GLAF intelligence (15% weight)

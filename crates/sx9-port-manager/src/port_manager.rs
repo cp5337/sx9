@@ -1,11 +1,11 @@
 //! CTAS-7 Real Port Manager Implementation
-//! 
+//!
 //! Core port management logic with major port blocks, mirror blocks, and deception.
 
 use crate::types::*;
-use std::collections::HashMap;
-use tracing::{info, warn, error};
 use chrono::Utc;
+use std::collections::HashMap;
+use tracing::{error, info, warn};
 use uuid::Uuid;
 
 impl PortManager {
@@ -23,12 +23,12 @@ impl PortManager {
             },
             cyber_ops_enabled: true,
         };
-        
+
         // Initialize mirror blocks
         manager.initialize_mirror_blocks();
         manager
     }
-    
+
     fn initialize_mirror_blocks(&mut self) {
         // CDN Mirror Block (18140-18159)
         self.mirror_blocks.push(MirrorBlock {
@@ -62,7 +62,7 @@ impl PortManager {
             active: true,
         });
     }
-    
+
     pub async fn allocate_port(
         &mut self,
         port: u16,
@@ -73,20 +73,20 @@ impl PortManager {
         if port < 18100 || port > 18199 {
             return Err(PortManagerError::PortOutOfRange(port));
         }
-        
+
         // Check if port is reserved
         if self.reserved_ports.contains(&port) {
             return Err(PortManagerError::PortReserved(port));
         }
-        
+
         // Check if port is already allocated
         if self.allocations.contains_key(&port) {
             return Err(PortManagerError::PortAlreadyAllocated(port));
         }
-        
+
         // Find mirror ports for this service
         let mirror_ports = self.get_mirror_ports(port);
-        
+
         // Create allocation
         let allocation = PortAllocation {
             port,
@@ -98,25 +98,30 @@ impl PortManager {
             deception_active: self.deception_settings.stealth_mode,
             allocation_id: Uuid::new_v4().to_string(),
         };
-        
+
         // Store allocation
         self.allocations.insert(port, allocation.clone());
-        
-        info!("📡 Allocated port {} for service: {} (mirrors: {:?})", 
-              port, service_name, mirror_ports);
-        
+
+        info!(
+            "📡 Allocated port {} for service: {} (mirrors: {:?})",
+            port, service_name, mirror_ports
+        );
+
         Ok(allocation)
     }
-    
+
     pub async fn release_port(&mut self, port: u16) -> Result<(), PortManagerError> {
         if let Some(allocation) = self.allocations.remove(&port) {
-            info!("🔓 Released port {} from service: {}", port, allocation.service_name);
+            info!(
+                "🔓 Released port {} from service: {}",
+                port, allocation.service_name
+            );
             Ok(())
         } else {
             Err(PortManagerError::ServiceNotFound(format!("Port {}", port)))
         }
     }
-    
+
     pub fn get_mirror_ports(&self, port: u16) -> Vec<u16> {
         for mirror_block in &self.mirror_blocks {
             if mirror_block.primary_port == port {
@@ -125,70 +130,93 @@ impl PortManager {
         }
         Vec::new()
     }
-    
+
     pub fn get_all_allocations(&self) -> Vec<&PortAllocation> {
         self.allocations.values().collect()
     }
-    
+
     pub fn get_port_allocation(&self, port: u16) -> Option<&PortAllocation> {
         self.allocations.get(&port)
     }
-    
+
     pub fn get_mirror_blocks(&self) -> &Vec<MirrorBlock> {
         &self.mirror_blocks
     }
-    
+
     pub fn get_deception_settings(&self) -> &DeceptionSettings {
         &self.deception_settings
     }
 
     /// Allocate port for orbital services (18120-18139 block)
-    pub async fn allocate_orbital_port(&mut self, service_name: &str) -> Result<PortAllocation, PortManagerError> {
+    pub async fn allocate_orbital_port(
+        &mut self,
+        service_name: &str,
+    ) -> Result<PortAllocation, PortManagerError> {
         let orbital_block_start = 18120;
         let orbital_block_end = 18139;
 
         // Find next available port in orbital block
         for port in orbital_block_start..=orbital_block_end {
             if !self.allocations.contains_key(&port) && !self.reserved_ports.contains(&port) {
-                return self.allocate_port(port, service_name, ServiceType::Orbital).await;
+                return self
+                    .allocate_port(port, service_name, ServiceType::Orbital)
+                    .await;
             }
         }
 
-        Err(PortManagerError::NoPortsAvailable("Orbital services block (18120-18139) is full".to_string()))
+        Err(PortManagerError::NoPortsAvailable(
+            "Orbital services block (18120-18139) is full".to_string(),
+        ))
     }
 
     /// Allocate port for CDN services (18140-18159 block)
-    pub async fn allocate_cdn_port(&mut self, service_name: &str) -> Result<PortAllocation, PortManagerError> {
+    pub async fn allocate_cdn_port(
+        &mut self,
+        service_name: &str,
+    ) -> Result<PortAllocation, PortManagerError> {
         let cdn_block_start = 18140;
         let cdn_block_end = 18159;
 
         // Find next available port in CDN block
         for port in cdn_block_start..=cdn_block_end {
             if !self.allocations.contains_key(&port) && !self.reserved_ports.contains(&port) {
-                return self.allocate_port(port, service_name, ServiceType::CDN).await;
+                return self
+                    .allocate_port(port, service_name, ServiceType::CDN)
+                    .await;
             }
         }
 
-        Err(PortManagerError::NoPortsAvailable("CDN services block (18140-18159) is full".to_string()))
+        Err(PortManagerError::NoPortsAvailable(
+            "CDN services block (18140-18159) is full".to_string(),
+        ))
     }
 
     /// Allocate port for Neural/Memory Mesh services (18160-18179 block)
-    pub async fn allocate_neural_port(&mut self, service_name: &str) -> Result<PortAllocation, PortManagerError> {
+    pub async fn allocate_neural_port(
+        &mut self,
+        service_name: &str,
+    ) -> Result<PortAllocation, PortManagerError> {
         let neural_block_start = 18160;
         let neural_block_end = 18179;
 
         // Find next available port in neural block
         for port in neural_block_start..=neural_block_end {
             if !self.allocations.contains_key(&port) && !self.reserved_ports.contains(&port) {
-                return self.allocate_port(port, service_name, ServiceType::XSD).await;
+                return self
+                    .allocate_port(port, service_name, ServiceType::XSD)
+                    .await;
             }
         }
 
-        Err(PortManagerError::NoPortsAvailable("Neural/Memory Mesh block (18160-18179) is full".to_string()))
+        Err(PortManagerError::NoPortsAvailable(
+            "Neural/Memory Mesh block (18160-18179) is full".to_string(),
+        ))
     }
 
     /// Allocate specific ports for known orbital services
-    pub async fn allocate_orbital_services(&mut self) -> Result<Vec<PortAllocation>, PortManagerError> {
+    pub async fn allocate_orbital_services(
+        &mut self,
+    ) -> Result<Vec<PortAllocation>, PortManagerError> {
         let mut allocations = Vec::new();
 
         // Core orbital services with preferred ports
@@ -203,22 +231,37 @@ impl PortManager {
         ];
 
         for (service_name, preferred_port) in orbital_services {
-            match self.allocate_port(preferred_port, service_name, ServiceType::Orbital).await {
+            match self
+                .allocate_port(preferred_port, service_name, ServiceType::Orbital)
+                .await
+            {
                 Ok(allocation) => {
                     allocations.push(allocation);
-                    info!("🛰️ Allocated orbital port {} for {}", preferred_port, service_name);
+                    info!(
+                        "🛰️ Allocated orbital port {} for {}",
+                        preferred_port, service_name
+                    );
                 }
                 Err(e) => {
-                    warn!("Failed to allocate preferred port {} for {}: {:?}", preferred_port, service_name, e);
+                    warn!(
+                        "Failed to allocate preferred port {} for {}: {:?}",
+                        preferred_port, service_name, e
+                    );
                     // Try to allocate any available port in orbital block
                     match self.allocate_orbital_port(service_name).await {
                         Ok(allocation) => {
                             let port = allocation.port;
                             allocations.push(allocation);
-                            info!("🛰️ Allocated fallback orbital port {} for {}", port, service_name);
+                            info!(
+                                "🛰️ Allocated fallback orbital port {} for {}",
+                                port, service_name
+                            );
                         }
                         Err(fallback_err) => {
-                            error!("Failed to allocate any orbital port for {}: {:?}", service_name, fallback_err);
+                            error!(
+                                "Failed to allocate any orbital port for {}: {:?}",
+                                service_name, fallback_err
+                            );
                         }
                     }
                 }
@@ -238,4 +281,3 @@ pub struct PortManager {
     pub deception_settings: DeceptionSettings,
     pub cyber_ops_enabled: bool,
 }
-

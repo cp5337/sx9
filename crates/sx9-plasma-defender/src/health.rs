@@ -1,7 +1,7 @@
 //! Health Monitoring
 
-use sx9_atlas_bus::PlasmaState;
 use std::sync::Arc;
+use sx9_atlas_bus::PlasmaState;
 
 #[derive(Debug, Clone)]
 pub struct HealthStatus {
@@ -18,7 +18,7 @@ impl HealthMonitor {
     pub fn new(plasma: Arc<PlasmaState>) -> Self {
         Self { plasma }
     }
-    
+
     pub fn get_status(&self) -> HealthStatus {
         HealthStatus {
             status: "ok".to_string(),
@@ -27,4 +27,3 @@ impl HealthMonitor {
         }
     }
 }
-

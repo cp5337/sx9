@@ -1,5 +1,5 @@
 //! CTAS-7 Real Port Manager Handlers
-//! 
+//!
 //! API handlers for the standalone port manager service.
 
 use axum::{
@@ -9,7 +9,6 @@ use axum::{
 use serde_json::{json, Value};
 use std::sync::Arc;
 use tokio::sync::RwLock;
-use tracing::{info, warn, error};
 
 use crate::port_manager::PortManager;
 use crate::types::*;
@@ -25,9 +24,7 @@ pub async fn health_check() -> Json<Value> {
 }
 
 /// Get port manager status
-pub async fn get_status(
-    State(port_manager): State<Arc<RwLock<PortManager>>>,
-) -> Json<Value> {
+pub async fn get_status(State(port_manager): State<Arc<RwLock<PortManager>>>) -> Json<Value> {
     let manager = port_manager.read().await;
     Json(json!({
         "status": "active",
@@ -42,12 +39,10 @@ pub async fn get_status(
 }
 
 /// Get all port allocations
-pub async fn get_ports(
-    State(port_manager): State<Arc<RwLock<PortManager>>>,
-) -> Json<Value> {
+pub async fn get_ports(State(port_manager): State<Arc<RwLock<PortManager>>>) -> Json<Value> {
     let manager = port_manager.read().await;
     let allocations: Vec<&PortAllocation> = manager.get_all_allocations();
-    
+
     Json(json!({
         "allocations": allocations,
         "total_allocated": allocations.len(),
@@ -61,7 +56,7 @@ pub async fn get_port(
     State(port_manager): State<Arc<RwLock<PortManager>>>,
 ) -> Json<Value> {
     let manager = port_manager.read().await;
-    
+
     match manager.get_port_allocation(port) {
         Some(allocation) => Json(json!({
             "allocation": allocation,
@@ -71,7 +66,7 @@ pub async fn get_port(
             "allocation": null,
             "found": false,
             "message": format!("Port {} not allocated", port)
-        }))
+        })),
     }
 }
 
@@ -81,7 +76,7 @@ pub async fn allocate_port(
     Json(payload): Json<Value>,
 ) -> Json<Value> {
     let mut manager = port_manager.write().await;
-    
+
     let port = payload["port"].as_u64().unwrap_or(0) as u16;
     let service_name = payload["service_name"].as_str().unwrap_or("unknown");
     let service_type = match payload["service_type"].as_str().unwrap_or("custom") {
@@ -95,8 +90,11 @@ pub async fn allocate_port(
         "monitoring" => ServiceType::Monitoring,
         custom => ServiceType::Custom(custom.to_string()),
     };
-    
-    match manager.allocate_port(port, service_name, service_type).await {
+
+    match manager
+        .allocate_port(port, service_name, service_type)
+        .await
+    {
         Ok(allocation) => Json(json!({
             "success": true,
             "allocation": allocation,
@@ -106,7 +104,7 @@ pub async fn allocate_port(
             "success": false,
             "error": e.to_string(),
             "message": format!("Failed to allocate port {}", port)
-        }))
+        })),
     }
 }
 
@@ -116,7 +114,7 @@ pub async fn release_port(
     State(port_manager): State<Arc<RwLock<PortManager>>>,
 ) -> Json<Value> {
     let mut manager = port_manager.write().await;
-    
+
     match manager.release_port(port).await {
         Ok(_) => Json(json!({
             "success": true,
@@ -126,7 +124,7 @@ pub async fn release_port(
             "success": false,
             "error": e.to_string(),
             "message": format!("Failed to release port {}", port)
-        }))
+        })),
     }
 }
 
@@ -154,9 +152,7 @@ pub async fn get_deception_settings(
 }
 
 /// Get cyber operations status
-pub async fn get_cyber_ops(
-    State(port_manager): State<Arc<RwLock<PortManager>>>,
-) -> Json<Value> {
+pub async fn get_cyber_ops(State(port_manager): State<Arc<RwLock<PortManager>>>) -> Json<Value> {
     let manager = port_manager.read().await;
     Json(json!({
         "cyber_ops": {
@@ -170,4 +166,3 @@ pub async fn get_cyber_ops(
         "timestamp": chrono::Utc::now()
     }))
 }
-

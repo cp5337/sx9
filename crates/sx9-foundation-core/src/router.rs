@@ -6,7 +6,7 @@ use std::sync::Arc;
 use tokio::sync::RwLock;
 use tracing::{debug, error, warn};
 
-use ctas7_agentic_core::{
+use crate::types::{
     AgentId, Message, MessageId, AgentMetadata, MessageRouter as MessageRouterTrait,
     Result, AgentError, Priority
 };

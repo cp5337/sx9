@@ -3,8 +3,8 @@
 //! Implements P,T,E,S,R,Φ (Physical, Temporal, Energetic, Spatial, Relational, Economic)
 //! cognitive atoms for domain-agnostic tactical planning
 
+use crate::{DomainContext, TacticalError, TacticalResult};
 use serde::{Deserialize, Serialize};
-use crate::{TacticalResult, TacticalError, DomainContext};
 
 /// 6-dimensional cognitive atom structure
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -72,42 +72,53 @@ impl CognigraphProcessor {
     /// Validate cognitive atom against domain constraints
     pub async fn validate_atom(&self, atom: &CognigraphAtom) -> TacticalResult<bool> {
         let start = std::time::Instant::now();
-        
+
         // Domain-specific validation logic
         let is_valid = match &self.domain_context {
-            DomainContext::NationalSecurity { rules_of_engagement, .. } => {
-                self.validate_security_constraints(atom, rules_of_engagement)
-            },
-            DomainContext::Healthcare { regulatory_compliance, .. } => {
-                self.validate_healthcare_constraints(atom, regulatory_compliance)
-            },
-            DomainContext::Manufacturing { safety_protocols, .. } => {
-                self.validate_manufacturing_constraints(atom, safety_protocols)
-            },
-            DomainContext::Restaurant { health_regulations, .. } => {
-                self.validate_restaurant_constraints(atom, health_regulations)
-            },
+            DomainContext::NationalSecurity {
+                rules_of_engagement,
+                ..
+            } => self.validate_security_constraints(atom, rules_of_engagement),
+            DomainContext::Healthcare {
+                regulatory_compliance,
+                ..
+            } => self.validate_healthcare_constraints(atom, regulatory_compliance),
+            DomainContext::Manufacturing {
+                safety_protocols, ..
+            } => self.validate_manufacturing_constraints(atom, safety_protocols),
+            DomainContext::Restaurant {
+                health_regulations, ..
+            } => self.validate_restaurant_constraints(atom, health_regulations),
         };
 
-        TacticalResult::success(
-            is_valid,
-            start.elapsed().as_millis() as f64
-        )
+        TacticalResult::success(is_valid, start.elapsed().as_millis() as f64)
     }
 
     fn validate_security_constraints(&self, _atom: &CognigraphAtom, _rules: &[String]) -> bool {
         true // Simplified validation
     }
 
-    fn validate_healthcare_constraints(&self, _atom: &CognigraphAtom, _compliance: &[String]) -> bool {
+    fn validate_healthcare_constraints(
+        &self,
+        _atom: &CognigraphAtom,
+        _compliance: &[String],
+    ) -> bool {
         true // Simplified validation
     }
 
-    fn validate_manufacturing_constraints(&self, _atom: &CognigraphAtom, _protocols: &[String]) -> bool {
+    fn validate_manufacturing_constraints(
+        &self,
+        _atom: &CognigraphAtom,
+        _protocols: &[String],
+    ) -> bool {
         true // Simplified validation
     }
 
-    fn validate_restaurant_constraints(&self, _atom: &CognigraphAtom, _regulations: &[String]) -> bool {
+    fn validate_restaurant_constraints(
+        &self,
+        _atom: &CognigraphAtom,
+        _regulations: &[String],
+    ) -> bool {
         true // Simplified validation
     }
 }

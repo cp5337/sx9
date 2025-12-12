@@ -1,9 +1,6 @@
 //! Foundation Daemon Integration v7.3.1
 //! Connects this crate to the CTAS-7 foundation daemon system
 
-use std::sync::Arc;
-use tokio::sync::RwLock;
-
 /// Foundation daemon client for this crate
 pub struct FoundationDaemonClient {
     pub daemon_url: String,
@@ -23,7 +20,7 @@ impl FoundationDaemonClient {
 
     /// Register this crate with foundation daemon
     pub async fn register(&self) -> Result<(), Box<dyn std::error::Error>> {
-        // Register with foundation daemon
+        // Register with foundation
         let client = reqwest::Client::new();
         let registration = serde_json::json!({
             "crate_id": self.crate_id,

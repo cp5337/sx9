@@ -3,11 +3,11 @@
 //! Diagnostics and calibration system for Delta Operator.
 //! Exposes delta measurements, logging, and feature flag control.
 
-use super::delta_operator::{DeltaOperator, DeltaMeasurement};
 use super::delta_gate::{DeltaGate, GatedPayload};
+use super::delta_operator::{DeltaMeasurement, DeltaOperator};
 use crate::trivariate_hash_v731::{ContextFrame, TrivariateHash};
-use std::sync::{Arc, Mutex};
 use std::collections::VecDeque;
+use std::sync::{Arc, Mutex};
 
 /// Delta measurement log entry
 #[derive(Debug, Clone)]
@@ -100,11 +100,7 @@ impl DeltaTuner {
     /// Get recent log entries
     pub fn get_recent_logs(&self, count: usize) -> Vec<DeltaLogEntry> {
         let log = self.log_buffer.lock().unwrap();
-        log.iter()
-            .rev()
-            .take(count)
-            .cloned()
-            .collect()
+        log.iter().rev().take(count).cloned().collect()
     }
 
     /// Get all log entries
@@ -122,7 +118,7 @@ impl DeltaTuner {
     /// Get statistics from logs
     pub fn get_statistics(&self) -> DeltaStatistics {
         let log = self.log_buffer.lock().unwrap();
-        
+
         if log.is_empty() {
             return DeltaStatistics::default();
         }
@@ -135,15 +131,15 @@ impl DeltaTuner {
             stats.avg_entropy_drift += entry.entropy_drift;
             stats.avg_semantic_drift += entry.semantic_drift;
             stats.avg_noise_score += entry.noise_score;
-            
+
             if let Some(weight) = entry.gated_weight {
                 stats.avg_gated_weight += weight;
                 stats.gated_count += 1;
             }
-            
+
             stats.max_delta_angle = stats.max_delta_angle.max(entry.delta_angle);
             stats.max_noise_score = stats.max_noise_score.max(entry.noise_score);
-            
+
             count += 1;
         }
 
@@ -152,7 +148,7 @@ impl DeltaTuner {
             stats.avg_entropy_drift /= count as f32;
             stats.avg_semantic_drift /= count as f32;
             stats.avg_noise_score /= count as f32;
-            
+
             if stats.gated_count > 0 {
                 stats.avg_gated_weight /= stats.gated_count as f32;
             }
@@ -208,16 +204,16 @@ mod tests {
     #[test]
     fn test_measure_and_log() {
         let tuner = DeltaTuner::new(true);
-        
+
         let ctx1 = ContextFrame::new(ExecEnv::Wasm, 1, ExecState::Hot);
         let ctx2 = ContextFrame::new(ExecEnv::Container, 2, ExecState::Warm);
-        
+
         let hash1 = TrivariateHash::new(
             "aB7x9pQw2zRt4kMn".to_string(),
             "c5j8k3p2q7w1x9z".to_string(),
             "550e8400-e29b-41d4-a716-446655440000".to_string(),
         );
-        
+
         let hash2 = TrivariateHash::new(
             "xY9mP4qR8sT2wN5k".to_string(),
             "d6k9l4p3q8w2x0z".to_string(),
@@ -225,9 +221,9 @@ mod tests {
         );
 
         let measurement = tuner.measure_and_log(&ctx1, &ctx2, &hash1, &hash2, "WASM->Microkernel");
-        
+
         assert!(measurement.noise_score >= 0.0 && measurement.noise_score <= 1.0);
-        
+
         let logs = tuner.get_recent_logs(10);
         assert!(!logs.is_empty());
         assert_eq!(logs[0].escalation_tier, "WASM->Microkernel");
@@ -236,7 +232,7 @@ mod tests {
     #[test]
     fn test_statistics() {
         let tuner = DeltaTuner::new(true);
-        
+
         // Add some synthetic measurements
         for i in 0..10 {
             let measurement = DeltaMeasurement::new(
@@ -256,10 +252,8 @@ mod tests {
     fn test_feature_flag() {
         let mut tuner = DeltaTuner::new(false);
         assert!(!tuner.is_enabled());
-        
+
         tuner.set_enabled(true);
         assert!(tuner.is_enabled());
     }
 }
-
-

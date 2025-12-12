@@ -1,0 +1,56 @@
+version: '3.8'
+
+services:
+  frontend:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "5173:5173"
+    environment:
+      - NODE_ENV=production
+      - VITE_OPENCTI_API_URL=http://opencti:4000
+      - VITE_OPENCTI_API_KEY=${OPENCTI_ADMIN_TOKEN}
+      - VITE_KALI_API_URL=http://kali:8080
+    volumes:
+      - ./src:/app/src
+      - ./public:/app/public
+    networks:
+      - ctas_network
+    depends_on:
+      - mongodb
+      - neo4j
+      - elasticsearch
+      - opencti
+      - kali
+
+  kali:
+    image: kalilinux/kali-rolling:latest
+    privileged: true  # Required for certain tools
+    ports:
+      - "8080:8080"  # API port
+      - "4444:4444"  # Metasploit
+    volumes:
+      - kali_data:/root
+      - ./kali/tools:/opt/tools
+      - ./kali/scripts:/opt/scripts
+    environment:
+      - DISPLAY=:0
+      - TERM=xterm
+    command: bash -c "/opt/scripts/init.sh && sleep infinity"
+    networks:
+      - ctas_network
+    cap_add:  # Required capabilities for network tools
+      - NET_ADMIN
+      - NET_RAW
+      - SYS_PTRACE
+
+  [Previous services remain unchanged...]
+
+volumes:
+  kali_data:
+  [Previous volumes remain unchanged...]
+
+networks:
+  ctas_network:
+    driver: bridge

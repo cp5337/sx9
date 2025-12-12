@@ -23,8 +23,12 @@ fn main() {
             println!("cargo:warning=Missing dependency crate: {}", crate_name);
 
             // Attempt to clone from git if fallback is enabled
-            if env::var("CTAS7_FALLBACK_DOWNLOAD").unwrap_or_else(|_| "true".to_string()) == "true" {
-                println!("cargo:warning=Attempting to download {} from {}", crate_name, git_url);
+            if env::var("CTAS7_FALLBACK_DOWNLOAD").unwrap_or_else(|_| "true".to_string()) == "true"
+            {
+                println!(
+                    "cargo:warning=Attempting to download {} from {}",
+                    crate_name, git_url
+                );
 
                 match clone_dependency(git_url, &crate_path) {
                     Ok(_) => println!("cargo:warning=Successfully downloaded {}", crate_name),
@@ -54,7 +58,11 @@ fn clone_dependency(git_url: &str, target_path: &Path) -> Result<(), Box<dyn std
         .output()?;
 
     if !output.status.success() {
-        return Err(format!("Git clone failed: {}", String::from_utf8_lossy(&output.stderr)).into());
+        return Err(format!(
+            "Git clone failed: {}",
+            String::from_utf8_lossy(&output.stderr)
+        )
+        .into());
     }
 
     Ok(())
@@ -197,5 +205,8 @@ last_sync = "2024-01-01T00:00:00Z"
 namespaces = ["ctas-core", "nist-csf", "mitre-attack", "cwe-cve"]
 "#;
 
-    let _ = fs::write(Path::new(manifest_dir).join("ctas7-status-template.toml"), status_template);
+    let _ = fs::write(
+        Path::new(manifest_dir).join("ctas7-status-template.toml"),
+        status_template,
+    );
 }

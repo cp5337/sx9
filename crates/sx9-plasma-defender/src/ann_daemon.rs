@@ -2,13 +2,13 @@
 //!
 //! Observes tool results and generates advisories
 
+use crate::advisory::{AnnAdvisory, AnnContext};
 use anyhow::Result;
 use chrono::{DateTime, Utc};
-use serde::{Serialize, Deserialize};
+use serde::{Deserialize, Serialize};
 use std::sync::Arc;
 use tokio::sync::RwLock;
 use tracing::{info, warn};
-use crate::advisory::{AnnAdvisory, AnnContext};
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct AnnObservation {
@@ -64,11 +64,11 @@ impl AnnDaemon {
         if !self.enabled {
             return Ok(None);
         }
-        
+
         // Simple heuristic: high entropy + low latency = proceed
         // Low entropy or high latency = block/escalate
         let confidence = (ctx.entropy + ctx.latency_score) / 2.0;
-        
+
         if confidence > 0.85 {
             Ok(Some(AnnAdvisory {
                 confidence,
@@ -104,5 +104,3 @@ impl AnnDaemon {
         }
     }
 }
-
-

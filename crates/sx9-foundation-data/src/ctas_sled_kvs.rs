@@ -21,9 +21,9 @@ pub struct CtasTask {
     pub hd4_phase: String,
     pub predecessors: Option<String>,
     pub successors: Option<String>,
-    pub p: f64,  // probability
-    pub t: f64,  // time
-    pub h: f64,  // harshness
+    pub p: f64, // probability
+    pub t: f64, // time
+    pub h: f64, // harshness
 }
 
 /// CTAS hash-compressed task for KVS storage
@@ -40,7 +40,7 @@ pub struct CtasHashTask {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct UnicodeAssemblyOp {
     pub operation_type: String,
-    pub unicode_range: String,  // U+E000-E9FF range
+    pub unicode_range: String, // U+E000-E9FF range
     pub compressed_data: String,
     pub hash_reference: String,
 }
@@ -74,7 +74,9 @@ impl CtasSledKvs {
         let trivariate_hash = self.hash_engine.generate_hash(&task_key, &task_data)?;
 
         // Generate environmental mask based on HD4 phase
-        let environmental_mask = self.hash_engine.generate_environmental_hash(&task.hd4_phase)?;
+        let environmental_mask = self
+            .hash_engine
+            .generate_environmental_hash(&task.hd4_phase)?;
 
         // Generate Unicode compressed representation
         let unicode_compressed = self.hash_engine.generate_unicode_hash(&task.task_name)?;
@@ -89,7 +91,8 @@ impl CtasSledKvs {
 
         // Store in Sled with hash as key
         let hash_task_json = serde_json::to_string(&hash_task)?;
-        self.db.insert(trivariate_hash.as_bytes(), hash_task_json.as_bytes())?;
+        self.db
+            .insert(trivariate_hash.as_bytes(), hash_task_json.as_bytes())?;
 
         // Cache in memory for fast access
         let mut cache = self.task_cache.write().await;
@@ -124,7 +127,9 @@ impl CtasSledKvs {
 
     /// Store Unicode Assembly Language operation
     pub async fn store_unicode_operation(&self, op: UnicodeAssemblyOp) -> Result<String> {
-        let op_hash = self.hash_engine.generate_hash(&op.operation_type, &op.compressed_data)?;
+        let op_hash = self
+            .hash_engine
+            .generate_hash(&op.operation_type, &op.compressed_data)?;
         let op_json = serde_json::to_string(&op)?;
 
         // Store in Sled
@@ -171,7 +176,8 @@ impl CtasSledKvs {
             let key_str = String::from_utf8(key.to_vec())?;
 
             // Only export CTAS task data
-            if key_str.len() == 48 {  // Trivariate hash length
+            if key_str.len() == 48 {
+                // Trivariate hash length
                 if let Ok(hash_task) = serde_json::from_slice::<CtasHashTask>(&value) {
                     let export_entry = serde_json::json!({
                         "trivariate_hash": hash_task.trivariate_hash,
@@ -216,12 +222,15 @@ impl CtasSledKvs {
             let (key, value) = result?;
             let key_str = String::from_utf8(key.to_vec())?;
 
-            if key_str.len() == 48 {  // Trivariate hash
+            if key_str.len() == 48 {
+                // Trivariate hash
                 unique_hashes += 1;
 
                 if let Ok(hash_task) = serde_json::from_slice::<CtasHashTask>(&value) {
                     total_tasks += 1;
-                    *task_count_by_phase.entry(hash_task.task_data.hd4_phase.clone()).or_insert(0) += 1;
+                    *task_count_by_phase
+                        .entry(hash_task.task_data.hd4_phase.clone())
+                        .or_insert(0) += 1;
                 }
             }
         }
@@ -253,7 +262,10 @@ impl CtasHashBridge {
     }
 
     /// Bridge ACID (Supabase) → KVS (Sled) → Document+SVM (SurrealDB)
-    pub async fn bridge_databases(&self, supabase_tasks: Vec<CtasTask>) -> Result<Vec<serde_json::Value>> {
+    pub async fn bridge_databases(
+        &self,
+        supabase_tasks: Vec<CtasTask>,
+    ) -> Result<Vec<serde_json::Value>> {
         // 1. Import from Supabase (ACID layer)
         let imported_count = self.sled_kvs.sync_from_supabase(supabase_tasks).await?;
         tracing::info!("Imported {} tasks from Supabase ACID layer", imported_count);
@@ -263,7 +275,10 @@ impl CtasHashBridge {
 
         // 3. Export for SurrealDB Document+SVM layer
         let export_data = self.sled_kvs.export_for_surrealdb().await?;
-        tracing::info!("Exported {} records for SurrealDB Document+SVM layer", export_data.len());
+        tracing::info!(
+            "Exported {} records for SurrealDB Document+SVM layer",
+            export_data.len()
+        );
 
         Ok(export_data)
     }
@@ -294,7 +309,7 @@ mod tests {
 
         // Store task
         let hash = kvs.store_ctas_task(test_task.clone()).await.unwrap();
-        assert_eq!(hash.len(), 48);  // Trivariate hash length
+        assert_eq!(hash.len(), 48); // Trivariate hash length
 
         // Retrieve task
         let retrieved = kvs.get_ctas_task(&hash).await.unwrap();
@@ -312,19 +327,17 @@ mod tests {
         let kvs = CtasSledKvs::new(db_path.to_str().unwrap()).unwrap();
         let bridge = CtasHashBridge::new(kvs);
 
-        let test_tasks = vec![
-            CtasTask {
-                task_id: "uuid-000-000-001".to_string(),
-                task_name: "Ideological Formation".to_string(),
-                category: "Ideation".to_string(),
-                hd4_phase: "Hunt".to_string(),
-                predecessors: None,
-                successors: Some("uuid-000-000-002".to_string()),
-                p: 0.95,
-                t: 0.97,
-                h: 0.15,
-            }
-        ];
+        let test_tasks = vec![CtasTask {
+            task_id: "uuid-000-000-001".to_string(),
+            task_name: "Ideological Formation".to_string(),
+            category: "Ideation".to_string(),
+            hd4_phase: "Hunt".to_string(),
+            predecessors: None,
+            successors: Some("uuid-000-000-002".to_string()),
+            p: 0.95,
+            t: 0.97,
+            h: 0.15,
+        }];
 
         let export_data = bridge.bridge_databases(test_tasks).await.unwrap();
         assert_eq!(export_data.len(), 1);

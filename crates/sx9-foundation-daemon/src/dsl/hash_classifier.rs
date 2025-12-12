@@ -3,15 +3,15 @@
 //! Provides hash-based operation classification for routing DSL operations
 //! through the Neural Mux fabric. Uses existing CTAS-7 TrivariteHashEngine.
 
-use crate::dsl::{DSLError, DSLResult};
 use crate::dsl::operations::Priority;
+use crate::dsl::{DSLError, DSLResult};
 
 /// Hash classifier for DSL operations
-/// 
+///
 /// Uses the existing CTAS-7 v7.2 TrivariteHashEngine from foundation-core
 /// to avoid code duplication and maintain ecosystem integrity.
 pub struct HashClassifier {
-    // NOTE: We use ctas7_foundation_core::TrivariteHashEngine for actual hashing
+    // NOTE: We use sx9_foundation_core::TrivariteHashEngine for actual hashing
     // This struct provides classification logic only
 }
 
@@ -28,7 +28,7 @@ impl HashClassifier {
     }
 
     /// Classify operation based on hash content
-    /// 
+    ///
     /// Uses first 8 characters of SCH (positions 0-7) to determine operation class
     pub fn classify_operation(&self, hash: &str) -> DSLResult<OperationClass> {
         if hash.is_empty() {
@@ -60,7 +60,7 @@ impl HashClassifier {
     /// Determine priority based on hash classification
     pub fn classify_priority(&self, hash: &str) -> DSLResult<Priority> {
         let class = self.classify_operation(hash)?;
-        
+
         let priority = match class {
             OperationClass::Intelligence => Priority::Critical,
             OperationClass::Offensive => Priority::High,
@@ -105,20 +105,29 @@ mod tests {
     #[test]
     fn test_hash_classification() {
         let classifier = HashClassifier::default();
-        
+
         // Test with various hash inputs
         let hash1 = "3kJ9mP4xQ7R8sN2m";
         let class = classifier.classify_operation(hash1).unwrap();
-        assert!(matches!(class, OperationClass::Intelligence | OperationClass::Offensive | OperationClass::Defensive | OperationClass::Administrative));
+        assert!(matches!(
+            class,
+            OperationClass::Intelligence
+                | OperationClass::Offensive
+                | OperationClass::Defensive
+                | OperationClass::Administrative
+        ));
     }
 
     #[test]
     fn test_priority_classification() {
         let classifier = HashClassifier::default();
-        
+
         let hash = "3kJ9mP4xQ7R8sN2m";
         let priority = classifier.classify_priority(hash).unwrap();
-        assert!(matches!(priority, Priority::Critical | Priority::High | Priority::Medium));
+        assert!(matches!(
+            priority,
+            Priority::Critical | Priority::High | Priority::Medium
+        ));
     }
 
     #[test]
@@ -135,4 +144,3 @@ mod tests {
         assert!(result.is_err());
     }
 }
-

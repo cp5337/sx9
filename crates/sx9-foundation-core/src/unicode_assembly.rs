@@ -3,7 +3,7 @@
 //! Provides support for the CTAS-7 Unicode Assembly Language with 2,560 systematically allocated operations
 //! Includes trivariate hash support (SCH/CUID/UUID) and emoji status visualization
 
-use crate::data::{Serialize, Deserialize};
+use crate::data::{Deserialize, Serialize};
 
 /// Request structure for trivariate hash generation
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -183,7 +183,7 @@ impl TrivariatHash {
             .as_secs();
 
         // SCH - Positions 1-16 (semantic envelope) - Seed 0x1234
-        let sch_data = format!("sch_{}_{}_{}",crate_name, stage, timestamp);
+        let sch_data = format!("sch_{}_{}_{}", crate_name, stage, timestamp);
         let sch = murmur3_to_base96(sch_data.as_bytes(), 16, 0x1234);
 
         // CUID - Positions 17-32 (spatio-temporal context) - Seed 0x5678
@@ -191,16 +191,22 @@ impl TrivariatHash {
         let cuid = murmur3_to_base96(cuid_data.as_bytes(), 16, 0x5678);
 
         // UUID - Positions 33-48 (persistence & audit) - Seed 0x9abc
-        let uuid_data = format!("uuid_{}_{}_{}",crate_name, timestamp, stage);
+        let uuid_data = format!("uuid_{}_{}_{}", crate_name, timestamp, stage);
         let uuid = murmur3_to_base96(uuid_data.as_bytes(), 16, 0x9abc);
 
         Self { sch, cuid, uuid }
     }
 
     /// Create from components
-    pub fn from_components(sch: String, cuid: String, uuid: String) -> crate::diagnostics::Result<Self> {
+    pub fn from_components(
+        sch: String,
+        cuid: String,
+        uuid: String,
+    ) -> crate::diagnostics::Result<Self> {
         if sch.len() != 16 || cuid.len() != 16 || uuid.len() != 16 {
-            return Err(crate::diagnostics::Error::msg("Invalid trivariate hash component length"));
+            return Err(crate::diagnostics::Error::msg(
+                "Invalid trivariate hash component length",
+            ));
         }
 
         Ok(Self { sch, cuid, uuid })
@@ -214,7 +220,11 @@ impl TrivariatHash {
     /// Get hash from Unicode operation
     pub fn from_operation(operation: char) -> Self {
         let unicode_value = operation as u32;
-        let sch = format!("OP{:04X}{}", unicode_value, Base96::deterministic(10, unicode_value));
+        let sch = format!(
+            "OP{:04X}{}",
+            unicode_value,
+            Base96::deterministic(10, unicode_value)
+        );
         let cuid = format!("CTX{}", Base96::deterministic(13, unicode_value + 1000));
         let uuid = format!("DAT{}", Base96::deterministic(13, unicode_value + 2000));
 
@@ -232,10 +242,10 @@ impl Default for TrivariatHash {
 pub mod emoji_status {
     /// Quality grades
     pub const EXCELLENT: &str = "💎🚀"; // Grade A+/A
-    pub const GOOD: &str = "🎯✅";       // Grade B+/B
+    pub const GOOD: &str = "🎯✅"; // Grade B+/B
     pub const ACCEPTABLE: &str = "📊⚡"; // Grade C+/C
     pub const NEEDS_WORK: &str = "🔧⚠️"; // Below standards
-    pub const CRITICAL: &str = "🚨🔴";   // Critical issues
+    pub const CRITICAL: &str = "🚨🔴"; // Critical issues
 
     /// Progress indicators
     pub const IN_PROGRESS: &str = "🔄";
@@ -253,9 +263,9 @@ pub mod emoji_status {
     pub const GENERAL: &str = "📊";
 
     /// Complexity ratings
-    pub const CLEAN: &str = "🎨";      // ≤1.0 complexity
+    pub const CLEAN: &str = "🎨"; // ≤1.0 complexity
     pub const GOOD_COMPLEX: &str = "⚡"; // ≤2.0 complexity
-    pub const COMPLEX: &str = "🔥";     // >2.0 complexity
+    pub const COMPLEX: &str = "🔥"; // >2.0 complexity
 }
 
 /// Unicode compression for PGP keys and data
@@ -452,22 +462,30 @@ fn murmur3_to_base96(data: &[u8], length: usize, seed: u32) -> String {
 }
 
 /// Generate Murmur3 Base96 trivariate hash (async version matching Smart Crate API)
-pub async fn generate_murmur3_trivariate(request: &TrivariatRequest) -> crate::diagnostics::Result<TrivariatHash> {
+pub async fn generate_murmur3_trivariate(
+    request: &TrivariatRequest,
+) -> crate::diagnostics::Result<TrivariatHash> {
     let timestamp = std::time::SystemTime::now()
         .duration_since(std::time::UNIX_EPOCH)
         .unwrap_or_default()
         .as_secs();
 
     // SCH - Positions 1-16 (semantic envelope) - Seed 0x1234
-    let sch_data = format!("sch_{}_{}_{}",request.crate_name, request.stage, timestamp);
+    let sch_data = format!("sch_{}_{}_{}", request.crate_name, request.stage, timestamp);
     let sch_hash = murmur3_to_base96(sch_data.as_bytes(), 16, 0x1234);
 
     // CUID - Positions 17-32 (spatio-temporal context) - Seed 0x5678
-    let cuid_data = format!("cuid_{}_{}_{}", timestamp, request.crate_name, request.stage);
+    let cuid_data = format!(
+        "cuid_{}_{}_{}",
+        timestamp, request.crate_name, request.stage
+    );
     let cuid_hash = murmur3_to_base96(cuid_data.as_bytes(), 16, 0x5678);
 
     // UUID - Positions 33-48 (persistence & audit) - Seed 0x9abc
-    let uuid_data = format!("uuid_{}_{}_{}",request.crate_name, timestamp, request.stage);
+    let uuid_data = format!(
+        "uuid_{}_{}_{}",
+        request.crate_name, timestamp, request.stage
+    );
     let uuid_hash = murmur3_to_base96(uuid_data.as_bytes(), 16, 0x9abc);
 
     Ok(TrivariatHash {
@@ -492,10 +510,22 @@ mod tests {
 
     #[test]
     fn test_operation_parsing() {
-        assert_eq!(OperationParser::parse_operation(core_ops::INIT), OperationType::Core);
-        assert_eq!(OperationParser::parse_operation(trivariate_ops::SCH), OperationType::TrivariatHash);
-        assert_eq!(OperationParser::parse_operation(intelligence_ops::PTIE), OperationType::Intelligence);
-        assert_eq!(OperationParser::parse_operation(xsd_ops::XSD), OperationType::XSD);
+        assert_eq!(
+            OperationParser::parse_operation(core_ops::INIT),
+            OperationType::Core
+        );
+        assert_eq!(
+            OperationParser::parse_operation(trivariate_ops::SCH),
+            OperationType::TrivariatHash
+        );
+        assert_eq!(
+            OperationParser::parse_operation(intelligence_ops::PTIE),
+            OperationType::Intelligence
+        );
+        assert_eq!(
+            OperationParser::parse_operation(xsd_ops::XSD),
+            OperationType::XSD
+        );
     }
 
     #[test]
@@ -521,9 +551,12 @@ mod tests {
     fn test_unicode_compression() {
         let test_data = "Hello, World!";
 
-        let high_compressed = UnicodeCompression::compress(test_data, CompressionRatio::High).unwrap();
-        let medium_compressed = UnicodeCompression::compress(test_data, CompressionRatio::Medium).unwrap();
-        let low_compressed = UnicodeCompression::compress(test_data, CompressionRatio::Low).unwrap();
+        let high_compressed =
+            UnicodeCompression::compress(test_data, CompressionRatio::High).unwrap();
+        let medium_compressed =
+            UnicodeCompression::compress(test_data, CompressionRatio::Medium).unwrap();
+        let low_compressed =
+            UnicodeCompression::compress(test_data, CompressionRatio::Low).unwrap();
 
         // High compression should produce emoji
         assert!(high_compressed.chars().any(|c| c as u32 > 0x1F000));

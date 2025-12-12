@@ -1,3 +1,5 @@
+#![allow(unexpected_cfgs)] // Suppress warning about fastrand feature not being in Cargo.toml
+
 //! OODA Loop Implementation
 //!
 //! RFC-9022: ATLAS Daemon OODA Loop
@@ -5,11 +7,11 @@
 //!
 //! Adapted from ctas7-atlas-daemon to use sx9-atlas-bus
 
-use serde::{Deserialize, Serialize};
-use crate::hd4_phases::{HD4Phase, VerticalLevel};
 use crate::convergence::ConvergenceCalculator;
-use sx9_atlas_bus::{AtlasBus, Command, CommandKind, Crystal, CrystalFamily};
+use crate::hd4_phases::{HD4Phase, VerticalLevel};
+use serde::{Deserialize, Serialize};
 use std::sync::Arc;
+use sx9_atlas_bus::{AtlasBus, Crystal, CrystalFamily};
 
 /// Trivariate hash type alias
 pub type TrivariateHash = u128;
@@ -22,6 +24,7 @@ pub enum OodaOutcome {
     /// Escalate to higher vertical level
     Escalate(VerticalLevel, String),
     /// Cycle back to observe phase
+    #[allow(dead_code)]
     CycleBack,
     /// No operation (maintain current state)
     NoOp,
@@ -56,6 +59,7 @@ pub struct OodaLoop {
     /// Reference to AtlasBus for command dispatch
     bus: Arc<AtlasBus>,
     /// Crystal for resonance evaluation
+    #[allow(dead_code)]
     crystal: Crystal,
 }
 
@@ -106,20 +110,20 @@ impl OodaLoop {
     async fn observe_telemetry(&self) -> Vec<TrivariateHash> {
         // Drain commands from bus for this tick
         let mut hashes = Vec::new();
-        
+
         // Process commands from bus
-        for cmd in self.bus.tick() {
+        for _cmd in self.bus.tick() {
             // Extract hash from command (if available)
             // Commands may contain trivariate hashes in their payload
             // For now, simulate hash extraction
             hashes.push(fastrand::u128(..));
         }
-        
+
         // If no commands, simulate single event
         if hashes.is_empty() {
             hashes.push(fastrand::u128(..));
         }
-        
+
         hashes
     }
 
@@ -141,6 +145,7 @@ impl OodaLoop {
     }
 
     /// ORIENT phase - Analyze and calculate convergence
+    #[allow(dead_code)]
     async fn orient(&mut self, signals: &[f64]) -> (f64, f64) {
         self.convergence.update_from_signals(signals);
         (self.convergence.h1_score(), self.convergence.h2_score())
@@ -162,10 +167,10 @@ impl OodaLoop {
         // Enhanced HD4 phase transition thresholds (RFC-9021)
         let should_transition = match self.current_phase {
             HD4Phase::Hunt => convergence > 0.50,
-            HD4Phase::Detect => convergence > 0.75,  // Enhanced from 0.65
-            HD4Phase::Disable => convergence > 0.85,  // Enhanced from 0.75
-            HD4Phase::Disrupt => convergence > 0.90,  // Enhanced from 0.85
-            HD4Phase::Dominate => false, // Terminal phase
+            HD4Phase::Detect => convergence > 0.75, // Enhanced from 0.65
+            HD4Phase::Disable => convergence > 0.85, // Enhanced from 0.75
+            HD4Phase::Disrupt => convergence > 0.90, // Enhanced from 0.85
+            HD4Phase::Dominate => false,            // Terminal phase
         };
 
         if should_transition {
@@ -178,7 +183,7 @@ impl OodaLoop {
 
         // Determine specific tactical action based on phase and convergence
         let tactical_action = self.determine_tactical_action(h1, h2, convergence > 0.75);
-        
+
         match tactical_action {
             TacticalAction::Isolate(hash) => {
                 return Decision::ExecuteWithAction(HD4Phase::Disable, hash);
@@ -303,4 +308,3 @@ mod tests {
         assert_eq!(state.phase, HD4Phase::Detect);
     }
 }
-

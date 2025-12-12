@@ -4,12 +4,14 @@
 use std::env;
 use tokio;
 
-use ctas7_foundation_daemon::services::backend_mcp_server::BackendMCPServer;
-use ctas7_foundation_daemon::services::service_discovery::ServiceRegistry;
-use ctas7_foundation_daemon::services::abe_controlled_access::{ABEControlledAccessService, OperationType};
-use ctas7_foundation_daemon::testing::performance_test_harness::PerformanceTestHarness;
-use ctas7_foundation_daemon::threat_reaction::{
-    ThreatRecognitionEngine, ThreatFormulationEngine, ThreatReactionEngine,
+use sx9_foundation_daemon::services::abe_controlled_access::{
+    ABEControlledAccessService, OperationType,
+};
+use sx9_foundation_daemon::services::backend_mcp_server::BackendMCPServer;
+use sx9_foundation_daemon::services::service_discovery::ServiceRegistry;
+use sx9_foundation_daemon::testing::performance_test_harness::PerformanceTestHarness;
+use sx9_foundation_daemon::threat_reaction::{
+    ThreatFormulationEngine, ThreatReactionEngine, ThreatRecognitionEngine,
 };
 
 #[tokio::main]
@@ -110,15 +112,17 @@ async fn run_abe_access() -> Result<(), Box<dyn std::error::Error>> {
     let mut abe_service = ABEControlledAccessService::new();
 
     // Start a sample intelligence session
-    let session = abe_service.start_intelligence_session(
-        "Standard Intelligence",
-        vec![
-            OperationType::IntelligenceCollection,
-            OperationType::ThreatAnalysis,
-        ],
-        50.0, // $50 max cost
-        4,    // 4 hours
-    ).await?;
+    let session = abe_service
+        .start_intelligence_session(
+            "Standard Intelligence",
+            vec![
+                OperationType::IntelligenceCollection,
+                OperationType::ThreatAnalysis,
+            ],
+            50.0, // $50 max cost
+            4,    // 4 hours
+        )
+        .await?;
 
     println!("✅ ABE session started: {}", session.session_id);
     println!("💰 Pay-as-you-go billing active");
@@ -150,32 +154,32 @@ async fn run_performance_tests() -> Result<(), Box<dyn std::error::Error>> {
 async fn run_threat_reaction() -> Result<(), Box<dyn std::error::Error>> {
     println!("🛡️ Starting Threat Reaction System");
     println!("🔍 Recognize-Formulate-React Architecture");
-    
+
     // Initialize recognition engine
     let recognition_engine = ThreatRecognitionEngine::new(
-        "http://localhost:55000".to_string(),  // Wazuh
-        "http://localhost:15176".to_string(),  // AXON
-        "/usr/share/exploitdb".to_string(),     // ExploitDB path
+        "http://localhost:55000".to_string(), // Wazuh
+        "http://localhost:15176".to_string(), // AXON
+        "/usr/share/exploitdb".to_string(),   // ExploitDB path
     );
-    
+
     // Initialize formulation engine
     let formulation_engine = ThreatFormulationEngine::new(
-        "http://localhost:50051".to_string(),  // CTE Neural Mux
-        "http://localhost:18620".to_string(),   // ABE QA
+        "http://localhost:50051".to_string(), // CTE Neural Mux
+        "http://localhost:18620".to_string(), // ABE QA
     );
-    
+
     // Initialize reaction engine
     let reaction_engine = ThreatReactionEngine::new(
-        "http://localhost:18650".to_string(),  // Foundation Daemon
-        "http://localhost:18111".to_string(),   // Threat Reaction CDN
-        "http://localhost:55000".to_string(),    // Plasma
+        "http://localhost:18650".to_string(), // Foundation Daemon
+        "http://localhost:18111".to_string(), // Threat Reaction CDN
+        "http://localhost:55000".to_string(), // Plasma
     );
-    
+
     println!("✅ Threat Reaction System ready");
     println!("   - Recognition: Wazuh → AXON → ExploitDB");
     println!("   - Formulation: CTE Neural Mux → Escalation Planner → ABE QA");
     println!("   - Reaction: Foundation Daemon → Threat Reaction CDN → Plasma");
-    
+
     // Main RFR loop
     loop {
         // 1. RECOGNIZE
@@ -183,18 +187,20 @@ async fn run_threat_reaction() -> Result<(), Box<dyn std::error::Error>> {
             Ok(threats) => {
                 if !threats.is_empty() {
                     println!("🔍 Recognized {} threats", threats.len());
-                    
+
                     for threat in &threats {
                         // 2. FORMULATE
                         match formulation_engine.formulate(threat).await {
                             Ok(response) => {
                                 println!("📋 Formulated response for threat: {:?}", threat.id);
-                                
+
                                 // 3. REACT
                                 match reaction_engine.react(&response).await {
                                     Ok(result) => {
-                                        println!("⚡ Reaction executed: success={}, interdicted={}", 
-                                            result.success, result.interdicted);
+                                        println!(
+                                            "⚡ Reaction executed: success={}, interdicted={}",
+                                            result.success, result.interdicted
+                                        );
                                     }
                                     Err(e) => {
                                         eprintln!("❌ Reaction failed: {}", e);
@@ -212,7 +218,7 @@ async fn run_threat_reaction() -> Result<(), Box<dyn std::error::Error>> {
                 eprintln!("❌ Recognition failed: {}", e);
             }
         }
-        
+
         // Wait before next recognition cycle
         tokio::time::sleep(tokio::time::Duration::from_secs(10)).await;
     }

@@ -3,7 +3,6 @@
 //! Handles platform-specific API integrations and configurations
 
 use serde::{Deserialize, Serialize};
-use std::collections::HashMap;
 
 // Integration Management [COORDINATE] APIs [CONFIGURE] Platforms
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -143,7 +142,7 @@ pub struct VideoResolution {
 // Codec Management [SELECT] Encoders [OPTIMIZE] Compression
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct VideoCodec {
-    pub primary: String,   // "H.265", "H.264", "AV1", "VP9"
+    pub primary: String, // "H.265", "H.264", "AV1", "VP9"
     pub fallback: String,
     pub hardware_encoding: bool,
     pub profile: String,
@@ -155,7 +154,7 @@ pub struct VideoCodec {
 pub struct PortraitEffects {
     pub background_blur: bool,
     pub background_replacement: bool,
-    pub center_stage: bool,    // Apple's auto-framing
+    pub center_stage: bool, // Apple's auto-framing
     pub studio_lighting: bool,
     pub portrait_mode: bool,
 }

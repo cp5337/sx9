@@ -1,16 +1,16 @@
 //! CTAS Interface Foundation Service
-//! 
+//!
 //! Interface foundation service for CTAS crates. This service consolidates
 //! common interface dependencies including CLI parsing, HTTP clients, web frameworks,
 //! WebSocket handling, and URL manipulation to reduce complexity and improve
 //! performance across the system.
 
-use std::sync::Arc;
-use std::time::{Duration, Instant};
-use serde::{Deserialize, Serialize};
-use tracing::{info, error, debug};
 use chrono::{DateTime, Utc};
 use futures_util::{sink::SinkExt, stream::StreamExt};
+use serde::{Deserialize, Serialize};
+use std::sync::Arc;
+use std::time::{Duration, Instant};
+use tracing::{debug, error, info};
 
 /// Interface foundation service performance metrics
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -83,16 +83,18 @@ impl InterfaceService {
     /// Initialize the interface foundation service
     pub fn new(config: InterfaceConfig) -> Result<Self> {
         let start_time = Instant::now();
-        
+
         // Initialize HTTP client if enabled
         let http_client = if config.enable_http_client {
-            Some(Client::builder()
-                .timeout(Duration::from_secs(config.http_timeout_seconds))
-                .build()?)
+            Some(
+                Client::builder()
+                    .timeout(Duration::from_secs(config.http_timeout_seconds))
+                    .build()?,
+            )
         } else {
             None
         };
-        
+
         let metrics = InterfaceMetrics {
             initialization_time: start_time.elapsed(),
             http_requests_total: 0,
@@ -102,9 +104,12 @@ impl InterfaceService {
             error_rate: 0.0,
             timestamp: Utc::now(),
         };
-        
-        info!("Interface foundation service initialized in {:?}", metrics.initialization_time);
-        
+
+        info!(
+            "Interface foundation service initialized in {:?}",
+            metrics.initialization_time
+        );
+
         Ok(Self {
             config,
             metrics,
@@ -117,27 +122,28 @@ impl InterfaceService {
             error_count: Arc::new(std::sync::atomic::AtomicU64::new(0)),
         })
     }
-    
+
     /// Make an HTTP GET request
     pub async fn http_get(&self, url: &str) -> Result<String> {
         if let Some(client) = &self.http_client {
-            self.http_requests.fetch_add(1, std::sync::atomic::Ordering::Relaxed);
+            self.http_requests
+                .fetch_add(1, std::sync::atomic::Ordering::Relaxed);
             match client.get(url).send().await {
-                Ok(response) => {
-                    match response.text().await {
-                        Ok(text) => {
-                            info!("HTTP GET request successful: {}", url);
-                            Ok(text)
-                        }
-                        Err(e) => {
-                            self.error_count.fetch_add(1, std::sync::atomic::Ordering::Relaxed);
-                            error!("Failed to read response body: {}", e);
-                            Err(e.into())
-                        }
+                Ok(response) => match response.text().await {
+                    Ok(text) => {
+                        info!("HTTP GET request successful: {}", url);
+                        Ok(text)
                     }
-                }
+                    Err(e) => {
+                        self.error_count
+                            .fetch_add(1, std::sync::atomic::Ordering::Relaxed);
+                        error!("Failed to read response body: {}", e);
+                        Err(e.into())
+                    }
+                },
                 Err(e) => {
-                    self.error_count.fetch_add(1, std::sync::atomic::Ordering::Relaxed);
+                    self.error_count
+                        .fetch_add(1, std::sync::atomic::Ordering::Relaxed);
                     error!("HTTP GET request failed: {}", e);
                     Err(e.into())
                 }
@@ -146,27 +152,28 @@ impl InterfaceService {
             Err(anyhow::anyhow!("HTTP client not enabled"))
         }
     }
-    
+
     /// Make an HTTP POST request with JSON body
     pub async fn http_post_json<T: Serialize>(&self, url: &str, body: &T) -> Result<String> {
         if let Some(client) = &self.http_client {
-            self.http_requests.fetch_add(1, std::sync::atomic::Ordering::Relaxed);
+            self.http_requests
+                .fetch_add(1, std::sync::atomic::Ordering::Relaxed);
             match client.post(url).json(body).send().await {
-                Ok(response) => {
-                    match response.text().await {
-                        Ok(text) => {
-                            info!("HTTP POST request successful: {}", url);
-                            Ok(text)
-                        }
-                        Err(e) => {
-                            self.error_count.fetch_add(1, std::sync::atomic::Ordering::Relaxed);
-                            error!("Failed to read response body: {}", e);
-                            Err(e.into())
-                        }
+                Ok(response) => match response.text().await {
+                    Ok(text) => {
+                        info!("HTTP POST request successful: {}", url);
+                        Ok(text)
                     }
-                }
+                    Err(e) => {
+                        self.error_count
+                            .fetch_add(1, std::sync::atomic::Ordering::Relaxed);
+                        error!("Failed to read response body: {}", e);
+                        Err(e.into())
+                    }
+                },
                 Err(e) => {
-                    self.error_count.fetch_add(1, std::sync::atomic::Ordering::Relaxed);
+                    self.error_count
+                        .fetch_add(1, std::sync::atomic::Ordering::Relaxed);
                     error!("HTTP POST request failed: {}", e);
                     Err(e.into())
                 }
@@ -175,46 +182,47 @@ impl InterfaceService {
             Err(anyhow::anyhow!("HTTP client not enabled"))
         }
     }
-    
+
     /// Parse a URL
     pub fn parse_url(&self, url_str: &str) -> Result<Url> {
-        self.url_operations.fetch_add(1, std::sync::atomic::Ordering::Relaxed);
+        self.url_operations
+            .fetch_add(1, std::sync::atomic::Ordering::Relaxed);
         match Url::parse(url_str) {
             Ok(url) => {
                 debug!("URL parsed successfully: {}", url_str);
                 Ok(url)
             }
             Err(e) => {
-                self.error_count.fetch_add(1, std::sync::atomic::Ordering::Relaxed);
+                self.error_count
+                    .fetch_add(1, std::sync::atomic::Ordering::Relaxed);
                 error!("URL parsing failed: {}", e);
                 Err(e.into())
             }
         }
     }
-    
+
     /// Create a WebSocket router
     pub fn create_websocket_router(&self) -> Router {
         if self.config.enable_websocket_server {
-            Router::new()
-                .route("/ws", get(Self::websocket_handler))
+            Router::new().route("/ws", get(Self::websocket_handler))
         } else {
             Router::new()
         }
     }
-    
+
     /// WebSocket handler
     async fn websocket_handler(ws: WebSocketUpgrade) -> Response {
         ws.on_upgrade(|socket| async move {
             Self::handle_websocket(socket).await;
         })
     }
-    
+
     /// Handle WebSocket connection
     async fn handle_websocket(socket: WebSocket) {
         info!("WebSocket connection established");
         // Basic WebSocket echo handler
         let (mut sender, mut receiver) = socket.split();
-        
+
         while let Some(msg) = receiver.next().await {
             match msg {
                 Ok(msg) => {
@@ -231,18 +239,20 @@ impl InterfaceService {
         }
         info!("WebSocket connection closed");
     }
-    
+
     /// Parse CLI arguments using clap
     pub fn parse_cli_args<T: Parser>(&self) -> Result<T> {
         if self.config.enable_cli_parsing {
-            self.cli_commands.fetch_add(1, std::sync::atomic::Ordering::Relaxed);
+            self.cli_commands
+                .fetch_add(1, std::sync::atomic::Ordering::Relaxed);
             match T::try_parse() {
                 Ok(args) => {
                     info!("CLI arguments parsed successfully");
                     Ok(args)
                 }
                 Err(e) => {
-                    self.error_count.fetch_add(1, std::sync::atomic::Ordering::Relaxed);
+                    self.error_count
+                        .fetch_add(1, std::sync::atomic::Ordering::Relaxed);
                     error!("CLI parsing failed: {}", e);
                     Err(e.into())
                 }
@@ -251,22 +261,29 @@ impl InterfaceService {
             Err(anyhow::anyhow!("CLI parsing not enabled"))
         }
     }
-    
+
     /// Get current performance metrics
     pub fn get_metrics(&self) -> InterfaceMetrics {
-        let http_requests = self.http_requests.load(std::sync::atomic::Ordering::Relaxed);
-        let websocket_connections = self.websocket_connections.load(std::sync::atomic::Ordering::Relaxed);
+        let http_requests = self
+            .http_requests
+            .load(std::sync::atomic::Ordering::Relaxed);
+        let websocket_connections = self
+            .websocket_connections
+            .load(std::sync::atomic::Ordering::Relaxed);
         let cli_commands = self.cli_commands.load(std::sync::atomic::Ordering::Relaxed);
-        let url_operations = self.url_operations.load(std::sync::atomic::Ordering::Relaxed);
+        let url_operations = self
+            .url_operations
+            .load(std::sync::atomic::Ordering::Relaxed);
         let errors = self.error_count.load(std::sync::atomic::Ordering::Relaxed);
-        
-        let total_operations = http_requests + websocket_connections + cli_commands + url_operations;
+
+        let total_operations =
+            http_requests + websocket_connections + cli_commands + url_operations;
         let error_rate = if total_operations > 0 {
             (errors as f64 / total_operations as f64) * 100.0
         } else {
             0.0
         };
-        
+
         InterfaceMetrics {
             initialization_time: self.metrics.initialization_time,
             http_requests_total: http_requests,
@@ -277,23 +294,26 @@ impl InterfaceService {
             timestamp: Utc::now(),
         }
     }
-    
+
     /// Run performance test
     pub async fn run_performance_test(&self, iterations: usize) -> Result<Duration> {
         let start = Instant::now();
-        
+
         for _ in 0..iterations {
             // Test URL parsing
             let _ = self.parse_url("https://example.com/test");
-            
+
             // Test HTTP request (if client enabled)
             if self.http_client.is_some() {
                 let _ = self.http_get("https://httpbin.org/get").await;
             }
         }
-        
+
         let duration = start.elapsed();
-        info!("Performance test completed: {} iterations in {:?}", iterations, duration);
+        info!(
+            "Performance test completed: {} iterations in {:?}",
+            iterations, duration
+        );
         Ok(duration)
     }
 }
@@ -310,15 +330,15 @@ pub fn init_interface_foundation_with_config(config: InterfaceConfig) -> Result<
 }
 
 // Re-export commonly used interface dependencies
-pub use anyhow::{Result, Error as AnyError};
-pub use clap::{Parser, Subcommand};
-pub use reqwest::Client;
+pub use anyhow::{Error as AnyError, Result};
 pub use axum::{
     extract::ws::{WebSocket, WebSocketUpgrade},
     response::Response,
     routing::{get, post},
-    Router, Json,
+    Json, Router,
 };
+pub use clap::{Parser, Subcommand};
+pub use reqwest::Client;
 pub use url::Url;
 
 #[cfg(test)]
@@ -330,14 +350,14 @@ mod tests {
         let service = init_interface_foundation().unwrap();
         assert!(service.metrics.initialization_time < Duration::from_millis(100));
     }
-    
+
     #[test]
     fn test_url_parsing() {
         let service = init_interface_foundation().unwrap();
         let url = service.parse_url("https://example.com/test").unwrap();
         assert_eq!(url.host_str(), Some("example.com"));
     }
-    
+
     #[test]
     fn test_metrics_collection() {
         let service = init_interface_foundation().unwrap();
@@ -345,7 +365,7 @@ mod tests {
         assert!(metrics.error_rate >= 0.0);
         assert!(metrics.error_rate <= 100.0);
     }
-    
+
     #[tokio::test]
     async fn test_performance_test() {
         let service = init_interface_foundation().unwrap();

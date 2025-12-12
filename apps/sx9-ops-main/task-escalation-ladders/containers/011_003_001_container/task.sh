@@ -1,0 +1,15 @@
+#!/bin/bash
+# Container execution for: Exploiting Police Interactions
+
+TARGET="${1:-localhost}"
+
+echo "🐳 Container Execution"
+echo "🎯 Task: Exploiting Police Interactions"
+echo "📍 Target: $TARGET"
+
+# Execute all tools in sequence
+echo "🔧 Running nmap..."
+nmap $TARGET
+
+
+echo "✅ Container execution complete"

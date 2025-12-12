@@ -1,17 +1,17 @@
 //! CTAS 7.0 Tactical Foundation
-//! 
+//!
 //! Steve Jobs-level tactical computing foundation bridging TypeScript frontend,
 //! SwiftUI native interface, and Universal Cognigraph mathematics.
 
-pub mod cognigraph;
 pub mod cdn_bridge;
+pub mod cognigraph;
+pub mod haptic_physics;
 pub mod hash_missions;
 pub mod swift_bridge;
-pub mod haptic_physics;
 
 // Re-export core interfaces for tactical operations
-pub use cognigraph::*;
 pub use cdn_bridge::*;
+pub use cognigraph::*;
 pub use hash_missions::*;
 
 use serde::{Deserialize, Serialize};
@@ -32,16 +32,16 @@ pub struct TacticalResult<T> {
 pub enum TacticalError {
     #[error("CDN bridge error: {0}")]
     CdnBridge(String),
-    
+
     #[error("Hash mission execution failed: {0}")]
     HashMission(String),
-    
+
     #[error("Cognigraph validation failed: {0}")]
     CognigraphValidation(String),
-    
+
     #[error("Haptic feedback error: {0}")]
     HapticFeedback(String),
-    
+
     #[error("Swift bridge error: {0}")]
     SwiftBridge(String),
 }
@@ -81,7 +81,7 @@ impl<T> TacticalResult<T> {
             mission_hash: None,
         }
     }
-    
+
     pub fn failure(error: String) -> Self {
         Self {
             success: false,
@@ -91,7 +91,7 @@ impl<T> TacticalResult<T> {
             mission_hash: None,
         }
     }
-    
+
     pub fn with_mission_hash(mut self, hash: String) -> Self {
         self.mission_hash = Some(hash);
         self

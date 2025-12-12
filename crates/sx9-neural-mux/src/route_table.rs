@@ -2,9 +2,9 @@
 //!
 //! Uses DashMap for O(1) concurrent access without blocking
 
-use std::time::{Duration, Instant};
+use anyhow::{anyhow, Result};
 use dashmap::DashMap;
-use anyhow::{Result, anyhow};
+use std::time::{Duration, Instant};
 
 use crate::router::{HashValue, RouteDestination};
 

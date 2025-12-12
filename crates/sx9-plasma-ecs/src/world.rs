@@ -2,9 +2,9 @@
 //!
 //! Unified world interface for both Legion and apecs
 
+use crate::apecs_layer::ApecsPlasmaWorld;
 use crate::components::*;
 use crate::legion_layer::LegionPlasmaWorld;
-use crate::apecs_layer::ApecsPlasmaWorld;
 use anyhow::Result;
 use std::sync::Arc;
 
@@ -42,7 +42,11 @@ impl PlasmaWorld {
     }
 
     /// Update plasma entity
-    pub async fn update_plasma_entity(&self, entity_id: u64, component: PlasmaComponent) -> Result<()> {
+    pub async fn update_plasma_entity(
+        &self,
+        entity_id: u64,
+        component: PlasmaComponent,
+    ) -> Result<()> {
         if let Some(ref legion) = self.legion_world {
             return legion.update_plasma_entity(entity_id, component).await;
         }
@@ -74,4 +78,3 @@ impl PlasmaWorld {
         Ok(())
     }
 }
-

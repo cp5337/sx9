@@ -38,7 +38,7 @@ tracing-subscriber = { version = "0.3", features = ["env-filter", "json"] }
 chrono = "0.4"
 
 # Hashing - Dual system for USIM
-sha2 = "0.10"  # SHA-256 for file integrity
+
 
 # Error Handling
 anyhow = "1.0"

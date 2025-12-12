@@ -1,9 +1,6 @@
 //! Foundation Daemon Integration v7.3.1
 //! Connects this crate to the CTAS-7 foundation daemon system
 
-use std::sync::Arc;
-use tokio::sync::RwLock;
-
 /// Foundation daemon client for this crate
 pub struct FoundationDaemonClient {
     pub daemon_url: String,

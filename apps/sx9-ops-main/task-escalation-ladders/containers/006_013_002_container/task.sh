@@ -1,0 +1,15 @@
+#!/bin/bash
+# Container execution for: Pre-Positioned Operative Mobilization
+
+TARGET="${1:-localhost}"
+
+echo "🐳 Container Execution"
+echo "🎯 Task: Pre-Positioned Operative Mobilization"
+echo "📍 Target: $TARGET"
+
+# Execute all tools in sequence
+echo "🔧 Running nmap..."
+nmap $TARGET
+
+
+echo "✅ Container execution complete"

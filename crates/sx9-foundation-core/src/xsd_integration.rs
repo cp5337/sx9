@@ -3,7 +3,7 @@
 //! Provides XSD orchestration, metaprogramming, and platform conversion
 //! Integrates with Smart Crate Orchestrator for schema-driven validation
 
-use crate::data::{Serialize, Deserialize};
+use crate::data::{Deserialize, Serialize};
 use std::collections::HashMap;
 
 /// XSD symbol definitions for Unicode Assembly Language
@@ -119,61 +119,73 @@ impl XsdOrchestrator {
     /// Initialize foundation XSD symbols for CTAS-7
     fn initialize_foundation_symbols(&mut self) {
         // Core system operations (U+E000-E0FF)
-        self.symbols.insert(0xE000, XsdSymbol {
-            unicode_value: 0xE000,
-            symbol_name: "observe".to_string(),
-            operation_type: XsdOperationType::Orchestration,
-            validation_rules: vec![
-                ValidationRule {
+        self.symbols.insert(
+            0xE000,
+            XsdSymbol {
+                unicode_value: 0xE000,
+                symbol_name: "observe".to_string(),
+                operation_type: XsdOperationType::Orchestration,
+                validation_rules: vec![ValidationRule {
                     rule_type: "input_validation".to_string(),
                     constraint: "non_empty".to_string(),
                     error_message: "Observation target cannot be empty".to_string(),
-                },
-            ],
-            platform_mappings: [
-                ("rust".to_string(), "observe()".to_string()),
-                ("typescript".to_string(), "observe()".to_string()),
-                ("python".to_string(), "observe()".to_string()),
-            ].iter().cloned().collect(),
-        });
+                }],
+                platform_mappings: [
+                    ("rust".to_string(), "observe()".to_string()),
+                    ("typescript".to_string(), "observe()".to_string()),
+                    ("python".to_string(), "observe()".to_string()),
+                ]
+                .iter()
+                .cloned()
+                .collect(),
+            },
+        );
 
         // Intelligence operations (U+E300-E3FF)
-        self.symbols.insert(0xE320, XsdSymbol {
-            unicode_value: 0xE320,
-            symbol_name: "intelligence_gather".to_string(),
-            operation_type: XsdOperationType::Validation,
-            validation_rules: vec![
-                ValidationRule {
+        self.symbols.insert(
+            0xE320,
+            XsdSymbol {
+                unicode_value: 0xE320,
+                symbol_name: "intelligence_gather".to_string(),
+                operation_type: XsdOperationType::Validation,
+                validation_rules: vec![ValidationRule {
                     rule_type: "security_validation".to_string(),
                     constraint: "classified_data_handling".to_string(),
                     error_message: "Intelligence data requires secure handling".to_string(),
-                },
-            ],
-            platform_mappings: [
-                ("rust".to_string(), "gather_intelligence()".to_string()),
-                ("typescript".to_string(), "gatherIntelligence()".to_string()),
-                ("python".to_string(), "gather_intelligence()".to_string()),
-            ].iter().cloned().collect(),
-        });
+                }],
+                platform_mappings: [
+                    ("rust".to_string(), "gather_intelligence()".to_string()),
+                    ("typescript".to_string(), "gatherIntelligence()".to_string()),
+                    ("python".to_string(), "gather_intelligence()".to_string()),
+                ]
+                .iter()
+                .cloned()
+                .collect(),
+            },
+        );
 
         // XSD operations (U+E500-E5FF)
-        self.symbols.insert(0xE500, XsdSymbol {
-            unicode_value: 0xE500,
-            symbol_name: "xsd_validate".to_string(),
-            operation_type: XsdOperationType::Validation,
-            validation_rules: vec![
-                ValidationRule {
+        self.symbols.insert(
+            0xE500,
+            XsdSymbol {
+                unicode_value: 0xE500,
+                symbol_name: "xsd_validate".to_string(),
+                operation_type: XsdOperationType::Validation,
+                validation_rules: vec![ValidationRule {
                     rule_type: "schema_validation".to_string(),
                     constraint: "valid_xsd_format".to_string(),
                     error_message: "XSD schema must be valid".to_string(),
-                },
-            ],
-            platform_mappings: [
-                ("rust".to_string(), "validate_xsd()".to_string()),
-                ("typescript".to_string(), "validateXsd()".to_string()),
-                ("python".to_string(), "validate_xsd()".to_string()),
-            ].iter().cloned().collect(),
-        });
+                }],
+                platform_mappings: [
+                    ("rust".to_string(), "validate_xsd()".to_string()),
+                    ("typescript".to_string(), "validateXsd()".to_string()),
+                    ("python".to_string(), "validate_xsd()".to_string()),
+                ]
+                .iter()
+                .cloned()
+                .collect(),
+            },
+        );
 
         crate::diagnostics::info!("⚡ XSD symbols initialized: {} total", self.symbols.len());
     }
@@ -222,7 +234,9 @@ impl XsdOrchestrator {
                 // Update conversion stats
                 self.conversion_stats.total_conversions += 1;
                 self.conversion_stats.successful_conversions += 1;
-                *self.conversion_stats.platform_usage
+                *self
+                    .conversion_stats
+                    .platform_usage
                     .entry(target_platform.to_string())
                     .or_insert(0) += 1;
 
@@ -243,8 +257,7 @@ impl XsdOrchestrator {
                 self.conversion_stats.total_conversions += 1;
                 Err(crate::diagnostics::Error::msg(format!(
                     "Platform '{}' not supported for symbol: {}",
-                    target_platform,
-                    symbol.symbol_name
+                    target_platform, symbol.symbol_name
                 )))
             }
         } else {
@@ -288,7 +301,9 @@ impl XsdOrchestrator {
         target_platform: &str,
     ) -> crate::diagnostics::Result<String> {
         if !self.config.metaprogramming_enabled {
-            return Err(crate::diagnostics::Error::msg("Metaprogramming is disabled"));
+            return Err(crate::diagnostics::Error::msg(
+                "Metaprogramming is disabled",
+            ));
         }
 
         // Simple transformation placeholder - would implement actual metaprogramming

@@ -3,8 +3,8 @@
 //! Extends the neural_mux module with unified operations across the foundation
 //! Provides consolidated routing for multi-system neural operations
 
-use crate::neural_mux::{Priority, OperationRoute, NeuralMuxRouter, NeuralMuxConfig, ExecutionContext};
-use crate::data::{Serialize, Deserialize, DateTime, Utc};
+use crate::data::{DateTime, Deserialize, Serialize, Utc};
+use crate::neural_mux::{NeuralMuxConfig, OperationRoute, Priority};
 use std::collections::HashMap;
 
 /// Unified Neural Mux for cross-system operations
@@ -62,7 +62,8 @@ impl UnifiedNeuralMux {
         let mut routes = Vec::new();
 
         // Apply global priority overrides
-        let effective_priority = self.global_priorities
+        let effective_priority = self
+            .global_priorities
             .get(operation)
             .copied()
             .unwrap_or(priority);
@@ -71,8 +72,8 @@ impl UnifiedNeuralMux {
         for rule in &self.routing_rules {
             if rule.enabled
                 && rule.source_system == source_system
-                && operation.contains(&rule.operation_pattern) {
-
+                && operation.contains(&rule.operation_pattern)
+            {
                 // Create route for target system
                 if let Some(_target_config) = self.system_configs.get(&rule.target_system) {
                     let route = OperationRoute {
@@ -142,7 +143,7 @@ mod tests {
     #[tokio::test]
     async fn test_unified_neural_mux_creation() {
         let mux = UnifiedNeuralMux::new();
-        assert!(mux.system_muxes.is_empty());
+        assert!(mux.system_configs.is_empty());
         assert!(mux.global_priorities.is_empty());
         assert!(mux.routing_rules.is_empty());
     }

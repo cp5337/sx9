@@ -169,7 +169,10 @@ impl CTEHealthBridge {
             ],
         };
 
-        println!("📋 Agent Registry loaded: {} agents", self.agent_registry.agents.len());
+        println!(
+            "📋 Agent Registry loaded: {} agents",
+            self.agent_registry.agents.len()
+        );
         Ok(())
     }
 
@@ -194,7 +197,8 @@ impl CTEHealthBridge {
             },
             HealthEndpoint {
                 name: "Playbook Mux".to_string(),
-                url: "http://localhost:15180/mux/playbook?id=demo-ready&fmt=xml&ver=latest".to_string(),
+                url: "http://localhost:15180/mux/playbook?id=demo-ready&fmt=xml&ver=latest"
+                    .to_string(),
                 method: "GET".to_string(),
                 expected_status: 200,
                 timeout_ms: 5000,
@@ -202,7 +206,10 @@ impl CTEHealthBridge {
             },
         ];
 
-        println!("🏥 Health endpoints configured: {}", self.health_endpoints.len());
+        println!(
+            "🏥 Health endpoints configured: {}",
+            self.health_endpoints.len()
+        );
     }
 
     /// Test CTE connection
@@ -219,11 +226,12 @@ impl CTEHealthBridge {
         // Update agent statuses
         let agents_clone = self.agent_registry.agents.clone();
         for (index, agent) in agents_clone.iter().enumerate() {
-            self.agent_registry.agents[index].status = if self.test_agent_connection(&agent.base_url).await {
-                AgentStatus::Online
-            } else {
-                AgentStatus::Offline
-            };
+            self.agent_registry.agents[index].status =
+                if self.test_agent_connection(&agent.base_url).await {
+                    AgentStatus::Online
+                } else {
+                    AgentStatus::Offline
+                };
         }
 
         Ok(())
@@ -257,7 +265,8 @@ impl CTEHealthBridge {
         }
 
         let mux_status = MuxStatus {
-            mux_url: "http://localhost:15180/mux/playbook?id=demo-ready&fmt=xml&ver=latest".to_string(),
+            mux_url: "http://localhost:15180/mux/playbook?id=demo-ready&fmt=xml&ver=latest"
+                .to_string(),
             mux_responding: false,
             response_time_ms: 0,
         };
@@ -279,7 +288,11 @@ impl CTEHealthBridge {
 
         self.rollcall_integration.last_rollcall = Some(result.clone());
 
-        println!("📊 Rollcall complete: {}/{} agents online", agents_online, agents_online + agents_offline);
+        println!(
+            "📊 Rollcall complete: {}/{} agents online",
+            agents_online,
+            agents_online + agents_offline
+        );
 
         Ok(result)
     }
@@ -312,7 +325,11 @@ impl CTEHealthBridge {
              Overall Health: {}\n\
              Registered Agents: {}\n\
              Health Endpoints: {}",
-            if self.connected { "CONNECTED" } else { "DISCONNECTED" },
+            if self.connected {
+                "CONNECTED"
+            } else {
+                "DISCONNECTED"
+            },
             status,
             self.agent_registry.agents.len(),
             self.health_endpoints.len()
@@ -346,10 +363,14 @@ impl PortManager {
         self.primary_ports.insert("monitoring".to_string(), 18108);
 
         // Failover ports
-        self.failover_ports.insert("repoagent".to_string(), vec![15181, 15182]);
-        self.failover_ports.insert("api_gateway".to_string(), vec![18104, 18105]);
-        self.failover_ports.insert("mcp_forge".to_string(), vec![3001, 3002]);
-        self.failover_ports.insert("monitoring".to_string(), vec![18109, 18110]);
+        self.failover_ports
+            .insert("repoagent".to_string(), vec![15181, 15182]);
+        self.failover_ports
+            .insert("api_gateway".to_string(), vec![18104, 18105]);
+        self.failover_ports
+            .insert("mcp_forge".to_string(), vec![3001, 3002]);
+        self.failover_ports
+            .insert("monitoring".to_string(), vec![18109, 18110]);
 
         println!("🔌 Port configuration initialized");
     }

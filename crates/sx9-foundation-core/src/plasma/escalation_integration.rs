@@ -4,8 +4,8 @@
 //! WASM → Microkernel → Kernel → MultiCrate → Container → Firefly → Orb
 
 #[cfg(feature = "delta-tuner")]
-use super::{DeltaOperator, DeltaGate, DeltaTuner, DeltaMeasurement, GatedPayload};
-use crate::trivariate_hash_v731::{ContextFrame, TrivariateHash, ExecEnv};
+use super::{DeltaGate, DeltaMeasurement, DeltaOperator, DeltaTuner, GatedPayload};
+use crate::trivariate_hash_v731::{ContextFrame, ExecEnv, TrivariateHash};
 
 /// Escalation tier identifiers
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -132,7 +132,8 @@ impl EscalationIntegration {
             );
 
             // Log measurement
-            self.tuner.log_measurement(&measurement, &escalation_path, None);
+            self.tuner
+                .log_measurement(&measurement, &escalation_path, None);
 
             measurement
         } else {
@@ -144,7 +145,8 @@ impl EscalationIntegration {
         let gated = self.gate.gate(payload, &delta);
 
         // Log gated weight
-        self.tuner.log_measurement(&delta, &escalation_path, Some(gated.gated_weight));
+        self.tuner
+            .log_measurement(&delta, &escalation_path, Some(gated.gated_weight));
 
         EscalationGateResult {
             gated_payload: gated.clone(),
@@ -185,13 +187,9 @@ pub mod integration_points {
         prev_ctx: Option<ContextFrame>,
         prev_hash: Option<TrivariateHash>,
     ) -> EscalationGateResult<T> {
-        let escalation_ctx = EscalationContext::new(
-            EscalationTier::Wasm,
-            EscalationTier::Microkernel,
-            ctx,
-            hash,
-        )
-        .with_previous_optional(prev_ctx, prev_hash);
+        let escalation_ctx =
+            EscalationContext::new(EscalationTier::Wasm, EscalationTier::Microkernel, ctx, hash)
+                .with_previous_optional(prev_ctx, prev_hash);
 
         integration.gate_escalation(payload, &escalation_ctx)
     }
@@ -285,13 +283,9 @@ pub mod integration_points {
         prev_ctx: Option<ContextFrame>,
         prev_hash: Option<TrivariateHash>,
     ) -> EscalationGateResult<T> {
-        let escalation_ctx = EscalationContext::new(
-            EscalationTier::Firefly,
-            EscalationTier::Orb,
-            ctx,
-            hash,
-        )
-        .with_previous_optional(prev_ctx, prev_hash);
+        let escalation_ctx =
+            EscalationContext::new(EscalationTier::Firefly, EscalationTier::Orb, ctx, hash)
+                .with_previous_optional(prev_ctx, prev_hash);
 
         integration.gate_escalation(payload, &escalation_ctx)
     }
@@ -352,5 +346,3 @@ mod tests {
         assert!(result.escalation_tier.contains("Microkernel"));
     }
 }
-
-

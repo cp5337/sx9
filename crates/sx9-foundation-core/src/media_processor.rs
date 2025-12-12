@@ -66,12 +66,31 @@ pub enum ProcessingStage {
 // Transform Operations [APPLY] Changes [MODIFY] Content
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub enum TransformOperation {
-    Resize { width: u32, height: u32, algorithm: String },
-    Crop { x: u32, y: u32, width: u32, height: u32 },
-    Rotate { degrees: f32 },
-    ColorCorrection { brightness: f32, contrast: f32, saturation: f32 },
-    AudioNormalization { target_lufs: f32 },
-    SampleRateConversion { target_rate: u32 },
+    Resize {
+        width: u32,
+        height: u32,
+        algorithm: String,
+    },
+    Crop {
+        x: u32,
+        y: u32,
+        width: u32,
+        height: u32,
+    },
+    Rotate {
+        degrees: f32,
+    },
+    ColorCorrection {
+        brightness: f32,
+        contrast: f32,
+        saturation: f32,
+    },
+    AudioNormalization {
+        target_lufs: f32,
+    },
+    SampleRateConversion {
+        target_rate: u32,
+    },
 }
 
 // Filter Types [CATEGORIZE] Effects [SPECIFY] Processing

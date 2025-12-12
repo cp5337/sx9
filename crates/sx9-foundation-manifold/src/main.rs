@@ -4,7 +4,7 @@
 //! Provides unified access to all foundation crates per RFC-9004.
 
 use anyhow::Result;
-use ctas7_foundation_manifold::{ManifoldRouter, FoundationOrchestrator};
+use sx9_foundation_manifold::{FoundationOrchestrator, ManifoldRouter};
 use tracing::{info, Level};
 use tracing_subscriber::FmtSubscriber;
 
@@ -20,7 +20,7 @@ async fn main() -> Result<()> {
     info!("📋 RFC-9004: Deterministic Routing Architecture");
 
     // Initialize the foundation orchestrator
-    let orchestrator = FoundationOrchestrator::new().await?;
+    let _orchestrator = FoundationOrchestrator::new().await?;
 
     info!("✅ Foundation Orchestrator initialized");
     info!("  📦 Hash Engine: ready");
@@ -31,7 +31,7 @@ async fn main() -> Result<()> {
     info!("  📦 Unicode Assembly Processor: ready");
 
     // Create manifold router for packet routing
-    let router = ManifoldRouter::new();
+    let _router = ManifoldRouter::new();
     info!("  📦 Manifold Router: ready");
 
     // Keep running (in production this would serve requests)

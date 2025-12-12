@@ -4,7 +4,7 @@
 //! Dual trivariate system with slot-by-slot CUID encoding
 //! Full Murmur3-128 implementation for bit-exact reproducibility
 
-use std::time::{SystemTime, UNIX_EPOCH, Duration};
+use std::time::{Duration, SystemTime, UNIX_EPOCH};
 use uuid::Uuid;
 
 /// Base96 Character Set (RFC-9001 v1.1 Standard) - Exactly 96 characters
@@ -14,13 +14,13 @@ const BASE96_CHARSET: &str = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmn
 /// Execution Environment Types
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum ExecEnv {
-    Wasm,           // WASM microkernel
-    Container,      // Docker/OrbStack container
-    Native,         // Native binary
-    Kernel,         // Kernel space
-    Microkernel,    // Microkernel
-    Firefly,        // Firefly runtime
-    Orb,            // Orb system
+    Wasm,        // WASM microkernel
+    Container,   // Docker/OrbStack container
+    Native,      // Native binary
+    Kernel,      // Kernel space
+    Microkernel, // Microkernel
+    Firefly,     // Firefly runtime
+    Orb,         // Orb system
 }
 
 impl ExecEnv {
@@ -80,7 +80,7 @@ impl ContextFrame {
             .duration_since(UNIX_EPOCH)
             .unwrap()
             .as_secs();
-        
+
         Self {
             timestamp,
             exec_env,
@@ -214,7 +214,7 @@ impl CuidSlots {
     /// Encodes slot values directly into Unicode for Neural Mux affinity weighting
     pub fn to_unicode_runes(&self) -> String {
         let mut result = String::with_capacity(16);
-        
+
         // Map each Base96 char to Unicode Private Use Block (U+E200-E2FF)
         for &ch in self.timestamp_shard.iter() {
             let code = 0xE200 + ((ch as u32) % 0xFF);
@@ -224,7 +224,7 @@ impl CuidSlots {
                 result.push('\u{E200}'); // Fallback
             }
         }
-        
+
         for &ch in self.exec_env.iter() {
             let code = 0xE200 + ((ch as u32) % 0xFF);
             if let Some(unicode_char) = std::char::from_u32(code) {
@@ -233,7 +233,7 @@ impl CuidSlots {
                 result.push('\u{E200}');
             }
         }
-        
+
         for &ch in self.agent_id.iter() {
             let code = 0xE200 + ((ch as u32) % 0xFF);
             if let Some(unicode_char) = std::char::from_u32(code) {
@@ -242,7 +242,7 @@ impl CuidSlots {
                 result.push('\u{E200}');
             }
         }
-        
+
         for &ch in self.delta_angle.iter() {
             let code = 0xE200 + ((ch as u32) % 0xFF);
             if let Some(unicode_char) = std::char::from_u32(code) {
@@ -251,14 +251,14 @@ impl CuidSlots {
                 result.push('\u{E200}');
             }
         }
-        
+
         let state_code = 0xE200 + ((self.state as u32) % 0xFF);
         if let Some(unicode_char) = std::char::from_u32(state_code) {
             result.push(unicode_char);
         } else {
             result.push('\u{E200}');
         }
-        
+
         for &ch in self.lineage.iter() {
             let code = 0xE200 + ((ch as u32) % 0xFF);
             if let Some(unicode_char) = std::char::from_u32(code) {
@@ -267,7 +267,7 @@ impl CuidSlots {
                 result.push('\u{E200}');
             }
         }
-        
+
         for &ch in self.nonce.iter() {
             let code = 0xE200 + ((ch as u32) % 0xFF);
             if let Some(unicode_char) = std::char::from_u32(code) {
@@ -276,7 +276,7 @@ impl CuidSlots {
                 result.push('\u{E200}');
             }
         }
-        
+
         result
     }
 }
@@ -305,7 +305,7 @@ impl TrivariateHash {
         if !s.starts_with("triv:") {
             return Err("Invalid format: must start with 'triv:'".to_string());
         }
-        
+
         let parts: Vec<&str> = s[5..].split('_').collect();
         if parts.len() != 3 {
             return Err("Invalid format: expected triv:[SCH]_[CUID]_[UUID]".to_string());
@@ -354,11 +354,11 @@ impl DualTrivariateHash {
 /// Supersession Level (CTAS-7.3.1 Canonical)
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum SupersessionLevel {
-    None,        // < 2° - No supersession (noise/thermal drift)
-    Micro,       // 2°-12° - Local context change
-    Soft,        // 12°-27° - Operator intent shift
-    Hard,        // 27°-42° - Semantic state mutation
-    Critical,    // > 42° - Domain/mission change
+    None,     // < 2° - No supersession (noise/thermal drift)
+    Micro,    // 2°-12° - Local context change
+    Soft,     // 12°-27° - Operator intent shift
+    Hard,     // 27°-42° - Semantic state mutation
+    Critical, // > 42° - Domain/mission change
 }
 
 impl SupersessionLevel {
@@ -382,8 +382,8 @@ impl SupersessionLevel {
 /// CUID TTL Configuration (CTAS-7.3.1 Canonical - 42 is canonical)
 #[derive(Debug, Clone, Copy)]
 pub struct CuidTtl {
-    pub default: Duration,  // 42 seconds
-    pub hot_lane: Duration, // 4.2 seconds
+    pub default: Duration,   // 42 seconds
+    pub hot_lane: Duration,  // 4.2 seconds
     pub l2_kernel: Duration, // 0.42 seconds
 }
 
@@ -399,8 +399,8 @@ impl Default for CuidTtl {
 
 /// CTAS-7.3.1 Trivariate Hash Engine
 pub struct TrivariateHashEngineV731 {
-    murmur_sch_seed: u64,
-    murmur_cuid_seed: u64,
+    _murmur_sch_seed: u64,
+    _murmur_cuid_seed: u64,
     cuid_ttl: CuidTtl,
 }
 
@@ -408,8 +408,8 @@ impl TrivariateHashEngineV731 {
     /// Create new engine with canonical seeds
     pub fn new() -> Self {
         Self {
-            murmur_sch_seed: 0x5BD1E995,  // CTAS-7.3.1 SCH seed
-            murmur_cuid_seed: 0x1B873593, // CTAS-7.3.1 CUID seed
+            _murmur_sch_seed: 0x5BD1E995,  // CTAS-7.3.1 SCH seed
+            _murmur_cuid_seed: 0x1B873593, // CTAS-7.3.1 CUID seed
             cuid_ttl: CuidTtl::default(),
         }
     }
@@ -424,26 +424,26 @@ impl TrivariateHashEngineV731 {
     ) -> String {
         // Step 1: Normalize input → UTF-8
         let normalized = normalize_semantics(semantic);
-        
+
         // Step 2: Tokenize using N-V-N-N grammar
         let tokenized = tokenize_nvn_grammar(&normalized);
-        
+
         // Step 3: Apply MurmurHash3 (128-bit)
         let mm_hash = murmur3_128(&tokenized);
-        
+
         // Step 4: Convert 128-bit → 16x Base96 symbols
         let base96_intermediate = encode_base96_128bit(&mm_hash);
-        
+
         // Step 5: Inject domain bitmask (4 bits)
         let domain_mask = domain_bitmask(domain);
-        
+
         // Step 6: Inject execution class bitmask (4 bits)
         let exec_mask = exec_class_bitmask(exec_class);
-        
+
         // Step 7: Rehash final 128-bit → "SCH" output
         let final_input = format!("{}{}{}", base96_intermediate, domain_mask, exec_mask);
         let final_hash = murmur3_128(&final_input);
-        
+
         encode_base96_128bit(&final_hash)
     }
 
@@ -487,22 +487,27 @@ impl TrivariateHashEngineV731 {
     ) -> DualTrivariateHash {
         // Primary trivariate (semantic identity)
         let primary = self.generate_trivariate(semantic, node_type, domain, exec_class, context);
-        
+
         if requires_secondary {
             // Secondary trivariate (operational behavior: SCH*, CUID*, UUID*)
             // SCH* = operational hash of primary SCH
-            let sch_star = self.generate_sch(&format!("op:{}", primary.sch), node_type, domain, exec_class);
-            
+            let sch_star = self.generate_sch(
+                &format!("op:{}", primary.sch),
+                node_type,
+                domain,
+                exec_class,
+            );
+
             // CUID* = operational context (inverted delta angle for operational behavior)
             let mut op_context = context.clone();
             op_context.delta_angle = -context.delta_angle; // Invert for operational
             let cuid_star = self.generate_cuid(&op_context);
-            
+
             // UUID* = operational persistence
             let uuid_star = self.generate_uuid();
-            
+
             let secondary = TrivariateHash::new(sch_star, cuid_star, uuid_star);
-            
+
             DualTrivariateHash::dual(primary, secondary)
         } else {
             // Primary only for low-tier playbooks
@@ -521,15 +526,15 @@ impl TrivariateHashEngineV731 {
             .duration_since(UNIX_EPOCH)
             .unwrap()
             .as_secs();
-        
+
         let age = now.saturating_sub(context.timestamp);
-        
+
         let ttl = match ttl_type {
             "hot_lane" => self.cuid_ttl.hot_lane.as_secs(),
             "l2_kernel" => self.cuid_ttl.l2_kernel.as_secs(),
             _ => self.cuid_ttl.default.as_secs(),
         };
-        
+
         age > ttl
     }
 }
@@ -569,23 +574,35 @@ fn normalize_semantics(s: &str) -> String {
 fn tokenize_nvn_grammar(s: &str) -> String {
     // Grammar definitions
     let nouns = vec![
-        "entity", "object", "process", "intel", "operator", "asset",
-        "context", "environment", "target", "subject", "resource",
-        "evidence", "state", "vector", "delta", "lineage",
+        "entity",
+        "object",
+        "process",
+        "intel",
+        "operator",
+        "asset",
+        "context",
+        "environment",
+        "target",
+        "subject",
+        "resource",
+        "evidence",
+        "state",
+        "vector",
+        "delta",
+        "lineage",
     ];
-    
+
     let verbs = vec![
-        "act", "mutate", "sense", "evaluate", "route", "map",
-        "hash", "emit", "escalate",
+        "act", "mutate", "sense", "evaluate", "route", "map", "hash", "emit", "escalate",
     ];
-    
+
     // Tokenize S-Expression via grammar
     let words: Vec<&str> = s.split_whitespace().collect();
     let mut tokens = Vec::new();
-    
+
     for word in words {
         let normalized = word.to_lowercase();
-        
+
         // Check if word matches grammar
         if nouns.iter().any(|&n| normalized.contains(n)) {
             tokens.push(format!("N:{}", normalized));
@@ -596,7 +613,7 @@ fn tokenize_nvn_grammar(s: &str) -> String {
             tokens.push(format!("N:{}", normalized));
         }
     }
-    
+
     // Join with grammar separator
     tokens.join(":")
 }
@@ -607,7 +624,7 @@ fn tokenize_nvn_grammar(s: &str) -> String {
 fn murmur3_128(input: &str) -> [u8; 16] {
     let data = input.as_bytes();
     let len = data.len();
-    
+
     // Murmur3-128 constants
     const C1: u64 = 0x87c37b91114253d5;
     const C2: u64 = 0x4cf5ad432745937f;
@@ -617,26 +634,24 @@ fn murmur3_128(input: &str) -> [u8; 16] {
     const M: u64 = 5;
     const N1: u64 = 0x52dce729;
     const N2: u64 = 0x38495ab5;
-    
+
     // Seeds (CTAS-7.3.1 canonical)
     let mut h1: u64 = 0x5BD1E995; // SCH seed
     let mut h2: u64 = 0x1B873593; // CUID seed
-    
+
     // Process 16-byte chunks
     let chunks = data.chunks_exact(16);
     let remainder = chunks.remainder();
-    
+
     for chunk in chunks {
         // Read two 64-bit values (little-endian)
         let mut k1 = u64::from_le_bytes([
-            chunk[0], chunk[1], chunk[2], chunk[3],
-            chunk[4], chunk[5], chunk[6], chunk[7],
+            chunk[0], chunk[1], chunk[2], chunk[3], chunk[4], chunk[5], chunk[6], chunk[7],
         ]);
         let mut k2 = u64::from_le_bytes([
-            chunk[8], chunk[9], chunk[10], chunk[11],
-            chunk[12], chunk[13], chunk[14], chunk[15],
+            chunk[8], chunk[9], chunk[10], chunk[11], chunk[12], chunk[13], chunk[14], chunk[15],
         ]);
-        
+
         // Mix k1 with h1
         k1 = k1.wrapping_mul(C1);
         k1 = k1.rotate_left(R1);
@@ -645,7 +660,7 @@ fn murmur3_128(input: &str) -> [u8; 16] {
         h1 = h1.rotate_left(R2);
         h1 = h1.wrapping_add(h2);
         h1 = h1.wrapping_mul(M).wrapping_add(N1);
-        
+
         // Mix k2 with h2
         k2 = k2.wrapping_mul(C2);
         k2 = k2.rotate_left(R3);
@@ -655,12 +670,12 @@ fn murmur3_128(input: &str) -> [u8; 16] {
         h2 = h2.wrapping_add(h1);
         h2 = h2.wrapping_mul(M).wrapping_add(N2);
     }
-    
+
     // Process remainder (0-15 bytes)
     if !remainder.is_empty() {
         let mut k1: u64 = 0;
         let mut k2: u64 = 0;
-        
+
         if remainder.len() >= 15 {
             k2 ^= (remainder[14] as u64) << 48;
         }
@@ -682,7 +697,7 @@ fn murmur3_128(input: &str) -> [u8; 16] {
         if remainder.len() >= 9 {
             k2 ^= remainder[8] as u64;
         }
-        
+
         if remainder.len() >= 8 {
             k1 ^= (remainder[7] as u64) << 56;
         }
@@ -707,32 +722,32 @@ fn murmur3_128(input: &str) -> [u8; 16] {
         if remainder.len() >= 1 {
             k1 ^= remainder[0] as u64;
         }
-        
+
         // Mix remainder
         k2 = k2.wrapping_mul(C2);
         k2 = k2.rotate_left(R3);
         k2 = k2.wrapping_mul(C1);
         h2 ^= k2;
-        
+
         k1 = k1.wrapping_mul(C1);
         k1 = k1.rotate_left(R1);
         k1 = k1.wrapping_mul(C2);
         h1 ^= k1;
     }
-    
+
     // Finalization
     h1 ^= len as u64;
     h2 ^= len as u64;
-    
+
     h1 = h1.wrapping_add(h2);
     h2 = h2.wrapping_add(h1);
-    
+
     h1 = fmix64(h1);
     h2 = fmix64(h2);
-    
+
     h1 = h1.wrapping_add(h2);
     h2 = h2.wrapping_add(h1);
-    
+
     // Output 128-bit (16 bytes)
     let mut result = [0u8; 16];
     result[0..8].copy_from_slice(&h1.to_le_bytes());
@@ -790,7 +805,7 @@ fn uuid_to_base96(uuid_str: &str) -> String {
     // Remove hyphens and convert hex pairs to Base96
     let clean = uuid_str.replace('-', "");
     let mut result = String::with_capacity(16);
-    
+
     for i in 0..16 {
         if let Some(hex_pair) = clean.get(i * 2..i * 2 + 2) {
             if let Ok(byte) = u8::from_str_radix(hex_pair, 16) {
@@ -802,7 +817,7 @@ fn uuid_to_base96(uuid_str: &str) -> String {
             result.push('0');
         }
     }
-    
+
     result
 }
 
@@ -833,10 +848,10 @@ mod tests {
             "c5j8k3p2q7w1x9z".to_string(),
             "550e8400-e29b-41d4-a716-446655440000".to_string(),
         );
-        
+
         let canonical = hash.to_canonical_format();
         assert!(canonical.starts_with("triv:"));
-        
+
         let parsed = TrivariateHash::from_canonical_format(&canonical).unwrap();
         assert_eq!(parsed.sch, hash.sch);
         assert_eq!(parsed.cuid, hash.cuid);
@@ -846,12 +861,7 @@ mod tests {
     #[test]
     fn test_sch_generation() {
         let engine = TrivariateHashEngineV731::new();
-        let sch = engine.generate_sch(
-            "test semantic content",
-            "Actor",
-            "osint",
-            "scan",
-        );
+        let sch = engine.generate_sch("test semantic content", "Actor", "osint", "scan");
         assert_eq!(sch.len(), 16);
     }
 
@@ -859,15 +869,9 @@ mod tests {
     fn test_full_trivariate_generation() {
         let engine = TrivariateHashEngineV731::new();
         let ctx = ContextFrame::new(ExecEnv::Native, 1, ExecState::Hot);
-        
-        let triv = engine.generate_trivariate(
-            "test content",
-            "Object",
-            "space",
-            "observe",
-            &ctx,
-        );
-        
+
+        let triv = engine.generate_trivariate("test content", "Object", "space", "observe", &ctx);
+
         assert_eq!(triv.sch.len(), 16);
         assert_eq!(triv.cuid.len(), 16);
         assert!(!triv.uuid.is_empty());
@@ -877,7 +881,7 @@ mod tests {
     fn test_dual_trivariate() {
         let engine = TrivariateHashEngineV731::new();
         let ctx = ContextFrame::new(ExecEnv::Wasm, 1, ExecState::Hot);
-        
+
         // High-cognitive layer (requires secondary)
         let dual = engine.generate_dual_trivariate(
             "synaptix9 operation",
@@ -887,9 +891,9 @@ mod tests {
             &ctx,
             true, // requires_secondary
         );
-        
+
         assert!(dual.secondary.is_some());
-        
+
         // Low-tier playbook (primary only)
         let primary_only = engine.generate_dual_trivariate(
             "simple playbook",
@@ -899,17 +903,32 @@ mod tests {
             &ctx,
             false, // requires_secondary
         );
-        
+
         assert!(primary_only.secondary.is_none());
     }
 
     #[test]
     fn test_supersession_levels() {
-        assert_eq!(SupersessionLevel::from_delta_angle(1.0), SupersessionLevel::None);
-        assert_eq!(SupersessionLevel::from_delta_angle(5.0), SupersessionLevel::Micro);
-        assert_eq!(SupersessionLevel::from_delta_angle(20.0), SupersessionLevel::Soft);
-        assert_eq!(SupersessionLevel::from_delta_angle(35.0), SupersessionLevel::Hard);
-        assert_eq!(SupersessionLevel::from_delta_angle(50.0), SupersessionLevel::Critical);
+        assert_eq!(
+            SupersessionLevel::from_delta_angle(1.0),
+            SupersessionLevel::None
+        );
+        assert_eq!(
+            SupersessionLevel::from_delta_angle(5.0),
+            SupersessionLevel::Micro
+        );
+        assert_eq!(
+            SupersessionLevel::from_delta_angle(20.0),
+            SupersessionLevel::Soft
+        );
+        assert_eq!(
+            SupersessionLevel::from_delta_angle(35.0),
+            SupersessionLevel::Hard
+        );
+        assert_eq!(
+            SupersessionLevel::from_delta_angle(50.0),
+            SupersessionLevel::Critical
+        );
     }
 
     #[test]
@@ -917,11 +936,15 @@ mod tests {
         let ctx = ContextFrame::new(ExecEnv::Container, 42, ExecState::Hot);
         let slots = CuidSlots::from(&ctx);
         let runes = slots.to_unicode_runes();
-        
+
         // Verify all characters are in U+E200-E2FF range
         for ch in runes.chars() {
             let code = ch as u32;
-            assert!(code >= 0xE200 && code <= 0xE2FF, "Unicode rune out of range: U+{:04X}", code);
+            assert!(
+                code >= 0xE200 && code <= 0xE2FF,
+                "Unicode rune out of range: U+{:04X}",
+                code
+            );
         }
     }
 }

@@ -4,7 +4,7 @@
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::sync::{Arc, Mutex};
-use tokio::time::{interval, Duration};
+
 use uuid::Uuid;
 
 /// ABE Controlled Access Service - Smart permissions with monitoring
@@ -39,26 +39,26 @@ pub struct AllowedOperation {
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub enum OperationType {
-    IntelligenceCollection,     // Primary purpose - ALLOWED
-    ThreatAnalysis,            // Intelligence analysis - ALLOWED
-    DataProcessing,            // Processing intel data - ALLOWED
-    ModelTraining,             // Training intelligence models - ALLOWED
-    GPUCompute,               // High-performance computation - ALLOWED
+    IntelligenceCollection, // Primary purpose - ALLOWED
+    ThreatAnalysis,         // Intelligence analysis - ALLOWED
+    DataProcessing,         // Processing intel data - ALLOWED
+    ModelTraining,          // Training intelligence models - ALLOWED
+    GPUCompute,             // High-performance computation - ALLOWED
 
     // Forbidden operations (what caused contamination before)
-    NodeInterviewAccess,       // FORBIDDEN - caused wrong interviews
-    TaskPopulation,           // FORBIDDEN - overwrote CTAS tasks
-    CTASOperationalAccess,    // FORBIDDEN - operational systems
-    CommandExecution,         // FORBIDDEN - system commands
+    NodeInterviewAccess,   // FORBIDDEN - caused wrong interviews
+    TaskPopulation,        // FORBIDDEN - overwrote CTAS tasks
+    CTASOperationalAccess, // FORBIDDEN - operational systems
+    CommandExecution,      // FORBIDDEN - system commands
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub enum GPUAccessLevel {
-    None,           // No GPU access
-    Limited,        // Basic GPU operations
-    Standard,       // Normal GPU workloads
+    None,            // No GPU access
+    Limited,         // Basic GPU operations
+    Standard,        // Normal GPU workloads
     HighPerformance, // Intensive workloads
-    Unrestricted,   // Maximum GPU access
+    Unrestricted,    // Maximum GPU access
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -112,13 +112,13 @@ pub struct DataSource {
 
 #[derive(Debug, Clone)]
 pub enum DataSourceType {
-    OpenSourceIntelligence,    // OSINT feeds
-    ThreatIntelligence,       // Threat data feeds
-    PublicDatasets,           // Public research data
-    SatelliteImagery,         // Geospatial intelligence
-    SocialMediaFeeds,         // Social intelligence
-    NewsFeeds,               // News and media analysis
-    // NOT ALLOWED: CTAS operational data
+    OpenSourceIntelligence, // OSINT feeds
+    ThreatIntelligence,     // Threat data feeds
+    PublicDatasets,         // Public research data
+    SatelliteImagery,       // Geospatial intelligence
+    SocialMediaFeeds,       // Social intelligence
+    NewsFeeds,              // News and media analysis
+                            // NOT ALLOWED: CTAS operational data
 }
 
 #[derive(Debug, Clone)]
@@ -154,10 +154,10 @@ pub struct OutputRestrictions {
 
 #[derive(Debug, Clone)]
 pub enum CollaborationInterface {
-    GLAF,              // Intelligence system
-    PLASMA,            // Security framework
-    LegionECS,         // Analytics
-    // NOT ALLOWED: CTAS operational interfaces
+    GLAF,   // Intelligence system
+    PLASMA, // Security framework
+    LegionECS, // Analytics
+            // NOT ALLOWED: CTAS operational interfaces
 }
 
 /// GPU Resource Manager - High-performance computing for intelligence
@@ -260,10 +260,10 @@ pub struct PreventionRule {
 
 #[derive(Debug, Clone)]
 pub enum PreventionAction {
-    BlockOperation,          // Stop the operation
-    RedirectToSafeSpace,    // Redirect to intelligence workspace
-    RequireConfirmation,    // Ask for human confirmation
-    LogAndContinue,        // Monitor but allow
+    BlockOperation,      // Stop the operation
+    RedirectToSafeSpace, // Redirect to intelligence workspace
+    RequireConfirmation, // Ask for human confirmation
+    LogAndContinue,      // Monitor but allow
 }
 
 #[derive(Debug)]
@@ -310,11 +310,11 @@ pub struct Activity {
 
 #[derive(Debug, Clone)]
 pub enum SafetyStatus {
-    Safe,           // Normal operation
-    Monitored,      // Enhanced monitoring
-    Cautioned,      // Potential concern
-    Restricted,     // Limited operations
-    Dangerous,      // Immediate intervention needed
+    Safe,       // Normal operation
+    Monitored,  // Enhanced monitoring
+    Cautioned,  // Potential concern
+    Restricted, // Limited operations
+    Dangerous,  // Immediate intervention needed
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -468,7 +468,11 @@ impl ABEControlledAccessService {
                 },
             ],
             output_restrictions: OutputRestrictions {
-                allowed_export_formats: vec!["JSON".to_string(), "CSV".to_string(), "PDF".to_string()],
+                allowed_export_formats: vec![
+                    "JSON".to_string(),
+                    "CSV".to_string(),
+                    "PDF".to_string(),
+                ],
                 forbidden_destinations: vec!["ctas_operational".to_string()],
                 auto_classification: true,
                 human_review_required: false,
@@ -537,31 +541,25 @@ impl ABEControlledAccessService {
                     cost_optimization: true,
                 },
                 cost_management: CostManagement {
-                    budget_alerts: vec![
-                        BudgetAlert {
-                            threshold_percentage: 80.0,
-                            alert_channel: AlertChannel::Dashboard,
-                        },
-                    ],
-                    spending_caps: vec![
-                        SpendingCap {
-                            cap_type: CapType::Daily,
-                            limit_amount: 100.0,
-                            action_on_exceed: CapAction::RequireApproval,
-                        },
-                    ],
+                    budget_alerts: vec![BudgetAlert {
+                        threshold_percentage: 80.0,
+                        alert_channel: AlertChannel::Dashboard,
+                    }],
+                    spending_caps: vec![SpendingCap {
+                        cap_type: CapType::Daily,
+                        limit_amount: 100.0,
+                        action_on_exceed: CapAction::RequireApproval,
+                    }],
                     usage_reporting: UsageReporting::default(),
                 },
             },
             contamination_prevention: ContaminationPrevention {
-                prevention_rules: vec![
-                    PreventionRule {
-                        rule_id: "node_interview_prevention".to_string(),
-                        pattern_to_detect: "node_interview|interview.*node".to_string(),
-                        prevention_action: PreventionAction::BlockOperation,
-                        confidence_threshold: 0.9,
-                    },
-                ],
+                prevention_rules: vec![PreventionRule {
+                    rule_id: "node_interview_prevention".to_string(),
+                    pattern_to_detect: "node_interview|interview.*node".to_string(),
+                    prevention_action: PreventionAction::BlockOperation,
+                    confidence_threshold: 0.9,
+                }],
                 real_time_monitoring: RealTimeMonitoring {
                     monitoring_active: true,
                     check_interval_ms: 1000,
@@ -638,17 +636,17 @@ impl ABEControlledAccessService {
     /// Check if operation is allowed
     fn is_operation_allowed(&self, operation: &OperationType) -> bool {
         match operation {
-            OperationType::IntelligenceCollection |
-            OperationType::ThreatAnalysis |
-            OperationType::DataProcessing |
-            OperationType::ModelTraining |
-            OperationType::GPUCompute => true,
+            OperationType::IntelligenceCollection
+            | OperationType::ThreatAnalysis
+            | OperationType::DataProcessing
+            | OperationType::ModelTraining
+            | OperationType::GPUCompute => true,
 
             // These caused contamination - FORBIDDEN
-            OperationType::NodeInterviewAccess |
-            OperationType::TaskPopulation |
-            OperationType::CTASOperationalAccess |
-            OperationType::CommandExecution => false,
+            OperationType::NodeInterviewAccess
+            | OperationType::TaskPopulation
+            | OperationType::CTASOperationalAccess
+            | OperationType::CommandExecution => false,
         }
     }
 
@@ -659,14 +657,18 @@ impl ABEControlledAccessService {
         tier_name: &str,
         duration_hours: u32,
     ) -> Result<GPUAllocation, String> {
-        let tier = self.gpu_resource_manager.available_gpu_tiers
+        let tier = self
+            .gpu_resource_manager
+            .available_gpu_tiers
             .iter()
             .find(|t| t.tier_name == tier_name)
             .ok_or("GPU tier not found")?;
 
         if duration_hours > tier.max_session_hours {
-            return Err(format!("Duration {} exceeds max {} hours for tier",
-                              duration_hours, tier.max_session_hours));
+            return Err(format!(
+                "Duration {} exceeds max {} hours for tier",
+                duration_hours, tier.max_session_hours
+            ));
         }
 
         let allocation = GPUAllocation {
@@ -679,10 +681,14 @@ impl ABEControlledAccessService {
             operations_performed: 0,
         };
 
-        self.gpu_resource_manager.current_allocations
+        self.gpu_resource_manager
+            .current_allocations
             .insert(allocation.allocation_id.clone(), allocation.clone());
 
-        println!("🎮 GPU Allocated: {} cores, {} GB memory", tier.gpu_cores, tier.memory_gb);
+        println!(
+            "🎮 GPU Allocated: {} cores, {} GB memory",
+            tier.gpu_cores, tier.memory_gb
+        );
         println!("💰 Rate: ${:.2}/hour", tier.hourly_rate);
 
         Ok(allocation)

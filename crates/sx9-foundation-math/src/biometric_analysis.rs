@@ -9,7 +9,6 @@
 
 use anyhow::Result;
 use nalgebra::{DMatrix, DVector};
-use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::f64::consts::PI;
 
@@ -50,24 +49,34 @@ impl BiometricAnalysisConsciousness {
         fingerprint_image: &FingerprintImage,
     ) -> Result<BiometricAnalysisResult> {
         // Step 1: Enhanced image preprocessing with Gabor filters
-        let enhanced_image = self.gabor_filter_bank
-            .enhance_fingerprint_image(fingerprint_image).await?;
+        let enhanced_image = self
+            .gabor_filter_bank
+            .enhance_fingerprint_image(fingerprint_image)
+            .await?;
 
         // Step 2: Ridge flow analysis for orientation field estimation
-        let ridge_flow = self.ridge_flow_analyzer
-            .analyze_ridge_flow(&enhanced_image).await?;
+        let ridge_flow = self
+            .ridge_flow_analyzer
+            .analyze_ridge_flow(&enhanced_image)
+            .await?;
 
         // Step 3: Latent fingerprint enhancement for poor quality images
-        let enhanced_latent = self.latent_enhancement_engine
-            .enhance_latent_fingerprint(&enhanced_image, &ridge_flow).await?;
+        let enhanced_latent = self
+            .latent_enhancement_engine
+            .enhance_latent_fingerprint(&enhanced_image, &ridge_flow)
+            .await?;
 
         // Step 4: Minutiae extraction with mathematical precision
-        let minutiae = self.minutiae_analyzer
-            .extract_minutiae(&enhanced_latent, &ridge_flow).await?;
+        let minutiae = self
+            .minutiae_analyzer
+            .extract_minutiae(&enhanced_latent, &ridge_flow)
+            .await?;
 
         // Step 5: HMM analysis for sequential pattern recognition
-        let hmm_patterns = self.hmm_engine
-            .analyze_ridge_patterns(&enhanced_latent, &minutiae).await?;
+        let hmm_patterns = self
+            .hmm_engine
+            .analyze_ridge_patterns(&enhanced_latent, &minutiae)
+            .await?;
 
         // Calculate dependent values before moving
         let quality_score = self.calculate_quality_score(&enhanced_latent, &minutiae)?;
@@ -99,12 +108,10 @@ impl BiometricAnalysisConsciousness {
     }
 
     /// Generate mathematical signature for fingerprint
-    fn generate_mathematical_signature(
-        &self,
-        hmm_patterns: &HMMPatternAnalysis,
-    ) -> Result<String> {
+    fn generate_mathematical_signature(&self, hmm_patterns: &HMMPatternAnalysis) -> Result<String> {
         // Create mathematical signature from HMM state sequences
-        let signature = format!("HMM-SIG-{}-{}-{}",
+        let signature = format!(
+            "HMM-SIG-{}-{}-{}",
             hmm_patterns.dominant_state_sequence.len(),
             hmm_patterns.transition_entropy,
             hmm_patterns.emission_entropy
@@ -147,7 +154,8 @@ impl HiddenMarkovModelEngine {
         let hmm_model = self.initialize_ridge_hmm()?;
 
         // Forward-backward algorithm for state estimation
-        let (forward_probs, backward_probs) = self.forward_backward_algorithm(&hmm_model, &observations)?;
+        let (forward_probs, backward_probs) =
+            self.forward_backward_algorithm(&hmm_model, &observations)?;
 
         // Viterbi algorithm for most likely state sequence
         let most_likely_sequence = self.viterbi_algorithm(&hmm_model, &observations)?;
@@ -156,8 +164,10 @@ impl HiddenMarkovModelEngine {
         let optimized_params = self.baum_welch_algorithm(&hmm_model, &observations)?;
 
         // Calculate dependent values before moving optimized_params
-        let transition_entropy = self.calculate_transition_entropy(&optimized_params.transition_matrix)?;
-        let emission_entropy = self.calculate_emission_entropy(&optimized_params.emission_matrix)?;
+        let transition_entropy =
+            self.calculate_transition_entropy(&optimized_params.transition_matrix)?;
+        let emission_entropy =
+            self.calculate_emission_entropy(&optimized_params.emission_matrix)?;
         let log_likelihood = self.calculate_log_likelihood(&observations, &optimized_params)?;
 
         Ok(HMMPatternAnalysis {
@@ -201,8 +211,7 @@ impl HiddenMarkovModelEngine {
                 let x = point.x as isize + i - (window_size / 2) as isize;
                 let y = point.y as isize + j - (window_size / 2) as isize;
 
-                if x >= 0 && y >= 0 &&
-                   x < image.width as isize && y < image.height as isize {
+                if x >= 0 && y >= 0 && x < image.width as isize && y < image.height as isize {
                     let pixel_value = image.get_pixel(x as usize, y as usize)?;
                     // Quantize pixel value to observation symbol
                     let symbol = self.quantize_pixel_value(pixel_value);
@@ -277,21 +286,22 @@ impl HiddenMarkovModelEngine {
         model: &HMMModel,
         observations: &[usize],
     ) -> Result<(DMatrix<f64>, DMatrix<f64>)> {
-        let T = observations.len();
-        let N = model.num_states;
+        let time_steps = observations.len();
+        let num_states = model.num_states;
 
-        let mut forward = DMatrix::zeros(N, T);
-        let mut backward = DMatrix::zeros(N, T);
+        let mut forward = DMatrix::zeros(num_states, time_steps);
+        let mut backward = DMatrix::zeros(num_states, time_steps);
 
         // Forward pass
-        for i in 0..N {
-            forward[(i, 0)] = model.initial_distribution[i] * model.emission_matrix[(i, observations[0])];
+        for i in 0..num_states {
+            forward[(i, 0)] =
+                model.initial_distribution[i] * model.emission_matrix[(i, observations[0])];
         }
 
-        for t in 1..T {
-            for j in 0..N {
+        for t in 1..time_steps {
+            for j in 0..num_states {
                 let mut sum = 0.0;
-                for i in 0..N {
+                for i in 0..num_states {
                     sum += forward[(i, t - 1)] * model.transition_matrix[(i, j)];
                 }
                 forward[(j, t)] = sum * model.emission_matrix[(j, observations[t])];
@@ -299,17 +309,17 @@ impl HiddenMarkovModelEngine {
         }
 
         // Backward pass
-        for i in 0..N {
-            backward[(i, T - 1)] = 1.0;
+        for i in 0..num_states {
+            backward[(i, time_steps - 1)] = 1.0;
         }
 
-        for t in (0..T-1).rev() {
-            for i in 0..N {
+        for t in (0..time_steps - 1).rev() {
+            for i in 0..num_states {
                 let mut sum = 0.0;
-                for j in 0..N {
+                for j in 0..num_states {
                     sum += model.transition_matrix[(i, j)]
-                         * model.emission_matrix[(j, observations[t + 1])]
-                         * backward[(j, t + 1)];
+                        * model.emission_matrix[(j, observations[t + 1])]
+                        * backward[(j, t + 1)];
                 }
                 backward[(i, t)] = sum;
             }
@@ -340,25 +350,26 @@ impl HiddenMarkovModelEngine {
         model: &HMMModel,
         observations: &[usize],
     ) -> Result<Vec<usize>> {
-        let T = observations.len();
-        let N = model.num_states;
+        let time_steps = observations.len();
+        let num_states = model.num_states;
 
-        let mut delta = DMatrix::zeros(N, T);
-        let mut psi = DMatrix::<usize>::zeros(N, T);
+        let mut delta = DMatrix::zeros(num_states, time_steps);
+        let mut psi = DMatrix::<usize>::zeros(num_states, time_steps);
 
         // Initialization
-        for i in 0..N {
-            delta[(i, 0)] = model.initial_distribution[i].ln() + model.emission_matrix[(i, observations[0])].ln();
+        for i in 0..num_states {
+            delta[(i, 0)] = model.initial_distribution[i].ln()
+                + model.emission_matrix[(i, observations[0])].ln();
             psi[(i, 0)] = 0;
         }
 
         // Recursion
-        for t in 1..T {
-            for j in 0..N {
+        for t in 1..time_steps {
+            for j in 0..num_states {
                 let mut max_val = f64::NEG_INFINITY;
                 let mut max_arg = 0;
 
-                for i in 0..N {
+                for i in 0..num_states {
                     let val = delta[(i, t - 1)] + model.transition_matrix[(i, j)].ln();
                     if val > max_val {
                         max_val = val;
@@ -374,18 +385,18 @@ impl HiddenMarkovModelEngine {
         // Termination
         let mut max_prob = f64::NEG_INFINITY;
         let mut last_state = 0;
-        for i in 0..N {
-            if delta[(i, T - 1)] > max_prob {
-                max_prob = delta[(i, T - 1)];
+        for i in 0..num_states {
+            if delta[(i, time_steps - 1)] > max_prob {
+                max_prob = delta[(i, time_steps - 1)];
                 last_state = i;
             }
         }
 
         // Path backtracking
-        let mut path = vec![0; T];
-        path[T - 1] = last_state;
+        let mut path = vec![0; time_steps];
+        path[time_steps - 1] = last_state;
 
-        for t in (0..T-1).rev() {
+        for t in (0..time_steps - 1).rev() {
             path[t] = psi[(path[t + 1], t + 1)];
         }
 
@@ -402,7 +413,7 @@ impl HiddenMarkovModelEngine {
         let max_iterations = 100;
         let convergence_threshold = 1e-6;
 
-        for iteration in 0..max_iterations {
+        for _iteration in 0..max_iterations {
             let mut new_transition = DMatrix::zeros(model.num_states, model.num_states);
             let mut new_emission = DMatrix::zeros(model.num_states, model.num_observations);
             let mut new_initial = DVector::zeros(model.num_states);
@@ -479,42 +490,43 @@ impl HiddenMarkovModelEngine {
         observations: &[usize],
     ) -> Result<(DMatrix<f64>, DMatrix<f64>)> {
         let (forward, backward) = self.forward_backward_single_sequence(model, observations)?;
-        let T = observations.len();
-        let N = model.num_states;
+        let time_steps = observations.len();
+        let num_states = model.num_states;
 
-        let mut gamma = DMatrix::zeros(N, T);
-        let mut xi = DMatrix::zeros(N * N, T - 1);
+        let mut gamma = DMatrix::zeros(num_states, time_steps);
+        let mut xi = DMatrix::zeros(num_states * num_states, time_steps - 1);
 
         // Calculate gamma
-        for t in 0..T {
+        for t in 0..time_steps {
             let mut sum = 0.0;
-            for i in 0..N {
+            for i in 0..num_states {
                 sum += forward[(i, t)] * backward[(i, t)];
             }
 
-            for i in 0..N {
+            for i in 0..num_states {
                 gamma[(i, t)] = (forward[(i, t)] * backward[(i, t)]) / sum;
             }
         }
 
         // Calculate xi
-        for t in 0..T - 1 {
+        for t in 0..time_steps - 1 {
             let mut sum = 0.0;
-            for i in 0..N {
-                for j in 0..N {
+            for i in 0..num_states {
+                for j in 0..num_states {
                     sum += forward[(i, t)]
-                         * model.transition_matrix[(i, j)]
-                         * model.emission_matrix[(j, observations[t + 1])]
-                         * backward[(j, t + 1)];
+                        * model.transition_matrix[(i, j)]
+                        * model.emission_matrix[(j, observations[t + 1])]
+                        * backward[(j, t + 1)];
                 }
             }
 
-            for i in 0..N {
-                for j in 0..N {
-                    xi[(i * N + j, t)] = (forward[(i, t)]
-                                        * model.transition_matrix[(i, j)]
-                                        * model.emission_matrix[(j, observations[t + 1])]
-                                        * backward[(j, t + 1)]) / sum;
+            for i in 0..num_states {
+                for j in 0..num_states {
+                    xi[(i * num_states + j, t)] = (forward[(i, t)]
+                        * model.transition_matrix[(i, j)]
+                        * model.emission_matrix[(j, observations[t + 1])]
+                        * backward[(j, t + 1)])
+                        / sum;
                 }
             }
         }
@@ -598,11 +610,11 @@ impl HiddenMarkovModelEngine {
 
         for obs_sequence in observations {
             let (forward, _) = self.forward_backward_single_sequence(model, obs_sequence)?;
-            let T = obs_sequence.len();
+            let seq_len = obs_sequence.len();
 
             let mut sequence_likelihood = 0.0;
             for i in 0..model.num_states {
-                sequence_likelihood += forward[(i, T - 1)];
+                sequence_likelihood += forward[(i, seq_len - 1)];
             }
 
             total_log_likelihood += sequence_likelihood.ln();
@@ -623,7 +635,16 @@ pub struct GaborFilterBank {
 
 impl GaborFilterBank {
     pub fn new() -> Result<Self> {
-        let orientations = [0.0, PI/8.0, PI/4.0, 3.0*PI/8.0, PI/2.0, 5.0*PI/8.0, 3.0*PI/4.0, 7.0*PI/8.0];
+        let orientations = [
+            0.0,
+            PI / 8.0,
+            PI / 4.0,
+            3.0 * PI / 8.0,
+            PI / 2.0,
+            5.0 * PI / 8.0,
+            3.0 * PI / 4.0,
+            7.0 * PI / 8.0,
+        ];
         let frequencies = [0.1, 0.15, 0.2, 0.25];
 
         let mut filters = Vec::new();
@@ -700,7 +721,9 @@ impl GaborFilterBank {
     /// Calculate orientation field from Gabor filter responses
     fn calculate_orientation_field(&self, responses: &[GaborFilterResponse]) -> Result<Vec<f64>> {
         if responses.is_empty() {
-            return Err(anyhow::anyhow!("No filter responses for orientation calculation"));
+            return Err(anyhow::anyhow!(
+                "No filter responses for orientation calculation"
+            ));
         }
 
         let size = responses[0].magnitude.len();
@@ -730,15 +753,18 @@ impl GaborFilterBank {
 
         for window_y in (0..self.filter_params.window_size).step_by(4) {
             for window_x in (0..self.filter_params.window_size).step_by(4) {
-                let local_consistency = self.calculate_local_consistency(
-                    orientation_field, window_x, window_y
-                )?;
+                let local_consistency =
+                    self.calculate_local_consistency(orientation_field, window_x, window_y)?;
                 consistency_sum += local_consistency;
                 count += 1;
             }
         }
 
-        Ok(if count > 0 { consistency_sum / count as f64 } else { 0.0 })
+        Ok(if count > 0 {
+            consistency_sum / count as f64
+        } else {
+            0.0
+        })
     }
 
     /// Calculate local orientation consistency
@@ -776,7 +802,8 @@ impl GaborFilterBank {
             cos_sum += (2.0 * orientation).cos();
         }
 
-        let mean_resultant_length = ((sin_sum * sin_sum + cos_sum * cos_sum).sqrt()) / orientations.len() as f64;
+        let mean_resultant_length =
+            ((sin_sum * sin_sum + cos_sum * cos_sum).sqrt()) / orientations.len() as f64;
 
         Ok(mean_resultant_length)
     }
@@ -792,7 +819,11 @@ impl GaborFilterBank {
             count += 1;
         }
 
-        Ok(if count > 0 { gradient_sum / count as f64 } else { 0.0 })
+        Ok(if count > 0 {
+            gradient_sum / count as f64
+        } else {
+            0.0
+        })
     }
 }
 
@@ -815,15 +846,17 @@ impl GaborFilter {
 
         for y in 0..kernel_size {
             for x in 0..kernel_size {
-                let x_centered = (x as f64 - center as f64);
-                let y_centered = (y as f64 - center as f64);
+                let x_centered = x as f64 - center as f64;
+                let y_centered = y as f64 - center as f64;
 
                 // Rotate coordinates
                 let x_rot = x_centered * orientation.cos() + y_centered * orientation.sin();
                 let y_rot = -x_centered * orientation.sin() + y_centered * orientation.cos();
 
                 // Gabor function
-                let gaussian = (-0.5 * (x_rot * x_rot / (sigma_x * sigma_x) + y_rot * y_rot / (sigma_y * sigma_y))).exp();
+                let gaussian = (-0.5
+                    * (x_rot * x_rot / (sigma_x * sigma_x) + y_rot * y_rot / (sigma_y * sigma_y)))
+                    .exp();
                 let sinusoid = (2.0 * PI * frequency * x_rot).cos();
 
                 kernel[(y, x)] = gaussian * sinusoid;
@@ -897,7 +930,10 @@ impl LatentFingerprintEnhancementEngine {
             noise_filters: vec![
                 NoiseReductionFilter::Gaussian { sigma: 1.0 },
                 NoiseReductionFilter::Median { kernel_size: 3 },
-                NoiseReductionFilter::Bilateral { sigma_color: 75.0, sigma_space: 75.0 },
+                NoiseReductionFilter::Bilateral {
+                    sigma_color: 75.0,
+                    sigma_space: 75.0,
+                },
             ],
         })
     }
@@ -927,7 +963,10 @@ impl LatentFingerprintEnhancementEngine {
     }
 
     /// Apply noise reduction filters
-    fn apply_noise_reduction(&self, image: &EnhancedFingerprintImage) -> Result<EnhancedFingerprintImage> {
+    fn apply_noise_reduction(
+        &self,
+        image: &EnhancedFingerprintImage,
+    ) -> Result<EnhancedFingerprintImage> {
         let mut current_data = image.data.clone();
 
         for filter in &self.noise_filters {
@@ -946,7 +985,10 @@ impl LatentFingerprintEnhancementEngine {
     }
 
     /// Enhance contrast using adaptive histogram equalization
-    fn enhance_contrast(&self, image: &EnhancedFingerprintImage) -> Result<EnhancedFingerprintImage> {
+    fn enhance_contrast(
+        &self,
+        image: &EnhancedFingerprintImage,
+    ) -> Result<EnhancedFingerprintImage> {
         let tile_size = 16;
         let mut enhanced_data = vec![0.0; image.data.len()];
 
@@ -1025,7 +1067,7 @@ impl LatentFingerprintEnhancementEngine {
     fn enhance_ridge_structure(
         &self,
         image: &EnhancedFingerprintImage,
-        ridge_flow: &RidgeFlowAnalysis,
+        _ridge_flow: &RidgeFlowAnalysis,
     ) -> Result<EnhancedFingerprintImage> {
         let mut enhanced_data = image.data.clone();
 
@@ -1035,9 +1077,8 @@ impl LatentFingerprintEnhancementEngine {
                 let orientation = image.orientation_field[idx];
 
                 // Apply directional smoothing based on ridge orientation
-                let smoothed_value = self.directional_smoothing(
-                    &image.data, x, y, image.width, orientation
-                )?;
+                let smoothed_value =
+                    self.directional_smoothing(&image.data, x, y, image.width, orientation)?;
 
                 enhanced_data[idx] = smoothed_value;
             }
@@ -1077,19 +1118,29 @@ impl LatentFingerprintEnhancementEngine {
             let sample_x_int = sample_x.round() as isize;
             let sample_y_int = sample_y.round() as isize;
 
-            if sample_x_int >= 0 && sample_y_int >= 0 &&
-               (sample_x_int as usize) < width && (sample_y_int as usize * width) < data.len() {
+            if sample_x_int >= 0
+                && sample_y_int >= 0
+                && (sample_x_int as usize) < width
+                && (sample_y_int as usize * width) < data.len()
+            {
                 let idx = sample_y_int as usize * width + sample_x_int as usize;
                 sum += data[idx];
                 count += 1;
             }
         }
 
-        Ok(if count > 0 { sum / count as f64 } else { data[y * width + x] })
+        Ok(if count > 0 {
+            sum / count as f64
+        } else {
+            data[y * width + x]
+        })
     }
 
     /// Frequency domain enhancement using FFT
-    fn frequency_domain_enhancement(&self, image: &EnhancedFingerprintImage) -> Result<EnhancedFingerprintImage> {
+    fn frequency_domain_enhancement(
+        &self,
+        image: &EnhancedFingerprintImage,
+    ) -> Result<EnhancedFingerprintImage> {
         // This is a simplified version - would use FFT in production
         let mut enhanced_data = image.data.clone();
 
@@ -1099,11 +1150,11 @@ impl LatentFingerprintEnhancementEngine {
                 let idx = y * image.width + x;
 
                 // Simple high-pass filter kernel
-                let high_pass = -image.data[(y-1)*image.width + x]
-                              - image.data[y*image.width + x-1]
-                              + 4.0 * image.data[idx]
-                              - image.data[y*image.width + x+1]
-                              - image.data[(y+1)*image.width + x];
+                let high_pass = -image.data[(y - 1) * image.width + x]
+                    - image.data[y * image.width + x - 1]
+                    + 4.0 * image.data[idx]
+                    - image.data[y * image.width + x + 1]
+                    - image.data[(y + 1) * image.width + x];
 
                 enhanced_data[idx] = (image.data[idx] + 0.1 * high_pass).clamp(0.0, 1.0);
             }
@@ -1124,7 +1175,7 @@ impl LatentFingerprintEnhancementEngine {
     fn morphological_enhancement(
         &self,
         image: &EnhancedFingerprintImage,
-        ridge_flow: &RidgeFlowAnalysis,
+        _ridge_flow: &RidgeFlowAnalysis,
     ) -> Result<EnhancedFingerprintImage> {
         // Apply morphological opening and closing based on ridge structure
         let mut enhanced_data = image.data.clone();
@@ -1276,7 +1327,16 @@ pub struct GaborFilterParameters {
 impl Default for GaborFilterParameters {
     fn default() -> Self {
         Self {
-            orientations: vec![0.0, PI/8.0, PI/4.0, 3.0*PI/8.0, PI/2.0, 5.0*PI/8.0, 3.0*PI/4.0, 7.0*PI/8.0],
+            orientations: vec![
+                0.0,
+                PI / 8.0,
+                PI / 4.0,
+                3.0 * PI / 8.0,
+                PI / 2.0,
+                5.0 * PI / 8.0,
+                3.0 * PI / 4.0,
+                7.0 * PI / 8.0,
+            ],
             frequencies: vec![0.1, 0.15, 0.2, 0.25],
             sigma_x: 2.0,
             sigma_y: 2.0,
@@ -1320,15 +1380,26 @@ pub enum NoiseReductionFilter {
 impl NoiseReductionFilter {
     pub fn apply(&self, data: &[f64], width: usize, height: usize) -> Result<Vec<f64>> {
         match self {
-            NoiseReductionFilter::Gaussian { sigma } => self.apply_gaussian(data, width, height, *sigma),
-            NoiseReductionFilter::Median { kernel_size } => self.apply_median(data, width, height, *kernel_size),
-            NoiseReductionFilter::Bilateral { sigma_color, sigma_space } => {
-                self.apply_bilateral(data, width, height, *sigma_color, *sigma_space)
+            NoiseReductionFilter::Gaussian { sigma } => {
+                self.apply_gaussian(data, width, height, *sigma)
             }
+            NoiseReductionFilter::Median { kernel_size } => {
+                self.apply_median(data, width, height, *kernel_size)
+            }
+            NoiseReductionFilter::Bilateral {
+                sigma_color,
+                sigma_space,
+            } => self.apply_bilateral(data, width, height, *sigma_color, *sigma_space),
         }
     }
 
-    fn apply_gaussian(&self, data: &[f64], width: usize, height: usize, sigma: f64) -> Result<Vec<f64>> {
+    fn apply_gaussian(
+        &self,
+        data: &[f64],
+        width: usize,
+        height: usize,
+        sigma: f64,
+    ) -> Result<Vec<f64>> {
         let kernel_size = (6.0 * sigma).ceil() as usize | 1; // Ensure odd size
         let kernel = self.generate_gaussian_kernel(kernel_size, sigma)?;
         let half_kernel = kernel_size / 2;
@@ -1362,8 +1433,8 @@ impl NoiseReductionFilter {
 
         for y in 0..size {
             for x in 0..size {
-                let dx = (x as f64 - center as f64);
-                let dy = (y as f64 - center as f64);
+                let dx = x as f64 - center as f64;
+                let dy = y as f64 - center as f64;
                 let value = (-(dx * dx + dy * dy) / (2.0 * sigma * sigma)).exp();
                 kernel[y * size + x] = value;
                 sum += value;
@@ -1378,7 +1449,13 @@ impl NoiseReductionFilter {
         Ok(kernel)
     }
 
-    fn apply_median(&self, data: &[f64], width: usize, height: usize, kernel_size: usize) -> Result<Vec<f64>> {
+    fn apply_median(
+        &self,
+        data: &[f64],
+        width: usize,
+        height: usize,
+        kernel_size: usize,
+    ) -> Result<Vec<f64>> {
         let half_kernel = kernel_size / 2;
         let mut result = data.to_vec();
 
@@ -1402,7 +1479,14 @@ impl NoiseReductionFilter {
         Ok(result)
     }
 
-    fn apply_bilateral(&self, data: &[f64], width: usize, height: usize, sigma_color: f64, sigma_space: f64) -> Result<Vec<f64>> {
+    fn apply_bilateral(
+        &self,
+        data: &[f64],
+        width: usize,
+        height: usize,
+        sigma_color: f64,
+        sigma_space: f64,
+    ) -> Result<Vec<f64>> {
         let kernel_radius = (3.0 * sigma_space).ceil() as usize;
         let mut result = vec![0.0; data.len()];
 
@@ -1420,11 +1504,13 @@ impl NoiseReductionFilter {
 
                         // Spatial weight
                         let spatial_dist_sq = (dx * dx + dy * dy) as f64;
-                        let spatial_weight = (-spatial_dist_sq / (2.0 * sigma_space * sigma_space)).exp();
+                        let spatial_weight =
+                            (-spatial_dist_sq / (2.0 * sigma_space * sigma_space)).exp();
 
                         // Color weight
                         let color_dist_sq = (center_value - neighbor_value).powi(2);
-                        let color_weight = (-color_dist_sq / (2.0 * sigma_color * sigma_color)).exp();
+                        let color_weight =
+                            (-color_dist_sq / (2.0 * sigma_color * sigma_color)).exp();
 
                         let weight = spatial_weight * color_weight;
                         weighted_sum += neighbor_value * weight;
@@ -1432,7 +1518,11 @@ impl NoiseReductionFilter {
                     }
                 }
 
-                result[y * width + x] = if weight_sum > 0.0 { weighted_sum / weight_sum } else { center_value };
+                result[y * width + x] = if weight_sum > 0.0 {
+                    weighted_sum / weight_sum
+                } else {
+                    center_value
+                };
             }
         }
 
@@ -1448,23 +1538,27 @@ pub struct MinutiaeAnalyzer;
 pub struct RidgeFlowAnalyzer;
 
 impl MinutiaeAnalyzer {
-    pub fn new() -> Result<Self> { Ok(Self) }
+    pub fn new() -> Result<Self> {
+        Ok(Self)
+    }
 
     pub async fn extract_minutiae(
         &self,
         _image: &EnhancedFingerprintImage,
-        _ridge_flow: &RidgeFlowAnalysis
+        _ridge_flow: &RidgeFlowAnalysis,
     ) -> Result<MinutiaePoints> {
         Ok(MinutiaePoints { points: Vec::new() })
     }
 }
 
 impl RidgeFlowAnalyzer {
-    pub fn new() -> Result<Self> { Ok(Self) }
+    pub fn new() -> Result<Self> {
+        Ok(Self)
+    }
 
     pub async fn analyze_ridge_flow(
         &self,
-        _image: &EnhancedFingerprintImage
+        _image: &EnhancedFingerprintImage,
     ) -> Result<RidgeFlowAnalysis> {
         Ok(RidgeFlowAnalysis {
             orientation_field: Vec::new(),
@@ -1486,9 +1580,9 @@ mod tests {
 
     #[test]
     fn test_gabor_filter_creation() {
-        let filter = GaborFilter::new(0.15, PI/4.0, 2.0, 2.0).unwrap();
+        let filter = GaborFilter::new(0.15, PI / 4.0, 2.0, 2.0).unwrap();
         assert!((filter.frequency - 0.15).abs() < 1e-10);
-        assert!((filter.orientation - PI/4.0).abs() < 1e-10);
+        assert!((filter.orientation - PI / 4.0).abs() < 1e-10);
     }
 
     #[test]

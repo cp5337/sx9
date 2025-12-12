@@ -22,43 +22,42 @@
 use serde::{Deserialize, Serialize};
 
 // Foundation modules
-pub mod voice_logger;
 pub mod foundation_integration;
+pub mod voice_logger;
 
 // Re-export voice_logger types
 pub use voice_logger::{
-    VoiceLogger, VoiceInteraction, VoiceSpeaker, ExecutionMode,
-    VoicePriority, VoiceLoggerConfig, VoiceQueryFilter, VoiceLoggerStats,
-    ThalamicFilterConfig, ThalamicFilterResult
+    ExecutionMode, ThalamicFilterConfig, ThalamicFilterResult, VoiceInteraction, VoiceLogger,
+    VoiceLoggerConfig, VoiceLoggerStats, VoicePriority, VoiceQueryFilter, VoiceSpeaker,
 };
 
 // RFC-9107 §5.2: Re-export from voice-bridge when elevenlabs feature is enabled
 #[cfg(feature = "elevenlabs")]
 pub use ctas7_voice_bridge::{
-    // TTS functions
-    tts::elevenlabs_tts,
-    tts::validate_tts_text,
-    tts::tts_with_retry,
-    tts::test_tts_config,
+    audio::calculate_rms,
+    audio::encode_wav_pcm16_mono_16k,
+    audio::play_audio,
     // Audio capture and processing
     audio::record_mic,
     audio::record_with_vad,
-    audio::encode_wav_pcm16_mono_16k,
     audio::to_mono_16k,
-    audio::play_audio,
-    audio::calculate_rms,
-    // Voice activity detection
-    vad::VoiceActivityDetector,
-    // Session management
-    session::SessionManager,
     // Configuration types
     config::{Agent, AgentsConfig, VoiceBridgeConfig, VoiceConfig},
-    // Voice mapping
-    voice_mapping::get_elevenlabs_voice_id,
-    voice_mapping::create_voice_config,
+    get_voice_model,
     // Version and status
     is_elevenlabs_configured,
-    get_voice_model,
+    // Session management
+    session::SessionManager,
+    // TTS functions
+    tts::elevenlabs_tts,
+    tts::test_tts_config,
+    tts::tts_with_retry,
+    tts::validate_tts_text,
+    // Voice activity detection
+    vad::VoiceActivityDetector,
+    voice_mapping::create_voice_config,
+    // Voice mapping
+    voice_mapping::get_elevenlabs_voice_id,
     VERSION as VOICE_BRIDGE_VERSION,
 };
 

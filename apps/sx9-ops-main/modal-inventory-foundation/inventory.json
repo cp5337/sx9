@@ -1,0 +1,1070 @@
+{
+  "timestamp": "2025-11-09T05:37:04.744Z",
+  "baseUrl": "http://localhost:15174",
+  "version": "7.3.1",
+  "foundation_integration": true,
+  "pages": [
+    {
+      "name": "Dashboard",
+      "path": "/",
+      "url": "http://localhost:15174/",
+      "hash": null,
+      "usim": null,
+      "unicode": null,
+      "modals": [],
+      "forms": [],
+      "buttons": [],
+      "inputs": [],
+      "screenshots": [],
+      "error": "page.goto: Timeout 30000ms exceeded.\nCall log:\n  - navigating to \"http://localhost:15174/\", waiting until \"networkidle\"\n"
+    },
+    {
+      "name": "Hunt Phase",
+      "path": "/hunt",
+      "url": "http://localhost:15174/hunt",
+      "hash": "d1ba51f66265119cf03bc5f02c686e12edbac33923752fc6",
+      "usim": null,
+      "unicode": "🔹d1ba",
+      "modals": [],
+      "forms": [],
+      "buttons": [
+        {
+          "text": "Overview",
+          "enabled": true,
+          "selector": ".flex",
+          "hash": "wnv±T7\\#|O00000",
+          "unicode": ""
+        },
+        {
+          "text": "Kali Tools",
+          "enabled": true,
+          "selector": ".flex",
+          "hash": "0n@b?9FM4C000000",
+          "unicode": ""
+        },
+        {
+          "text": "Playbooks",
+          "enabled": true,
+          "selector": ".flex",
+          "hash": "a@>I=`D>yL000000",
+          "unicode": ""
+        },
+        {
+          "text": "Red Team",
+          "enabled": true,
+          "selector": ".flex",
+          "hash": "rddI,#Ni%1000000",
+          "unicode": ""
+        },
+        {
+          "text": "Phase Mapping",
+          "enabled": true,
+          "selector": ".flex",
+          "hash": "h\"I9xZetQG000000",
+          "unicode": ""
+        },
+        {
+          "text": "Tasks",
+          "enabled": true,
+          "selector": ".flex",
+          "hash": "O7^G<<~k}D000000",
+          "unicode": ""
+        },
+        {
+          "text": "Show CLI",
+          "enabled": true,
+          "selector": ".flex",
+          "hash": "iYc@+vkHOO000000",
+          "unicode": ""
+        }
+      ],
+      "inputs": [],
+      "screenshots": [
+        "hunt-phase-initial.png"
+      ],
+      "sch": "d1ba51f66265119c"
+    },
+    {
+      "name": "Detect Phase",
+      "path": "/detect",
+      "url": "http://localhost:15174/detect",
+      "hash": "ebe93f066f8916522588a23508e794981441cbd9c44d70c4",
+      "usim": null,
+      "unicode": "🔹ebe9",
+      "modals": [],
+      "forms": [],
+      "buttons": [
+        {
+          "text": "Overview",
+          "enabled": true,
+          "selector": ".flex",
+          "hash": "wnv±T7\\#|O00000",
+          "unicode": ""
+        },
+        {
+          "text": "Kali Tools",
+          "enabled": true,
+          "selector": ".flex",
+          "hash": "0n@b?9FM4C000000",
+          "unicode": ""
+        },
+        {
+          "text": "Playbooks",
+          "enabled": true,
+          "selector": ".flex",
+          "hash": "a@>I=`D>yL000000",
+          "unicode": ""
+        },
+        {
+          "text": "Red Team",
+          "enabled": true,
+          "selector": ".flex",
+          "hash": "rddI,#Ni%1000000",
+          "unicode": ""
+        },
+        {
+          "text": "Phase Mapping",
+          "enabled": true,
+          "selector": ".flex",
+          "hash": "h\"I9xZetQG000000",
+          "unicode": ""
+        },
+        {
+          "text": "Tasks",
+          "enabled": true,
+          "selector": ".flex",
+          "hash": "O7^G<<~k}D000000",
+          "unicode": ""
+        },
+        {
+          "text": "Show CLI",
+          "enabled": true,
+          "selector": ".flex",
+          "hash": "iYc@+vkHOO000000",
+          "unicode": ""
+        }
+      ],
+      "inputs": [],
+      "screenshots": [
+        "detect-phase-initial.png"
+      ],
+      "sch": "ebe93f066f891652"
+    },
+    {
+      "name": "Disrupt Phase",
+      "path": "/disrupt",
+      "url": "http://localhost:15174/disrupt",
+      "hash": "0f867c391ef792adde2760823930c295a6dea98233ca21f5",
+      "usim": null,
+      "unicode": "🔹0f86",
+      "modals": [],
+      "forms": [],
+      "buttons": [
+        {
+          "text": "Overview",
+          "enabled": true,
+          "selector": ".flex",
+          "hash": "wnv±T7\\#|O00000",
+          "unicode": ""
+        },
+        {
+          "text": "Kali Tools",
+          "enabled": true,
+          "selector": ".flex",
+          "hash": "0n@b?9FM4C000000",
+          "unicode": ""
+        },
+        {
+          "text": "Playbooks",
+          "enabled": true,
+          "selector": ".flex",
+          "hash": "a@>I=`D>yL000000",
+          "unicode": ""
+        },
+        {
+          "text": "Red Team",
+          "enabled": true,
+          "selector": ".flex",
+          "hash": "rddI,#Ni%1000000",
+          "unicode": ""
+        },
+        {
+          "text": "Phase Mapping",
+          "enabled": true,
+          "selector": ".flex",
+          "hash": "h\"I9xZetQG000000",
+          "unicode": ""
+        },
+        {
+          "text": "Tasks",
+          "enabled": true,
+          "selector": ".flex",
+          "hash": "O7^G<<~k}D000000",
+          "unicode": ""
+        },
+        {
+          "text": "Show CLI",
+          "enabled": true,
+          "selector": ".flex",
+          "hash": "iYc@+vkHOO000000",
+          "unicode": ""
+        }
+      ],
+      "inputs": [],
+      "screenshots": [
+        "disrupt-phase-initial.png"
+      ],
+      "sch": "0f867c391ef792ad"
+    },
+    {
+      "name": "Disable Phase",
+      "path": "/disable",
+      "url": "http://localhost:15174/disable",
+      "hash": "b92af6458d3f21b075e5d5507c60f8eed56ed32aa19c1a14",
+      "usim": null,
+      "unicode": "🔹b92a",
+      "modals": [],
+      "forms": [],
+      "buttons": [
+        {
+          "text": "Overview",
+          "enabled": true,
+          "selector": ".flex",
+          "hash": "wnv±T7\\#|O00000",
+          "unicode": ""
+        },
+        {
+          "text": "Kali Tools",
+          "enabled": true,
+          "selector": ".flex",
+          "hash": "0n@b?9FM4C000000",
+          "unicode": ""
+        },
+        {
+          "text": "Playbooks",
+          "enabled": true,
+          "selector": ".flex",
+          "hash": "a@>I=`D>yL000000",
+          "unicode": ""
+        },
+        {
+          "text": "Red Team",
+          "enabled": true,
+          "selector": ".flex",
+          "hash": "rddI,#Ni%1000000",
+          "unicode": ""
+        },
+        {
+          "text": "Phase Mapping",
+          "enabled": true,
+          "selector": ".flex",
+          "hash": "h\"I9xZetQG000000",
+          "unicode": ""
+        },
+        {
+          "text": "Tasks",
+          "enabled": true,
+          "selector": ".flex",
+          "hash": "O7^G<<~k}D000000",
+          "unicode": ""
+        },
+        {
+          "text": "Show CLI",
+          "enabled": true,
+          "selector": ".flex",
+          "hash": "iYc@+vkHOO000000",
+          "unicode": ""
+        }
+      ],
+      "inputs": [],
+      "screenshots": [
+        "disable-phase-initial.png"
+      ],
+      "sch": "b92af6458d3f21b0"
+    },
+    {
+      "name": "Dominate Phase",
+      "path": "/dominate",
+      "url": "http://localhost:15174/dominate",
+      "hash": "1364b22bc9b4a6c42ccaaeffad14a63466c6a385f1ca8475",
+      "usim": null,
+      "unicode": "🔹1364",
+      "modals": [],
+      "forms": [],
+      "buttons": [
+        {
+          "text": "Overview",
+          "enabled": true,
+          "selector": ".flex",
+          "hash": "wnv±T7\\#|O00000",
+          "unicode": ""
+        },
+        {
+          "text": "Kali Tools",
+          "enabled": true,
+          "selector": ".flex",
+          "hash": "0n@b?9FM4C000000",
+          "unicode": ""
+        },
+        {
+          "text": "Playbooks",
+          "enabled": true,
+          "selector": ".flex",
+          "hash": "a@>I=`D>yL000000",
+          "unicode": ""
+        },
+        {
+          "text": "Red Team",
+          "enabled": true,
+          "selector": ".flex",
+          "hash": "rddI,#Ni%1000000",
+          "unicode": ""
+        },
+        {
+          "text": "Phase Mapping",
+          "enabled": true,
+          "selector": ".flex",
+          "hash": "h\"I9xZetQG000000",
+          "unicode": ""
+        },
+        {
+          "text": "Tasks",
+          "enabled": true,
+          "selector": ".flex",
+          "hash": "O7^G<<~k}D000000",
+          "unicode": ""
+        },
+        {
+          "text": "Show CLI",
+          "enabled": true,
+          "selector": ".flex",
+          "hash": "iYc@+vkHOO000000",
+          "unicode": ""
+        }
+      ],
+      "inputs": [],
+      "screenshots": [
+        "dominate-phase-initial.png"
+      ],
+      "sch": "1364b22bc9b4a6c4"
+    },
+    {
+      "name": "Tasks",
+      "path": "/tasks",
+      "url": "http://localhost:15174/tasks",
+      "hash": "027bb35f16c3173d6adb2c59db0c53db6dc44c041a44f5bc",
+      "usim": null,
+      "unicode": "🔹027b",
+      "modals": [],
+      "forms": [],
+      "buttons": [
+        {
+          "text": "Refresh",
+          "enabled": true,
+          "selector": ".px-4",
+          "hash": "+X{oav~8A6000000",
+          "unicode": ""
+        },
+        {
+          "text": "Hunt Phase(51 tasks)",
+          "enabled": true,
+          "selector": ".flex",
+          "hash": "|^rSr[@tPG000000",
+          "unicode": ""
+        },
+        {
+          "text": "Ideation(2 tasks)",
+          "enabled": true,
+          "selector": ".flex",
+          "hash": "2$71\\7,.oG000000",
+          "unicode": ""
+        },
+        {
+          "text": "Digital Ideation(1 tasks)",
+          "enabled": true,
+          "selector": ".flex",
+          "hash": "Rfr>91Obx7000000",
+          "unicode": ""
+        },
+        {
+          "text": "HUMINT Digital(1 tasks)",
+          "enabled": true,
+          "selector": ".flex",
+          "hash": "/6xGV7\"<MC000000",
+          "unicode": ""
+        },
+        {
+          "text": "Cyber Training(1 tasks)",
+          "enabled": true,
+          "selector": ".flex",
+          "hash": "-\\--%|/±#000000",
+          "unicode": ""
+        },
+        {
+          "text": "Travel Tradecraft(1 tasks)",
+          "enabled": true,
+          "selector": ".flex",
+          "hash": "SiOP[Ql,6M000000",
+          "unicode": ""
+        },
+        {
+          "text": "Logistics(1 tasks)",
+          "enabled": true,
+          "selector": ".flex",
+          "hash": "xgFq+o5E-N000000",
+          "unicode": ""
+        },
+        {
+          "text": "Intelligence(6 tasks)",
+          "enabled": true,
+          "selector": ".flex",
+          "hash": "wf!GV[FKW1000000",
+          "unicode": ""
+        },
+        {
+          "text": "Planning(1 tasks)",
+          "enabled": true,
+          "selector": ".flex",
+          "hash": "h3Z:~4aV>H000000",
+          "unicode": ""
+        },
+        {
+          "text": "HUMINT(6 tasks)",
+          "enabled": true,
+          "selector": ".flex",
+          "hash": "5i0Q\\j<>$K000000",
+          "unicode": ""
+        },
+        {
+          "text": "Reconnaissance(4 tasks)",
+          "enabled": true,
+          "selector": ".flex",
+          "hash": "{L[=`Xcx%4000000",
+          "unicode": ""
+        },
+        {
+          "text": "Cyber Reconnaissance(9 tasks)",
+          "enabled": true,
+          "selector": ".flex",
+          "hash": "t=l%N8%)/H000000",
+          "unicode": ""
+        },
+        {
+          "text": "Infiltration(2 tasks)",
+          "enabled": true,
+          "selector": ".flex",
+          "hash": "M$WPA,NwOM000000",
+          "unicode": ""
+        },
+        {
+          "text": "Indirect Attack(3 tasks)",
+          "enabled": true,
+          "selector": ".flex",
+          "hash": "F.l,3ustdN000000",
+          "unicode": ""
+        },
+        {
+          "text": "Counter-Surveillance(1 tasks)",
+          "enabled": true,
+          "selector": ".flex",
+          "hash": "8j*:8*W%WB000000",
+          "unicode": ""
+        },
+        {
+          "text": "Attack Planning(1 tasks)",
+          "enabled": true,
+          "selector": ".flex",
+          "hash": "&,|1\\%pO}6000000",
+          "unicode": ""
+        },
+        {
+          "text": "Evasion Planning(1 tasks)",
+          "enabled": true,
+          "selector": ".flex",
+          "hash": "SHaJDqIy,6000000",
+          "unicode": ""
+        },
+        {
+          "text": "Operational Coordination(1 tasks)",
+          "enabled": true,
+          "selector": ".flex",
+          "hash": "]2~T9GTimE000000",
+          "unicode": ""
+        },
+        {
+          "text": "Targeting(5 tasks)",
+          "enabled": true,
+          "selector": ".flex",
+          "hash": "ZBoB|%c9EQ000000",
+          "unicode": ""
+        },
+        {
+          "text": "Physical Reconnaissance(2 tasks)",
+          "enabled": true,
+          "selector": ".flex",
+          "hash": "X_G|Qj'VHC000000",
+          "unicode": ""
+        },
+        {
+          "text": "CBRN Reconnaissance(1 tasks)",
+          "enabled": true,
+          "selector": ".flex",
+          "hash": "|o/iVF!MKA000000",
+          "unicode": ""
+        },
+        {
+          "text": "Counterintelligence(1 tasks)",
+          "enabled": true,
+          "selector": ".flex",
+          "hash": "m;X6RBsI$C000000",
+          "unicode": ""
+        },
+        {
+          "text": "Detect Phase(30 tasks)",
+          "enabled": true,
+          "selector": ".flex",
+          "hash": "e=\\+A~>q#1000000",
+          "unicode": ""
+        },
+        {
+          "text": "Disrupt Phase(17 tasks)",
+          "enabled": true,
+          "selector": ".flex",
+          "hash": "`<@bB,OWzF000000",
+          "unicode": ""
+        },
+        {
+          "text": "Disable Phase(14 tasks)",
+          "enabled": true,
+          "selector": ".flex",
+          "hash": "0?Ls^8}079000000",
+          "unicode": ""
+        },
+        {
+          "text": "Dominate Phase(52 tasks)",
+          "enabled": true,
+          "selector": ".flex",
+          "hash": "B3(+CW1u@9000000",
+          "unicode": ""
+        }
+      ],
+      "inputs": [],
+      "screenshots": [
+        "tasks-initial.png"
+      ],
+      "sch": "027bb35f16c3173d"
+    },
+    {
+      "name": "Graph Visualization",
+      "path": "/graph",
+      "url": "http://localhost:15174/graph",
+      "hash": "adfb49a7a877fa4850a4eb0819cf483e5cfb806c8e63a200",
+      "usim": null,
+      "unicode": "🔹adfb",
+      "modals": [],
+      "forms": [],
+      "buttons": [
+        {
+          "text": "All Tasks",
+          "enabled": true,
+          "selector": ".px-3",
+          "hash": "Fox_`Gi#'K000000",
+          "unicode": ""
+        },
+        {
+          "text": "Hunt Phase",
+          "enabled": true,
+          "selector": ".px-3",
+          "hash": "=±!L*@\\i8G00000",
+          "unicode": ""
+        },
+        {
+          "text": "Detect Phase",
+          "enabled": true,
+          "selector": ".px-3",
+          "hash": "dSGnV9e}qL000000",
+          "unicode": ""
+        }
+      ],
+      "inputs": [],
+      "screenshots": [
+        "graph-visualization-initial.png"
+      ],
+      "sch": "adfb49a7a877fa48"
+    },
+    {
+      "name": "Info Streams",
+      "path": "/info-streams",
+      "url": "http://localhost:15174/info-streams",
+      "hash": "af551a47e69dbe77c08f6a289a9b96aace9bd6894e73863b",
+      "usim": null,
+      "unicode": "🔹af55",
+      "modals": [],
+      "forms": [],
+      "buttons": [
+        {
+          "text": "All (3)",
+          "enabled": true,
+          "selector": ".px-4",
+          "hash": ")}Z±^±oyIK0000",
+          "unicode": ""
+        },
+        {
+          "text": "Critical (1)",
+          "enabled": true,
+          "selector": ".px-4",
+          "hash": "/rzz[Tl3iP000000",
+          "unicode": ""
+        },
+        {
+          "text": "High (1)",
+          "enabled": true,
+          "selector": ".px-4",
+          "hash": "5lnyl=#wjJ000000",
+          "unicode": ""
+        },
+        {
+          "text": "Medium (1)",
+          "enabled": true,
+          "selector": ".px-4",
+          "hash": "@p%jC(t)A2000000",
+          "unicode": ""
+        },
+        {
+          "text": "List View",
+          "enabled": true,
+          "selector": ".px-3",
+          "hash": "7c}?Awp3e9000000",
+          "unicode": ""
+        },
+        {
+          "text": "Map View",
+          "enabled": true,
+          "selector": ".px-3",
+          "hash": "iIiL*mJ@$7000000",
+          "unicode": ""
+        }
+      ],
+      "inputs": [],
+      "screenshots": [
+        "info-streams-initial.png"
+      ],
+      "sch": "af551a47e69dbe77"
+    },
+    {
+      "name": "Containers",
+      "path": "/containers",
+      "url": "http://localhost:15174/containers",
+      "hash": "d3134113ba246d9133264febd3175b77d10c3f20dabdcb52",
+      "usim": null,
+      "unicode": "🔹d313",
+      "modals": [],
+      "forms": [],
+      "buttons": [
+        {
+          "text": "Simulate Exploit",
+          "enabled": true,
+          "selector": ".text-xs",
+          "hash": "?|O[eUmlB8000000",
+          "unicode": ""
+        },
+        {
+          "text": "Simulate Exploit",
+          "enabled": true,
+          "selector": ".text-xs",
+          "hash": "?|O[eUmlB8000000",
+          "unicode": ""
+        },
+        {
+          "text": "Simulate Exploit",
+          "enabled": true,
+          "selector": ".text-xs",
+          "hash": "?|O[eUmlB8000000",
+          "unicode": ""
+        },
+        {
+          "text": "Simulate Exploit",
+          "enabled": true,
+          "selector": ".text-xs",
+          "hash": "?|O[eUmlB8000000",
+          "unicode": ""
+        },
+        {
+          "text": "Simulate Exploit",
+          "enabled": true,
+          "selector": ".text-xs",
+          "hash": "?|O[eUmlB8000000",
+          "unicode": ""
+        },
+        {
+          "text": "Simulate Exploit",
+          "enabled": true,
+          "selector": ".text-xs",
+          "hash": "?|O[eUmlB8000000",
+          "unicode": ""
+        },
+        {
+          "text": "Simulate Exploit",
+          "enabled": true,
+          "selector": ".text-xs",
+          "hash": "?|O[eUmlB8000000",
+          "unicode": ""
+        }
+      ],
+      "inputs": [],
+      "screenshots": [
+        "containers-initial.png"
+      ],
+      "sch": "d3134113ba246d91"
+    },
+    {
+      "name": "Database",
+      "path": "/database",
+      "url": "http://localhost:15174/database",
+      "hash": "fe65dac0f71378e22646d8455b8a3f5b023fbe8af7dd8438",
+      "usim": null,
+      "unicode": "🔹fe65",
+      "modals": [],
+      "forms": [],
+      "buttons": [
+        {
+          "text": "Supabase",
+          "enabled": true,
+          "selector": ".mr-2",
+          "hash": "t%t}yx.9:K000000",
+          "unicode": ""
+        },
+        {
+          "text": "SurrealDB",
+          "enabled": true,
+          "selector": ".mr-2",
+          "hash": ")d|X(l't.B000000",
+          "unicode": ""
+        },
+        {
+          "text": "Sled KVR",
+          "enabled": true,
+          "selector": ".mr-2",
+          "hash": "=Q1|&4sH*5000000",
+          "unicode": ""
+        },
+        {
+          "text": "SlotGraph",
+          "enabled": true,
+          "selector": ".mr-2",
+          "hash": "K(l(b'H<a6000000",
+          "unicode": ""
+        },
+        {
+          "text": "Bevy Interface",
+          "enabled": true,
+          "selector": ".mr-2",
+          "hash": "dJL/\\Ic1f3000000",
+          "unicode": ""
+        },
+        {
+          "text": "Create New Project",
+          "enabled": true,
+          "selector": ".bg-blue-500",
+          "hash": ",cD[keB+x1000000",
+          "unicode": ""
+        },
+        {
+          "text": "Backup Database",
+          "enabled": true,
+          "selector": ".bg-green-500",
+          "hash": "=_;Y\"SMHvC000000",
+          "unicode": ""
+        },
+        {
+          "text": "View Analytics",
+          "enabled": true,
+          "selector": ".bg-purple-500",
+          "hash": "3v'/[$iC59000000",
+          "unicode": ""
+        }
+      ],
+      "inputs": [],
+      "screenshots": [
+        "database-initial.png"
+      ],
+      "sch": "fe65dac0f71378e2"
+    },
+    {
+      "name": "Map",
+      "path": "/map",
+      "url": "http://localhost:15174/map",
+      "hash": null,
+      "usim": null,
+      "unicode": null,
+      "modals": [],
+      "forms": [],
+      "buttons": [],
+      "inputs": [],
+      "screenshots": [],
+      "error": "page.goto: Timeout 30000ms exceeded.\nCall log:\n  - navigating to \"http://localhost:15174/map\", waiting until \"networkidle\"\n"
+    },
+    {
+      "name": "Map Test",
+      "path": "/map-test",
+      "url": "http://localhost:15174/map-test",
+      "hash": null,
+      "usim": null,
+      "unicode": null,
+      "modals": [],
+      "forms": [],
+      "buttons": [],
+      "inputs": [],
+      "screenshots": [],
+      "error": "page.goto: Timeout 30000ms exceeded.\nCall log:\n  - navigating to \"http://localhost:15174/map-test\", waiting until \"networkidle\"\n"
+    },
+    {
+      "name": "Nyx-Trace",
+      "path": "/nyx-trace",
+      "url": "http://localhost:15174/nyx-trace",
+      "hash": "db8e4887a0eeb58e76fc90c4f78952cc1be589ecd5cb0533",
+      "usim": null,
+      "unicode": "🔹db8e",
+      "modals": [],
+      "forms": [],
+      "buttons": [
+        {
+          "text": "All Categories",
+          "enabled": true,
+          "selector": ".px-4",
+          "hash": "#DjyV[.QA2000000",
+          "unicode": ""
+        },
+        {
+          "text": "Core (2)",
+          "enabled": true,
+          "selector": ".px-4",
+          "hash": "Ve6)+S/`QQ000000",
+          "unicode": ""
+        },
+        {
+          "text": "Monitoring (1)",
+          "enabled": true,
+          "selector": ".px-4",
+          "hash": "u)~QycDj3E000000",
+          "unicode": ""
+        },
+        {
+          "text": "Security (1)",
+          "enabled": true,
+          "selector": ".px-4",
+          "hash": "dA8g~4q[:N000000",
+          "unicode": ""
+        },
+        {
+          "text": "Analysis (1)",
+          "enabled": true,
+          "selector": ".px-4",
+          "hash": "]{±rgvC58Q00000",
+          "unicode": ""
+        },
+        {
+          "text": "Intelligence (1)",
+          "enabled": true,
+          "selector": ".px-4",
+          "hash": "'?zD$H}lA0000000",
+          "unicode": ""
+        },
+        {
+          "text": "Refresh",
+          "enabled": true,
+          "selector": ".flex",
+          "hash": "+X{oav~8A6000000",
+          "unicode": ""
+        }
+      ],
+      "inputs": [],
+      "screenshots": [
+        "nyx-trace-initial.png"
+      ],
+      "sch": "db8e4887a0eeb58e"
+    },
+    {
+      "name": "Raptor",
+      "path": "/raptor",
+      "url": "http://localhost:15174/raptor",
+      "hash": "6556c25f8e4058a091caf0e8d921ea393f7bb0a293b0452d",
+      "usim": null,
+      "unicode": "🔹6556",
+      "modals": [],
+      "forms": [],
+      "buttons": [
+        {
+          "text": "Stacks",
+          "enabled": true,
+          "selector": ".flex",
+          "hash": "5!+G,\\8*NC000000",
+          "unicode": ""
+        },
+        {
+          "text": "Deploy",
+          "enabled": true,
+          "selector": ".flex",
+          "hash": "9`f]K[E+80000000",
+          "unicode": ""
+        },
+        {
+          "text": "Monitor",
+          "enabled": true,
+          "selector": ".flex",
+          "hash": "#~±D\\a&(7700000",
+          "unicode": ""
+        },
+        {
+          "text": "Config",
+          "enabled": true,
+          "selector": ".flex",
+          "hash": "[Qfm*m\\`W8000000",
+          "unicode": ""
+        }
+      ],
+      "inputs": [],
+      "screenshots": [
+        "raptor-initial.png"
+      ],
+      "sch": "6556c25f8e4058a0"
+    },
+    {
+      "name": "vKali",
+      "path": "/vkali",
+      "url": "http://localhost:15174/vkali",
+      "hash": "6cb036c559195dd701974457657921f1ccc8c354b340cef7",
+      "usim": null,
+      "unicode": "🔹6cb0",
+      "modals": [],
+      "forms": [],
+      "buttons": [
+        {
+          "text": "all (6)",
+          "enabled": true,
+          "selector": ".px-4",
+          "hash": "d;S#eMVj,2000000",
+          "unicode": ""
+        },
+        {
+          "text": "Reconnaissance (1)",
+          "enabled": true,
+          "selector": ".px-4",
+          "hash": "?H|Z|±g6i600000",
+          "unicode": ""
+        },
+        {
+          "text": "Exploitation (1)",
+          "enabled": true,
+          "selector": ".px-4",
+          "hash": "f%LZ7U/w20000000",
+          "unicode": ""
+        },
+        {
+          "text": "Password Attacks (1)",
+          "enabled": true,
+          "selector": ".px-4",
+          "hash": "nkzdFB_a-K000000",
+          "unicode": ""
+        },
+        {
+          "text": "Web Application (1)",
+          "enabled": true,
+          "selector": ".px-4",
+          "hash": "j8}l9o{EIL000000",
+          "unicode": ""
+        },
+        {
+          "text": "Sniffing (1)",
+          "enabled": true,
+          "selector": ".px-4",
+          "hash": "(RWP%>\"eq4000000",
+          "unicode": ""
+        },
+        {
+          "text": "Wireless (1)",
+          "enabled": true,
+          "selector": ".px-4",
+          "hash": "Th`&'\"|±+200000",
+          "unicode": ""
+        },
+        {
+          "text": "Execute",
+          "enabled": true,
+          "selector": ".flex-1",
+          "hash": "`@XqHg(*\"P000000",
+          "unicode": ""
+        },
+        {
+          "text": "Execute",
+          "enabled": true,
+          "selector": ".flex-1",
+          "hash": "`@XqHg(*\"P000000",
+          "unicode": ""
+        },
+        {
+          "text": "Execute",
+          "enabled": true,
+          "selector": ".flex-1",
+          "hash": "`@XqHg(*\"P000000",
+          "unicode": ""
+        },
+        {
+          "text": "Execute",
+          "enabled": true,
+          "selector": ".flex-1",
+          "hash": "`@XqHg(*\"P000000",
+          "unicode": ""
+        },
+        {
+          "text": "Execute",
+          "enabled": true,
+          "selector": ".flex-1",
+          "hash": "`@XqHg(*\"P000000",
+          "unicode": ""
+        },
+        {
+          "text": "Execute",
+          "enabled": true,
+          "selector": ".flex-1",
+          "hash": "`@XqHg(*\"P000000",
+          "unicode": ""
+        }
+      ],
+      "inputs": [],
+      "screenshots": [
+        "vkali-initial.png"
+      ],
+      "sch": "6cb036c559195dd7"
+    },
+    {
+      "name": "Settings",
+      "path": "/settings",
+      "url": "http://localhost:15174/settings",
+      "hash": "88ad724f1ff4d0861b67b3fcfaa00e7205d4b21672f61634",
+      "usim": null,
+      "unicode": "🔹88ad",
+      "modals": [],
+      "forms": [],
+      "buttons": [],
+      "inputs": [],
+      "screenshots": [
+        "settings-initial.png"
+      ],
+      "sch": "88ad724f1ff4d086"
+    }
+  ],
+  "usims": [],
+  "unicode_map": {},
+  "sled_entries": [],
+  "graph_relationships": [],
+  "summary": {
+    "totalPages": 17,
+    "totalModals": 0,
+    "totalForms": 0,
+    "totalButtons": 110,
+    "totalInputs": 0,
+    "totalHashes": 124,
+    "totalUSIMs": 0
+  }
+}

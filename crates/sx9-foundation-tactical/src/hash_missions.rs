@@ -3,8 +3,8 @@
 //! Uses CTAS-7 v7.3 Murmur3 trivariate hashing for sub-millisecond mission validation and execution
 //! Integrates with Sled KVR for tactical operation storage and retrieval
 
+use crate::{DomainContext, TacticalError, TacticalResult};
 use serde::{Deserialize, Serialize};
-use crate::{TacticalResult, TacticalError, DomainContext};
 
 #[cfg(feature = "hash-driven")]
 use sx9_foundation_core::TrivariteHashEngine;
@@ -59,11 +59,14 @@ impl HashMissionExecutor {
     pub fn new() -> Result<Self, TacticalError> {
         #[cfg(feature = "hash-driven")]
         {
-            let storage = sled::open("tactical_missions.db")
-                .map_err(|e| TacticalError::HashMission(format!("Failed to open mission storage: {}", e)))?;
-            Ok(Self { storage: Some(storage) })
+            let storage = sled::open("tactical_missions.db").map_err(|e| {
+                TacticalError::HashMission(format!("Failed to open mission storage: {}", e))
+            })?;
+            Ok(Self {
+                storage: Some(storage),
+            })
         }
-        
+
         #[cfg(not(feature = "hash-driven"))]
         Ok(Self {})
     }
@@ -73,7 +76,7 @@ impl HashMissionExecutor {
     pub fn generate_mission_hash(&self, mission: &HashMission) -> Result<String, TacticalError> {
         let serialized = serde_json::to_string(mission)
             .map_err(|e| TacticalError::HashMission(format!("Serialization error: {}", e)))?;
-        
+
         let engine = TrivariteHashEngine::new();
         let hash = engine.generate_trivariate_hash(&serialized, "tactical_mission", "HashMission");
         Ok(hash)
@@ -81,54 +84,70 @@ impl HashMissionExecutor {
 
     /// Store mission in Sled KVR
     #[cfg(feature = "hash-driven")]
-    pub async fn store_mission(&self, mission: HashMission) -> Result<TacticalResult<String>, TacticalError> {
+    pub async fn store_mission(
+        &self,
+        mission: HashMission,
+    ) -> Result<TacticalResult<String>, TacticalError> {
         let start = std::time::Instant::now();
-        
+
         if let Some(ref storage) = self.storage {
             let hash = self.generate_mission_hash(&mission)?;
             let serialized = serde_json::to_vec(&mission)
                 .map_err(|e| TacticalError::HashMission(format!("Serialization error: {}", e)))?;
-            
-            storage.insert(&hash, serialized)
+
+            storage
+                .insert(&hash, serialized)
                 .map_err(|e| TacticalError::HashMission(format!("Storage error: {}", e)))?;
-            
+
             Ok(TacticalResult::success(
                 hash,
-                start.elapsed().as_millis() as f64
+                start.elapsed().as_millis() as f64,
             ))
         } else {
-            Err(TacticalError::HashMission("Storage not initialized".to_string()))
+            Err(TacticalError::HashMission(
+                "Storage not initialized".to_string(),
+            ))
         }
     }
 
     /// Retrieve mission from hash
     #[cfg(feature = "hash-driven")]
-    pub async fn retrieve_mission(&self, hash: &str) -> Result<TacticalResult<HashMission>, TacticalError> {
+    pub async fn retrieve_mission(
+        &self,
+        hash: &str,
+    ) -> Result<TacticalResult<HashMission>, TacticalError> {
         let start = std::time::Instant::now();
-        
+
         if let Some(ref storage) = self.storage {
-            if let Some(data) = storage.get(hash)
-                .map_err(|e| TacticalError::HashMission(format!("Retrieval error: {}", e)))? {
-                
-                let mission: HashMission = serde_json::from_slice(&data)
-                    .map_err(|e| TacticalError::HashMission(format!("Deserialization error: {}", e)))?;
-                
+            if let Some(data) = storage
+                .get(hash)
+                .map_err(|e| TacticalError::HashMission(format!("Retrieval error: {}", e)))?
+            {
+                let mission: HashMission = serde_json::from_slice(&data).map_err(|e| {
+                    TacticalError::HashMission(format!("Deserialization error: {}", e))
+                })?;
+
                 Ok(TacticalResult::success(
                     mission,
-                    start.elapsed().as_millis() as f64
+                    start.elapsed().as_millis() as f64,
                 ))
             } else {
-                Err(TacticalError::HashMission(format!("Mission not found: {}", hash)))
+                Err(TacticalError::HashMission(format!(
+                    "Mission not found: {}",
+                    hash
+                )))
             }
         } else {
-            Err(TacticalError::HashMission("Storage not initialized".to_string()))
+            Err(TacticalError::HashMission(
+                "Storage not initialized".to_string(),
+            ))
         }
     }
 
     /// Execute hash mission with validation
     pub async fn execute_mission(&self, hash: &str) -> TacticalResult<serde_json::Value> {
         let start = std::time::Instant::now();
-        
+
         // Simplified execution - will expand with full tactical processing
         TacticalResult::success(
             serde_json::json!({
@@ -136,7 +155,7 @@ impl HashMissionExecutor {
                 "status": "executed",
                 "execution_time": start.elapsed().as_millis()
             }),
-            start.elapsed().as_millis() as f64
+            start.elapsed().as_millis() as f64,
         )
     }
 }

@@ -59,9 +59,13 @@ impl CodeWatchdog {
 
     /// Start monitoring a function
     pub fn start_function_monitor(&mut self, function_name: &str) {
-        if !self.active { return; }
+        if !self.active {
+            return;
+        }
 
-        let monitor = self.function_monitors.entry(function_name.to_string())
+        let monitor = self
+            .function_monitors
+            .entry(function_name.to_string())
             .or_insert_with(|| FunctionMonitor::new(function_name));
 
         monitor.start_time = Some(Instant::now());
@@ -70,7 +74,9 @@ impl CodeWatchdog {
 
     /// Stop monitoring a function and check for runaway
     pub fn stop_function_monitor(&mut self, function_name: &str) -> Option<Duration> {
-        if !self.active { return None; }
+        if !self.active {
+            return None;
+        }
 
         if let Some(monitor) = self.function_monitors.get_mut(function_name) {
             if let Some(start_time) = monitor.start_time.take() {
@@ -84,12 +90,17 @@ impl CodeWatchdog {
                 // Check for runaway
                 if duration.as_millis() > self.alert_thresholds.max_function_duration_ms as u128 {
                     monitor.runaway_alerts += 1;
-                    println!("🚨 WATCHDOG: Runaway function detected: {} ({}ms)",
-                             function_name, duration.as_millis());
+                    println!(
+                        "🚨 WATCHDOG: Runaway function detected: {} ({}ms)",
+                        function_name,
+                        duration.as_millis()
+                    );
 
                     if monitor.runaway_alerts >= self.alert_thresholds.alert_after_n_runaways {
-                        println!("⚠️ WATCHDOG: Function {} has {} runaway alerts!",
-                                 function_name, monitor.runaway_alerts);
+                        println!(
+                            "⚠️ WATCHDOG: Function {} has {} runaway alerts!",
+                            function_name, monitor.runaway_alerts
+                        );
                     }
                 }
 
@@ -101,9 +112,13 @@ impl CodeWatchdog {
 
     /// Monitor file size changes
     pub fn monitor_file_size(&mut self, file_path: &str, current_size: u64) {
-        if !self.active { return; }
+        if !self.active {
+            return;
+        }
 
-        let monitor = self.file_size_monitors.entry(file_path.to_string())
+        let monitor = self
+            .file_size_monitors
+            .entry(file_path.to_string())
             .or_insert_with(|| FileSizeMonitor::new(file_path, current_size));
 
         if monitor.initial_size_bytes == 0 {
@@ -115,14 +130,17 @@ impl CodeWatchdog {
 
         // Calculate growth
         if monitor.initial_size_bytes > 0 {
-            monitor.size_growth_percent =
-                ((current_size as f64 - monitor.initial_size_bytes as f64) /
-                 monitor.initial_size_bytes as f64) * 100.0;
+            monitor.size_growth_percent = ((current_size as f64
+                - monitor.initial_size_bytes as f64)
+                / monitor.initial_size_bytes as f64)
+                * 100.0;
 
             // Alert on excessive growth
             if monitor.size_growth_percent > self.alert_thresholds.max_file_size_growth_percent {
-                println!("📈 WATCHDOG: File size growth alert: {} (+{:.1}%)",
-                         file_path, monitor.size_growth_percent);
+                println!(
+                    "📈 WATCHDOG: File size growth alert: {} (+{:.1}%)",
+                    file_path, monitor.size_growth_percent
+                );
             }
         }
     }
@@ -131,33 +149,52 @@ impl CodeWatchdog {
     pub fn get_status_report(&self) -> String {
         let mut report = String::from("🐕 Code Watchdog Status Report:\n");
 
-        report.push_str(&format!("Active: {}\n", if self.active { "YES" } else { "NO" }));
-        report.push_str(&format!("Functions Monitored: {}\n", self.function_monitors.len()));
-        report.push_str(&format!("Files Monitored: {}\n", self.file_size_monitors.len()));
+        report.push_str(&format!(
+            "Active: {}\n",
+            if self.active { "YES" } else { "NO" }
+        ));
+        report.push_str(&format!(
+            "Functions Monitored: {}\n",
+            self.function_monitors.len()
+        ));
+        report.push_str(&format!(
+            "Files Monitored: {}\n",
+            self.file_size_monitors.len()
+        ));
 
         // Runaway function alerts
-        let runaway_functions: Vec<_> = self.function_monitors.iter()
+        let runaway_functions: Vec<_> = self
+            .function_monitors
+            .iter()
             .filter(|(_, m)| m.runaway_alerts > 0)
             .collect();
 
         if !runaway_functions.is_empty() {
             report.push_str(&format!("Runaway Functions: {}\n", runaway_functions.len()));
             for (name, monitor) in runaway_functions {
-                report.push_str(&format!("  {} - {} alerts (max: {}ms)\n",
-                                       name, monitor.runaway_alerts, monitor.max_duration.as_millis()));
+                report.push_str(&format!(
+                    "  {} - {} alerts (max: {}ms)\n",
+                    name,
+                    monitor.runaway_alerts,
+                    monitor.max_duration.as_millis()
+                ));
             }
         }
 
         // File size alerts
-        let growing_files: Vec<_> = self.file_size_monitors.iter()
+        let growing_files: Vec<_> = self
+            .file_size_monitors
+            .iter()
             .filter(|(_, m)| m.size_growth_percent > 10.0)
             .collect();
 
         if !growing_files.is_empty() {
             report.push_str(&format!("Growing Files: {}\n", growing_files.len()));
             for (path, monitor) in growing_files {
-                report.push_str(&format!("  {} - +{:.1}%\n",
-                                       path, monitor.size_growth_percent));
+                report.push_str(&format!(
+                    "  {} - +{:.1}%\n",
+                    path, monitor.size_growth_percent
+                ));
             }
         }
 
@@ -194,7 +231,7 @@ impl FileSizeMonitor {
 impl WatchdogThresholds {
     fn default() -> Self {
         Self {
-            max_function_duration_ms: 5000,    // 5 seconds
+            max_function_duration_ms: 5000,     // 5 seconds
             max_file_size_growth_percent: 50.0, // 50% growth
             max_lines_per_function: 100,        // 100 lines
             alert_after_n_runaways: 3,          // 3 runaway alerts
@@ -211,14 +248,12 @@ impl Default for CodeWatchdog {
 /// Macro for easy function monitoring
 #[macro_export]
 macro_rules! watch_function {
-    ($watchdog:expr, $func_name:expr, $code:block) => {
-        {
-            $watchdog.start_function_monitor($func_name);
-            let result = $code;
-            $watchdog.stop_function_monitor($func_name);
-            result
-        }
-    };
+    ($watchdog:expr, $func_name:expr, $code:block) => {{
+        $watchdog.start_function_monitor($func_name);
+        let result = $code;
+        $watchdog.stop_function_monitor($func_name);
+        result
+    }};
 }
 
 #[cfg(test)]

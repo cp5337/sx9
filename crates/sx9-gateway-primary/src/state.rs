@@ -2,11 +2,11 @@
 //!
 //! Holds connections to all SX9 backend services, CDNs, and neural mux.
 
+use anyhow::Result;
 use std::sync::Arc;
 use tokio::sync::RwLock;
-use anyhow::Result;
 
-use crate::protocol::{Database, ConnectionStatus};
+use crate::protocol::{ConnectionStatus, Database};
 
 /// CDN configuration from PORTS-CDN-CONDA-SPEC.md
 #[derive(Debug, Clone)]
@@ -27,14 +27,54 @@ pub enum CdnType {
 
 /// All CDN configurations per PORTS-CDN-CONDA-SPEC.md
 pub const CDN_CONFIGS: &[CdnConfig] = &[
-    CdnConfig { id: "cdn-static", name: "Static Assets", port: 19000, cdn_type: CdnType::CloudflareR2 },
-    CdnConfig { id: "cdn-crates", name: "Rust Crates Registry", port: 19001, cdn_type: CdnType::CloudflareR2 },
-    CdnConfig { id: "cdn-geo", name: "Geospatial Data", port: 19002, cdn_type: CdnType::GcpCdn },
-    CdnConfig { id: "cdn-models", name: "ML Models", port: 19003, cdn_type: CdnType::GcpCdn },
-    CdnConfig { id: "cdn-conda", name: "Conda Packages", port: 19010, cdn_type: CdnType::Internal },
-    CdnConfig { id: "cdn-tools", name: "Security Tools (Hermetic)", port: 19011, cdn_type: CdnType::Tunnel },
-    CdnConfig { id: "cdn-wasm", name: "WASM Modules", port: 19012, cdn_type: CdnType::Internal },
-    CdnConfig { id: "cdn-plasma", name: "Plasma Agent Distribution", port: 19013, cdn_type: CdnType::Tunnel },
+    CdnConfig {
+        id: "cdn-static",
+        name: "Static Assets",
+        port: 19000,
+        cdn_type: CdnType::CloudflareR2,
+    },
+    CdnConfig {
+        id: "cdn-crates",
+        name: "Rust Crates Registry",
+        port: 19001,
+        cdn_type: CdnType::CloudflareR2,
+    },
+    CdnConfig {
+        id: "cdn-geo",
+        name: "Geospatial Data",
+        port: 19002,
+        cdn_type: CdnType::GcpCdn,
+    },
+    CdnConfig {
+        id: "cdn-models",
+        name: "ML Models",
+        port: 19003,
+        cdn_type: CdnType::GcpCdn,
+    },
+    CdnConfig {
+        id: "cdn-conda",
+        name: "Conda Packages",
+        port: 19010,
+        cdn_type: CdnType::Internal,
+    },
+    CdnConfig {
+        id: "cdn-tools",
+        name: "Security Tools (Hermetic)",
+        port: 19011,
+        cdn_type: CdnType::Tunnel,
+    },
+    CdnConfig {
+        id: "cdn-wasm",
+        name: "WASM Modules",
+        port: 19012,
+        cdn_type: CdnType::Internal,
+    },
+    CdnConfig {
+        id: "cdn-plasma",
+        name: "Plasma Agent Distribution",
+        port: 19013,
+        cdn_type: CdnType::Tunnel,
+    },
 ];
 
 /// Port allocations from PORTS-CDN-CONDA-SPEC.md
@@ -50,7 +90,7 @@ pub mod ports {
     pub const NATS_JETSTREAM: u16 = 18022;
     pub const REDIS: u16 = 18030;
     pub const DRAGONFLY: u16 = 18031;
-    
+
     // Backend Services (18100-18199)
     pub const SX9_ORCHESTRATOR: u16 = 18100;
     pub const LEGION_ENGINE: u16 = 18101;
@@ -61,19 +101,19 @@ pub mod ports {
     pub const PROMPT_GENERATOR: u16 = 18111;
     pub const GLAF_ALLOCATOR: u16 = 18120;
     pub const CONVERGENCE_TRACKER: u16 = 18121;
-    
+
     // Forge/Workflow (18300-18399)
     pub const FORGE_BACKEND: u16 = 18350;
     pub const N8N_EXTERNAL: u16 = 18351;
     pub const WORKFLOW_EXECUTOR: u16 = 18352;
     pub const TOOL_CHAIN_RUNNER: u16 = 18360;
-    
+
     // Data Services (18400-18499)
     pub const SLED_HTTP_API: u16 = 18400;
     pub const SLED_ADMIN: u16 = 18401;
     pub const VECTOR_DB: u16 = 18410;
     pub const EMBEDDING_CACHE: u16 = 18411;
-    
+
     // ML/AI Services (18500-18599)
     pub const ATLAS_DAEMON: u16 = 18500;
     pub const MODEL_REGISTRY: u16 = 18501;
@@ -82,21 +122,21 @@ pub mod ports {
     pub const LLM_PROXY: u16 = 18520;
     pub const EMBEDDING_SERVICE: u16 = 18521;
     pub const CLASSIFIER_SERVICE: u16 = 18522;
-    
+
     // Security Tools (18600-18699)
-    pub const GATEWAY: u16 = 18600;  // THIS GATEWAY
+    pub const GATEWAY: u16 = 18600; // THIS GATEWAY
     pub const NMAP_WRAPPER: u16 = 18601;
     pub const NUCLEI_WRAPPER: u16 = 18602;
     pub const MASSCAN_WRAPPER: u16 = 18603;
     pub const RECONNG_WRAPPER: u16 = 18604;
     pub const TOOL_ORCHESTRATOR: u16 = 18650;
-    
+
     // Voice/Media (18700-18799)
     pub const WHISPER_STT: u16 = 18700;
     pub const ELEVENLABS_PROXY: u16 = 18701;
     pub const VOICE_PIPELINE: u16 = 18710;
     pub const MEDIA_STREAM: u16 = 18720;
-    
+
     // Conda Bridge (18800-18899)
     pub const CONDA_API_MAIN: u16 = 18800;
     pub const CONDA_JUPYTER_KERNEL: u16 = 18801;
@@ -108,7 +148,7 @@ pub mod ports {
     pub const CONDA_GEOPANDAS_SERVICE: u16 = 18840;
     pub const CONDA_NETWORKX_SERVICE: u16 = 18841;
     pub const CONDA_CUSTOM_ENV: u16 = 18850;
-    
+
     // Monitoring (18900-18999)
     pub const PROMETHEUS: u16 = 18900;
     pub const GRAFANA: u16 = 18901;
@@ -133,25 +173,25 @@ pub struct NeuralMuxState {
 }
 
 /// Shared gateway state
-/// 
+///
 /// This struct holds connections to all backend services and is shared
 /// across all WebSocket handlers via Arc.
 pub struct GatewayState {
     /// SurrealDB client
     pub surrealdb: RwLock<Option<surrealdb::Surreal<surrealdb::engine::remote::ws::Client>>>,
-    
+
     /// NATS client for pub/sub and health
     pub nats: RwLock<Option<async_nats::Client>>,
-    
+
     /// Connection statuses (updated by health checker)
     pub connection_statuses: RwLock<Vec<ConnectionStatus>>,
-    
+
     /// PlasmaState from sx9-atlas-bus (if connected)
     pub plasma_snapshot: RwLock<Option<sx9_atlas_bus::PlasmaSnapshot>>,
-    
+
     /// Neural Mux state for cognitive coordination
     pub neural_mux: RwLock<NeuralMuxState>,
-    
+
     /// CDN health status
     pub cdn_statuses: RwLock<Vec<CdnStatus>>,
 }
@@ -208,17 +248,20 @@ impl GatewayState {
                 error: None,
             },
         ];
-        
+
         // Initialize CDN statuses
-        let cdn_statuses = CDN_CONFIGS.iter().map(|cfg| CdnStatus {
-            id: cfg.id.to_string(),
-            name: cfg.name.to_string(),
-            port: cfg.port,
-            healthy: false,
-            latency_ms: None,
-            last_check: 0,
-        }).collect();
-        
+        let cdn_statuses = CDN_CONFIGS
+            .iter()
+            .map(|cfg| CdnStatus {
+                id: cfg.id.to_string(),
+                name: cfg.name.to_string(),
+                port: cfg.port,
+                healthy: false,
+                latency_ms: None,
+                last_check: 0,
+            })
+            .collect();
+
         Self {
             surrealdb: RwLock::new(None),
             nats: RwLock::new(None),
@@ -228,84 +271,83 @@ impl GatewayState {
             cdn_statuses: RwLock::new(cdn_statuses),
         }
     }
-    
+
     /// Connect to all backend services
     pub async fn connect_all(&self) -> Result<()> {
         // Connect to SurrealDB
         self.connect_surrealdb().await?;
-        
+
         // Connect to NATS
         self.connect_nats().await?;
-        
+
         // Initialize Neural Mux
         self.init_neural_mux().await;
-        
+
         // Check CDN health
         self.check_cdn_health().await;
-        
+
         Ok(())
     }
-    
+
     /// Connect to SurrealDB using WebSocket
     async fn connect_surrealdb(&self) -> Result<()> {
-        use surrealdb::Surreal;
         use surrealdb::engine::remote::ws::Ws;
-        
+        use surrealdb::Surreal;
+
         let start = std::time::Instant::now();
         let url = format!("localhost:{}", ports::SURREALDB);
-        
+
         match Surreal::new::<Ws>(&url).await {
             Ok(db) => {
                 // Sign in and select namespace/database
                 let _ = db.use_ns("sx9").use_db("glaf").await;
-                
+
                 let latency = start.elapsed().as_secs_f64() * 1000.0;
                 *self.surrealdb.write().await = Some(db);
-                
-                self.update_connection_status(Database::Surrealdb, true, Some(latency), None).await;
+
+                self.update_connection_status(Database::Surrealdb, true, Some(latency), None)
+                    .await;
                 tracing::info!("Connected to SurrealDB at {} in {:.2}ms", url, latency);
             }
             Err(e) => {
                 self.update_connection_status(
-                    Database::Surrealdb, 
-                    false, 
-                    None, 
-                    Some(e.to_string())
-                ).await;
+                    Database::Surrealdb,
+                    false,
+                    None,
+                    Some(e.to_string()),
+                )
+                .await;
                 tracing::warn!("Failed to connect to SurrealDB: {}", e);
             }
         }
-        
+
         Ok(())
     }
-    
+
     /// Connect to NATS
     async fn connect_nats(&self) -> Result<()> {
         let start = std::time::Instant::now();
         let url = format!("localhost:{}", ports::NATS);
-        
+
         match async_nats::connect(&url).await {
             Ok(client) => {
                 let latency = start.elapsed().as_secs_f64() * 1000.0;
                 *self.nats.write().await = Some(client);
-                
-                self.update_connection_status(Database::Nats, true, Some(latency), None).await;
+
+                self.update_connection_status(Database::Nats, true, Some(latency), None)
+                    .await;
                 tracing::info!("Connected to NATS at {} in {:.2}ms", url, latency);
             }
             Err(e) => {
-                self.update_connection_status(
-                    Database::Nats, 
-                    false, 
-                    None, 
-                    Some(e.to_string())
-                ).await;
+                self.update_connection_status(Database::Nats, false, None, Some(e.to_string()))
+                    .await;
                 tracing::warn!("Failed to connect to NATS: {}", e);
             }
         }
-        
+
         Ok(())
     }
-    
+
     /// Initialize Neural Mux state
     async fn init_neural_mux(&self) {
         let mut mux = self.neural_mux.write().await;
@@ -314,9 +356,12 @@ impl GatewayState {
         mux.ticks_processed = 0;
         mux.l_star_enabled = true;
         mux.voice_enabled = false;
-        tracing::info!("Neural Mux initialized with {}us tick rate", mux.tick_rate_us);
+        tracing::info!(
+            "Neural Mux initialized with {}us tick rate",
+            mux.tick_rate_us
+        );
     }
-    
+
     /// Check CDN health
     async fn check_cdn_health(&self) {
         let mut statuses = self.cdn_statuses.write().await;
@@ -324,7 +369,7 @@ impl GatewayState {
             .duration_since(std::time::UNIX_EPOCH)
             .unwrap()
             .as_secs();
-        
+
         for status in statuses.iter_mut() {
             // Try to connect to CDN port
             let start = std::time::Instant::now();
@@ -342,7 +387,7 @@ impl GatewayState {
             status.last_check = now;
         }
     }
-    
+
     /// Update connection status for a database
     async fn update_connection_status(
         &self,
@@ -362,33 +407,33 @@ impl GatewayState {
             status.error = error;
         }
     }
-    
+
     /// Get all connection statuses
     pub async fn get_connection_statuses(&self) -> Vec<ConnectionStatus> {
         self.connection_statuses.read().await.clone()
     }
-    
+
     /// Get CDN statuses
     pub async fn get_cdn_statuses(&self) -> Vec<CdnStatus> {
         self.cdn_statuses.read().await.clone()
     }
-    
+
     /// Update plasma snapshot from sx9-atlas-bus
     pub async fn update_plasma(&self, snapshot: sx9_atlas_bus::PlasmaSnapshot) {
         let mut plasma = self.plasma_snapshot.write().await;
         *plasma = Some(snapshot);
     }
-    
+
     /// Get current plasma snapshot
     pub async fn get_plasma(&self) -> Option<sx9_atlas_bus::PlasmaSnapshot> {
         self.plasma_snapshot.read().await.clone()
     }
-    
+
     /// Get Neural Mux state
     pub async fn get_neural_mux(&self) -> NeuralMuxState {
         self.neural_mux.read().await.clone()
     }
-    
+
     /// Update Neural Mux tick
     pub async fn tick_neural_mux(&self) {
         let mut mux = self.neural_mux.write().await;

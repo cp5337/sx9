@@ -5,7 +5,7 @@ use std::collections::HashMap;
 use reqwest::Client;
 use tracing::{debug, error, info};
 
-use ctas7_agentic_core::{Result, AgentError, Priority};
+use crate::types::{Result, AgentError, Priority};
 use crate::auth::LinearAuth;
 
 /// Linear API client

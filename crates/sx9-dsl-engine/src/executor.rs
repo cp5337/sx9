@@ -3,8 +3,8 @@
 //! Orchestrates DSL execution with WASM runtime and file watching
 
 use crate::dsl::{DSLEngine, DSLOperation, DSLResult};
-use crate::wasm_runtime::WasmRuntime;
 use crate::file_watcher::FileWatcher;
+use crate::wasm_runtime::WasmRuntime;
 use anyhow::Result;
 use std::sync::Arc;
 use tokio::sync::RwLock;
@@ -70,4 +70,3 @@ impl DSLExecutor {
         Ok(())
     }
 }
-

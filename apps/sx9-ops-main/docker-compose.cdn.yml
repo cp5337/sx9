@@ -1,0 +1,58 @@
+version: '3.8'
+
+services:
+  # CTAS v7.3 CDN Statistical Service
+  ctas7-cdn-statistical:
+    build:
+      context: ../ctas7-command-center
+      dockerfile: ctas7-cdn-statistical/Dockerfile
+    container_name: ctas7-cdn-statistical
+    ports:
+      - "18108:18108"
+    environment:
+      SERVICE_NAME: "ctas7-cdn-statistical"
+      BIND_ADDR: "0.0.0.0:18108"
+      PORT_MANAGER_URL: "http://ctas7-real-port-manager:18103"
+      AXON_URL: "http://localhost:18180"
+      LEGION_URL: "http://localhost:15000"
+      SURREALDB_URL: "http://surrealdb:8000"
+      WAZUH_URL: "http://localhost:55000"
+      SLEDIS_URL: "redis://sledis:6379"
+      RUST_LOG: "info,ctas7_cdn_statistical=debug"
+    networks:
+      - ctas-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:18108/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    depends_on:
+      - surrealdb
+
+  # SurrealDB (if not already running)
+  surrealdb:
+    image: surrealdb/surrealdb:latest
+    container_name: ctas7-surrealdb
+    ports:
+      - "8000:8000"
+    command: start --log trace --user root --pass root memory
+    networks:
+      - ctas-network
+    restart: unless-stopped
+
+  # Sledis (Redis-compatible for Sled)
+  sledis:
+    image: redis:7-alpine
+    container_name: ctas7-sledis
+    ports:
+      - "6379:6379"
+    networks:
+      - ctas-network
+    restart: unless-stopped
+    command: redis-server --appendonly yes
+
+networks:
+  ctas-network:
+    driver: bridge

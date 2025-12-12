@@ -6,10 +6,10 @@
 #[cfg(feature = "delta-tuner")]
 mod delta_tests {
     use super::super::{
-        DeltaOperator, DeltaGate, DeltaGateConfig, GateMode, DeltaTuner,
-        DeltaMeasurement, EscalationIntegration, EscalationContext, EscalationTier,
+        DeltaGate, DeltaGateConfig, DeltaMeasurement, DeltaOperator, DeltaTuner, EscalationContext,
+        EscalationIntegration, EscalationTier, GateMode,
     };
-    use crate::trivariate_hash_v731::{ContextFrame, TrivariateHash, ExecEnv, ExecState};
+    use crate::trivariate_hash_v731::{ContextFrame, ExecEnv, ExecState, TrivariateHash};
 
     /// Create synthetic drift scenario
     fn create_synthetic_drift(
@@ -17,11 +17,7 @@ mod delta_tests {
         entropy_delta: f32,
         semantic_delta: f32,
     ) -> DeltaMeasurement {
-        DeltaMeasurement::new(
-            base_angle,
-            0.5 + entropy_delta,
-            0.5 + semantic_delta,
-        )
+        DeltaMeasurement::new(base_angle, 0.5 + entropy_delta, 0.5 + semantic_delta)
     }
 
     #[test]
@@ -146,11 +142,8 @@ mod delta_tests {
 
         // Log multiple synthetic measurements
         for i in 0..10 {
-            let drift = create_synthetic_drift(
-                (i as f32) * 10.0,
-                (i as f32) * 0.05,
-                (i as f32) * 0.05,
-            );
+            let drift =
+                create_synthetic_drift((i as f32) * 10.0, (i as f32) * 0.05, (i as f32) * 0.05);
             tuner.log_measurement(&drift, "WASM->Microkernel", Some(0.5 + (i as f32) * 0.05));
         }
 
@@ -177,15 +170,49 @@ mod delta_tests {
         let payload = "test".to_string();
 
         // Test all escalation points
-        let _r1 = gate_wasm_to_microkernel(&integration, payload.clone(), ctx.clone(), hash.clone(), None, None);
-        let _r2 = gate_microkernel_to_kernel(&integration, payload.clone(), ctx.clone(), hash.clone(), None, None);
-        let _r3 = gate_kernel_to_multicrate(&integration, payload.clone(), ctx.clone(), hash.clone(), None, None);
-        let _r4 = gate_multicrate_to_container(&integration, payload.clone(), ctx.clone(), hash.clone(), None, None);
-        let _r5 = gate_container_to_firefly(&integration, payload.clone(), ctx.clone(), hash.clone(), None, None);
+        let _r1 = gate_wasm_to_microkernel(
+            &integration,
+            payload.clone(),
+            ctx.clone(),
+            hash.clone(),
+            None,
+            None,
+        );
+        let _r2 = gate_microkernel_to_kernel(
+            &integration,
+            payload.clone(),
+            ctx.clone(),
+            hash.clone(),
+            None,
+            None,
+        );
+        let _r3 = gate_kernel_to_multicrate(
+            &integration,
+            payload.clone(),
+            ctx.clone(),
+            hash.clone(),
+            None,
+            None,
+        );
+        let _r4 = gate_multicrate_to_container(
+            &integration,
+            payload.clone(),
+            ctx.clone(),
+            hash.clone(),
+            None,
+            None,
+        );
+        let _r5 = gate_container_to_firefly(
+            &integration,
+            payload.clone(),
+            ctx.clone(),
+            hash.clone(),
+            None,
+            None,
+        );
         let _r6 = gate_firefly_to_orb(&integration, payload, ctx, hash, None, None);
 
         // All should complete without panic
         println!("All escalation points tested successfully");
     }
 }
-

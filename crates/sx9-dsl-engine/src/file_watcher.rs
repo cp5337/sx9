@@ -3,7 +3,7 @@
 //! Watches DSL playbook files for changes and triggers reload
 
 use anyhow::Result;
-use notify::{Watcher, RecommendedWatcher, RecursiveMode, Event, EventKind};
+use notify::{Event, EventKind, RecommendedWatcher, RecursiveMode, Watcher};
 use std::path::Path;
 use std::sync::Arc;
 use tokio::sync::mpsc;
@@ -17,7 +17,7 @@ pub struct FileWatcher {
 impl FileWatcher {
     pub fn new() -> Result<Self> {
         let (tx, rx) = mpsc::channel(100);
-        
+
         let watcher = notify::recommended_watcher(move |res| {
             let _ = tx.blocking_send(res);
         })?;
@@ -30,13 +30,14 @@ impl FileWatcher {
 
     /// Watch a directory for changes
     pub fn watch<P: AsRef<Path>>(&mut self, path: P) -> Result<()> {
-        self.watcher.watch(path.as_ref(), RecursiveMode::Recursive)?;
+        self.watcher
+            .watch(path.as_ref(), RecursiveMode::Recursive)?;
         Ok(())
     }
 
     /// Get next file change event
     pub async fn next_event(&mut self) -> Option<Event> {
-        if let Ok(Ok(event)) = self.event_rx.recv().await {
+        if let Some(Ok(event)) = self.event_rx.recv().await {
             Some(event)
         } else {
             None
@@ -60,4 +61,3 @@ impl Default for FileWatcher {
         Self::new().unwrap()
     }
 }
-

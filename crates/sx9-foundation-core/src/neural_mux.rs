@@ -3,7 +3,7 @@
 //! Provides intelligent routing and prioritization for Unicode Assembly Language operations
 //! Integrates with the Smart Crate Orchestrator for autonomous decision making
 
-use crate::data::{Serialize, Deserialize, DateTime, Utc};
+use crate::data::{DateTime, Deserialize, Serialize, Utc};
 use std::collections::HashMap;
 
 /// Neural Mux priority levels
@@ -114,17 +114,27 @@ impl NeuralMuxRouter {
     }
 
     /// Route Unicode Assembly Language operation
-    pub fn route_operation(&mut self, unicode_char: char) -> crate::diagnostics::Result<OperationRoute> {
+    pub fn route_operation(
+        &mut self,
+        unicode_char: char,
+    ) -> crate::diagnostics::Result<OperationRoute> {
         let unicode_value = unicode_char as u32;
 
         // Find matching route
-        let route = self.config.routes
+        let route = self
+            .config
+            .routes
             .iter()
             .find(|route| {
                 unicode_value >= route.unicode_range.0 && unicode_value <= route.unicode_range.1
             })
             .cloned()
-            .ok_or_else(|| crate::diagnostics::Error::msg(format!("No route found for Unicode operation: U+{:04X}", unicode_value)))?;
+            .ok_or_else(|| {
+                crate::diagnostics::Error::msg(format!(
+                    "No route found for Unicode operation: U+{:04X}",
+                    unicode_value
+                ))
+            })?;
 
         // Create execution context
         let context = ExecutionContext {
@@ -146,7 +156,9 @@ impl NeuralMuxRouter {
 
         crate::diagnostics::info!(
             "Neural Mux routing: U+{:04X} → {} (priority: {:?})",
-            unicode_value, route.target_processor, route.priority
+            unicode_value,
+            route.target_processor,
+            route.priority
         );
 
         Ok(route)
@@ -164,13 +176,16 @@ impl NeuralMuxRouter {
 
         // Estimate processor usage from routes
         for route in &self.config.routes {
-            *processor_counts.entry(route.target_processor.clone()).or_insert(0) +=
-                self.operation_history.iter()
-                    .filter(|ctx| {
-                        let unicode_value = ctx.unicode_operation as u32;
-                        unicode_value >= route.unicode_range.0 && unicode_value <= route.unicode_range.1
-                    })
-                    .count();
+            *processor_counts
+                .entry(route.target_processor.clone())
+                .or_insert(0) += self
+                .operation_history
+                .iter()
+                .filter(|ctx| {
+                    let unicode_value = ctx.unicode_operation as u32;
+                    unicode_value >= route.unicode_range.0 && unicode_value <= route.unicode_range.1
+                })
+                .count();
         }
 
         NeuralMuxStatistics {
@@ -195,7 +210,8 @@ impl NeuralMuxRouter {
                 if usage > 100 && route.priority < Priority::High {
                     crate::diagnostics::info!(
                         "Neural Mux optimization: Increasing priority for {} (usage: {})",
-                        route.target_processor, usage
+                        route.target_processor,
+                        usage
                     );
                     route.priority = match route.priority {
                         Priority::Low => Priority::Medium,
@@ -263,6 +279,8 @@ mod tests {
         let stats = router.get_statistics();
         assert_eq!(stats.total_operations, 3);
         assert!(stats.priority_distribution.contains_key(&Priority::High));
-        assert!(stats.priority_distribution.contains_key(&Priority::Critical));
+        assert!(stats
+            .priority_distribution
+            .contains_key(&Priority::Critical));
     }
 }

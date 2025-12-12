@@ -45,7 +45,8 @@ impl MuxMetrics {
     /// Record a routing operation
     pub fn record_route(&self, latency_ns: u64, hit: bool) {
         self.total_routes.fetch_add(1, Ordering::Relaxed);
-        self.cumulative_latency_ns.fetch_add(latency_ns, Ordering::Relaxed);
+        self.cumulative_latency_ns
+            .fetch_add(latency_ns, Ordering::Relaxed);
 
         if hit {
             self.route_hits.fetch_add(1, Ordering::Relaxed);

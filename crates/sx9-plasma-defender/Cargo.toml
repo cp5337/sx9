@@ -9,6 +9,32 @@ license.workspace = true
 name = "sx9-plasma-defender"
 path = "src/main.rs"
 
+# Smart Crate System metadata
+[package.metadata.ctas7]
+crate_type = "defender"
+mission = "ThreatAnalysis"
+security_level = "Protector"
+orchestrator_compatible = true
+cannibalization_protected = true
+xsd_symbols = ["\\u{E000}"]
+assembly_language_version = "7.3.1"
+neural_mux_priority = "critical"
+port_range_start = 18110
+port_range_end = 18115
+
+[package.metadata.smart_crate]
+template_version = "7.3.1"
+orchestrator_version = "7.3.1"
+autonomous_deployment = true
+threat_hunting_enabled = true
+neural_mux_integration = true
+unicode_compression_enabled = true
+trivariate_hash_support = true
+emoji_status_enabled = true
+database_connection_pool = true
+xsd_orchestrator_type = "crate"
+assembly_language_linkup = true
+
 [dependencies]
 # Foundation crates - use foundation-core for all common dependencies
 sx9-foundation-core = { path = "../sx9-foundation-core" }
@@ -28,3 +54,14 @@ futures-util = "0.3"
 # - sx9_foundation_core::data::chrono (instead of chrono)
 # - sx9_foundation_core::diagnostics::anyhow (instead of anyhow)
 # - sx9_foundation_core::diagnostics::tracing (instead of tracing)
+
+# Direct dependencies for binary/macro usage
+tokio = { version = "1.0", features = ["full"] }
+axum = { version = "0.7", features = ["macros"] }
+tower = "0.4"
+tower-http = { version = "0.5", features = ["trace", "cors", "compression-full", "timeout", "limit", "util"] }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+chrono = { version = "0.4", features = ["serde"] }
+anyhow = "1.0"
+tracing = "0.1"

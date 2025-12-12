@@ -1,10 +1,10 @@
 //! CTAS-7 Port Manager Types
-//! 
+//!
 //! Core types for the real CTAS-7 port manager with major port blocks,
 //! mirror blocks, and deception settings.
 
-use serde::{Deserialize, Serialize};
 use chrono::{DateTime, Utc};
+use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 
 /// Port Manager Configuration
@@ -100,4 +100,3 @@ pub struct PortManagerState {
     pub deception_settings: DeceptionSettings,
     pub cyber_ops_enabled: bool,
 }
-

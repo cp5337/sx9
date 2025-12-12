@@ -2,9 +2,7 @@
 //! Retrofit integration with gold disk foundation core
 
 #[cfg(feature = "foundation-integration")]
-use ctas7_foundation_core::{
-    hash_engine::init_global_hash_engine,
-};
+use sx9_foundation_core::hash_engine::init_global_hash_engine;
 
 /// Initialize foundation integration
 pub fn init_foundation_integration() -> Result<(), Box<dyn std::error::Error>> {

@@ -37,7 +37,11 @@ impl LegionPlasmaWorld {
         Ok(entity_id)
     }
 
-    pub async fn update_plasma_entity(&self, entity_id: u64, component: PlasmaComponent) -> Result<()> {
+    pub async fn update_plasma_entity(
+        &self,
+        entity_id: u64,
+        component: PlasmaComponent,
+    ) -> Result<()> {
         let mut world = self.world.write().await;
         let entities = self.entities.read().await;
 
@@ -74,4 +78,3 @@ impl LegionPlasmaWorld {
         Ok(())
     }
 }
-

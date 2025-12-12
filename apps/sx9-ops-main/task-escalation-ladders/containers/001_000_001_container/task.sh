@@ -1,0 +1,15 @@
+#!/bin/bash
+# Container execution for: Pre-Operational Planning
+
+TARGET="${1:-localhost}"
+
+echo "🐳 Container Execution"
+echo "🎯 Task: Pre-Operational Planning"
+echo "📍 Target: $TARGET"
+
+# Execute all tools in sequence
+echo "🔧 Running nmap..."
+nmap $TARGET
+
+
+echo "✅ Container execution complete"

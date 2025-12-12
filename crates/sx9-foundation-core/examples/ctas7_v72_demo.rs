@@ -1,9 +1,12 @@
 //! CTAS-7 v7.2 Trivariate Hash Engine Demonstration
+#![allow(deprecated)]
 //!
 //! This demonstration showcases the complete CTAS-7 v7.2 hash engine implementation
 //! with environmental masks, Unicode compression, and assembly language integration.
 
-use ctas7_foundation_core::trivariate_hash::{TrivariteHashEngine, EnvironmentalMasks, GraduatedLevel};
+use sx9_foundation_core::trivariate_hash::{
+    EnvironmentalMasks, GraduatedLevel, TrivariteHashEngine,
+};
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -20,7 +23,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let basic_hash = engine.generate_trivariate_hash(
         "track_satellite_noaa19",
         "ground_station_vandenberg",
-        "SatelliteTracking"
+        "SatelliteTracking",
     );
 
     println!("Content: track_satellite_noaa19");
@@ -28,7 +31,10 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     println!("Primitive Type: SatelliteTracking");
     println!("Generated Hash: {}", basic_hash);
     println!("Hash Length: {} characters", basic_hash.len());
-    println!("Hash Valid: {}", engine.validate_trivariate_hash(&basic_hash));
+    println!(
+        "Hash Valid: {}",
+        engine.validate_trivariate_hash(&basic_hash)
+    );
 
     // Extract components
     let sch = &basic_hash[0..16];
@@ -46,23 +52,23 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     // Create space environment masks for a critical orbital scenario
     let space_masks = EnvironmentalMasks {
         // Prefix Masks (Global Context)
-        wx: 0.15,  // Critical weather (severe solar storm)
-        tf: 0.85,  // High orbital traffic (crowded orbit)
-        ob: 4,     // High threat level (debris field)
+        wx: 0.15,              // Critical weather (severe solar storm)
+        tf: 0.85,              // High orbital traffic (crowded orbit)
+        ob: 4,                 // High threat level (debris field)
         ju: "LEO".to_string(), // Low Earth Orbit jurisdiction
-        th: 0.92,  // Critical threat posture (imminent collision)
+        th: 0.92,              // Critical threat posture (imminent collision)
 
         // Space-Specific Extensions
-        sr: 0.95,  // Extreme solar radiation
-        gm: 0.88,  // High geomagnetic activity
-        de: 0.75,  // Dense debris field
+        sr: 0.95,                // Extreme solar radiation
+        gm: 0.88,                // High geomagnetic activity
+        de: 0.75,                // Dense debris field
         js: "POLAR".to_string(), // Polar orbit shell
 
         // Suffix Masks (Local Context)
-        rp: 0.60,  // Reduced personnel (night shift)
-        re: 0.95,  // High equipment readiness
-        rs: 0.40,  // Low fuel/resources
-        bw: 0.30,  // Limited bandwidth (atmospheric interference)
+        rp: 0.60,                    // Reduced personnel (night shift)
+        re: 0.95,                    // High equipment readiness
+        rs: 0.40,                    // Low fuel/resources
+        bw: 0.30,                    // Limited bandwidth (atmospheric interference)
         ro: "DEFENSIVE".to_string(), // Defensive rules of engagement
     };
 
@@ -72,7 +78,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let space_hash = space_engine.generate_trivariate_hash(
         "emergency_debris_avoidance",
         "iss_ground_control",
-        "EmergencyManeuver"
+        "EmergencyManeuver",
     );
 
     println!("Environmental Scenario: Critical Space Emergency");
@@ -82,7 +88,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     // Show graduated levels
     println!("\nEnvironmental Mask Analysis:");
-    println!("  Weather (WX): {:.2} → {} ({})",
+    println!(
+        "  Weather (WX): {:.2} → {} ({})",
         space_masks.wx,
         GraduatedLevel::from_value(space_masks.wx).symbol(),
         match GraduatedLevel::from_value(space_masks.wx) {
@@ -94,7 +101,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         }
     );
 
-    println!("  Threat (TH): {:.2} → {} ({})",
+    println!(
+        "  Threat (TH): {:.2} → {} ({})",
         space_masks.th,
         GraduatedLevel::from_value(space_masks.th).symbol(),
         match GraduatedLevel::from_value(space_masks.th) {
@@ -109,7 +117,10 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     // Demonstrate deterministic routing
     let route = space_engine.route_based_on_environment(&space_hash);
     println!("\nDeterministic Routing Decision: {}", route);
-    println!("Reason: Threat level {:.2} > 0.8 → Route to Layer2Math", space_masks.th);
+    println!(
+        "Reason: Threat level {:.2} > 0.8 → Route to Layer2Math",
+        space_masks.th
+    );
 
     println!("\n🔤 Part 3: Unicode Compression");
     println!("─────────────────────────────");
@@ -133,8 +144,10 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     for (opcode, description) in opcodes {
         let unicode_opcode = space_engine.get_assembly_opcode(opcode);
-        println!("  {} → {} (U+{:04X}) - {}",
-            opcode, unicode_opcode, unicode_opcode as u32, description);
+        println!(
+            "  {} → {} (U+{:04X}) - {}",
+            opcode, unicode_opcode, unicode_opcode as u32, description
+        );
     }
 
     println!("\n✅ CTAS-7 v7.2 Hash Engine Demonstration Complete");

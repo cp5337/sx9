@@ -1,6 +1,6 @@
 //! Message validation for CTAS-7 protocols
 
-use ctas7_agentic_core::{Result, AgentError, Priority};
+use crate::types::{Result, AgentError, Priority};
 use crate::protocols::{MessageEnvelope, MessagePayload, RoutingInfo};
 
 /// Message validation rules

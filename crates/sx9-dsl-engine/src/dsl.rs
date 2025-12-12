@@ -3,8 +3,9 @@
 //! Re-exports and adapts DSL modules from sx9-foundation-daemon
 
 use anyhow::Result;
-use serde::{Serialize, Deserialize};
+use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
+use sx9_foundation_core::async_runtime::futures::future::BoxFuture;
 
 /// DSL operation types (simplified from foundation-daemon)
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
@@ -57,6 +58,7 @@ impl std::fmt::Display for DSLError {
 impl std::error::Error for DSLError {}
 
 /// DSL Engine
+#[derive(Clone)]
 pub struct DSLEngine {
     wasm_enabled: bool,
 }
@@ -85,40 +87,37 @@ impl DSLEngine {
         }
     }
 
-    pub async fn execute(&self, operation: &DSLOperation) -> DSLResult<String> {
-        match operation {
-            DSLOperation::HashTrigger { .. } => {
-                Ok("Hash trigger executed".to_string())
-            }
-            DSLOperation::IntelCollection { .. } => {
-                Ok("Intel collection executed".to_string())
-            }
-            DSLOperation::KaliTool { tool, .. } => {
-                Ok(format!("Kali tool {} executed", tool))
-            }
-            DSLOperation::Workflow { steps } => {
-                for step in steps {
-                    self.execute(step).await?;
+    pub fn execute<'a>(&'a self, operation: &'a DSLOperation) -> BoxFuture<'a, DSLResult<String>> {
+        Box::pin(async move {
+            match operation {
+                DSLOperation::HashTrigger { .. } => Ok("Hash trigger executed".to_string()),
+                DSLOperation::IntelCollection { .. } => Ok("Intel collection executed".to_string()),
+                DSLOperation::KaliTool { tool, .. } => Ok(format!("Kali tool {} executed", tool)),
+                DSLOperation::Workflow { steps } => {
+                    for step in steps {
+                        self.execute(step).await?;
+                    }
+                    Ok("Workflow executed".to_string())
                 }
-                Ok("Workflow executed".to_string())
-            }
-            DSLOperation::Parallel { operations } => {
-                // Execute in parallel
-                let mut handles = Vec::new();
-                for op in operations {
-                    let engine = self;
-                    let op_clone = op.clone();
-                    handles.push(sx9_foundation_core::async_runtime::tokio::spawn(async move {
-                        engine.execute(&op_clone).await
-                    }));
+                DSLOperation::Parallel { operations } => {
+                    // Execute in parallel
+                    let mut handles = Vec::new();
+                    for op in operations {
+                        let engine = self.clone();
+                        let op_clone = op.clone();
+                        handles.push(sx9_foundation_core::async_runtime::tokio::spawn(
+                            async move { engine.execute(&op_clone).await },
+                        ));
+                    }
+
+                    for handle in handles {
+                        handle
+                            .await
+                            .map_err(|e| DSLError::ExecutionError(e.to_string()))??;
+                    }
+                    Ok("Parallel operations executed".to_string())
                 }
-                
-                for handle in handles {
-                    handle.await.map_err(|e| DSLError::ExecutionError(e.to_string()))??;
-                }
-                Ok("Parallel operations executed".to_string())
             }
-        }
+        })
     }
 }
-

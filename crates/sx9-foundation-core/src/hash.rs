@@ -11,8 +11,8 @@
 //! - CUID-T (Context User Identity - Spatial/Context)
 //! - UUID-T (Universal Unique Identifier)
 
-use std::io::Cursor;
 use murmur3::murmur3_x64_128;
+use std::io::Cursor;
 use uuid::Uuid;
 
 /// Hash value type (128-bit for full precision)
@@ -42,7 +42,11 @@ pub struct PrimaryTrivariate {
 impl PrimaryTrivariate {
     /// Create new trivariate from components
     pub fn new(sch_t: HashValue, cuid_t: HashValue, uuid_t: Uuid) -> Self {
-        Self { sch_t, cuid_t, uuid_t }
+        Self {
+            sch_t,
+            cuid_t,
+            uuid_t,
+        }
     }
 
     /// Generate trivariate from key and data
@@ -50,7 +54,11 @@ impl PrimaryTrivariate {
         let sch_t = compute_sch(key.as_bytes());
         let cuid_t = compute_cuid(data.as_bytes());
         let uuid_t = Uuid::new_v4();
-        Self { sch_t, cuid_t, uuid_t }
+        Self {
+            sch_t,
+            cuid_t,
+            uuid_t,
+        }
     }
 
     /// Generate trivariate with deterministic UUID
@@ -65,7 +73,11 @@ impl PrimaryTrivariate {
         let hash = compute_sch(combined.as_bytes());
         let uuid_bytes: [u8; 16] = hash.to_le_bytes();
         let uuid_t = Uuid::from_bytes(uuid_bytes);
-        Self { sch_t, cuid_t, uuid_t }
+        Self {
+            sch_t,
+            cuid_t,
+            uuid_t,
+        }
     }
 
     /// Convert to 48-character hex string
@@ -148,10 +160,8 @@ pub fn route_hash(sch: &str, domain: u8) -> u64 {
 
 // Re-export from hash64 for convenience
 pub use crate::hash64::{
-    murmur3_64, murmur3_64_hex, murmur3_64_base96,
-    encode_base96, trivariate_hash, trivariate_from_key,
-    unicode_slot, unicode_slot_hex,
-    seeds, BASE96_CHARSET,
+    encode_base96, murmur3_64, murmur3_64_base96, murmur3_64_hex, seeds, trivariate_from_key,
+    trivariate_hash, unicode_slot, unicode_slot_hex, BASE96_CHARSET,
 };
 
 // Re-export Primitive for TacticalInstruction
@@ -189,7 +199,9 @@ impl TacticalInstruction {
 ///
 /// # Returns
 /// PrimaryTrivariate with all three components
-pub fn generate_primary_trivariate_from_instruction(instr: &TacticalInstruction) -> PrimaryTrivariate {
+pub fn generate_primary_trivariate_from_instruction(
+    instr: &TacticalInstruction,
+) -> PrimaryTrivariate {
     // SCH-T encodes Primitive ID and N-V-N-N context
     let sch_input = format!("{}:{}", instr.primitive as u8, instr.payload);
     let sch_t = compute_sch(sch_input.as_bytes());

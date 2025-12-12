@@ -1,0 +1,259 @@
+{
+  "version": "1.0.0",
+  "project": "CTAS v7.3.1",
+  "description": "Custom Gemini Code Assist commands for CTAS development",
+  "commands": [
+    {
+      "name": "ctas:ea-diagram",
+      "description": "Generate Enterprise Architecture diagrams using Gemini 2M",
+      "trigger": "/ea",
+      "action": "execute",
+      "script": "./scripts/gemini-ea-generator.sh",
+      "context": {
+        "include": [
+          "src/**/*.tsx",
+          "src/**/*.ts",
+          "docs/**/*.md",
+          "package.json"
+        ],
+        "maxTokens": 2000000
+      }
+    },
+    {
+      "name": "ctas:devsecops-flow",
+      "description": "Generate DevSecOps pipeline diagrams",
+      "trigger": "/devsecops",
+      "action": "generate",
+      "template": "Generate a comprehensive DevSecOps flow diagram for CTAS v7.3.1 including: CI/CD pipeline, security gates (SAST, DAST, SCA), infrastructure as code, monitoring (Wazuh, AXON), and incident response. Output in Mermaid and PlantUML formats.",
+      "context": {
+        "include": [
+          ".git/hooks/**",
+          "docker-compose*.yml",
+          "scripts/**/*.sh"
+        ]
+      }
+    },
+    {
+      "name": "ctas:component-analysis",
+      "description": "Analyze React component architecture",
+      "trigger": "/analyze-components",
+      "action": "generate",
+      "template": "Analyze the React component architecture in CTAS v7.3.1. Identify: component hierarchy, data flow patterns, state management, prop drilling issues, performance bottlenecks, and refactoring opportunities. Focus on the PLASMA dashboard components.",
+      "context": {
+        "include": [
+          "src/components/**/*.tsx",
+          "src/pages/**/*.tsx",
+          "src/hooks/**/*.ts"
+        ]
+      }
+    },
+    {
+      "name": "ctas:security-audit",
+      "description": "Perform security architecture audit",
+      "trigger": "/security-audit",
+      "action": "generate",
+      "template": "Perform a comprehensive security audit of CTAS v7.3.1 focusing on: trivariate hashing implementation, QEK obfuscation, ephemeral execution model, PGP signing, blockchain anchoring, and DoD compliance (NIST 800-53, FIPS 140-3). Identify vulnerabilities and provide remediation recommendations.",
+      "context": {
+        "include": [
+          "src/**/*.ts",
+          "src/**/*.tsx",
+          "docs/architecture/**/*.md"
+        ]
+      }
+    },
+    {
+      "name": "ctas:data-flow",
+      "description": "Generate data flow diagrams",
+      "trigger": "/dataflow",
+      "action": "generate",
+      "template": "Generate detailed data flow diagrams for CTAS v7.3.1 showing: Wazuh → AXON → PLASMA flow, OSINT → Neural Mux → Foundation flow, and Frontend → Backend → Database flows. Include data transformations, validation points, and storage decisions. Output in Mermaid format.",
+      "context": {
+        "include": [
+          "src/hooks/**/*.ts",
+          "src/lib/**/*.ts",
+          "src/types/**/*.ts"
+        ]
+      }
+    },
+    {
+      "name": "ctas:integration-map",
+      "description": "Map all system integrations",
+      "trigger": "/integrations",
+      "action": "generate",
+      "template": "Create a comprehensive integration map for CTAS v7.3.1 showing all external systems, APIs, databases, and services. Include: port numbers, protocols, authentication methods, data formats, and error handling strategies. Focus on Wazuh, AXON, SurrealDB, Supabase, and Neural Mux integrations.",
+      "context": {
+        "include": [
+          "src/**/*.ts",
+          "docker-compose*.yml",
+          "package.json"
+        ]
+      }
+    },
+    {
+      "name": "ctas:test-strategy",
+      "description": "Generate testing strategy and test cases",
+      "trigger": "/test-strategy",
+      "action": "generate",
+      "template": "Generate a comprehensive testing strategy for CTAS v7.3.1 including: unit tests, integration tests, E2E tests (Playwright), security tests, and performance tests. Provide specific test cases for PLASMA dashboard, trivariate hashing, and real-time streaming. Include test coverage goals and CI/CD integration.",
+      "context": {
+        "include": [
+          "src/**/*.tsx",
+          "src/**/*.ts"
+        ]
+      }
+    },
+    {
+      "name": "ctas:performance-analysis",
+      "description": "Analyze system performance and optimization opportunities",
+      "trigger": "/performance",
+      "action": "generate",
+      "template": "Analyze CTAS v7.3.1 performance focusing on: React rendering optimization, bundle size reduction, API call efficiency, database query optimization, and real-time streaming performance. Identify bottlenecks in PLASMA dashboard and provide specific optimization recommendations with code examples.",
+      "context": {
+        "include": [
+          "src/**/*.tsx",
+          "src/**/*.ts",
+          "package.json",
+          "vite.config.ts"
+        ]
+      }
+    },
+    {
+      "name": "ctas:deployment-guide",
+      "description": "Generate deployment documentation",
+      "trigger": "/deploy-docs",
+      "action": "generate",
+      "template": "Generate comprehensive deployment documentation for CTAS v7.3.1 covering: local development setup, Docker deployment, OrbStack configuration, environment variables, database initialization, service dependencies, and troubleshooting guide. Include specific steps for deploying Wazuh, AXON, and PLASMA dashboard.",
+      "context": {
+        "include": [
+          "docker-compose*.yml",
+          "package.json",
+          "README.md",
+          "docs/deployment/**/*.md"
+        ]
+      }
+    },
+    {
+      "name": "ctas:api-documentation",
+      "description": "Generate API documentation",
+      "trigger": "/api-docs",
+      "action": "generate",
+      "template": "Generate comprehensive API documentation for CTAS v7.3.1 including: REST endpoints, WebSocket connections, SSE streams, request/response formats, authentication, error codes, and rate limiting. Focus on AXON client, Wazuh integration, and Neural Mux APIs. Output in OpenAPI 3.0 format.",
+      "context": {
+        "include": [
+          "src/lib/api/**/*.ts",
+          "src/hooks/**/*.ts",
+          "src/types/**/*.ts"
+        ]
+      }
+    },
+    {
+      "name": "ctas:refactor-suggestions",
+      "description": "Suggest code refactoring opportunities",
+      "trigger": "/refactor",
+      "action": "generate",
+      "template": "Analyze CTAS v7.3.1 codebase and suggest refactoring opportunities focusing on: code duplication, complex functions, prop drilling, state management improvements, type safety enhancements, and architectural patterns. Provide specific code examples for high-impact refactorings.",
+      "context": {
+        "include": [
+          "src/**/*.tsx",
+          "src/**/*.ts"
+        ]
+      }
+    },
+    {
+      "name": "ctas:dependency-audit",
+      "description": "Audit npm dependencies for security and updates",
+      "trigger": "/deps-audit",
+      "action": "generate",
+      "template": "Audit CTAS v7.3.1 npm dependencies for: security vulnerabilities, outdated packages, unused dependencies, bundle size impact, and license compliance. Provide prioritized update recommendations with breaking change analysis.",
+      "context": {
+        "include": [
+          "package.json",
+          "package-lock.json"
+        ]
+      }
+    },
+    {
+      "name": "ctas:usim-generator",
+      "description": "Generate USIM headers for documentation",
+      "trigger": "/usim",
+      "action": "generate",
+      "template": "Generate USIM (Universal Symbolic Message) headers for CTAS v7.3.1 documentation including: trivariate hash, Unicode symbol, classification, metadata, and knowledge registry links. Follow CTAS Foundation v7.3.1 USIM specification.",
+      "context": {
+        "include": [
+          "docs/**/*.md",
+          ".usim"
+        ]
+      }
+    },
+    {
+      "name": "ctas:commit-message",
+      "description": "Generate conventional commit messages",
+      "trigger": "/commit-msg",
+      "action": "generate",
+      "template": "Generate a conventional commit message for the current changes following CTAS v7.3.1 standards: feat/fix/docs/style/refactor/test/chore, scope in parentheses, concise description, detailed body with technical context, and references to related issues or PRs.",
+      "context": {
+        "include": [
+          "git:staged"
+        ]
+      }
+    },
+    {
+      "name": "ctas:architecture-decision",
+      "description": "Document architecture decision records (ADR)",
+      "trigger": "/adr",
+      "action": "generate",
+      "template": "Create an Architecture Decision Record (ADR) for CTAS v7.3.1 including: context, decision, consequences, alternatives considered, and implementation notes. Follow ADR template format with status, date, and decision makers.",
+      "context": {
+        "include": [
+          "docs/architecture/**/*.md"
+        ]
+      }
+    }
+  ],
+  "settings": {
+    "model": "gemini-2.0-flash-exp",
+    "temperature": 0.7,
+    "maxOutputTokens": 8192,
+    "contextWindow": 2000000,
+    "codeStyle": {
+      "language": "typescript",
+      "framework": "react",
+      "linter": "eslint",
+      "formatter": "prettier",
+      "conventions": [
+        "Use functional components with hooks",
+        "Prefer const over let",
+        "Use TypeScript strict mode",
+        "Follow CTAS naming conventions (kebab-case for files, PascalCase for components)",
+        "Include JSDoc comments for complex functions",
+        "Use font-mono for all text in PLASMA UI",
+        "Dark theme: bg-gray-900, text-gray-200, borders gray-800"
+      ]
+    },
+    "projectContext": {
+      "name": "CTAS v7.3.1",
+      "type": "Threat Analysis System",
+      "stack": [
+        "React",
+        "TypeScript",
+        "Vite",
+        "Tailwind CSS",
+        "Radix UI",
+        "Rust (Smart Crates)",
+        "SurrealDB",
+        "Supabase",
+        "Wazuh",
+        "Mapbox GL",
+        "Cesium"
+      ],
+      "architecture": [
+        "Trivariate Hashing (SCH+CUID+UUID)",
+        "Neural Mux AI Orchestration",
+        "Ephemeral Execution Model",
+        "Multi-tier Repository",
+        "Smart Crates (Modular Rust)"
+      ]
+    }
+  }
+}
+

@@ -2,7 +2,7 @@
 
 use serde::{Deserialize, Serialize};
 use chrono::{DateTime, Utc};
-use ctas7_agentic_core::{AgentId, MessageId, SessionId, Priority};
+use crate::types::{AgentId, MessageId, SessionId, Priority};
 
 /// Message envelope for protocol wrapping
 #[derive(Debug, Clone, Serialize, Deserialize)]
