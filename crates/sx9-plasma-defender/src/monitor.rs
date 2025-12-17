@@ -48,8 +48,8 @@ impl ThreatMonitor {
             self.tick += 1;
 
             // Monitor threats from agents
-            let agents = self.agents.read().await;
-            for agent in agents.iter() {
+            let mut agents = self.agents.write().await;
+            for agent in agents.iter_mut() {
                 if let Ok(Some(event)) = agent.monitor().await {
                     // Evaluate through crystal
                     let ring_strength = self

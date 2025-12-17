@@ -1,0 +1,132 @@
+services:
+  # =============================================================================
+  # CTAS-7 QA ANALYZER - MULTI-CRATE QUALITY ANALYSIS SYSTEM
+  # =============================================================================
+
+  # CTAS-7 QA Analyzer (Port 18107) - Standalone mode
+  ctas7-qa-analyzer:
+    build:
+      context: ./ctas7-qa-analyzer
+      dockerfile: Dockerfile
+    container_name: ctas7-qa-analyzer
+    ports:
+      - "18107:18107"
+    environment:
+      - CTAS_LAYER=quality_assurance
+      - SERVICE_MODE=analyzer
+      - RUST_LOG=info
+      - CTAS_QA_OUTPUT_DIR=/app/analysis-results
+      - ANALYSIS_MODE=standalone
+      - QUALITY_THRESHOLDS=foundation:10,engine:30,integration:50,application:100
+      - COMMAND_CENTER_ANALYSIS_URL=http://localhost:15175/analyze
+      - STATS_CDN_URL=http://ctas7-stats-cdn:18109/ingest
+      - TELEMETRY_ENABLED=true
+      - TELEMETRY_ENDPOINT=http://ctas7-stats-cdn:18109/telemetry
+    volumes:
+      # Mount codebase directories for analysis
+      - ./ctas7-candidate-crates-staging:/app/codebase/candidate-crates:ro
+      - ./ctas7-core-foundation-staging:/app/codebase/core-foundation:ro
+      - ./ctas7-foundation-tactical-staging:/app/codebase/foundation-tactical:ro
+      - ./smart-crate-system:/app/codebase/smart-crate-system:ro
+      # Mount results directory
+      - ./qa-analysis-results:/app/analysis-results
+      # Mount configuration
+      - ./ctas7-qa-analyzer/qa-config.yml:/app/config/qa-config.yml:ro
+    networks:
+      - ctas7-integrated-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "ctas7-phd-analyzer", "--version"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+  # QA Analysis Scheduler - Runs periodic analysis (standalone)
+  ctas7-qa-scheduler:
+    build:
+      context: ./ctas7-qa-analyzer
+      dockerfile: Dockerfile
+    container_name: ctas7-qa-scheduler
+    environment:
+      - CTAS_LAYER=quality_assurance
+      - SERVICE_MODE=scheduler
+      - ANALYSIS_INTERVAL=3600  # Every hour
+    volumes:
+      - ./ctas7-candidate-crates-staging:/app/codebase/candidate-crates:ro
+      - ./ctas7-core-foundation-staging:/app/codebase/core-foundation:ro
+      - ./ctas7-foundation-tactical-staging:/app/codebase/foundation-tactical:ro
+      - ./smart-crate-system:/app/codebase/smart-crate-system:ro
+      - ./qa-analysis-results:/app/analysis-results
+    networks:
+      - ctas7-integrated-network
+    depends_on:
+      - ctas7-qa-analyzer
+    restart: unless-stopped
+    command: >
+      sh -c "
+      while true; do
+        echo 'Starting scheduled QA analysis...'
+        for crate_dir in /app/codebase/*; do
+          if [ -d \"$$crate_dir\" ]; then
+            crate_name=$$(basename $$crate_dir)
+            echo \"Analyzing: $$crate_dir\"
+            ctas7-phd-analyzer \"$$crate_dir\" --json > /app/analysis-results/\"$$crate_name\".json
+            echo \"Posting stats for $$crate_name to CDN...\"
+            post_stats --url http://ctas7-stats-cdn:18109/ingest --source \"$$crate_name\" --tag scheduled-analysis < /app/analysis-results/\"$$crate_name\".json
+          fi
+        done
+        echo 'Scheduled analysis and stats upload complete. Sleeping for' $$ANALYSIS_INTERVAL 'seconds...'
+        sleep $$ANALYSIS_INTERVAL
+      done
+      "
+
+  # Statistical Analysis CDN - Port 18109
+  ctas7-stats-cdn:
+    build:
+      context: ./ctas7-isolated-monitoring-cdn-staging
+      dockerfile: Dockerfile
+    container_name: ctas7-stats-cdn
+    ports:
+      - "18109:18109"
+    environment:
+      - CTAS_LAYER=statistical_analysis
+      - SERVICE_MODE=cdn
+      - RUST_LOG=info
+      - CDN_INGEST_ENDPOINT=/ingest
+      - CDN_QUERY_ENDPOINT=/query
+      - STATS_STORAGE_PATH=/app/stats-data
+    volumes:
+      - ./qa-analysis-results:/app/stats-data
+      - ./ctas7-isolated-monitoring-cdn-staging/monitoring-demo-results-20250912_080044:/app/historical-data:ro
+    networks:
+      - ctas7-integrated-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:18109/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # QA Results Dashboard - Simple web interface
+  ctas7-qa-dashboard:
+    image: nginx:alpine
+    container_name: ctas7-qa-dashboard
+    ports:
+      - "18106:80"
+    volumes:
+      - ./qa-analysis-results:/usr/share/nginx/html/results:ro
+      - ./ctas7-qa-analyzer/dashboard:/usr/share/nginx/html:ro
+    networks:
+      - ctas7-integrated-network
+    restart: unless-stopped
+    depends_on:
+      - ctas7-stats-cdn
+
+networks:
+  ctas7-integrated-network:
+    external: true
+
+volumes:
+  qa-analysis-results:
+    driver: local

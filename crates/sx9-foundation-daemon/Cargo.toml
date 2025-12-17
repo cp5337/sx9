@@ -18,8 +18,11 @@ hft = ["crossbeam", "parking_lot", "dashmap"]
 pm2-compatibility = []
 
 [dependencies]
-# Foundation dependencies - DSL uses existing trivariate hash engine
-# sx9-foundation-core = { path = "../sx9-foundation-core" }
+# Foundation dependencies
+sx9-foundation-core = { path = "../sx9-foundation-core" }
+sx9-foundation-data = { path = "../sx9-foundation-data" }
+sx9-glaf-core = { path = "../sx9-glaf-core" }
+sx9-foundation-orbital = { path = "../sx9-foundation-orbital" }
 # sx9-foundation-math = { path = "../sx9-foundation-math" }
 # sx9-foundation-interface = { path = "../sx9-foundation-interface" }
 

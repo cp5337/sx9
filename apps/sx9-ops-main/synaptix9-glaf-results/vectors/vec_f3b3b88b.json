@@ -1,0 +1,17 @@
+{
+  "source_h1": "f3b3b88b872f570593c1941570d97f4ea359cb614343a93deec70e04004c4c5c",
+  "source_h2": "93537358ce82e4b967158f9cf401a7a1877e2ed5670c2573010466010a50c9ff",
+  "embedding_target": "plasma_threats",
+  "math_layer": {
+    "hash_delta": {
+      "value": "0.180625",
+      "unit": "normalized_turn"
+    },
+    "thyristor_triggered": false
+  },
+  "features": [
+    "Nmap Network Scan",
+    "Reconnaissance",
+    "nmap"
+  ]
+}

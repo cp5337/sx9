@@ -1,0 +1,110 @@
+[package]
+name = "{{spec.name}}"
+version = "0.1.0"
+edition = "2021"
+authors = ["CTAS-7 Engineering Team"]
+description = "{{spec.description}}"
+license = "MIT"
+readme = "README.md"
+keywords = ["ctas", "autonomous", "{{spec.mission}}", "wasm", "webassembly"]
+categories = ["development-tools", "wasm"]
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+# CTAS-7 Foundation Crates - Security Audited
+ctas7-foundation-core = { version = "1.0.0", features = ["runtime", "wasm"] }
+ctas7-foundation-data = { version = "1.0.0", features = ["streaming", "wasm"] }
+ctas7-foundation-dev = { version = "1.0.0", features = ["debug", "logging"] }
+
+# WASM-specific dependencies
+wasm-bindgen = "0.2.87"
+js-sys = "0.3.64"
+web-sys = { version = "0.3.64", features = [
+  "console",
+  "Window",
+  "Document",
+  "Element",
+  "HtmlElement",
+  "Performance",
+  "Worker",
+  "MessagePort",
+  "SharedArrayBuffer"
+] }
+
+# Async runtime for WASM
+wasm-bindgen-futures = "0.4.37"
+futures = "0.3.28"
+
+# Error handling and logging
+anyhow = "1.0.81"
+thiserror = "1.0.58"
+tracing = "0.1.40"
+tracing-wasm = "0.2.1"
+console_error_panic_hook = "0.1.7"
+
+# Serialization
+serde = { version = "1.0.197", features = ["derive"] }
+serde_json = "1.0.115"
+serde-wasm-bindgen = "0.6.0"
+
+{{#if (eq build_config.build_target "wasm")}}
+# WASM-only dependencies
+{{#if (eq build_config.wasm_optimization "size")}}
+# Size optimization
+wee_alloc = "0.4.5"
+{{/if}}
+{{/if}}
+
+[build-dependencies]
+# Build-time validation
+cargo_metadata = "0.18.1"
+
+[features]
+default = [{{#each build_config.features}}"{{this}}"{{#unless @last}}, {{/unless}}{{/each}}]
+{{#each build_config.features}}
+{{this}} = []
+{{/each}}
+
+# WASM-specific features
+wasm-compat = []
+browser-apis = ["web-sys/Window", "web-sys/Document"]
+worker-apis = ["web-sys/Worker", "web-sys/MessagePort"]
+
+{{#if (eq build_config.wasm_optimization "size")}}
+[profile.release]
+# WASM size optimization
+opt-level = "s"
+lto = true
+codegen-units = 1
+panic = "abort"
+strip = "symbols"
+overflow-checks = false
+
+# Enable wee_alloc for smaller WASM size
+[global_allocator]
+static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
+{{else}}
+[profile.release]
+# WASM speed optimization
+opt-level = 3
+lto = true
+codegen-units = 1
+panic = "abort"
+strip = "symbols"
+overflow-checks = true
+{{/if}}
+
+[profile.dev]
+# Development profile with debugging
+debug = true
+incremental = true
+overflow-checks = true
+
+# WASM build configuration
+[package.metadata.wasm-pack.profile.release]
+wasm-opt = [{{#if (eq build_config.wasm_optimization "size")}}"-Os"{{else}}"-O4"{{/if}}]
+
+[package.metadata.wasm-pack.profile.dev]
+wasm-opt = false

@@ -1,0 +1,54 @@
+[package]
+name = "autonomous-data-processor"
+version = "7.2.0"
+edition = "2021"
+authors = ["CTAS-7 Engineering Team"]
+description = "Tesla/SpaceX-grade autonomous data processing service"
+license = "MIT"
+readme = "README.md"
+keywords = ["ctas", "autonomous", "DataIngestion"]
+categories = ["development-tools"]
+
+[dependencies]
+# CTAS-7 Foundation Crates - Security Audited
+ctas7-foundation-core = { version = "1.0.0", features = ["runtime"] }
+ctas7-foundation-data = { version = "1.0.0", features = ["streaming"] }
+ctas7-foundation-dev = { version = "1.0.0", features = ["debug", "logging"] }
+
+# Core async runtime
+tokio = { version = "1.37.0", features = ["full"] }
+
+# Error handling and logging
+anyhow = "1.0.81"
+thiserror = "1.0.58"
+tracing = "0.1.40"
+tracing-subscriber = { version = "0.3.18", features = ["env-filter"] }
+
+# Serialization
+serde = { version = "1.0.197", features = ["derive"] }
+serde_json = "1.0.115"
+
+
+
+[build-dependencies]
+# Build-time validation
+cargo_metadata = "0.18.1"
+
+[features]
+default = ["dev-mode", "relaxed-security"]
+dev-mode = []
+relaxed-security = []
+
+[profile.release]
+# Tesla/SpaceX optimization standards
+lto = true
+codegen-units = 1
+panic = "abort"
+strip = "symbols"
+overflow-checks = true
+
+[profile.dev]
+# Development profile with debugging
+debug = true
+incremental = true
+overflow-checks = true

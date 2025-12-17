@@ -1,0 +1,17 @@
+{
+  "source_h1": "eee4d1984ca4a5045417a84d4635472b6044cbac7d35bb6ba68f20d5b51878d6",
+  "source_h2": "527277f1549b5cb3acb9323f09907cedd3265f1bd14c8021828bd89340e3efc0",
+  "embedding_target": "plasma_threats",
+  "math_layer": {
+    "hash_delta": {
+      "value": "0.180625",
+      "unit": "normalized_turn"
+    },
+    "thyristor_triggered": true
+  },
+  "features": [
+    "Exfill to S3",
+    "Exfiltration",
+    "aws_cli"
+  ]
+}

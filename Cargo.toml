@@ -18,6 +18,7 @@ members = [
     # Plasma/ECS System
     "crates/sx9-plasma-defender",
     "crates/sx9-plasma-ecs",
+    #"crates/sx9-forge",
 
     # Foundation v7.3.1
     "crates/sx9-foundation-core",
@@ -29,6 +30,22 @@ members = [
     "crates/sx9-foundation-voice",
     "crates/sx9-foundation-orbital",
     "crates/sx9-foundation-manifold",
+    "crates/sx9-cdn-data-fabric",
+    "crates/sx9-cdn-threat-reaction",
+    "crates/sx9-cdn-threat-intel",
+    "crates/sx9-cdn-monitoring",
+    "crates/sx9-cdn-statistical",
+    "crates/sx9-cdn-geospatial",
+    "crates/sx9-cdn-isolated-monitoring",
+
+    # Vertical 1: Orbital
+    "crates/sx9-orbital-simulator",
+
+    # Vertical 2: Ops Main
+    "crates/sx9-threat-simulator",
+
+    # Vertical 3: Dev Center
+    "crates/sx9-smart-crate-orchestrator",
 ]
 resolver = "2"
 

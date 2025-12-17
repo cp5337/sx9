@@ -1,0 +1,165 @@
+,task_name,description,category,hd4_phase,predecessors,successors,hash_id,p,t,h,task_seq,primitive_type
+uuid-000-000-001,Ideological Formation,Forming motivations via exposure.,Ideation,Hunt,,uuid-000-000-002,,0.95,0.97,0.15,1,Concept
+uuid-000-000-002,Radical Exposure,Encountering radical materials.,Digital Ideation,Hunt,uuid-000-000-001,uuid-000-000-003;uuid-000-000-004,,0.85,0.92,0.28,2,Concept
+uuid-000-000-003,Self Identification,Participating with radical groups.,Ideation,Hunt,uuid-000-000-002,uuid-000-000-005,,0.72,0.84,0.33,3,Concept
+uuid-000-000-004,Recruitment,Initiating contact with extremists.,HUMINT Digital,Hunt,uuid-000-000-002,uuid-000-000-006,,0.72,0.84,0.33,4,Actor
+uuid-000-000-005,Technical Training,Consuming operational tradecraft.,Cyber Training,Hunt,uuid-000-000-003,uuid-000-000-007,,0.65,0.78,0.38,5,Object
+uuid-000-000-006,Overseas Travel,Traveling abroad for instruction.,Travel Tradecraft,Hunt,uuid-000-000-004,uuid-000-001-001,,0.55,0.74,0.43,6,Unclassified
+uuid-000-000-007,Identity Documentation,Acquiring false IDs for operations.,Logistics,Hunt,uuid-000-000-005,uuid-000-001-001,,0.82,0.87,0.29,7,Unclassified
+uuid-000-001-001,Planning Initiation,Initiating plot formation.,Intelligence,Hunt,uuid-000-000-006;uuid-000-000-007,uuid-001-000-001,,0.94,0.97,0.16,1001,Event
+uuid-001-000-001,Pre-Operational Planning,Identifying intelligence sources and attack methodologies.,Planning,Hunt,uuid-000-001-001,uuid-001-001-001;uuid-001-002-001;uuid-001-003-001;uuid-001-004-001;uuid-001-005-001;uuid-001-006-001;uuid-001-008-001;uuid-001-009-001;uuid-001-010-001;uuid-001-011-001;uuid-001-012-001;uuid-001-013-001;uuid-001-014-001;uuid-001-015-001;uuid-001-016-001;uuid-001-017-001,,0.87,0.91,0.23,1000001,Concept
+uuid-001-001-001,OSINT Collection,Gathering intel from public sources.,Intelligence,Hunt,uuid-001-000-001,uuid-002-000-001,,0.87,0.92,0.28,1001001,Event
+uuid-001-002-001,Social Eng. Pretexting,Conducting deceptive interactions to extract info.,HUMINT,Hunt,uuid-001-000-001,uuid-001-009-001,,0.82,0.87,0.33,1002001,Actor
+uuid-001-003-001,Insider Recruitment,Exploiting individuals via incentives or coercion.,HUMINT,Hunt,uuid-001-000-001,uuid-002-000-001,,0.72,0.82,0.38,1003001,Actor
+uuid-001-004-001,Unwitting Accomplice Manipulation,Using individuals for indirect target access.,HUMINT,Hunt,uuid-001-000-001,uuid-002-000-001,,0.67,0.77,0.43,1004001,Actor
+uuid-001-005-001,Physical Surveillance,Observing target locations and routines.,Reconnaissance,Hunt,uuid-001-000-001,uuid-002-000-001,,0.82,0.87,0.33,1005001,Unclassified
+uuid-001-006-001,Cyber Reconnaissance,Identifying live hosts and network topology.,Cyber Reconnaissance,Hunt,uuid-001-000-001,uuid-001-007-001,,0.87,0.92,0.28,1006001,Object
+uuid-001-007-001,Vulnerability Scanning,Assessing networks and supply chains for weaknesses.,Cyber Reconnaissance,Hunt,uuid-001-006-001,uuid-002-000-001,,0.82,0.87,0.33,1007001,Object
+uuid-001-008-001,Digital Identity Harvesting,Collecting credentials via phishing or breaches.,Infiltration,Hunt,uuid-001-000-001,uuid-002-000-001,,0.77,0.82,0.38,1008001,Unclassified
+uuid-001-009-001,Malware Deployment for Access,Sending payloads to establish persistence.,Infiltration,Hunt,uuid-001-002-001,uuid-002-000-001,,0.72,0.82,0.43,1009001,Unclassified
+uuid-001-010-001,Dark Web Analysis,Monitoring forums for intel and procurement.,Intelligence,Hunt,uuid-001-000-001,uuid-002-000-001,,0.82,0.87,0.33,1010001,Event
+uuid-001-011-001,RF Exploitation,Identifying RF vulnerabilities for interception.,Cyber Reconnaissance,Hunt,uuid-001-000-001,uuid-002-000-001,,0.72,0.82,0.38,1011001,Object
+uuid-001-012-001,Packet Capture Analysis,Monitoring unencrypted traffic for flaws.,Cyber Reconnaissance,Hunt,uuid-001-000-001,uuid-002-000-001,,0.77,0.82,0.38,1012001,Object
+uuid-001-013-001,Supply Chain Vulnerability ID,Identifying vendor weaknesses for exploitation.,Indirect Attack,Hunt,uuid-001-000-001,uuid-002-000-001,,0.67,0.77,0.43,1013001,Unclassified
+uuid-001-014-001,OPSEC Countermeasures,Using anonymization to avoid detection.,Counter-Surveillance,Hunt,uuid-001-000-001,uuid-003-000-001,,0.82,0.87,0.33,1014001,Unclassified
+uuid-001-015-001,Attack Method Selection,Determining attack mechanisms.,Attack Planning,Hunt,uuid-001-000-001,uuid-002-000-001,,0.87,0.92,0.28,1015001,Concept
+uuid-001-016-001,Escape and Evasion Planning,Developing exfiltration plans and deception.,Evasion Planning,Hunt,uuid-001-000-001,uuid-002-000-001,,0.77,0.82,0.38,1016001,Concept
+uuid-001-017-001,Multi-Actor Coordination,Establishing secure comms for attack cells.,Operational Coordination,Hunt,uuid-001-000-001,uuid-002-000-001,,0.82,0.87,0.33,1017001,Unclassified
+uuid-002-000-001,Reconnaissance and Targeting,Conducting surveillance to identify opportunities.,Targeting,Hunt,uuid-000-001-001,uuid-003-000-001,,0.88,0.93,0.27,2000001,Unclassified
+uuid-002-001-001,OSINT Target Analysis,Detailed intel collection on locations.,Intelligence,Hunt,uuid-002-000-001,uuid-003-000-001,,0.82,0.87,0.33,2001001,Event
+uuid-002-002-001,Social Eng. Reconnaissance,Using deception to extract security info.,HUMINT,Hunt,uuid-002-000-001,uuid-003-000-001,,0.77,0.82,0.38,2002001,Actor
+uuid-002-003-001,Insider Threat Development,Manipulating individuals for target access.,HUMINT,Hunt,uuid-002-000-001,uuid-003-000-001,,0.67,0.77,0.43,2003001,Actor
+uuid-002-004-001,Physical Surveillance,Observing target locations and response times.,Reconnaissance,Hunt,uuid-002-000-001,uuid-003-000-001,,0.82,0.87,0.33,2004001,Unclassified
+uuid-002-005-001,Cyber Reconnaissance,Mapping network vulnerabilities.,Cyber Reconnaissance,Hunt,uuid-002-000-001,uuid-003-000-001,,0.82,0.87,0.33,2005001,Object
+uuid-002-006-001,Explosives Target Assessment,Analyzing structural vulnerabilities for IEDs.,Physical Reconnaissance,Hunt,uuid-002-000-001,uuid-003-000-001,,0.72,0.82,0.38,2006001,Unclassified
+uuid-002-007-001,UAV Target Acquisition,Mapping drone routes and payload opportunities.,Physical Reconnaissance,Hunt,uuid-002-000-001,uuid-003-000-001,,0.67,0.77,0.43,2007001,Unclassified
+uuid-002-008-001,CBRN Target Selection,Assessing dispersion factors for CBRN attacks.,CBRN Reconnaissance,Hunt,uuid-002-000-001,uuid-003-000-001,,0.62,0.72,0.48,2008001,Unclassified
+uuid-002-009-001,EW Reconnaissance,Identifying RF vulnerabilities and comms networks.,Cyber Reconnaissance,Hunt,uuid-002-000-001,uuid-003-000-001,,0.72,0.82,0.38,2009001,Object
+uuid-002-010-001,Supply Chain Targeting,Infiltrating vendors for access or disruption.,Indirect Attack,Hunt,uuid-002-000-001,uuid-003-000-001,,0.67,0.77,0.43,2010001,Unclassified
+uuid-003-000-001,Operational Security,Protecting operations through encrypted comms.,Counter-Surveillance,Detect,uuid-002-000-001,uuid-004-000-001,,0.82,0.87,0.33,3000001,Unclassified
+uuid-003-001-001,Encrypted Communication,Using secure messaging to prevent interception.,Digital OPSEC,Detect,uuid-003-000-001,uuid-004-000-001,,0.87,0.92,0.28,3001001,Attribute
+uuid-003-002-001,Digital Anonymization,Using TOR and burner identities to avoid detection.,Digital OPSEC,Detect,uuid-003-000-001,uuid-004-000-001,,0.82,0.87,0.33,3002001,Attribute
+uuid-003-003-001,Physical Security Measures,Using alarms and counter-surveillance tactics.,Physical OPSEC,Detect,uuid-003-000-001,uuid-004-000-001,,0.77,0.82,0.38,3003001,Attribute
+uuid-003-004-001,Detection Avoidance for CBRN,Using shielding to prevent detection of CBRN materials.,Physical OPSEC,Detect,uuid-003-000-001,uuid-004-000-001,,0.67,0.77,0.43,3004001,Attribute
+uuid-003-005-001,Covert Storage and Transport,Concealing weapons and data during transit.,Physical OPSEC,Detect,uuid-003-000-001,uuid-004-000-001,,0.72,0.82,0.38,3005001,Attribute
+uuid-003-006-001,Operational Camouflage,Creating false trails to disguise intentions.,Deception OPSEC,Detect,uuid-003-000-001,uuid-004-000-001,,0.72,0.82,0.38,3006001,Attribute
+uuid-003-007-001,Compartmentalized Infrastructure,Using burner phones to prevent tracking.,Digital OPSEC,Detect,uuid-003-000-001,uuid-004-000-001,,0.77,0.82,0.33,3007001,Attribute
+uuid-004-000-001,Obtain Operational Resources,Establishing financial and logistical resources.,Resource Development,Detect,uuid-003-000-001,uuid-005-000-001,,0.82,0.87,0.33,4000001,Unclassified
+uuid-004-001-001,Financing Operations,Conducting financial ops to generate funds.,Financial Crimes,Detect,,uuid-004-001-002;uuid-004-001-003;uuid-004-001-004;uuid-004-001-005;uuid-004-001-006;uuid-004-001-007;uuid-004-001-008;uuid-004-001-009;uuid-004-001-010;uuid-004-001-011;uuid-004-001-012;uuid-004-001-013;uuid-004-001-014;uuid-004-001-015;uuid-004-001-016;uuid-004-001-017;uuid-004-001-018;uuid-004-001-019;uuid-004-001-020;uuid-004-001-021,,0.81,0.83,0.37,4001001,Unclassified
+uuid-004-001-002,Crowdfunding Fraud,Raising funds under false pretenses online.,Financial Crimes,Detect,uuid-004-001-001,uuid-005-000-001,,0.72,0.77,0.43,4001002,Unclassified
+uuid-004-001-003,Cryptocurrency Laundering,Using mixers to obscure transactions.,Financial Crimes,Detect,uuid-004-001-001,uuid-005-000-001,,0.77,0.82,0.38,4001003,Unclassified
+uuid-004-001-004,Trade-Based Money Laundering,Laundering funds through trade invoices.,Financial Crimes,Detect,uuid-004-001-001,uuid-005-000-001,,0.67,0.77,0.43,4001004,Unclassified
+uuid-004-001-005,Drug and Illicit Goods Trade,Generating revenue through narcotics sales.,Organized Crime,Detect,uuid-004-001-001,uuid-005-000-001,,0.82,0.87,0.33,4001005,Unclassified
+uuid-004-001-006,State-Sponsored Financing,Using illicit government funding.,State-Sponsored Threats,Detect,uuid-004-001-001,uuid-005-000-001,,0.62,0.72,0.48,4001006,Unclassified
+uuid-004-001-007,Front Companies,Hiding financial flows through fake corporations.,Financial Crimes,Detect,uuid-004-001-001,uuid-005-000-001,,0.72,0.77,0.43,4001007,Unclassified
+uuid-004-001-008,Cybercrime Revenue,Funding via ransomware and fraud.,Cyber-Enabled Crime,Detect,uuid-004-001-001,uuid-005-000-001,,0.77,0.82,0.38,4001008,Object
+uuid-004-001-009,Bulk Cash Smuggling,Moving physical currency across borders.,Financial Crimes,Detect,uuid-004-001-001,uuid-005-000-001,,0.67,0.77,0.43,4001009,Unclassified
+uuid-004-001-010,Dark Web Transactions,Conducting illicit transactions on marketplaces.,Cyber-Enabled Crime,Detect,uuid-004-001-001,uuid-005-000-001,,0.72,0.82,0.38,4001010,Object
+uuid-004-001-011,Structuring Transactions,Breaking transactions to avoid detection.,Financial Crimes,Detect,uuid-004-001-001,uuid-005-000-001,,0.72,0.77,0.43,4001011,Unclassified
+uuid-004-001-012,Money Mules,Using intermediaries to move funds.,Financial Crimes,Detect,uuid-004-001-001,uuid-005-000-001,,0.67,0.77,0.43,4001012,Unclassified
+uuid-004-001-013,Precious Metals Laundering,Converting funds into metals.,Financial Crimes,Detect,uuid-004-001-001,uuid-005-000-001,,0.62,0.72,0.48,4001013,Unclassified
+uuid-004-001-014,Virtual Card Fraud,Using virtual cards to launder proceeds.,Cyber-Enabled Crime,Detect,uuid-004-001-001,uuid-005-000-001,,0.72,0.77,0.43,4001014,Object
+uuid-004-001-015,Gift Card Laundering,Converting funds into gift cards.,Cyber-Enabled Crime,Detect,uuid-004-001-001,uuid-005-000-001,,0.67,0.77,0.43,4001015,Object
+uuid-004-001-016,Retail Front Laundering,Using goods to disguise revenue.,Financial Crimes,Detect,uuid-004-001-001,uuid-005-000-001,,0.72,0.77,0.43,4001016,Unclassified
+uuid-004-001-017,Illicit Untaxed Goods Sales,Selling untaxed goods for revenue.,Financial Crimes,Detect,uuid-004-001-001,uuid-005-000-001,,0.67,0.77,0.43,4001017,Unclassified
+uuid-004-001-018,Radicalizing Students,Recruiting students via OSINT/dark web.,HUMINT,Detect,uuid-004-001-001,uuid-002-000-001,,0.76,0.81,0.39,4001018,Actor
+uuid-004-001-019,Compromising Officials,Bribing/extorting officials and students.,Financial Crimes,Detect,uuid-004-001-001,uuid-006-000-001,,0.81,0.86,0.34,4001019,Unclassified
+uuid-004-001-020,Islamic Terror Cell Activation,Activating terror operatives with logistical support.,Operational Coordination,Detect,uuid-004-001-018,uuid-006-000-001,,0.76,0.81,0.44,4001020,Unclassified
+uuid-004-001-021,Middle East Terror Funding,Securing funds from Middle East via crypto.,Financial Crimes,Detect,,uuid-004-001-001,,0.73,0.83,0.42,4001021,Unclassified
+uuid-005-000-001,Reconnaissance and Targeting,Gathering intel on targets.,Targeting,Hunt,uuid-004-000-001,uuid-006-000-001,,0.82,0.87,0.33,5000001,Unclassified
+uuid-005-001-001,OSINT Collection,Gathering personal/org intel.,Intelligence,Hunt,uuid-005-000-001,uuid-006-000-001,,0.87,0.92,0.28,5001001,Event
+uuid-005-002-001,Physical Surveillance,Identifying response times and access points.,Reconnaissance,Hunt,uuid-005-000-001,uuid-006-000-001,,0.82,0.87,0.33,5002001,Unclassified
+uuid-005-003-001,Network Enumeration,Identifying vulnerabilities in networks.,Cyber Reconnaissance,Hunt,uuid-005-000-001,uuid-006-000-001,,0.82,0.87,0.33,5003001,Object
+uuid-005-004-001,Cloud Reconnaissance,Mapping cloud-based vulnerabilities.,Cyber Reconnaissance,Hunt,uuid-005-000-001,uuid-006-000-001,,0.77,0.82,0.38,5004001,Object
+uuid-005-005-001,Target Vulnerability Assessment,Assessing digital and physical attack surfaces.,Targeting,Hunt,uuid-005-000-001,uuid-006-000-001,,0.82,0.87,0.33,5005001,Unclassified
+uuid-005-006-001,Supply Chain Targeting,Identifying third-party vendors for exploitation.,Indirect Attack,Hunt,uuid-005-000-001,uuid-006-000-001,,0.72,0.82,0.38,5006001,Unclassified
+uuid-005-007-001,Insider Threat Development,Co-opting insiders for pre-positioned access.,HUMINT,Hunt,uuid-005-000-001,uuid-006-000-001,,0.67,0.77,0.43,5007001,Actor
+uuid-005-008-001,Dark Web Intel Gathering,Using forums for intelligence.,Intelligence,Hunt,uuid-005-000-001,uuid-006-000-001,,0.82,0.87,0.33,5008001,Event
+uuid-005-009-001,Geospatial Reconnaissance,Using GIS to plan movements.,Reconnaissance,Hunt,uuid-005-000-001,uuid-006-000-001,,0.77,0.82,0.38,5009001,Unclassified
+uuid-005-010-001,Targeting Remote Work Systems,Exploiting work-from-home setups.,Cyber Reconnaissance,Hunt,uuid-005-000-001,uuid-006-000-001,,0.72,0.82,0.38,5010001,Object
+uuid-005-011-001,Critical Infrastructure Targeting,Identifying high-value targets.,Targeting,Hunt,uuid-005-000-001,uuid-006-000-001,,0.82,0.87,0.33,5011001,Unclassified
+uuid-005-012-001,Border Security Targeting,Identifying weaknesses in customs.,Targeting,Hunt,uuid-005-000-001,uuid-006-000-001,,0.72,0.82,0.38,5012001,Unclassified
+uuid-005-013-001,Law Enforcement Surveillance,Analyzing police tactics.,Counterintelligence,Hunt,uuid-005-000-001,uuid-006-000-001,,0.77,0.82,0.38,5013001,Event
+uuid-006-000-001,Infiltration and Access,Gaining entry via cyber/physical means.,Infiltration,Disrupt,uuid-005-000-001,uuid-007-000-001,,0.58,0.82,0.53,6000001,Unclassified
+uuid-006-001-001,Physical Infiltration,Gaining covert entry via disguise.,Infiltration,Disrupt,uuid-006-000-001,uuid-007-000-001,,0.53,0.77,0.58,6001001,Unclassified
+uuid-006-002-001,Cyber Exploitation for Access,Using phishing and credential theft for footholds.,Cyber Warfare,Disrupt,uuid-006-000-001,uuid-007-000-001,,0.7,0.85,0.45,6002001,Object
+uuid-006-003-001,UAVs for ISR and Infiltration,Deploying drones for recon and payload.,Physical Reconnaissance,Disrupt,uuid-006-000-001,uuid-007-000-001,,0.52,0.72,0.63,6003001,Unclassified
+uuid-006-004-001,Network Trust Exploitation,Abusing VPNs for access.,Cyber Warfare,Disrupt,uuid-006-000-001,uuid-007-000-001,,0.62,0.77,0.53,6004001,Object
+uuid-006-005-001,RF Jamming for Disruption,Targeting security with RF interference.,Cyber Warfare,Disrupt,uuid-006-000-001,uuid-007-000-001,,0.57,0.72,0.58,6005001,Object
+uuid-006-006-001,UAV Comms Exploitation,Hijacking enemy UAVs for intel.,Cyber Warfare,Disrupt,uuid-006-000-001,uuid-007-000-001,,0.52,0.72,0.63,6006001,Object
+uuid-006-007-001,Insider Threats for Access,Leveraging insiders to bypass controls.,HUMINT,Disrupt,uuid-006-000-001,uuid-007-000-001,,0.62,0.77,0.53,6007001,Actor
+uuid-006-008-001,Supply Chain Infiltration,Embedding malicious components in supply chains.,Indirect Attack,Disrupt,uuid-006-000-001,uuid-007-000-001,,0.57,0.72,0.58,6008001,Unclassified
+uuid-006-009-001,Covert Data Exfiltration,Using DNS tunneling to extract intel.,Cyber Warfare,Disrupt,uuid-006-000-001,uuid-007-000-001,,0.62,0.77,0.53,6009001,Object
+uuid-006-010-001,Pre-Staged Cyber Implants,Placing dormant malware before execution.,Cyber Warfare,Disrupt,uuid-006-000-001,uuid-007-000-001,,0.67,0.82,0.48,6010001,Object
+uuid-006-011-001,UAV Cyber Payload Delivery,Using drones to deliver malicious devices.,Cyber Warfare,Disrupt,uuid-006-000-001,uuid-007-000-001,,0.52,0.72,0.63,6011001,Object
+uuid-006-012-001,Tunneling Border Tactics,Using smuggling tunnels for access.,Transnational Crime,Disrupt,uuid-006-000-001,uuid-007-000-001,,0.56,0.78,0.57,6012001,Unclassified
+uuid-006-013-001,Mobile Device Compromise,Exploiting phones for persistent access.,Cyber Warfare,Disrupt,uuid-006-000-001,uuid-007-000-001,,0.62,0.77,0.53,6013001,Object
+uuid-006-013-002,Pre-Positioned Operative Mobilization,Activating operatives from prior border entry.,Operational Coordination,Disrupt,uuid-004-001-020,uuid-006-000-001,,0.81,0.86,0.34,6013002,Unclassified
+uuid-006-014-001,Social Eng. for Access,Convincing personnel to grant access.,HUMINT,Disrupt,uuid-006-000-001,uuid-007-000-001,,0.67,0.82,0.48,6014001,Actor
+uuid-007-000-001,Execution of Cyber Physical Attacks,Conducting direct attacks on infrastructure.,Execution,Disable,uuid-006-000-001,uuid-008-000-001,,0.38,0.72,0.68,7000001,Unclassified
+uuid-007-001-001,Disabling Security Systems,Disabling cyber/physical security.,Exploitation,Disable,uuid-007-000-001,uuid-008-000-001,,0.47,0.77,0.58,7001001,Unclassified
+uuid-007-002-001,Diversionary Attacks,Executing actions to mislead response forces.,Deception,Disrupt,uuid-007-000-001,uuid-008-000-001,,0.52,0.72,0.53,7002001,Unclassified
+uuid-007-003-001,Targeting Critical Infrastructure,Attacking OT and ICS within sectors.,Cyber Physical Warfare,Disable,uuid-007-000-001,uuid-007-003-002;uuid-007-003-003;uuid-007-003-004;uuid-007-003-005;uuid-007-003-006;uuid-007-003-007;uuid-007-003-008,,0.38,0.72,0.68,7003001,Object
+uuid-007-003-002,Assault on Soft Targets,Attacking public spaces to maximize casualties.,Civilian Targeting,Disable,uuid-007-003-001,uuid-008-000-001,,0.47,0.77,0.58,7003002,Unclassified
+uuid-007-003-003,Emergency Services Disruption,Attacking law enforcement to degrade response.,Cyber Physical Warfare,Disable,uuid-007-003-001,uuid-008-000-001,,0.42,0.72,0.63,7003003,Object
+uuid-007-003-004,Comms Tech Sabotage,Attacking telecoms and IT to disrupt ops.,Cyber Physical Warfare,Disable,uuid-007-003-001,uuid-008-000-001,,0.42,0.72,0.63,7003004,Object
+uuid-007-003-005,Energy Utilities Compromise,Attacking grids for cascading failures.,Cyber Physical Warfare,Disable,uuid-007-003-001,uuid-008-000-001,,0.33,0.67,0.73,7003005,Object
+uuid-007-003-006,Transport Supply Chain Attacks,Attacking rail and shipping hubs.,Cyber Physical Warfare,Disable,uuid-007-003-001,uuid-008-000-001,,0.33,0.67,0.73,7003006,Object
+uuid-007-003-007,Govt Defense Operations,Attacking military and govt facilities.,Cyber Physical Warfare,Disable,uuid-007-003-001,uuid-008-000-001,,0.28,0.62,0.78,7003007,Object
+uuid-007-003-008,Industrial Economic Disruption,Attacking industrial systems.,Cyber Physical Warfare,Disable,uuid-007-003-001,uuid-008-000-001,,0.33,0.67,0.73,7003008,Object
+uuid-007-004-001,Cyber-Enabled Kinetic Attacks,Using cyber intrusions to enable attacks.,Hybrid Warfare,Disable,uuid-007-000-001,uuid-008-000-001,,0.42,0.72,0.63,7004001,Unclassified
+uuid-007-005-001,Weaponized AI,Deploying AI for attack automation.,Cognitive Warfare,Disable,uuid-007-000-001,uuid-008-000-001,,0.33,0.67,0.73,7005001,Unclassified
+uuid-007-006-001,Tactical Kinetic Operations,Conducting bombings and assaults.,Direct Action,Disable,uuid-006-000-001,uuid-007-007-001;uuid-008-000-001,,0.46,0.78,0.57,7006001,Unclassified
+uuid-007-007-001,Hostage Crisis Initiation,Establishing control via hostages.,Direct Action,Disable,uuid-007-006-001,uuid-008-000-002,,0.73,0.79,0.57,7007001,Unclassified
+uuid-008-000-001,National Asset Assault,Executing assault by national forces.,Response Operations,Dominate,uuid-008-000-002,uuid-009-000-001,,0.65,0.75,0.5,8000001,Unclassified
+uuid-008-000-002,Multi-Jurisdiction Contingent Assembly,Assembling multi-agency law enforcement.,Response Operations,Dominate,uuid-007-007-001,uuid-008-000-001,,0.86,0.91,0.39,8000002,Unclassified
+uuid-008-001-001,Deleting Evidence,Removing logs and forensic traces.,Cyber Evasion,Dominate,uuid-008-000-001,uuid-009-000-001,,0.67,0.77,0.48,8001001,Object
+uuid-008-002-001,Rotating Identities,Using multiple identities to avoid attribution.,Identity Evasion,Dominate,uuid-008-000-001,uuid-009-000-001,,0.72,0.82,0.43,8002001,Unclassified
+uuid-008-003-001,Deploying Volatile Malware,Using memory-only malware to evade forensics.,Cyber Evasion,Dominate,uuid-008-000-001,uuid-009-000-001,,0.62,0.72,0.53,8003001,Object
+uuid-008-004-001,Concealing Digital Footprints,Using encryption to hide activity.,Cyber Evasion,Dominate,uuid-008-000-001,uuid-009-000-001,,0.67,0.77,0.48,8004001,Object
+uuid-008-005-001,Redirecting Attribution,Planting false flags to frame others.,Cyber Deception,Dominate,uuid-008-000-001,uuid-009-000-001,,0.62,0.72,0.53,8005001,Object
+uuid-008-006-001,Using Safe Houses,Relying on secure locations to evade capture.,Physical Evasion,Dominate,uuid-008-000-001,uuid-009-000-001,,0.67,0.77,0.48,8006001,Unclassified
+uuid-008-007-001,Escaping Operational Areas,Using escape routes to leave the area.,Physical Evasion,Dominate,uuid-008-000-001,uuid-009-000-001,,0.72,0.82,0.43,8007001,Unclassified
+uuid-008-008-001,Destroying Forensic Evidence,Eliminating weapons to prevent ID.,Physical Concealment,Dominate,uuid-008-000-001,uuid-009-000-001,,0.67,0.77,0.48,8008001,Unclassified
+uuid-008-009-001,Altering Appearance,Using disguises to evade law enforcement.,Identity Evasion,Dominate,uuid-008-000-001,uuid-009-000-001,,0.72,0.82,0.43,8009001,Unclassified
+uuid-008-010-001,Disrupting Investigations,Spreading false info to mislead law enforcement.,Law Enforcement Counter,Dominate,uuid-008-000-001,uuid-009-000-001,,0.62,0.72,0.53,8010001,Unclassified
+uuid-008-011-001,Conducting False Flags,Creating misleading evidence to shift blame.,Deception,Dominate,uuid-008-000-001,uuid-009-000-001,,0.62,0.72,0.53,8011001,Unclassified
+uuid-008-012-001,Exploiting Legal Systems,Using asylum loopholes to avoid prosecution.,Legal Exploitation,Dominate,uuid-008-000-001,uuid-009-000-001,,0.57,0.67,0.58,8012001,Unclassified
+uuid-008-013-001,Controlling Propaganda,Manipulating messaging to shape perception.,Psychological Operation,Dominate,uuid-008-000-001,uuid-009-000-001,,0.67,0.77,0.48,8013001,Unclassified
+uuid-009-000-001,Major Crimes,Using criminal activities for funding and disruption.,Criminal Operations,Dominate,uuid-008-000-001,uuid-010-000-001,,0.72,0.82,0.43,9000001,Unclassified
+uuid-009-001-001,Homicide,Killing individuals through targeted violence.,Violent Crime,Dominate,uuid-009-000-001,uuid-010-000-001,,0.62,0.72,0.53,9001001,Unclassified
+uuid-009-002-001,Sexual Violence,Using rape as a tool of terror.,Violent Crime,Dominate,uuid-009-000-001,uuid-010-000-001,,0.52,0.67,0.58,9002001,Unclassified
+uuid-009-003-001,Aggravated Assault,Conducting severe attacks to intimidate.,Violent Crime,Dominate,uuid-009-000-001,uuid-010-000-001,,0.57,0.72,0.53,9003001,Unclassified
+uuid-009-004-001,Kidnapping,Capturing individuals for ransom.,Violent Crime,Dominate,uuid-009-000-001,uuid-010-000-001,,0.62,0.77,0.48,9004001,Unclassified
+uuid-009-005-001,Robbery,Using force to steal assets.,Financial Crime,Dominate,uuid-009-000-001,uuid-010-000-001,,0.67,0.77,0.48,9005001,Unclassified
+uuid-009-006-001,Burglary,Breaking into locations to steal resources.,Financial Crime,Dominate,uuid-009-000-001,uuid-010-000-001,,0.62,0.72,0.53,9006001,Unclassified
+uuid-009-007-001,Theft,Stealing assets non-confrontationally.,Financial Crime,Dominate,uuid-009-000-001,uuid-010-000-001,,0.67,0.77,0.48,9007001,Unclassified
+uuid-009-008-001,Vehicle Theft,Stealing vehicles for operational use.,Operational Support,Dominate,uuid-009-000-001,uuid-010-000-001,,0.72,0.82,0.43,9008001,Unclassified
+uuid-009-009-001,Arson,Using fire to destroy infrastructure.,Psychological Warfare,Dominate,uuid-009-000-001,uuid-010-000-001,,0.62,0.72,0.53,9009001,Unclassified
+uuid-010-000-001,Law Enforcement Evasion,Tracking and mitigating law enforcement encounters.,Counter-Surveillance,Dominate,uuid-009-000-001,uuid-011-000-001,,0.77,0.82,0.43,10000001,Unclassified
+uuid-010-001-001,Traffic Violations,Encountering police due to minor infractions.,Counter-Surveillance,Dominate,uuid-010-000-001,uuid-011-000-001,,0.72,0.77,0.48,10001001,Unclassified
+uuid-010-002-001,Witness Questioning,Responding to law enforcement as a witness.,Counter-Surveillance,Dominate,uuid-010-000-001,uuid-011-000-001,,0.67,0.72,0.53,10002001,Unclassified
+uuid-010-003-001,Criminal Investigation,Evading investigative leads.,Defense Evasion,Dominate,uuid-010-000-001,uuid-011-000-001,,0.72,0.77,0.48,10003001,Unclassified
+uuid-010-004-001,Arrest Avoidance,Using deception to avoid capture.,Defense Evasion,Dominate,uuid-010-000-001,uuid-011-000-001,,0.77,0.82,0.43,10004001,Unclassified
+uuid-010-005-001,Police Counter-Surveillance,Tracking and disrupting police surveillance.,Counterintelligence,Dominate,uuid-010-000-001,uuid-011-000-001,,0.72,0.77,0.48,10005001,Event
+uuid-010-006-001,Corrupting Officials,Using incentives to influence officials.,Influence Operations,Dominate,uuid-010-000-001,uuid-011-000-001,,0.67,0.72,0.53,10006001,Unclassified
+uuid-010-007-001,Exploiting Legal Loopholes,Using asylum to avoid prosecution.,Legal Exploitation,Dominate,uuid-010-000-001,uuid-011-000-001,,0.62,0.67,0.58,10007001,Unclassified
+uuid-010-008-001,Manipulating Law Enforcement,Releasing misinformation to hinder investigations.,Psychological Operations,Dominate,uuid-010-000-001,uuid-011-000-001,,0.67,0.72,0.53,10008001,Unclassified
+uuid-011-000-001,Transnational Cartel Operations,Conducting sustained operations via drug cartels.,Transnational Crime,Dominate,uuid-010-000-001,uuid-011-001-001;uuid-011-002-001;uuid-011-003-001;uuid-011-004-001;uuid-011-005-001;uuid-011-006-001;uuid-011-007-001;uuid-011-008-001;uuid-011-009-001;uuid-011-010-001;uuid-011-011-001;uuid-011-012-001;uuid-011-013-001;uuid-011-014-001;uuid-011-015-001;uuid-011-016-001;uuid-011-017-001,,0.77,0.82,0.43,11000001,Unclassified
+uuid-011-001-001,Bribery Operations,Using corruption to influence law enforcement.,Corruption & Influence,Dominate,uuid-011-000-001,,,0.72,0.77,0.48,11001001,Unclassified
+uuid-011-002-001,Corrupting Law Enforcement,Leveraging bribery to avoid prosecution.,Corruption & Influence,Dominate,uuid-011-000-001,,,0.72,0.77,0.48,11002001,Unclassified
+uuid-011-003-001,Exploiting Police Interactions,Manipulating encounters for intel.,Defense Evasion,Dominate,uuid-011-000-001,,,0.67,0.72,0.53,11003001,Unclassified
+uuid-011-004-001,Human Smuggling,Moving operatives across borders.,Transnational Crime,Dominate,uuid-011-000-001,,,0.77,0.82,0.43,11004001,Unclassified
+uuid-011-005-001,Drug Trafficking,Generating revenue via drug supply chains.,Financial Crimes,Dominate,uuid-011-000-001,,,0.82,0.87,0.38,11005001,Unclassified
+uuid-011-006-001,Arms Trafficking,Acquiring illicit firearms and equipment.,Operational Support,Dominate,uuid-011-000-001,,,0.77,0.82,0.43,11006001,Unclassified
+uuid-011-007-001,Cartel Counterintelligence,Neutralizing informants and surveillance.,Counterintelligence,Dominate,uuid-011-000-001,,,0.72,0.77,0.48,11007001,Event
+uuid-011-008-001,Coercion and Intimidation,Using violence to control rivals.,Psychological Warfare,Dominate,uuid-011-000-001,,,0.67,0.72,0.53,11008001,Unclassified
+uuid-011-009-001,False Flag Cartel Operations,Conducting staged attacks to shift blame.,Deception & Misdirection,Dominate,uuid-011-000-001,,,0.62,0.72,0.53,11009001,Unclassified
+uuid-011-010-001,Border Corruption,Bribing customs officials for smuggling.,Corruption & Influence,Dominate,uuid-011-000-001,,,0.72,0.77,0.48,11010001,Unclassified
+uuid-011-011-001,Border Tunnel Operations,Using tunnels for smuggling drugs.,Transnational Crime,Dominate,uuid-011-000-001,,,0.77,0.82,0.43,11011001,Unclassified
+uuid-011-012-001,Maritime Smuggling,Using vessels to transport contraband.,Transnational Crime,Dominate,uuid-011-000-001,uuid-011-017-001,,0.73,0.78,0.47,11012001,Unclassified
+uuid-011-013-001,Airspace Exploitation,Using drones to transport goods.,Transnational Crime,Dominate,uuid-011-000-001,,,0.67,0.72,0.53,11013001,Unclassified
+uuid-011-014-001,Border Crossing Counter-Surveillance,Recon on border security.,Counterintelligence,Dominate,uuid-011-000-001,,,0.72,0.77,0.48,11014001,Event
+uuid-011-015-001,Document Forgery,Producing fraudulent IDs.,Operational Support,Dominate,uuid-011-000-001,,,0.77,0.82,0.43,11015001,Unclassified
+uuid-011-016-001,Reserved Placeholder,Potential future cartel task.,Financial Crimes,Dominate,uuid-011-000-001,,,0.72,0.77,0.48,11016001,Unclassified
+uuid-011-017-001,Sicario Deployment,Deploying trained sicarios for coercion and assassination.,Transnational Crime,Dominate,uuid-011-012-001,uuid-006-000-001,,0.71,0.76,0.49,11017001,Unclassified

@@ -1,0 +1,33 @@
+name: sx9-threat-intel
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.11
+  - pip
+  - pip:
+    # Core dependencies
+    - requests
+    - beautifulsoup4
+    - pyyaml
+    - python-dateutil
+    
+    # Hashing (RFC-9001 compliant)
+    - mmh3  # Murmur3-64 for trivariate hashing
+    
+    # Database drivers
+    - neo4j  # Neo4j driver for graph database
+    - supabase  # Supabase client
+    
+    # SPIRES ontology
+    - ontogpt  # Optional but recommended for SPIRES
+    
+    # Google Cloud (for Vertex AI refactoring)
+    - google-cloud-aiplatform
+    - vertexai
+    
+    # Additional utilities
+    - python-dotenv
+
+
+

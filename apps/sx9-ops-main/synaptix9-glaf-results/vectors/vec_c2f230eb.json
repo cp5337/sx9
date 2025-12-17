@@ -1,0 +1,17 @@
+{
+  "source_h1": "c2f230eb8bf910f3d14d554e437838a08513e87bc1e285888557cbcf1a9610f1",
+  "source_h2": "759bc8e467faad675fc3357bd31d2ecf1b3077f0d336d28f51ff3b83874d589a",
+  "embedding_target": "plasma_threats",
+  "math_layer": {
+    "hash_delta": {
+      "value": "0.180625",
+      "unit": "normalized_turn"
+    },
+    "thyristor_triggered": false
+  },
+  "features": [
+    "Convergence Check",
+    "Command and Control",
+    "glaf_core"
+  ]
+}

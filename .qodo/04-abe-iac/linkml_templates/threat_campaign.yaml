@@ -1,0 +1,70 @@
+# LinkML Schema for Campaign Definition (H2 Semantic Context)
+# RFC-9011, RFC-9105, RFC-9020
+#
+# Usage: SPIRES/OntoGPT extraction for APT campaign tracking
+# Output: LinkML-conformant JSON for Neo4j graph population
+
+id: https://w3id.org/ctas7/threat_campaign
+name: ThreatCampaign
+
+prefixes:
+  linkml: https://w3id.org/linkml/
+  hd4: https://w3id.org/ctas7/hd4/
+
+imports:
+  - linkml:types
+
+classes:
+  ThreatCampaign:
+    description: A high-level, persistent adversary operation or campaign.
+    attributes:
+      campaign_id:
+        description: Unique identifier for the campaign (e.g., SUNBURST, OperationWannaCry).
+        range: string
+        identifier: true
+      name:
+        description: Human-readable campaign name.
+        range: string
+      target_sectors:
+        description: Primary sectors under attack.
+        range: string
+        multivalued: true
+      attributed_actors:
+        description: Actors believed to be involved in the campaign.
+        range: string  # Reference to ThreatActor.actor_id
+        multivalued: true
+      primary_hd4_goal:
+        description: The main cognitive goal of the adversary (e.g., Dominate, Disrupt).
+        range: string  # References HD4Phase enum from RFC-9020
+      start_date:
+        description: Campaign start date.
+        range: string  # YYYY-MM-DD
+      end_date:
+        description: Campaign end date (null if ongoing).
+        range: string  # YYYY-MM-DD or null
+      observed_techniques:
+        description: The sequence of MITRE techniques observed in this campaign.
+        range: string  # Reference to ThreatTechnique.technique_id
+        multivalued: true
+      target_regions:
+        description: Geographic regions targeted.
+        range: string
+        multivalued: true
+      severity:
+        description: Overall campaign severity assessment.
+        range: string  # critical, high, medium, low
+      status:
+        description: Campaign status.
+        range: CampaignStatus
+
+enums:
+  CampaignStatus:
+    permissible_values:
+      active:
+        description: Campaign is currently ongoing
+      dormant:
+        description: Campaign has paused but may resume
+      concluded:
+        description: Campaign has ended
+      unknown:
+        description: Status cannot be determined

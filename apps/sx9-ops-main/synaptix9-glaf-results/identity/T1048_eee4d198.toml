@@ -1,0 +1,10 @@
+name = "Exfill to S3"
+domain = "CYBER_PLASMA_CORE"
+crystal = "VARNISH_CRYSTAL_E0"
+teth_entropy = "0.9700"
+h1_hash = "eee4d1984ca4a5045417a84d4635472b6044cbac7d35bb6ba68f20d5b51878d6"
+
+[ontology]
+phase = "Exfiltration"
+mitre_id = "T1048"
+layer = "Layer 7 (App)"

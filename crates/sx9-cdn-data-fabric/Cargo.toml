@@ -1,0 +1,74 @@
+[package]
+name = "sx9-cdn-data-fabric"
+version = "0.1.0"
+edition = "2021"
+description = "GLAF CDN Data Fabric - Universal database aggregation layer for visualization"
+license = "MIT OR Apache-2.0"
+authors = ["CTAS Engineering"]
+
+[[bin]]
+name = "cdn-data-fabric"
+path = "src/main.rs"
+
+[dependencies]
+# Foundation
+ctas7-foundation-core = { package = "sx9-foundation-core", path = "../sx9-foundation-core" }
+
+# Web Framework
+axum = { version = "0.7", features = ["ws"] }
+tokio = { version = "1", features = ["full"] }
+tower = "0.4"
+tower-http = { version = "0.5", features = ["cors", "trace", "fs"] }
+
+# Serialization
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+
+# Database Clients
+surrealdb = "2.0"
+tokio-postgres = "0.7"
+redis = { version = "0.25", features = ["tokio-comp"] }
+
+# GeoJSON
+geojson = "0.24"
+
+# Utilities
+anyhow = "1.0"
+thiserror = "1.0"
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+uuid = { version = "1.0", features = ["v4", "serde"] }
+chrono = { version = "0.4", features = ["serde"] }
+dashmap = "5.5"  # Concurrent hashmap for registry
+
+# WebSocket
+futures = "0.3"
+tokio-stream = "0.1"
+
+# HTTP Client
+reqwest = { version = "0.12", features = ["json"] }
+
+# Async trait
+async-trait = "0.1"
+
+
+[features]
+default = ["smart-crate"]
+smart-crate = []
+
+[package.metadata.ctas]
+smart_crate = true
+foundation_version = "7.3.1"
+auto_deploy = true
+container_runtime = "orbstack"
+port = 18100
+health_check = "/health"
+requires_port_manager = true
+bernoulli_zone = "operational"
+
+[profile.release]
+lto = true
+codegen-units = 1
+panic = "abort"
+strip = "symbols"
+overflow-checks = true

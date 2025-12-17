@@ -537,6 +537,14 @@ impl TrivariateHashEngineV731 {
 
         age > ttl
     }
+
+    /// Generate a simple hash from bytes using the canonical Murmur3-128 algorithm
+    /// encoded in Base96. Used for general content integrity (replacing MD5/Blake3).
+    /// Returns 16-character Base96 string.
+    pub fn generate_hash_from_bytes(&self, bytes: &[u8]) -> String {
+        let hash = murmur3_128_bytes(bytes);
+        encode_base96_128bit(&hash)
+    }
 }
 
 impl Default for TrivariateHashEngineV731 {
@@ -622,7 +630,10 @@ fn tokenize_nvn_grammar(s: &str) -> String {
 /// Full 128-bit MurmurHash3 algorithm - bit-exact reproducibility required
 /// ~3.5ns/word performance, zero ambiguity for delta-angle supersession
 fn murmur3_128(input: &str) -> [u8; 16] {
-    let data = input.as_bytes();
+    murmur3_128_bytes(input.as_bytes())
+}
+
+fn murmur3_128_bytes(data: &[u8]) -> [u8; 16] {
     let len = data.len();
 
     // Murmur3-128 constants

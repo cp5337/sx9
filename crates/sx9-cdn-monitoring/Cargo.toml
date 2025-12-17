@@ -1,0 +1,63 @@
+[package]
+name = "sx9-cdn-monitoring"
+version = "7.2.0"
+edition = "2021"
+authors = ["CTAS Development Team"]
+description = "CTAS Monitoring CDN - Cloudflare-inspired edge network for progress and resource tracking"
+
+[dependencies]
+# Core dependencies
+tokio = { version = "1.0", features = ["full"] }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+uuid = { version = "1.0", features = ["v4", "serde"] }
+chrono = { version = "0.4", features = ["serde"] }
+tracing = "0.1"
+tracing-subscriber = "0.3"
+
+# HTTP and networking
+axum = { version = "0.8", features = ["ws", "macros"] }
+tower = "0.5"
+tower-http = { version = "0.6", features = ["cors", "trace"] }
+hyper = { version = "1.0", features = ["full"] }
+
+# Database and caching
+sled = "0.34"
+redis = { version = "0.24", features = ["tokio-comp"] }
+
+# Geographic and routing
+geo = "0.25"
+geo-types = "0.7"
+
+# Error handling and static initialization
+thiserror = "1.0"
+lazy_static = "1.4"
+
+# CTAS dependencies (temporarily disabled due to build issues)
+# ctas-shared-infrastructure = { path = "../ctas-shared-infrastructure" }
+# ctas-core-foundation = { path = "../ctas-core-foundation" }
+
+[dev-dependencies]
+tokio-test = "0.4"
+
+
+[features]
+default = ["smart-crate"]
+smart-crate = []
+
+[package.metadata.ctas]
+smart_crate = true
+foundation_version = "7.3.1"
+auto_deploy = true
+container_runtime = "orbstack"
+port = 18113
+health_check = "/health"
+requires_port_manager = true
+bernoulli_zone = "observability"
+
+[profile.release]
+lto = true
+codegen-units = 1
+panic = "abort"
+strip = "symbols"
+overflow-checks = true

@@ -1,0 +1,32 @@
+{
+  "id": "wf_nmap_1765653628",
+  "node_type": "data_http_request",
+  "category": "scanner",
+  "name": "Nmap Network Scan",
+  "node_config": {
+    "tool": "nmap",
+    "args": "-sV -p-",
+    "phase": "Reconnaissance",
+    "mitre_id": "T1595",
+    "method": "POST",
+    "timeout": 5000
+  },
+  "h2_hash": "93537358ce82e4b967158f9cf401a7a1877e2ed5670c2573010466010a50c9ff",
+  "linked_identity_h1": "f3b3b88b872f570593c1941570d97f4ea359cb614343a93deec70e04004c4c5c",
+  "forge_metadata": {
+    "thyristor_state": {
+      "status": "GATE_LOW",
+      "phase": "OODA_HUNT",
+      "threshold": 0.75,
+      "converged": false
+    },
+    "hash_delta": {
+      "value": "0.180625",
+      "unit": "normalized_turn"
+    },
+    "teth_score": 0.37,
+    "crystal_context": "VARNISH_CRYSTAL_E0",
+    "priority": 3,
+    "classification": "UNCLASS"
+  }
+}

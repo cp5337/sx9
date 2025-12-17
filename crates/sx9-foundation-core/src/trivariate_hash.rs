@@ -73,6 +73,7 @@ impl GraduatedLevel {
 }
 
 /// CTAS-7 v7.2 Trivariate Hash Engine with Environmental Awareness
+#[derive(Debug, Clone)]
 pub struct TrivariteHashEngine {
     murmur_sch_seed: u64,  // 0x5BD1E995 - Murmur3 constant for SCH
     murmur_cuid_seed: u64, // 0x1B873593 - Murmur3 constant for CUID

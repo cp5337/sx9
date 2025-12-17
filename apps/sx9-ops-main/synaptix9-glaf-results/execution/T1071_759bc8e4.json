@@ -1,0 +1,31 @@
+{
+  "id": "wf_glaf_core_1765653628",
+  "node_type": "ai_convergence",
+  "category": "ai_ml",
+  "name": "Convergence Check",
+  "node_config": {
+    "tool": "glaf_core",
+    "args": "verify_h1_h2",
+    "phase": "Command and Control",
+    "mitre_id": "T1071",
+    "threshold": 0.85
+  },
+  "h2_hash": "759bc8e467faad675fc3357bd31d2ecf1b3077f0d336d28f51ff3b83874d589a",
+  "linked_identity_h1": "c2f230eb8bf910f3d14d554e437838a08513e87bc1e285888557cbcf1a9610f1",
+  "forge_metadata": {
+    "thyristor_state": {
+      "status": "GATE_LOW",
+      "phase": "OODA_HUNT",
+      "threshold": 0.75,
+      "converged": false
+    },
+    "hash_delta": {
+      "value": "0.180625",
+      "unit": "normalized_turn"
+    },
+    "teth_score": 0.82,
+    "crystal_context": "VARNISH_CRYSTAL_E0",
+    "priority": 3,
+    "classification": "UNCLASS"
+  }
+}

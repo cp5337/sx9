@@ -1,0 +1,28 @@
+{
+  "folders": [
+	{
+		"path": "."
+	},
+	{
+		"path": "../glaf-graph-database"
+	},
+	{
+		"path": "../graph-db"
+	},
+	{
+		"path": "../ctas7-EEI-staging/ctas-intelligence-hub"
+	},
+	{
+		"path": "../Leptose files"
+	},
+	{
+		"path": "../sx9-orbital-operations"
+	},
+	{
+		"path": "../sx9-development-center"
+	}
+],
+  "settings": {
+    "rust-analyzer.checkOnSave": false
+  }
+}

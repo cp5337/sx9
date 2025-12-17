@@ -1,0 +1,90 @@
+[package]
+name = "sx9-cdn-geospatial"
+version = "7.3.1"
+edition = "2021"
+authors = ["CTAS-7 Engineering Team"]
+description = "CTAS-7 Geospatial CDN - Edge distribution for GIS tiles, orbital data, Cesium assets, and terrain"
+license = "MIT"
+keywords = ["ctas", "cdn", "geospatial", "gis", "cesium", "tiles"]
+categories = ["web-programming", "network-programming", "science::geo"]
+
+[[bin]]
+name = "ctas7-cdn-geospatial"
+path = "src/bin/geospatial_server.rs"
+
+[dependencies]
+# Core async runtime
+tokio = { version = "1.37", features = ["full", "rt-multi-thread"] }
+futures = { version = "0.3", features = ["std"] }
+async-trait = "0.1"
+async-nats = "0.33"
+
+# Serialization
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+
+# HTTP server
+axum = { version = "0.7", features = ["ws", "multipart", "json"] }
+tower = { version = "0.4", features = ["util", "timeout", "load-shed", "limit"] }
+tower-http = { version = "0.5", features = ["fs", "trace", "cors", "compression-gzip"] }
+hyper = { version = "1.0", features = ["full"] }
+
+# UUID and time
+uuid = { version = "1.8", features = ["v4", "serde"] }
+chrono = { version = "0.4", features = ["serde"] }
+
+# Geospatial
+geo = "0.28"
+geo-types = "0.7"
+
+# Caching and storage
+sled = "0.34"
+dashmap = "5.5"
+
+# Hashing & Encoding (Standardized via sx9-foundation-core)
+# sha2 = "0.10" (REMOVED: RFC-9001 Violation)
+# hex = "0.4" (REMOVED: RFC-9001 Violation)
+base64 = "0.22"
+
+# Logging and diagnostics
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+
+# Error handling
+anyhow = "1.0"
+thiserror = "1.0"
+
+# HTTP client for upstream tile servers
+reqwest = { version = "0.12", features = ["json", "gzip"] }
+
+# CTAS Foundation (optional)
+sx9-foundation-orbital = { package = "sx9-foundation-orbital", path = "../sx9-foundation-orbital", optional = true }
+sx9-foundation-core = { package = "sx9-foundation-core", path = "../sx9-foundation-core", optional = true }
+
+[features]
+default = ["hft", "foundation"]
+foundation = ["sx9-foundation-orbital", "sx9-foundation-core"]
+cesium = []
+orbital = ["sx9-foundation-orbital"]
+hft = []  # High-frequency trading mode for rapid position updates
+
+[dev-dependencies]
+tokio-test = "0.4"
+tempfile = "3.8"
+
+[package.metadata.ctas]
+smart_crate = true
+foundation_version = "7.3.1"
+auto_deploy = true
+container_runtime = "orbstack"
+port = 18111
+health_check = "/health"
+requires_port_manager = true
+bernoulli_zone = "operational"
+
+[profile.release]
+lto = true
+codegen-units = 1
+panic = "abort"
+strip = "symbols"
+overflow-checks = true

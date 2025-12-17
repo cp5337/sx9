@@ -1,0 +1,1 @@
+# Error generating fetchers/mitre_fetcher.py: 400 Unable to submit request because it has a maxOutputTokens value of 16384 but the supported range is from 1 (inclusive) to 8193 (exclusive). Update the value and try again.

@@ -17,15 +17,24 @@
 // CTAS-7.3.1 Canonical 64-bit (DEFAULT) - RFC-9001 compliant
 pub mod hash64;
 // RFC-9001 Identity & Hashing (Core Element)
+pub mod context;
 pub mod hash;
 // RFC-9100 PTCC Primitives (32 opcodes mapped to Unicode D1 Class)
 pub mod primitives;
 // CTAS-7.3.1 Canonical (DEFAULT)
 pub mod trivariate_hash_v731;
+// RFC-9001 USIM Implementation
+pub mod usim;
 // CTAS-7.2 Legacy (DEPRECATED - use v731)
 pub mod mathematical_consciousness;
 #[deprecated(note = "Use trivariate_hash_v731 instead. v7.2 is legacy.")]
 pub mod trivariate_hash;
+
+// RFC-9021 Cognitive Inference
+pub mod cognitive;
+pub mod thalamic_filter;
+// RFC-9023 Matroid Convergence
+pub mod matroid;
 
 // PLASMA Delta Operator Module (feature flag: delta-tuner)
 pub mod hash_is_ui;
@@ -57,6 +66,8 @@ pub use hash_is_ui::{AnimationProperties, HashIsUISystem, VisualProperties};
 pub use mathematical_consciousness::{CTASPrimitive, MathematicalFoundation, PrimitiveType};
 #[deprecated(note = "Use TrivariateHashEngineV731 instead")]
 pub use trivariate_hash::TrivariteHashEngine;
+// USIM re-exports
+pub use usim::{Context, USIMBuilder, UniversalSymbolicInformationMessage};
 // RFC-9001 Identity & Hashing exports
 pub use hash::{
     compute_cuid, compute_sch, generate_deterministic_trivariate, generate_primary_trivariate,
@@ -267,7 +278,15 @@ pub mod security {
     pub use hex::{self, decode, encode};
     pub use jsonwebtoken::{self, decode as jwt_decode, encode as jwt_encode};
     // sha2 removed - using murmur3 trivariate system per RFC-9001
+    #[cfg(feature = "crypto-signing")]
+    pub use ed25519_dalek::{self, Signature, Signer, SigningKey, Verifier, VerifyingKey};
     pub use hmac;
+}
+
+/// Template engine integration
+#[cfg(feature = "templates")]
+pub mod templates {
+    pub use handlebars::{self, Context, Handlebars, Helper, Output, RenderContext, RenderError};
 }
 
 /// Centralized hashing - Single source of truth for entire ecosystem
@@ -333,7 +352,7 @@ pub mod dsl_unicode_router;
 pub mod neural_mux;
 
 #[cfg(feature = "unified-neural-mux")]
-pub mod unified_neural_mux;
+// Duplicate removed: pub mod unified_neural_mux;
 
 /// Multi-model neural mux with real Docker integration
 pub mod multi_model_neural_mux;
@@ -377,8 +396,10 @@ pub mod platform_native_multimedia;
 
 /// Agent coordination types with telemetry and statistical feedback
 pub mod agents {
+    pub use crate::cognitive::{CognitiveMode, CognitiveState};
     pub use crate::data::{DateTime, Utc, Uuid};
     pub use crate::data::{Deserialize, Serialize};
+    pub use crate::neural_mux::Priority;
     use std::collections::HashMap;
 
     /// Agent identifier
@@ -897,6 +918,8 @@ pub async fn initialize() -> crate::diagnostics::Result<()> {
 
     Ok(())
 }
+
+pub mod taxonomy;
 
 #[cfg(test)]
 mod tests {

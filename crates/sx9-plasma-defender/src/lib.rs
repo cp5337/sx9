@@ -11,16 +11,32 @@
 //! - SDT gate control
 //! - Threat monitoring agents
 //! - Optimized Axum server with compression, timeout, body limit
+//!
+//! ## Architecture (RFC-9116)
+//!
+//! Three-layer ECS stack:
+//! - Layer 1: apecs (Async I/O, cold-path) - database persistence, EEI correlation
+//! - Layer 2: Legion (Hot-path, deterministic) - threat entity processing
+//! - Layer 3: ATLAS (Cognitive, 1ms OODA) - threat assessment and response
+//!
+//! Ring Bus (RFC-9301):
+//! - JetStream persistence for tool outputs
+//! - Inter-node communication for distributed threat detection
 
 pub mod advisory;
 pub mod agents;
 pub mod ann_daemon;
+pub mod atlas_integration;
+pub mod bridges;
 pub mod config;
 pub mod crystal;
+pub mod ecs;
 pub mod health;
 pub mod metrics;
 pub mod monitor;
+pub mod ossec;
 pub mod plasma_bus;
+pub mod ring_bus;
 pub mod sdt;
 pub mod server;
 pub mod tool_handler;
@@ -28,18 +44,23 @@ pub mod tool_handler;
 pub use advisory::{AnnAdvisory, AnnContext};
 pub use agents::{AgentType, ThreatAgent};
 pub use ann_daemon::{AnnConfig, AnnDaemon, AnnObservation};
+pub use atlas_integration::{DefenderAtlas, DefenderAtlasConfig, ThreatObservation};
+pub use bridges::{EeiBridge, SlotBridge};
 pub use config::DefenderConfig;
 pub use crystal::CrystalIntegration;
+pub use ecs::{DefenderWorld, Hd4Phase, ThreatEntityComponent};
 pub use health::HealthMonitor;
 pub use metrics::MetricsCollector;
 pub use monitor::ThreatMonitor;
+pub use ossec::{MitreMapping, OssecAgent, OssecAlertParser};
 pub use plasma_bus::{PlasmaBus, PlasmaEvent};
+pub use ring_bus::{RingBusNode, RingMessage, ThreatEvent, ToolOutput};
 pub use sdt::SdtIntegration;
 pub use server::PlasmaDefenderServer;
 pub use tool_handler::subscribe_tool_results;
 
 use std::sync::Arc;
-use sx9_atlas_bus::{CrystalFamily, PlasmaState, ThyristorConfig};
+use sx9_atlas_bus::{CrystalFamily, PlasmaState};
 use tokio::sync::RwLock;
 
 pub struct PlasmaDefender {

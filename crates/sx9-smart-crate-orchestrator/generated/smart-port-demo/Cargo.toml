@@ -1,0 +1,59 @@
+[package]
+name = "smart-port-demo"
+version = "7.2.0"
+edition = "2021"
+authors = ["CTAS-7 Engineering Team"]
+description = "Smart port allocation demo crate with neural mux integration"
+license = "MIT"
+readme = "README.md"
+keywords = ["ctas", "autonomous", "NeuralInference"]
+categories = ["development-tools"]
+
+[dependencies]
+# CTAS-7 Foundation Crates - Security Audited
+ctas7-foundation-core = { version = "1.0.0", features = ["runtime"] }
+ctas7-foundation-neural = { version = "1.0.0", features = ["inference"] }
+ctas7-foundation-ops = { version = "1.0.0", features = ["production"] }
+ctas7-xsd-p3 = { version = "1.0.0", features = ["quantum-resistant"] }
+
+# Core async runtime
+tokio = { version = "1.37.0", features = ["full"] }
+
+# Error handling and logging
+anyhow = "1.0.81"
+thiserror = "1.0.58"
+tracing = "0.1.40"
+tracing-subscriber = { version = "0.3.18", features = ["env-filter"] }
+
+# Serialization
+serde = { version = "1.0.197", features = ["derive"] }
+serde_json = "1.0.115"
+
+# Production security dependencies
+blake3 = "1.5.1"
+ed25519-dalek = "2.1.1"
+
+
+[build-dependencies]
+# Build-time validation
+cargo_metadata = "0.18.1"
+
+[features]
+default = ["production", "production-security", "xsd-p3"]
+production = []
+production-security = []
+xsd-p3 = []
+
+[profile.release]
+# Tesla/SpaceX optimization standards
+lto = true
+codegen-units = 1
+panic = "abort"
+strip = "symbols"
+overflow-checks = true
+
+[profile.dev]
+# Development profile with debugging
+debug = true
+incremental = true
+overflow-checks = true

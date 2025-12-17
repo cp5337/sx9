@@ -1,0 +1,39 @@
+{
+  "name": "abe-ingestion-firefly",
+  "version": "1.0.0",
+  "description": "ABE Document Ingestion - Firefly Serverless Deployment",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "functions-framework --target=abeIngest --port=8080",
+    "deploy": "zip -r ../ingestion-firefly.zip . -x node_modules/",
+    "test": "echo 'Tests will be implemented'"
+  },
+  "dependencies": {
+    "@google-cloud/functions-framework": "^3.3.0",
+    "@google-cloud/storage": "^7.7.0",
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "helmet": "^7.1.0",
+    "compression": "^1.7.4",
+    "multer": "^1.4.5-lts.1",
+    "googleapis": "^128.0.0",
+    "pdf-parse": "^1.1.1",
+    "mammoth": "^1.6.0",
+    "csv-parse": "^5.5.2",
+    "zod": "^3.22.4",
+    "uuid": "^9.0.1"
+  },
+  "engines": {
+    "node": "18"
+  },
+  "keywords": [
+    "abe",
+    "firefly",
+    "ingestion",
+    "serverless",
+    "document-processing"
+  ],
+  "author": "Service-Disabled Veteran-Owned Business",
+  "license": "PROPRIETARY"
+}

@@ -1,0 +1,39 @@
+name: Lightning QA Integration
+
+on:
+  push:
+    branches: [ "main", "staging" ]
+  pull_request:
+    branches: [ "main", "staging" ]
+  workflow_dispatch:
+
+jobs:
+  lightning-qa-analysis:
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: .qodo/04-abe-iac/abe-qa-system/lightning-qa-engine
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+        cache: 'pip'
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+
+    - name: Run Lightning QA Daemon Check
+      env:
+        LIGHTNING_QA_MODE: "ci"
+      run: |
+        # In CI mode, the daemon should run a single pass or check integrity
+        # Modify this command if a specific CLI entry point exists
+        python src/lightning_qa_daemon.py --check-integrity

@@ -143,14 +143,14 @@ impl Default for FoundationCrates {
                     "USIM trivariate hashing".to_string(),
                     "SCH vector generation".to_string(),
                     "Data persistence and retrieval".to_string(),
-                    "Blake3 cryptographic operations".to_string(),
+                    "Trivariate cryptographic operations".to_string(),
                 ],
                 exports: vec![
                     "USIMTrivariate".to_string(),
                     "SCHVector".to_string(),
                     "USIMProcessor".to_string(),
                 ],
-                dependencies: vec!["blake3".to_string(), "serde".to_string()],
+                dependencies: vec!["sx9-foundation-core".to_string(), "serde".to_string()],
             },
             interface_foundation: CrateSpec {
                 name: "ctas7-interface-foundation".to_string(),

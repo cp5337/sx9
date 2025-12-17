@@ -80,6 +80,7 @@ impl UnifiedNeuralMux {
                         unicode_range: (0xE000, 0xE0FF), // Default range for unified operations
                         target_processor: rule.target_system.clone(),
                         priority: rule.priority_mapping,
+                        transport_profile: crate::neural_mux::TransportProfile::Internal,
                         context_awareness: true,
                     };
                     routes.push(route);

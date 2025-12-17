@@ -10,12 +10,15 @@ pub mod hawkes;
 pub mod hmm;
 pub mod matroid;
 pub mod teth;
+pub mod types;
+
+pub use types::*;
 
 pub use convergence::{
     calculate_operational_convergence, calculate_semantic_convergence, ConvergenceEvent,
     ConvergenceMonitor,
 };
-pub use glaf_core::{GLAFCore, GlafNode, GlafRelationship};
+pub use glaf_core::GLAFCore;
 pub use hawkes::{calculate_intensity, HawkesIntensity};
 pub use hmm::{detect_phase, HmmPhaseDetector, Phase};
 pub use matroid::{calculate_rank, calculate_rank_delta, MatroidRank};

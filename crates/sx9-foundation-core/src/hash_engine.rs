@@ -24,7 +24,7 @@ pub struct HashEngine {
 pub struct ComponentHash {
     /// Component identifier
     pub component_id: String,
-    /// Blake3 hash of component state
+    /// Trivariate hash of component state
     pub hash: String,
     /// Last update timestamp
     pub updated_at: u64,
@@ -290,15 +290,21 @@ impl HashEngine {
 
     /// Lightweight hash health analysis
     fn analyze_hash_health(&self, hash: &str, component_type: &ComponentType) -> HashHealthStatus {
-        // Simple hash entropy analysis (very lightweight)
-        let bytes = crate::security::hex::decode(hash).unwrap_or_default();
-
-        if bytes.is_empty() {
-            return HashHealthStatus::Compromised("Invalid hash".to_string());
+        // Validation for Trivariate Hash format (triv:SCH_CUID_UUID)
+        if !hash.starts_with("triv:") {
+            return HashHealthStatus::Compromised(
+                "Invalid hash format (missing triv: prefix)".to_string(),
+            );
         }
 
-        // Check for obvious patterns (lightweight entropy check)
-        let entropy = self.calculate_simple_entropy(&bytes);
+        let parts: Vec<&str> = hash.split(':').collect();
+        if parts.len() < 2 {
+            return HashHealthStatus::Compromised("Invalid hash structure".to_string());
+        }
+
+        // Simple length check as proxy for entropy/validity in this lightweight engine
+        let payload = parts[1];
+        let entropy = self.calculate_simple_entropy(payload.as_bytes());
 
         match component_type {
             ComponentType::Foundation | ComponentType::Orchestrator => {

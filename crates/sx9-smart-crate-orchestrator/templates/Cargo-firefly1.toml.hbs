@@ -1,0 +1,129 @@
+[package]
+name = "{{spec.name}}"
+version = "0.1.0"
+edition = "2021"
+authors = ["CTAS-7 Engineering Team", "SpaceX Firefly Division"]
+description = "{{spec.description}} - Firefly 1 Rocket Grade"
+license = "MIT"
+readme = "README.md"
+keywords = ["ctas", "autonomous", "{{spec.mission}}", "firefly1", "spacex", "rocket"]
+categories = ["development-tools", "embedded", "aerospace"]
+
+[dependencies]
+# CTAS-7 Foundation Crates - SpaceX Certified
+ctas7-foundation-core = { version = "1.0.0", features = ["runtime", "embedded", "no-std"] }
+ctas7-foundation-data = { version = "1.0.0", features = ["streaming", "embedded"] }
+ctas7-foundation-dev = { version = "1.0.0", features = ["debug", "logging"] }
+
+# Embedded system dependencies - Firefly 1 grade
+embassy-executor = "0.3.0"
+embassy-time = "0.1.0"
+embassy-sync = "0.4.0"
+embassy-futures = "0.1.0"
+
+# Hardware abstraction
+embedded-hal = "1.0.0-rc.1"
+embedded-hal-async = "1.0.0-rc.1"
+embedded-io = "0.6.0"
+embedded-io-async = "0.6.0"
+
+# Communication protocols for rocket systems
+embedded-can = "0.4.1"
+nb = "1.1.0"
+heapless = { version = "0.8.0", features = ["serde"] }
+
+# Real-time systems
+rtic = "2.0.1"
+cortex-m = "0.7.7"
+cortex-m-rt = "0.7.2"
+
+# Error handling (no-std compatible)
+anyhow = { version = "1.0.81", default-features = false }
+thiserror = { version = "1.0.58", default-features = false }
+
+# Serialization (no-std compatible)
+serde = { version = "1.0.197", features = ["derive"], default-features = false }
+serde_json = { version = "1.0.115", default-features = false }
+postcard = "1.0.6"
+
+# Cryptography for secure communications
+aes-gcm = { version = "0.10.2", default-features = false, features = ["aes"] }
+sha2 = { version = "0.10.7", default-features = false }
+ed25519-dalek = { version = "2.0.0", default-features = false, features = ["rand_core"] }
+
+{{#if (eq build_config.firefly1_option "flight-computer")}}
+# Flight computer specific dependencies
+nalgebra = { version = "0.32.3", default-features = false, features = ["libm"] }
+libm = "0.2.7"
+num-traits = { version = "0.2.16", default-features = false, features = ["libm"] }
+{{/if}}
+
+{{#if (eq build_config.firefly1_option "telemetry")}}
+# Telemetry system dependencies
+radio = "0.10.0"
+lora-phy = "2.0.0"
+{{/if}}
+
+{{#if (eq build_config.firefly1_option "engine-control")}}
+# Engine control dependencies
+pid = { version = "4.0.0", default-features = false }
+fixed = "1.24.0"
+{{/if}}
+
+[build-dependencies]
+# Build-time validation for embedded systems
+cargo_metadata = "0.18.1"
+
+[features]
+default = [{{#each build_config.features}}"{{this}}"{{#unless @last}}, {{/unless}}{{/each}}]
+{{#each build_config.features}}
+{{this}} = []
+{{/each}}
+
+# Firefly 1 specific features
+flight-ready = []
+ground-test = []
+abort-system = []
+telemetry-downlink = []
+engine-gimbal = []
+
+[profile.release]
+# Firefly 1 rocket-grade optimization
+opt-level = 3
+lto = true
+codegen-units = 1
+panic = "abort"
+strip = "symbols"
+overflow-checks = true
+debug-assertions = false
+
+[profile.dev]
+# Development profile for ground testing
+debug = true
+opt-level = 1
+overflow-checks = true
+debug-assertions = true
+
+# Target configuration for ARM Cortex-M processors
+[target.thumbv7em-none-eabihf]
+runner = "probe-run --chip STM32F767ZITx"
+
+[target.thumbv7em-none-eabi]
+runner = "probe-run --chip STM32F767ZITx"
+
+# Memory configuration
+[target.'cfg(target_arch = "arm")']
+rustflags = [
+  "-C", "link-arg=-Tlink.x",
+  "-C", "link-arg=-Tdefmt.x",
+]
+
+# Firefly 1 specific metadata
+[package.metadata.firefly1]
+system = "{{build_config.firefly1_option}}"
+certification = "SpaceX-Grade"
+redundancy = "triple"
+radiation_hardened = true
+temperature_range = "-40C to +85C"
+vibration_tested = true
+mission_critical = true

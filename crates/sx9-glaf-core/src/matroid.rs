@@ -1,58 +1,82 @@
 //! Latent Matroid Rank Calculations
 //!
-//! RFC-9021: Measures information independence structure
+//! RFC-9023: Measures information independence structure
 //! High rank change = new independent information
 //! Low rank change = redundant information
 
-use crate::glaf_core::GlafNode;
-use anyhow::Result;
+use nalgebra::{DMatrix, Vector3};
 
-/// Matroid rank calculator
-pub struct MatroidRank {
-    previous_rank: f64,
+/// Represents a single intelligence fragment (Vector/Embedding)
+#[derive(Debug, Clone)]
+pub struct Fragment {
+    /// Corresponds to the HASH of the fragment (trivariate hash)
+    pub id: u64,
+
+    /// Embedding vector (simplified to 3D for demo, usually 768)
+    pub vector: Vector3<f64>,
+
+    /// Source confidence score [0.0, 1.0]
+    pub confidence: f64,
 }
 
-impl MatroidRank {
-    pub fn new() -> Self {
-        Self { previous_rank: 0.0 }
+/// Implements the Matroid Rank function based on linear independence.
+pub struct LatentMatroid {
+    pub ground_set: Vec<Vector3<f64>>,
+}
+
+impl LatentMatroid {
+    pub fn new(vectors: Vec<Vector3<f64>>) -> Self {
+        Self {
+            ground_set: vectors,
+        }
     }
 
-    /// Calculate rank for a set of nodes
-    ///
-    /// Rank = max |X| where X ⊆ S and X is independent
-    pub fn calculate_rank(&mut self, nodes: &[GlafNode]) -> f64 {
-        // Simplified: rank is number of unique information sources
-        // Count nodes with unique properties
-        let mut unique_sources = std::collections::HashSet::new();
-
-        for node in nodes {
-            // Use node ID + primary label as uniqueness key
-            let key = format!(
-                "{}:{}",
-                node.id,
-                node.labels.first().unwrap_or(&"Unknown".to_string())
-            );
-            unique_sources.insert(key);
+    /// Calculates the rank of a subset of fragments.
+    pub fn calculate_rank(&self, subset_indices: &[usize]) -> usize {
+        if subset_indices.is_empty() {
+            return 0;
         }
 
-        let rank = unique_sources.len() as f64;
-        self.previous_rank = rank;
-        rank
-    }
+        // 1. Collect the vectors for the subset
+        let vectors: Vec<Vector3<f64>> = subset_indices
+            .iter()
+            .filter_map(|&i| self.ground_set.get(i).cloned())
+            .collect();
 
-    /// Calculate rank delta (change from previous calculation)
-    pub fn calculate_rank_delta(&self, current_rank: f64) -> f64 {
-        current_rank - self.previous_rank
+        let num_cols = vectors.len();
+        if num_cols == 0 {
+            return 0;
+        }
+
+        // 2. Build matrix
+        // nalgebra::DMatrix::from_iterator takes rows, cols, iterator
+        // We want columns, so we can build it that way.
+        let matrix_data: Vec<f64> = vectors.iter().flat_map(|v| v.iter().copied()).collect();
+
+        // 3 rows (dim), N cols
+        let matrix = DMatrix::from_column_slice(3, num_cols, &matrix_data);
+
+        // 3. Compute rank with tolerance
+        matrix.rank(1e-6)
     }
 }
 
-/// Calculate rank for a set of nodes
-pub async fn calculate_rank(nodes: &[GlafNode]) -> f64 {
-    let mut calculator = MatroidRank::new();
-    calculator.calculate_rank(nodes)
+// Legacy placeholder compatibility (to avoid breaking current calls if any)
+// Real implementations should move to LatentMatroid
+pub async fn calculate_rank(nodes: &[crate::types::Node]) -> f64 {
+    // Basic placeholder logic preserved for compatibility
+    let mut unique = std::collections::HashSet::new();
+    for n in nodes {
+        unique.insert(n.id.clone());
+    }
+    unique.len() as f64
 }
 
-/// Calculate rank delta
-pub async fn calculate_rank_delta(previous_rank: f64, current_rank: f64) -> f64 {
-    current_rank - previous_rank
+// Required export for lib.rs
+pub struct MatroidRank {
+    pub previous_rank: f64,
+}
+
+pub async fn calculate_rank_delta(previous: f64, current: f64) -> f64 {
+    current - previous
 }

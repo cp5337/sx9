@@ -24,7 +24,7 @@ tracing = { version = "0.1", features = ["std"], optional = true }
 tracing-subscriber = { version = "0.3", features = ["fmt", "env-filter"], optional = true }
 tokio = { version = "1.39", features = ["rt-multi-thread", "macros"], optional = true }
 sx9-foundation-interface = { path = "../sx9-foundation-interface" }
-sx9-foundation-core = { path = "../sx9-foundation-core" }
+sx9-foundation-core = { path = "../sx9-foundation-core", features = ["templates", "crypto-signing"] }
 sx9-foundation-data = { path = "../sx9-foundation-data", optional = true }
 sx9-foundation-math = { path = "../sx9-foundation-math", optional = true }
 sx9-foundation-tactical = { path = "../sx9-foundation-tactical", optional = true }

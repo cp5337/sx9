@@ -1,0 +1,43 @@
+[package]
+name = "sx9-cdn-statistical"
+version = "7.3.1"
+edition = "2021"
+description = "CTAS-7 Statistical Analysis CDN - real-time intelligence metrics for PLASMA"
+authors = ["CTAS-7 Engineering"]
+
+[dependencies]
+anyhow = "1"
+axum = { version = "0.7", features = ["macros", "json", "ws"] }
+chrono = { version = "0.4", features = ["serde"] }
+futures-util = { version = "0.3", default-features = false, features = ["sink", "std"] }
+prometheus = "0.13"
+reqwest = { version = "0.11", default-features = false, features = ["json", "rustls-tls"] }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+thiserror = "1"
+tokio = { version = "1.40", features = ["full"] }
+tokio-stream = "0.1"
+tower-http = { version = "0.5", features = ["cors", "trace"] }
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter", "fmt"] }
+
+[features]
+default = ["smart-crate"]
+smart-crate = []
+
+[package.metadata.ctas]
+smart_crate = true
+foundation_version = "7.3.1"
+auto_deploy = true
+container_runtime = "orbstack"
+port = 18114
+health_check = "/health"
+requires_port_manager = true
+bernoulli_zone = "analytical"
+
+[profile.release]
+lto = true
+codegen-units = 1
+panic = "abort"
+strip = "symbols"
+overflow-checks = true

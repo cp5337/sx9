@@ -1,0 +1,84 @@
+[package]
+name = "sx9-orbital-simulator"
+version = "7.3.1"
+edition = "2021"
+authors = ["CTAS-7 Engineering Team", "SX9 Orbital Division"]
+description = "SX9 Orbital Simulator - High-fidelity WASM simulation for Space Domain Awareness, Collision Avoidance, and METOC integration."
+license = "MIT"
+repository = "https://github.com/ctas7/ctas7-orbital-mechanics"
+keywords = ["sx9", "orbital", "simulation", "metoc", "collision-avoidance"]
+categories = ["aerospace", "science", "simulation"]
+
+[lib]
+name = "ctas7_orbital_mechanics"
+crate-type = ["rlib"]
+
+[dependencies]
+# CTAS-7 Foundation Manifold - Microkernel with deterministic routing
+# ctas-foundation-manifold = { path = "../Cognitive Tactics Engine/hash _foundation_updates/foundation_manifold", features = ["elastic"] }
+
+# CTAS-7 Space World Foundation Bridge
+sx9-foundation-core = { path = "../sx9-foundation-core" }
+
+# Core async runtime
+tokio = { version = "1.40", features = ["full"] }
+futures = "0.3"
+async-trait = "0.1"
+
+# Serialization and data handling
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+chrono = { version = "0.4", features = ["serde"] }
+uuid = { version = "1.6", features = ["v4", "serde"] }
+
+# Mathematical libraries for orbital mechanics
+nalgebra = "0.33"
+approx = "0.5"
+
+# Van Allen belt radiation modeling
+mathru = { version = "0.15", optional = true }
+ndarray = { version = "0.15", optional = true }
+
+# Space physics and orbital mechanics
+sgp4 = "2.2"
+
+# Error handling and logging
+thiserror = "1.0"
+anyhow = "1.0"
+tracing = "0.1"
+tracing-subscriber = "0.3"
+
+# Trivariate hash system (Murmur3 + Base96)
+murmur3 = "0.5"
+reqwest = { version = "0.12", features = ["json"] }
+
+[dev-dependencies]
+tokio-test = "0.4"
+rand = "0.8"
+
+[features]
+default = ["space-environmental-masks", "van-allen-modeling"]
+space-environmental-masks = []
+van-allen-modeling = ["mathru", "ndarray"]
+high-precision = ["van-allen-modeling"]
+real-time = []
+
+# [[bin]]
+# name = "orbital-mechanics-server"
+# path = "src/bin/server.rs"
+
+# CTAS-7 Smart Crate Metadata - v7.2 Compliant
+[package.metadata.smart_crate]
+generation = "2.0"
+ctas7_certified = true
+ctas7_version = "7.2"
+foundation_tier = "orbital-mechanics-engine"
+service_port = 18460
+real_time = true
+integration_points = ["ctas-foundation-manifold", "space-domain"]
+domain = "space"
+environmental_masks = ["SR", "GM", "DE", "JS", "WX", "TF", "OB", "JU", "TH"]
+trivariate_hash_enabled = true
+manifold_integration = true
+van_allen_belt_aware = true
+meo_specialized = true

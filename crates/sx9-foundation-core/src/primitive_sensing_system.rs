@@ -134,7 +134,7 @@ pub enum ThreatSeverity {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct HashTrigger {
     pub trigger_id: Uuid,
-    pub blake3_hash: String,
+    pub trigger_hash: String,
     pub trigger_condition: TriggerCondition,
     pub tool_requirements: ToolRequirements,
     pub execution_parameters: HashMap<String, String>,
@@ -579,7 +579,7 @@ pub fn hash_trigger_generation_system(
         // Generate hash triggers based on patterns
         for event in &recent_events {
             if should_generate_trigger(event, &node_sensing.environmental_awareness) {
-                let hash_trigger = generate_blake3_trigger(event, entity);
+                let hash_trigger = generate_hash_trigger(event, entity);
                 node_sensing.hash_triggers.push(hash_trigger.clone());
                 
                 // Send trigger event to tool dispatcher
@@ -607,7 +607,7 @@ pub fn tool_dispatch_system(
                 // Dispatch tool execution
                 commands.spawn(ToolExecutionTask {
                     task_id: Uuid::new_v4(),
-                    trigger_hash: trigger.blake3_hash.clone(),
+                    trigger_hash: trigger.trigger_hash.clone(),
                     tool_entity,
                     execution_parameters: trigger.execution_parameters.clone(),
                     priority: trigger.priority.clone(),
@@ -656,8 +656,8 @@ fn should_generate_trigger(event: &SensingEvent, awareness: &EnvironmentalAwaren
     }
 }
 
-fn generate_blake3_trigger(event: &SensingEvent, entity: Entity) -> HashTrigger {
-    // Generate Blake3 hash from event data
+fn generate_hash_trigger(event: &SensingEvent, entity: Entity) -> HashTrigger {
+    // Generate Trivariate hash from event data
     let hash_input = format!("{:?}_{}_{}_{}", 
         event.sense_type, 
         event.stimulus_source, 
@@ -665,12 +665,11 @@ fn generate_blake3_trigger(event: &SensingEvent, entity: Entity) -> HashTrigger 
         entity.index()
     );
     
-    let hash = HashEngine::new().generate_trivariate_hash(hash_input.as_bytes());
-    let blake3_hash = hex::encode(hash.as_bytes());
+    let trigger_hash = sx9_foundation_core::trivariate_hash_v731::TrivariateHashEngine::new().generate_hash_from_bytes(hash_input.as_bytes());
     
     HashTrigger {
         trigger_id: Uuid::new_v4(),
-        blake3_hash,
+        trigger_hash,
         trigger_condition: TriggerCondition::ThresholdExceeded {
             metric: "stimulus_strength".to_string(),
             threshold: 0.5,

@@ -307,10 +307,13 @@ impl OODAProcessor {
     }
 
     /// Check if should transition to Decide phase
+    ///
+    /// RFC-9025: "Convergence Limit" is set at 75% (0.75).
+    /// Decisions MUST NOT be made until 75% of required information is available and verified.
     async fn should_transition_to_decide(&self, cognitive_state: &CognitiveState) -> Result<bool> {
-        // Transition if threat assessment is complete and resources are available
-        Ok(cognitive_state.threat_assessment.confidence > 0.7 && 
-           cognitive_state.resource_availability.operational_readiness > 0.5)
+        // Enforce 75% Convergence Threshold
+        Ok(cognitive_state.threat_assessment.confidence >= 0.75 && 
+           cognitive_state.resource_availability.operational_readiness >= 0.75)
     }
 
     /// Check if should cycle back to Observe phase

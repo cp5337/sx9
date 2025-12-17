@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
-import { Book, Target, Play, Trash2, Plus, Shield, Zap, Globe, Eye } from 'lucide-react';
+import React, { useState } from "react";
+import { Book, Target, Play, Trash2, Plus, Shield, Zap, Globe, Eye } from "lucide-react";
 
 interface PlaybookTask {
   id: string;
   name: string;
   description: string;
-  status: 'pending' | 'running' | 'completed' | 'failed';
+  status: "pending" | "running" | "completed" | "failed";
   automatable: boolean;
   requiresApproval: boolean;
 }
@@ -14,31 +14,44 @@ interface Playbook {
   id: string;
   name: string;
   description: string;
-  phase: 'Hunt' | 'Detect' | 'Disable' | 'Disrupt' | 'Dominate';
-  status: 'ready' | 'running' | 'completed' | 'failed';
+  phase: "Hunt" | "Detect" | "Disable" | "Disrupt" | "Dominate";
+  status: "ready" | "running" | "completed" | "failed";
   inventory: string;
   tasks: PlaybookTask[];
 }
 
-const Playbooks: React.FC = () => {
+interface PlaybooksProps {
+  activeTask?: any;
+}
+
+const Playbooks: React.FC<PlaybooksProps> = ({ activeTask }) => {
   const [playbooks, setPlaybooks] = useState<Playbook[]>([]);
   const [selectedPlaybook, setSelectedPlaybook] = useState<string | null>(null);
+
+  // Filter playbooks if task is active
+  const displayedPlaybooks = activeTask
+    ? playbooks.filter(
+        p =>
+          p.phase === activeTask.hd4_phase ||
+          p.phase.toLowerCase() === activeTask.hd4_phase?.toLowerCase()
+      )
+    : playbooks;
 
   // Fetch real playbooks from API
   React.useEffect(() => {
     const fetchPlaybooks = async () => {
       try {
-        const response = await fetch('http://localhost:18450/api/playbooks');
+        const response = await fetch("http://localhost:18450/api/playbooks");
         if (response.ok) {
           const data = await response.json();
           console.log(`✅ Playbooks: Loaded ${data.playbooks?.length || 0} real playbooks`);
           setPlaybooks(data.playbooks || []);
         } else {
-          console.warn('⚠️  Playbooks: API not available');
+          console.warn("⚠️  Playbooks: API not available");
           setPlaybooks([]);
         }
       } catch (err) {
-        console.error('❌ Playbooks: Failed to fetch:', err);
+        console.error("❌ Playbooks: Failed to fetch:", err);
         setPlaybooks([]);
       }
     };
@@ -51,18 +64,20 @@ const Playbooks: React.FC = () => {
   const handleRunPlaybook = (id: string) => {
     setPlaybooks(prevPlaybooks =>
       prevPlaybooks.map(playbook =>
-        playbook.id === id ? { ...playbook, status: 'running' } : playbook
+        playbook.id === id ? { ...playbook, status: "running" } : playbook
       )
     );
 
     setTimeout(() => {
       setPlaybooks(prevPlaybooks =>
         prevPlaybooks.map(playbook =>
-          playbook.id === id ? {
-            ...playbook,
-            status: 'completed',
-            tasks: playbook.tasks.map(task => ({ ...task, status: 'completed' }))
-          } : playbook
+          playbook.id === id
+            ? {
+                ...playbook,
+                status: "completed",
+                tasks: playbook.tasks.map(task => ({ ...task, status: "completed" })),
+              }
+            : playbook
         )
       );
     }, 3000);
@@ -72,24 +87,29 @@ const Playbooks: React.FC = () => {
     setPlaybooks(prevPlaybooks => prevPlaybooks.filter(playbook => playbook.id !== id));
   };
 
-  const getPhaseIcon = (phase: Playbook['phase']) => {
+  const getPhaseIcon = (phase: Playbook["phase"]) => {
     switch (phase) {
-      case 'Hunt': return <Target className="text-blue-500" size={16} />;
-      case 'Detect': return <Shield className="text-green-500" size={16} />;
-      case 'Disable': return <Zap className="text-yellow-500" size={16} />;
-      case 'Disrupt': return <Shield className="text-red-500" size={16} />;
-      case 'Dominate': return <Globe className="text-purple-500" size={16} />;
+      case "Hunt":
+        return <Target className="text-blue-500" size={16} />;
+      case "Detect":
+        return <Shield className="text-green-500" size={16} />;
+      case "Disable":
+        return <Zap className="text-yellow-500" size={16} />;
+      case "Disrupt":
+        return <Shield className="text-red-500" size={16} />;
+      case "Dominate":
+        return <Globe className="text-purple-500" size={16} />;
     }
   };
 
   return (
     <div className="space-y-4">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {playbooks.map(playbook => (
+        {displayedPlaybooks.map(playbook => (
           <div
             key={playbook.id}
             className={`bg-white dark:bg-gray-800 p-4 rounded-lg shadow-md ${
-              selectedPlaybook === playbook.id ? 'ring-2 ring-blue-500' : ''
+              selectedPlaybook === playbook.id ? "ring-2 ring-blue-500" : ""
             }`}
             onClick={() => setSelectedPlaybook(playbook.id)}
           >
@@ -110,17 +130,17 @@ const Playbooks: React.FC = () => {
               </div>
               <div className="flex space-x-2">
                 <button
-                  onClick={(e) => {
+                  onClick={e => {
                     e.stopPropagation();
                     handleRunPlaybook(playbook.id);
                   }}
-                  disabled={playbook.status === 'running'}
+                  disabled={playbook.status === "running"}
                   className="p-1 rounded bg-blue-500 text-white hover:bg-blue-600 disabled:opacity-50"
                 >
                   <Play size={12} />
                 </button>
                 <button
-                  onClick={(e) => {
+                  onClick={e => {
                     e.stopPropagation();
                     handleRemovePlaybook(playbook.id);
                   }}
@@ -131,9 +151,7 @@ const Playbooks: React.FC = () => {
               </div>
             </div>
 
-            <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">
-              {playbook.description}
-            </p>
+            <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">{playbook.description}</p>
 
             {selectedPlaybook === playbook.id && (
               <div className="mt-4 space-y-2">
@@ -143,9 +161,7 @@ const Playbooks: React.FC = () => {
                     <div className="flex items-center justify-between">
                       <span className="text-xs font-medium">{task.name}</span>
                       <div className="flex items-center space-x-2">
-                        {task.requiresApproval && (
-                          <Shield size={12} className="text-yellow-500" />
-                        )}
+                        {task.requiresApproval && <Shield size={12} className="text-yellow-500" />}
                         <Eye size={12} className="text-blue-500" />
                       </div>
                     </div>

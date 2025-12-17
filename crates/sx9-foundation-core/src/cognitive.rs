@@ -3,10 +3,12 @@
 //! Phi-3 integrated cognitive systems that represent thoughts, memories,
 //! and reasoning processes as Legion ECS entities.
 
+use chrono::{DateTime, Utc};
+use legion::systems::{Runnable, SystemBuilder};
+use legion::world::SubWorld;
 use legion::*;
 use serde::{Deserialize, Serialize};
 use std::collections::VecDeque;
-use chrono::{DateTime, Utc};
 use uuid::Uuid;
 
 /// Cognitive state of an entity (threats, agents, reasoning processes)
@@ -107,10 +109,12 @@ impl ThoughtProcess {
             return 0.0;
         }
 
-        let avg_confidence: f32 = self.reasoning_chain
+        let avg_confidence: f32 = self
+            .reasoning_chain
             .iter()
             .map(|step| step.confidence)
-            .sum::<f32>() / self.reasoning_chain.len() as f32;
+            .sum::<f32>()
+            / self.reasoning_chain.len() as f32;
 
         // Decay confidence with reasoning chain length (avoid overthinking)
         let length_penalty = 1.0 - (self.reasoning_chain.len() as f32 * 0.1).min(0.3);
@@ -293,7 +297,10 @@ impl AssignedAgent {
             agent_id: rand::random(),
             workload: 0,
             efficiency: 1.0,
-            specializations: vec!["correlation_analysis".to_string(), "temporal_patterns".to_string()],
+            specializations: vec![
+                "correlation_analysis".to_string(),
+                "temporal_patterns".to_string(),
+            ],
         }
     }
 }
@@ -320,7 +327,7 @@ pub enum AgentType {
 // Cognitive Systems for Legion Schedule
 
 /// Thought generation system - creates new reasoning processes
-pub fn thought_generation_system() -> impl Schedulable {
+pub fn thought_generation_system() -> impl Runnable {
     SystemBuilder::new("thought_generation")
         .with_query(<(Entity, &mut CognitiveState, Option<&ThoughtProcess>)>::query())
         .build(move |cmd, world, _resources, query| {
@@ -337,7 +344,7 @@ pub fn thought_generation_system() -> impl Schedulable {
 }
 
 /// Memory consolidation system - manages memory decay and strengthening
-pub fn memory_consolidation_system() -> impl Schedulable {
+pub fn memory_consolidation_system() -> impl Runnable {
     SystemBuilder::new("memory_consolidation")
         .with_query(<&mut MemoryTrace>::query())
         .build(move |_cmd, world, _resources, query| {
@@ -360,7 +367,7 @@ pub fn memory_consolidation_system() -> impl Schedulable {
 }
 
 /// Reasoning chain system - advances thought processes
-pub fn reasoning_chain_system() -> impl Schedulable {
+pub fn reasoning_chain_system() -> impl Runnable {
     SystemBuilder::new("reasoning_chain")
         .with_query(<&mut ThoughtProcess>::query())
         .build(move |_cmd, world, _resources, query| {
@@ -391,7 +398,7 @@ pub fn reasoning_chain_system() -> impl Schedulable {
 }
 
 /// Inference dispatch system - queues thoughts for Phi-3 processing
-pub fn inference_dispatch_system() -> impl Schedulable {
+pub fn inference_dispatch_system() -> impl Runnable {
     SystemBuilder::new("inference_dispatch")
         .with_query(<&mut ThoughtProcess>::query().filter(component::<CognitiveState>()))
         .build(move |_cmd, world, _resources, query| {
@@ -399,7 +406,8 @@ pub fn inference_dispatch_system() -> impl Schedulable {
                 // Assign Phi-3 worker if not already assigned
                 if thought.phi3_worker_id.is_none() && thought.reasoning_chain.len() < 3 {
                     // Round-robin assignment to Phi-3 workers
-                    thought.phi3_worker_id = Some(thought.id.as_u128() as u32 % 4); // 4 Phi-3 workers
+                    thought.phi3_worker_id = Some(thought.id.as_u128() as u32 % 4);
+                    // 4 Phi-3 workers
                 }
             }
         })

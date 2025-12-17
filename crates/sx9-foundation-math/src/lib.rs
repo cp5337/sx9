@@ -17,6 +17,7 @@ pub use biometric_analysis::BiometricAnalysisConsciousness;
 
 /// Mathematical Foundation Consciousness - Reused from archaeological patterns
 /// First-person mathematical identity for symbolic computation operations
+#[derive(Debug)]
 pub struct MathematicalFoundationConsciousness {
     /// My identity as the mathematical foundation
     pub consciousness_identity: String,
@@ -160,6 +161,7 @@ impl MathematicalFoundationConsciousness {
 }
 
 /// Symbolic Computation Engine - Core replacement for Wolfram Alpha
+#[derive(Debug)]
 pub struct SymbolicComputationEngine {
     /// Mathematical operation cache
     operation_cache: Arc<RwLock<HashMap<String, CachedOperation>>>,
@@ -254,6 +256,7 @@ impl SymbolicComputationEngine {
 }
 
 /// 32 Universal Primitives Engine
+#[derive(Debug)]
 pub struct UniversalPrimitivesEngine {
     primitives: HashMap<String, PrimitiveOperation>,
 }
@@ -335,6 +338,7 @@ impl UniversalPrimitivesEngine {
 }
 
 /// Orbital Mechanics Engine - Replaces massive ephemeris datasets with mathematical models
+#[derive(Debug)]
 pub struct OrbitalMechanicsEngine {
     earth_gravity_parameter: f64,
     earth_radius: f64,
@@ -375,6 +379,7 @@ impl OrbitalMechanicsEngine {
 }
 
 /// Financial Algorithm Engine - Native Rust implementations replacing Wolfram
+#[derive(Debug)]
 pub struct FinancialAlgorithmEngine {}
 
 impl FinancialAlgorithmEngine {

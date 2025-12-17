@@ -3,7 +3,7 @@
 //! RFC-9021: Graph entropy measures information content
 //! H(G) = -Σ p(v) log p(v) where p(v) = degree(v) / Σ degree(w)
 
-use crate::glaf_core::GlafNode;
+use crate::types::Node;
 use anyhow::Result;
 
 /// TETH analyzer for graph entropy calculation
@@ -18,13 +18,13 @@ impl TethAnalyzer {
 /// Calculate entropy for a single node
 ///
 /// Uses node degree relative to total graph degree
-pub async fn calculate_entropy(node: &GlafNode) -> f64 {
+pub async fn calculate_entropy(node: &Node) -> f64 {
     use serde_json::Value;
 
     // Simplified: use node property "degree" if available
     // Otherwise calculate from relationships
     let degree = node
-        .properties
+        .data
         .get("degree")
         .and_then(|v| v.as_f64())
         .unwrap_or(0.0);
@@ -42,7 +42,7 @@ pub async fn calculate_entropy(node: &GlafNode) -> f64 {
 /// Calculate graph entropy for entire graph
 ///
 /// H(G) = -Σ p(v) log p(v)
-pub async fn calculate_graph_entropy(nodes: &[GlafNode]) -> f64 {
+pub async fn calculate_graph_entropy(nodes: &[Node]) -> f64 {
     use serde_json::Value;
 
     if nodes.is_empty() {
@@ -52,12 +52,7 @@ pub async fn calculate_graph_entropy(nodes: &[GlafNode]) -> f64 {
     // Calculate total degree
     let total_degree: f64 = nodes
         .iter()
-        .map(|n| {
-            n.properties
-                .get("degree")
-                .and_then(|v| v.as_f64())
-                .unwrap_or(0.0)
-        })
+        .map(|n| n.data.get("degree").and_then(|v| v.as_f64()).unwrap_or(0.0))
         .sum();
 
     if total_degree == 0.0 {
@@ -68,7 +63,7 @@ pub async fn calculate_graph_entropy(nodes: &[GlafNode]) -> f64 {
     let mut entropy = 0.0;
     for node in nodes {
         let degree = node
-            .properties
+            .data
             .get("degree")
             .and_then(|v| v.as_f64())
             .unwrap_or(0.0);

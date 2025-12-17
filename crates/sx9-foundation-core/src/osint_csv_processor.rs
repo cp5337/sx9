@@ -24,7 +24,7 @@ pub struct OSINTSiteRecord {
     pub latitude: Option<f64>,
     pub longitude: Option<f64>,
     pub classification: String,
-    pub blake3_hash: String,
+    pub record_hash: String,
     pub processed_at: DateTime<Utc>,
 }
 
@@ -179,7 +179,7 @@ impl OSINTProcessor {
             latitude,
             longitude,
             classification,
-            blake3_hash: self.calculate_record_hash(&record_id, csv_line),
+            record_hash: self.calculate_record_hash(&record_id, csv_line),
             processed_at: Utc::now(),
         };
 
@@ -221,10 +221,10 @@ impl OSINTProcessor {
     }
 
     fn calculate_record_hash(&self, record_id: &str, csv_line: &str) -> String {
-        let mut hasher = Hasher::new();
-        hasher.update(record_id.as_bytes());
-        hasher.update(csv_line.as_bytes());
-        hasher.finalize().to_hex().to_string()
+        let mut data = Vec::new();
+        data.extend_from_slice(record_id.as_bytes());
+        data.extend_from_slice(csv_line.as_bytes());
+        sx9_foundation_core::trivariate_hash_v731::TrivariateHashEngine::new().generate_hash_from_bytes(&data)
     }
 
     fn calculate_processing_rate(&self) -> f64 {

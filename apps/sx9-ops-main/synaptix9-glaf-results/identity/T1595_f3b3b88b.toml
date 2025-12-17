@@ -1,0 +1,10 @@
+name = "Nmap Network Scan"
+domain = "CYBER_PLASMA_CORE"
+crystal = "VARNISH_CRYSTAL_E0"
+teth_entropy = "0.3700"
+h1_hash = "f3b3b88b872f570593c1941570d97f4ea359cb614343a93deec70e04004c4c5c"
+
+[ontology]
+phase = "Reconnaissance"
+mitre_id = "T1595"
+layer = "Layer 2 (Network)"

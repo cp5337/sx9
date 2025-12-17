@@ -1,0 +1,17 @@
+{
+  "source_h1": "3930d02581416d871840beba43372d2c9f5b6034e916d862217606b0caa8588b",
+  "source_h2": "a4d55ea136051477c47ccd86950415c5e849903bf406bc57c8920a75f0952ff9",
+  "embedding_target": "plasma_threats",
+  "math_layer": {
+    "hash_delta": {
+      "value": "0.180625",
+      "unit": "normalized_turn"
+    },
+    "thyristor_triggered": true
+  },
+  "features": [
+    "Metasploit Exploit Execution",
+    "Execution",
+    "msfconsole"
+  ]
+}

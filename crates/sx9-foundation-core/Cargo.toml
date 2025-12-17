@@ -59,6 +59,8 @@ hmac = "0.12"
 rsa = "0.9"     # PGP foundation
 aes-gcm = "0.10" # Symmetric encryption
 argon2 = "0.5"  # Key derivation
+ed25519-dalek = { version = "2.1", features = ["rand_core", "serde"], optional = true }
+handlebars = { version = "4.3", optional = true }
 
 # Foundation dependency crates with fallback
 # ctas7-data-foundation = { path = "../ctas7-foundation-data", optional = true }
@@ -78,6 +80,10 @@ argon2 = "0.5"  # Key derivation
 # Neural Mux and XSD Integration (internal deterministic connectors)
 postgres = { version = "0.19", features = ["with-serde_json-1", "with-chrono-0_4"], optional = true }
 deadpool-postgres = { version = "0.12", optional = true }
+
+# ECS for Cognitive Systems
+legion = { version = "0.4", features = ["serialize"] }
+rand = "0.8"
 
 # Database backends for CTAS-7 multi-database support
 sled = "0.34"
@@ -113,9 +119,11 @@ xsd-integration = []
 trivariate-hash = []
 emoji-status = []
 delta-tuner = []  # PLASMA Delta Operator Module
+templates = ["handlebars"]
+crypto-signing = ["ed25519-dalek"]
 
 # Full foundation integration
-full = ["foundation-core", "async-runtime", "networking", "security", "data-handling", "diagnostics", "interface", "neural-mux", "unified-neural-mux", "database", "unicode-assembly", "xsd-integration"]
+full = ["foundation-core", "async-runtime", "networking", "security", "data-handling", "diagnostics", "interface", "neural-mux", "unified-neural-mux", "database", "unicode-assembly", "xsd-integration", "templates", "crypto-signing"]
 
 # Smart Crate System metadata
 [package.metadata.ctas7]

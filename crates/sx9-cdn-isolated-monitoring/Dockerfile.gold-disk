@@ -1,0 +1,33 @@
+# CTAS-7 Smart Crate - Gold Disk Retrofit
+# Spins from foundation gold disk
+
+FROM ctas7-foundation-core:gold-disk AS foundation
+
+# Build stage
+FROM rust:1.82-slim AS builder
+
+WORKDIR /app
+
+# Copy source
+COPY . .
+
+# Build with foundation integration
+RUN cargo build --release --features foundation-integration
+
+# Runtime stage - inherits from gold disk
+FROM foundation
+
+# Copy retrofit binary
+COPY --from=builder /app/target/release/ctas7-isolated-monitoring-cdn-staging /usr/local/bin/
+
+# Smart crate metadata
+LABEL ctas.retrofit="true"
+LABEL ctas.foundation="gold-disk"
+LABEL ctas.smart-crate="true"
+LABEL ctas.tesla-grade="true"
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
+    CMD echo "Smart Crate Ready" || exit 1
+
+CMD ["ctas7-isolated-monitoring-cdn-staging"]

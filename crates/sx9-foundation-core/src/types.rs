@@ -112,3 +112,86 @@ pub struct AgentMetadata {
     pub status: AgentStatus,
     pub last_seen: DateTime<Utc>,
 }
+
+/// USIM Transaction for Blockchain
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub enum UsimTransaction {
+    KeyRegistration {
+        key_ref: KeyReference,
+        registrar: String,
+        timestamp: u64,
+        signature: String,
+    },
+    BuildVerification {
+        verifier: String,
+        timestamp: u64,
+        outcome: String,
+    },
+    KeyRevocation {
+        key_fingerprint: String,
+        revoker: String,
+        timestamp: u64,
+        reason: String,
+    },
+    TrustEndorsement {
+        endorser: String,
+        endorsed: String,
+        trust_level: u8,
+        timestamp: u64,
+    },
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct KeyReference {
+    pub fingerprint: String,
+    pub algorithm: String,
+}
+
+/// Mining Result
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct MiningResult {
+    pub success: bool,
+    pub hash: String,
+    pub nonce: u32,
+    pub mining_time_ms: u64,
+    pub difficulty: u8,
+}
+
+/// Processed Document for Ingestion
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct ProcessedDocument {
+    pub id: String, // Trivariate Hash
+    pub path: String,
+    pub content_type: String,
+    pub size_bytes: u64,
+    pub created_at: DateTime<Utc>,
+    pub metadata: std::collections::HashMap<String, String>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct DocumentRecord {
+    pub id: String,
+    pub status: String,
+}
+
+impl MiningResult {
+    pub fn success(hash: String, nonce: u32, mining_time_ms: u64, difficulty: u8) -> Self {
+        Self {
+            success: true,
+            hash,
+            nonce,
+            mining_time_ms,
+            difficulty,
+        }
+    }
+
+    pub fn failure() -> Self {
+        Self {
+            success: false,
+            hash: "".to_string(),
+            nonce: 0,
+            mining_time_ms: 0,
+            difficulty: 0,
+        }
+    }
+}

@@ -1,0 +1,10 @@
+name = "Convergence Check"
+domain = "CYBER_PLASMA_CORE"
+crystal = "VARNISH_CRYSTAL_E0"
+teth_entropy = "0.8200"
+h1_hash = "c2f230eb8bf910f3d14d554e437838a08513e87bc1e285888557cbcf1a9610f1"
+
+[ontology]
+phase = "Command and Control"
+mitre_id = "T1071"
+layer = "Layer 7 (App)"

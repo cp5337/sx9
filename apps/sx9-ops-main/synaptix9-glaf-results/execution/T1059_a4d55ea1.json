@@ -1,0 +1,30 @@
+{
+  "id": "wf_msfconsole_1765653628",
+  "node_type": "action_emit_event",
+  "category": "exploit",
+  "name": "Metasploit Exploit Execution",
+  "node_config": {
+    "tool": "msfconsole",
+    "args": "exploit/multi/handler",
+    "phase": "Execution",
+    "mitre_id": "T1059"
+  },
+  "h2_hash": "a4d55ea136051477c47ccd86950415c5e849903bf406bc57c8920a75f0952ff9",
+  "linked_identity_h1": "3930d02581416d871840beba43372d2c9f5b6034e916d862217606b0caa8588b",
+  "forge_metadata": {
+    "thyristor_state": {
+      "status": "LATCHED_HIGH",
+      "phase": "HD4_DOMINATE",
+      "threshold": 0.75,
+      "converged": true
+    },
+    "hash_delta": {
+      "value": "0.180625",
+      "unit": "normalized_turn"
+    },
+    "teth_score": 1.0,
+    "crystal_context": "VARNISH_CRYSTAL_E0",
+    "priority": 1,
+    "classification": "SECRET"
+  }
+}

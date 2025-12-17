@@ -3,7 +3,7 @@
 //! Connects to actual Docker services defined in docker-compose.leptose-models.yml
 
 use crate::data::{DateTime, Deserialize, Serialize, Utc};
-use crate::neural_mux::{ExecutionContext, OperationRoute, Priority};
+use crate::neural_mux::{ExecutionContext, OperationRoute, Priority, TransportProfile};
 use reqwest::Client;
 use serde_json::Value;
 use std::collections::HashMap;
@@ -383,6 +383,7 @@ impl MultiModelNeuralMux {
                 target_processor: decision.selected_model.get_processor_name(),
                 priority: self.determine_priority(unicode_char),
                 context_awareness: true,
+                transport_profile: TransportProfile::Internal,
             },
             model_decision: decision,
             confidence_score: 0.95,    // Calculated from model ensemble
@@ -436,6 +437,7 @@ impl MultiModelNeuralMux {
                 target_processor: final_decision.selected_model.get_processor_name(),
                 priority: self.determine_priority(unicode_char),
                 context_awareness: true,
+                transport_profile: TransportProfile::Internal,
             },
             model_decision: final_decision,
             confidence_score: 0.98,    // Higher confidence from ensemble

@@ -1,0 +1,81 @@
+{
+  "name": "LaserLight FSO MEO Constellation",
+  "description": "12-satellite Medium Earth Orbit constellation optimized for Free Space Optical communications with 400 Gbps capacity per link",
+  "version": "1.0.0",
+  "constellation_type": {
+    "WalkerDelta": {
+      "total_satellites": 12,
+      "num_planes": 3,
+      "satellites_per_plane": 4,
+      "phasing_parameter": 1
+    }
+  },
+  "orbital_parameters": {
+    "altitude_km": 8000.0,
+    "inclination_deg": 55.0,
+    "eccentricity": 0.0001,
+    "raan_spacing_deg": 120.0,
+    "argument_of_perigee_deg": 0.0,
+    "phase_spacing_deg": 30.0
+  },
+  "satellite_config": {
+    "mass_kg": 500.0,
+    "power_generation_w": 2000.0,
+    "communication_config": {
+      "fso_enabled": true,
+      "fso_wavelength_nm": 1550.0,
+      "fso_transmit_power_w": 1.0,
+      "fso_beam_divergence_urad": 10.0,
+      "rf_enabled": true,
+      "rf_frequency_ghz": 26.5,
+      "rf_transmit_power_w": 50.0,
+      "max_data_rate_gbps": 400.0,
+      "min_data_rate_mbps": 100.0
+    },
+    "pointing_accuracy_deg": 0.01,
+    "lifetime_years": 10.0
+  },
+  "ground_station_config": {
+    "use_predefined_stations": true,
+    "predefined_set": "Ctas7Network257Stations",
+    "custom_stations": [],
+    "default_capabilities": {
+      "fso_enabled": true,
+      "rf_enabled": true,
+      "minimum_elevation_deg": 10.0,
+      "maximum_range_km": 50000.0,
+      "tracking_accuracy_deg": 0.1,
+      "weather_resilience_factor": 0.9
+    }
+  },
+  "analysis_config": {
+    "propagator_type": "Sgp4",
+    "time_step_seconds": 60.0,
+    "max_propagation_hours": 168.0,
+    "atmospheric_model": "Standard",
+    "earth_model": "Wgs84"
+  },
+  "fso_config": {
+    "wavelength_nm": 1550.0,
+    "transmitter": {
+      "power_w": 1.0,
+      "beam_divergence_urad": 10.0,
+      "pointing_accuracy_urad": 1.0,
+      "efficiency": 0.8
+    },
+    "receiver": {
+      "aperture_diameter_m": 0.3,
+      "field_of_view_urad": 100.0,
+      "quantum_efficiency": 0.7,
+      "noise_equivalent_power_w": 1e-15
+    },
+    "link_budget": {
+      "required_snr_db": 15.0,
+      "link_margin_db": 6.0,
+      "modulation_loss_db": 3.0,
+      "system_losses_db": 5.0
+    },
+    "atmospheric_effects": true,
+    "turbulence_model": "HufnagelValley"
+  }
+}

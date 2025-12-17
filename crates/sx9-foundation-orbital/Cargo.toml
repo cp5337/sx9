@@ -60,7 +60,7 @@ weather_integration = ["openweather-api", "weather_api"]
 atmospheric_modeling = []
 
 [lib]
-name = "ctas7_foundation_orbital"
+name = "sx9_foundation_orbital"
 path = "src/lib.rs"
 
 # Smart Crate System metadata - v7.3.1

@@ -15,12 +15,29 @@ pub enum Priority {
     Low = 1,
 }
 
+/// Transport Profile (RFC-9006 Section 4.1)
+/// Defines the security and routing requirements for operations.
+#[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub enum TransportProfile {
+    /// Direct connection (Standard, low latency)
+    Direct,
+    /// Internal mesh only (No egress)
+    Internal,
+    /// Encrypted tunnel required (VPN/WireGuard)
+    Tunneled,
+    /// Obfuscated transport (Steganography/Traffic Shaping)
+    Obfuscated,
+    /// Airgapped (Manual/Sneakernet bridge)
+    Airgap,
+}
+
 /// Neural Mux operation routing
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct OperationRoute {
     pub unicode_range: (u32, u32),
     pub target_processor: String,
     pub priority: Priority,
+    pub transport_profile: TransportProfile,
     pub context_awareness: bool,
 }
 
@@ -59,6 +76,7 @@ impl Default for NeuralMuxConfig {
                     unicode_range: (0xE000, 0xE0FF),
                     target_processor: "system_controller".to_string(),
                     priority: Priority::High,
+                    transport_profile: TransportProfile::Internal,
                     context_awareness: true,
                 },
                 // Trivariate hash operations (U+E100-E1FF)
@@ -66,6 +84,7 @@ impl Default for NeuralMuxConfig {
                     unicode_range: (0xE100, 0xE1FF),
                     target_processor: "trivariate_processor".to_string(),
                     priority: Priority::High,
+                    transport_profile: TransportProfile::Internal,
                     context_awareness: true,
                 },
                 // Context system operations (U+E200-E2FF)
@@ -73,6 +92,7 @@ impl Default for NeuralMuxConfig {
                     unicode_range: (0xE200, 0xE2FF),
                     target_processor: "context_processor".to_string(),
                     priority: Priority::Medium,
+                    transport_profile: TransportProfile::Internal,
                     context_awareness: true,
                 },
                 // Intelligence operations (U+E300-E3FF)
@@ -80,6 +100,7 @@ impl Default for NeuralMuxConfig {
                     unicode_range: (0xE300, 0xE3FF),
                     target_processor: "intelligence_processor".to_string(),
                     priority: Priority::Critical,
+                    transport_profile: TransportProfile::Obfuscated,
                     context_awareness: true,
                 },
                 // Environmental mask operations (U+E400-E4FF)
@@ -87,6 +108,7 @@ impl Default for NeuralMuxConfig {
                     unicode_range: (0xE400, 0xE4FF),
                     target_processor: "environmental_processor".to_string(),
                     priority: Priority::Medium,
+                    transport_profile: TransportProfile::Direct,
                     context_awareness: true,
                 },
                 // XSD operations (U+E500-E5FF)
@@ -94,6 +116,7 @@ impl Default for NeuralMuxConfig {
                     unicode_range: (0xE500, 0xE5FF),
                     target_processor: "xsd_processor".to_string(),
                     priority: Priority::Low,
+                    transport_profile: TransportProfile::Internal,
                     context_awareness: false,
                 },
             ],

@@ -1,0 +1,26 @@
+playbook_id = "modern-ops-001"
+name = "Modern Operations Alpha"
+description = "First verification of TOML-based playbook execution"
+hd4_phase = "Detect"
+ptcc_primitive = 8
+source_artifacts = []
+attack_techniques = ["T1059"]
+platforms = ["linux", "macos"]
+prerequisites = []
+data_sources = []
+severity = "low"
+confidence = 0.9
+created_at = "2025-12-13T00:00:00Z"
+
+[[actions]]
+type = "EXECUTE"
+executor = "sh"
+command = "echo '🚀 Modern Playbook is Running via CLI!'"
+cleanup = ""
+payloads = []
+elevation_required = false
+
+[trivariate_hash]
+sch_t = "000"
+cuid_t = "000"
+uuid = "000"

@@ -10,7 +10,7 @@
 
     دور الملف:
     محرك بصمة الأجهزة المتطور، مصمم ببنية Traits-based مرنة وقابلة للتوسيع،
-    يستخدم مبادئ أمان متقدمة لإدارة الأسرار (Zero-Knowledge) وخوارزميات عالية الأداء (BLAKE3)،
+    يستخدم مبادئ أمان متقدمة لإدارة الأسرار (Zero-Knowledge) وخوارزميات عالية الأداء (Trivariate)،
     مع دعم كامل للحوسبة غير المتزامنة (Async) لضمان أداء عالٍ في البيئات المتزامنة.
     المهام الأساسية:
     1. استخدام Traits لحقن التبعيات (AI, Security, Quantum) لمرونة قصوى.
@@ -26,7 +26,7 @@
     File Role:
     Advanced device fingerprinting engine, designed with a flexible and extensible
     Traits-based architecture. It employs advanced security principles for secret
-    management (Zero-Knowledge), high-performance algorithms (BLAKE3), and full
+    management (Zero-Knowledge), high-performance algorithms (Trivariate), and full
     support for asynchronous computing to ensure high performance in concurrent environments.
 
     Main Tasks:

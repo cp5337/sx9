@@ -39,11 +39,19 @@ assembly_language_linkup = true
 # Foundation crates - use foundation-core for all common dependencies
 sx9-foundation-core = { path = "../sx9-foundation-core" }
 sx9-atlas-bus = { path = "../sx9-atlas-bus", features = ["std", "nats"] }
+sx9-atlas-daemon = { path = "../sx9-atlas-daemon" }
+
+# ECS - Legion for hot-path
+legion = "0.4"
 
 # NATS (not provided by foundation-core)
 async-nats.workspace = true
 base64 = "0.21"
 futures-util = "0.3"
+
+# HTTP client for SlotGraph bridge
+reqwest = { version = "0.11", features = ["json"] }
+rand = "0.8"
 
 # Note: Use sx9-foundation-core re-exports:
 # - sx9_foundation_core::async_runtime::tokio (instead of tokio)

@@ -1,4 +1,4 @@
-import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
+import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from "axios";
 
 export interface ApiConfig {
   baseURL: string;
@@ -8,7 +8,7 @@ export interface ApiConfig {
 }
 
 export interface ApiRequest {
-  method: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
+  method: "GET" | "POST" | "PUT" | "DELETE" | "PATCH";
   url: string;
   data?: unknown;
   params?: Record<string, any>;
@@ -32,31 +32,31 @@ export class ApiService {
       baseURL: config.baseURL,
       timeout: config.timeout || 10000,
       ...(config.headers && { headers: config.headers }),
-      ...(config.withCredentials !== undefined && { withCredentials: config.withCredentials })
+      ...(config.withCredentials !== undefined && { withCredentials: config.withCredentials }),
     });
 
     // Request interceptor
     this.client.interceptors.request.use(
-      (config) => {
+      config => {
         // Add auth token if available
-        const token = localStorage.getItem('authToken');
+        const token = localStorage.getItem("authToken");
         if (token) {
           config.headers.Authorization = `Bearer ${token}`;
         }
         return config;
       },
-      (error) => Promise.reject(error)
+      error => Promise.reject(error)
     );
 
     // Response interceptor
     this.client.interceptors.response.use(
-      (response) => response,
-      (error) => {
+      response => response,
+      error => {
         // Handle common errors
         if (error.response?.status === 401) {
           // Handle unauthorized
-          localStorage.removeItem('authToken');
-          window.location.href = '/login';
+          localStorage.removeItem("authToken");
+          window.location.href = "/login";
         }
         return Promise.reject(error);
       }
@@ -70,7 +70,7 @@ export class ApiService {
         url: request.url,
         data: request.data,
         ...(request.params && { params: request.params }),
-        ...(request.headers && { headers: request.headers })
+        ...(request.headers && { headers: request.headers }),
       };
 
       const response: AxiosResponse<T> = await this.client.request(config);
@@ -78,61 +78,60 @@ export class ApiService {
       return {
         success: true,
         data: response.data,
-        status: response.status
+        status: response.status,
       };
     } catch (error: unknown) {
       const axiosError = error as any;
       return {
         success: false,
-        error: axiosError.response?.data?.message || axiosError.message || 'Unknown error',
-        status: axiosError.response?.status
+        error: axiosError.response?.data?.message || axiosError.message || "Unknown error",
+        status: axiosError.response?.status,
       };
     }
   }
 
   async get<T = any>(url: string, params?: Record<string, any>): Promise<ApiResponse<T>> {
     return this.request<T>({
-      method: 'GET',
+      method: "GET",
       url,
-      ...(params && { params })
+      ...(params && { params }),
     });
   }
 
   async post<T = any>(url: string, data?: unknown): Promise<ApiResponse<T>> {
     return this.request<T>({
-      method: 'POST',
+      method: "POST",
       url,
-      data
+      data,
     });
   }
 
   async put<T = any>(url: string, data?: unknown): Promise<ApiResponse<T>> {
     return this.request<T>({
-      method: 'PUT',
+      method: "PUT",
       url,
-      data
+      data,
     });
   }
 
   async delete<T = any>(url: string): Promise<ApiResponse<T>> {
     return this.request<T>({
-      method: 'DELETE',
-      url
+      method: "DELETE",
+      url,
     });
   }
 
   async patch<T = any>(url: string, data?: unknown): Promise<ApiResponse<T>> {
     return this.request<T>({
-      method: 'PATCH',
+      method: "PATCH",
       url,
-      data
+      data,
     });
   }
 }
 
 // Default API service instance
 export const apiService = new ApiService({
-  baseURL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api',
-  timeout: 10000
+  baseURL: import.meta.env.VITE_API_BASE_URL || "http://localhost:18120/api",
+  timeout: 10000,
 });
-

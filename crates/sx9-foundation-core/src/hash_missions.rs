@@ -1,6 +1,6 @@
 //! Hash-driven mission execution system
 //!
-//! Uses Blake3 hashing for sub-millisecond mission validation and execution
+//! Uses Trivariate hashing for sub-millisecond mission validation and execution
 //! Integrates with Sled KVR for tactical operation storage and retrieval
 
 use serde::{Deserialize, Serialize};
@@ -65,7 +65,7 @@ impl HashMissionExecutor {
         Ok(Self {})
     }
 
-    /// Generate mission hash using Blake3
+    /// Generate mission hash using Trivariate
     #[cfg(feature = "hash-driven")]
     pub fn generate_mission_hash(&self, mission: &HashMission) -> Result<String, TacticalError> {
         let serialized = serde_json::to_vec(mission)

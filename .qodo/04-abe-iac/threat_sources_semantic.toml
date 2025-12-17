@@ -1,0 +1,841 @@
+# RFC-9011: Threat Intelligence Semantic Extraction Configuration
+# RFC-9001: Trivariate Hashing Integration
+# RFC-9023: Security Framework Integration Map
+# RFC-9108: Thalmic Filter & Model Registry
+# RFC-9300: HD4 Canonical Specification
+#
+# This TOML defines semantic categories, ontology mappings, and SPIRES extraction rules
+# for all threat intelligence sources in the SX9 platform.
+
+[meta]
+version = "2.0.0"
+rfc_references = ["RFC-9001", "RFC-9011", "RFC-9023", "RFC-9108", "RFC-9109", "RFC-9300", "RFC-9301", "RFC-9302"]
+spires_enabled = true
+trivariate_hashing = true
+total_sources = 27
+
+# =============================================================================
+# DOMAIN CATEGORIES (maps to RFC-9001 domain bitmask)
+# =============================================================================
+
+[domains]
+mitre = { bitmask = 0x01, description = "MITRE ATT&CK ecosystem" }
+detection = { bitmask = 0x02, description = "Detection rules and signatures" }
+emulation = { bitmask = 0x03, description = "Adversary emulation frameworks" }
+recon = { bitmask = 0x04, description = "Reconnaissance and scanning" }
+loltl = { bitmask = 0x05, description = "Living Off The Land techniques" }
+exploits = { bitmask = 0x06, description = "Exploit databases" }
+osint = { bitmask = 0x07, description = "Open Source Intelligence" }
+ctas_internal = { bitmask = 0x08, description = "CTAS-7 internal sources" }
+
+# =============================================================================
+# MITRE SUITE (7 sources)
+# =============================================================================
+
+[sources.mitre_attack_enterprise]
+domain = "mitre"
+semantic_type = "ThreatTechnique"
+ontology_class = "AttackPattern"
+nvnn_pattern = "Adversary executes technique against target"
+relationships = ["uses", "mitigates", "detects", "subtechnique_of"]
+spires_extraction = ["technique_id", "tactic", "platform", "data_sources"]
+crosswalk_keys = ["technique_id"]
+
+[sources.mitre_attack_ics]
+domain = "mitre"
+semantic_type = "ThreatTechnique"
+ontology_class = "ICSAttackPattern"
+nvnn_pattern = "Adversary targets industrial control system"
+relationships = ["uses", "impacts", "targets_asset"]
+spires_extraction = ["technique_id", "tactic", "asset_type"]
+crosswalk_keys = ["technique_id"]
+
+[sources.mitre_attack_mobile]
+domain = "mitre"
+semantic_type = "ThreatTechnique"
+ontology_class = "MobileAttackPattern"
+nvnn_pattern = "Adversary compromises mobile device"
+relationships = ["uses", "requires_permission", "targets_app"]
+spires_extraction = ["technique_id", "tactic", "platform"]
+crosswalk_keys = ["technique_id"]
+
+[sources.mitre_d3fend]
+domain = "mitre"
+semantic_type = "DefensiveTechnique"
+ontology_class = "Countermeasure"
+nvnn_pattern = "Defense counters attack technique"
+relationships = ["counters", "monitors", "isolates", "hardens"]
+spires_extraction = ["d3fend_id", "tactic", "artifact"]
+crosswalk_keys = ["counters_technique"]
+
+[sources.mitre_car]
+domain = "mitre"
+semantic_type = "DetectionAnalytic"
+ontology_class = "AnalyticRule"
+nvnn_pattern = "Analytic detects technique via data_source"
+relationships = ["detects", "requires_data", "outputs_alert"]
+spires_extraction = ["car_id", "coverage", "implementation", "data_model"]
+crosswalk_keys = ["technique_id"]
+
+[sources.mitre_atlas]
+domain = "mitre"
+semantic_type = "MLThreatTechnique"
+ontology_class = "AIAttackPattern"
+nvnn_pattern = "Adversary attacks ML model via vector"
+relationships = ["targets_model", "exploits_weakness", "evades_defense"]
+spires_extraction = ["atlas_id", "tactic", "case_study"]
+crosswalk_keys = ["atlas_id"]
+
+[sources.mitre_engage]
+domain = "mitre"
+semantic_type = "EngagementActivity"
+ontology_class = "AdversaryEngagement"
+nvnn_pattern = "Defender engages adversary through deception"
+relationships = ["deceives", "directs", "elicits", "exposes"]
+spires_extraction = ["engage_id", "goal", "approach"]
+crosswalk_keys = ["engage_id"]
+
+# =============================================================================
+# ADVERSARY EMULATION (2 sources)
+# =============================================================================
+
+[sources.atomic_red_team]
+domain = "emulation"
+semantic_type = "AtomicTest"
+ontology_class = "EmulationTest"
+nvnn_pattern = "Test validates technique on platform"
+relationships = ["tests", "validates", "executes_command"]
+spires_extraction = ["test_id", "technique_id", "executor", "platform"]
+crosswalk_keys = ["technique_id"]
+
+[sources.caldera]
+domain = "emulation"
+semantic_type = "AdversaryAbility"
+ontology_class = "EmulationAbility"
+nvnn_pattern = "Ability performs action against target"
+relationships = ["performs", "requires_access", "produces_artifact"]
+spires_extraction = ["ability_id", "technique_id", "tactic", "executor"]
+crosswalk_keys = ["technique_id"]
+
+# =============================================================================
+# DETECTION RULES (4 sources)
+# =============================================================================
+
+[sources.nuclei_templates]
+domain = "detection"
+semantic_type = "VulnerabilityTemplate"
+ontology_class = "DetectionTemplate"
+nvnn_pattern = "Template detects vulnerability in service"
+relationships = ["detects", "exploits", "targets_service"]
+spires_extraction = ["template_id", "severity", "cve", "tags"]
+crosswalk_keys = ["cve", "technique_id"]
+
+[sources.sigma_rules]
+domain = "detection"
+semantic_type = "DetectionRule"
+ontology_class = "SIEMRule"
+nvnn_pattern = "Rule detects behavior via logsource"
+relationships = ["detects", "monitors_log", "alerts_on"]
+spires_extraction = ["rule_id", "logsource", "level", "tags"]
+crosswalk_keys = ["technique_id"]
+
+[sources.yara_rules]
+domain = "detection"
+semantic_type = "MalwareSignature"
+ontology_class = "BinarySignature"
+nvnn_pattern = "Rule identifies malware via pattern"
+relationships = ["identifies", "matches_pattern", "classifies"]
+spires_extraction = ["rule_name", "strings", "condition", "tags"]
+crosswalk_keys = ["malware_family"]
+
+[sources.wazuh_rules]
+domain = "detection"
+semantic_type = "HIDSRule"
+ontology_class = "HostDetectionRule"
+nvnn_pattern = "Rule monitors host for anomaly"
+relationships = ["monitors", "correlates_events", "alerts_on"]
+spires_extraction = ["rule_id", "group", "level", "description"]
+crosswalk_keys = ["technique_id"]
+
+# =============================================================================
+# RECONNAISSANCE (1 source)
+# =============================================================================
+
+[sources.nmap_scripts]
+domain = "recon"
+semantic_type = "ReconScript"
+ontology_class = "NetworkScript"
+nvnn_pattern = "Script scans target for information"
+relationships = ["scans", "enumerates", "discovers"]
+spires_extraction = ["script_name", "categories", "description"]
+crosswalk_keys = ["categories"]
+
+# =============================================================================
+# LOLTL - LIVING OFF THE LAND (5 sources)
+# =============================================================================
+
+[sources.lolbas]
+domain = "loltl"
+semantic_type = "LOLBinary"
+ontology_class = "WindowsBinaryAbuse"
+nvnn_pattern = "Binary executes payload via function"
+relationships = ["executes", "downloads", "copies", "compiles"]
+spires_extraction = ["binary_name", "function", "mitre_id", "type"]
+crosswalk_keys = ["technique_id"]
+
+[sources.gtfobins]
+domain = "loltl"
+semantic_type = "GTFOBinary"
+ontology_class = "UnixBinaryAbuse"
+nvnn_pattern = "Binary escalates privilege via method"
+relationships = ["escalates", "reads_file", "writes_file", "spawns_shell"]
+spires_extraction = ["binary_name", "functions", "description"]
+crosswalk_keys = ["functions"]
+
+[sources.loldrivers]
+domain = "loltl"
+semantic_type = "LOLDriver"
+ontology_class = "DriverAbuse"
+nvnn_pattern = "Driver enables kernel access via vulnerability"
+relationships = ["enables_kernel_access", "bypasses_security", "loads_unsigned"]
+spires_extraction = ["driver_name", "category", "hash", "vendor"]
+crosswalk_keys = ["category"]
+
+[sources.hijacklibs]
+domain = "loltl"
+semantic_type = "HijackLibrary"
+ontology_class = "DLLHijack"
+nvnn_pattern = "DLL hijacks application via search_order"
+relationships = ["hijacks", "side_loads", "proxies"]
+spires_extraction = ["dll_name", "application", "technique"]
+crosswalk_keys = ["technique"]
+
+[sources.wadcoms]
+domain = "loltl"
+semantic_type = "WindowsCommand"
+ontology_class = "ADAbuse"
+nvnn_pattern = "Command exploits AD via method"
+relationships = ["exploits_ad", "enumerates", "moves_laterally"]
+spires_extraction = ["command", "category", "requirements"]
+crosswalk_keys = ["category"]
+
+# =============================================================================
+# EXPLOITS (1 source)
+# =============================================================================
+
+[sources.exploitdb]
+domain = "exploits"
+semantic_type = "Exploit"
+ontology_class = "ExploitCode"
+nvnn_pattern = "Exploit compromises target via vulnerability"
+relationships = ["exploits", "compromises", "targets_version"]
+spires_extraction = ["edb_id", "cve", "platform", "type"]
+crosswalk_keys = ["cve"]
+
+# =============================================================================
+# OSINT (3 sources)
+# =============================================================================
+
+[sources.osint_framework]
+domain = "osint"
+semantic_type = "OSINTTool"
+ontology_class = "IntelligenceTool"
+nvnn_pattern = "Tool gathers intelligence from source"
+relationships = ["gathers", "analyzes", "correlates"]
+spires_extraction = ["tool_name", "category", "url"]
+crosswalk_keys = ["category"]
+
+[sources.awesome_osint]
+domain = "osint"
+semantic_type = "OSINTResource"
+ontology_class = "IntelligenceResource"
+nvnn_pattern = "Resource provides data for investigation"
+relationships = ["provides", "indexes", "aggregates"]
+spires_extraction = ["resource_name", "category", "description"]
+crosswalk_keys = ["category"]
+
+[sources.sherlock]
+domain = "osint"
+semantic_type = "UsernameSearch"
+ontology_class = "IdentityTool"
+nvnn_pattern = "Tool searches username across platforms"
+relationships = ["searches", "validates", "discovers_account"]
+spires_extraction = ["site_name", "url_pattern", "error_type"]
+crosswalk_keys = ["site_name"]
+
+# =============================================================================
+# KALI TOOLS (1 source)
+# =============================================================================
+
+[sources.kali_tools]
+domain = "osint"
+semantic_type = "SecurityTool"
+ontology_class = "PentestTool"
+nvnn_pattern = "Tool performs action in category"
+relationships = ["performs", "requires", "outputs"]
+spires_extraction = ["tool_name", "category", "description", "homepage"]
+crosswalk_keys = ["category"]
+
+# =============================================================================
+# CTAS INTERNAL (3 sources)
+# =============================================================================
+
+[sources.ptcc_configs]
+domain = "ctas_internal"
+semantic_type = "PTCCConfiguration"
+ontology_class = "TaskConfiguration"
+nvnn_pattern = "Config defines task with parameters"
+relationships = ["configures", "chains", "validates"]
+spires_extraction = ["config_id", "task_type", "parameters"]
+crosswalk_keys = ["task_type"]
+
+[sources.teth_algorithms]
+domain = "ctas_internal"
+semantic_type = "TETHAlgorithm"
+ontology_class = "ValidationAlgorithm"
+nvnn_pattern = "Algorithm validates sequence via method"
+relationships = ["validates", "optimizes", "constrains"]
+spires_extraction = ["algorithm_id", "type", "constraints"]
+crosswalk_keys = ["type"]
+
+[sources.ptcc_toolchains]
+domain = "ctas_internal"
+semantic_type = "ToolChain"
+ontology_class = "ExecutionChain"
+nvnn_pattern = "Chain executes tools in sequence"
+relationships = ["chains", "sequences", "validates_flow"]
+spires_extraction = ["chain_id", "tools", "sequence"]
+crosswalk_keys = ["tools"]
+
+# =============================================================================
+# SPIRES ONTOLOGY OUTPUT CONFIGURATION
+# =============================================================================
+
+[spires]
+output_formats = ["json", "cypher", "surql", "linkml"]
+graph_database = "neo4j"
+document_database = "surrealdb"
+vector_database = "chromadb"
+
+[spires.entity_extraction]
+extract_techniques = true
+extract_tools = true
+extract_relationships = true
+extract_platforms = true
+extract_data_sources = true
+
+[spires.relationship_types]
+primary = ["uses", "detects", "mitigates", "targets", "executes"]
+secondary = ["requires", "produces", "chains_to", "validates"]
+
+# =============================================================================
+# TRIVARIATE HASHING (RFC-9001)
+# =============================================================================
+
+[hashing]
+algorithm = "murmur3_x64_128"
+encoding = "base96"
+sch_seed = 0xC7A50000
+cuid_seed = 0xC7A50001
+uuid_version = 7
+canonical_format = "triv:{sch}_{cuid}_{uuid}"
+
+[hashing.nvnn_grammar]
+pattern = "NOUN VERB NOUN NOUN"
+fallback = "NOUN VERB OBJECT CONTEXT"
+
+# =============================================================================
+# LAYER 2 MATHEMATICAL VALIDATION
+# =============================================================================
+
+[layer2]
+description = "Post-download mathematical validation framework"
+components = ["teth", "lstar", "stock_market", "hmm_persona"]
+
+[layer2.teth]
+name = "Topological Entropy Threat Heuristic"
+formula = "H(X) = -Σ p(x) * log2(p(x))"
+entropy_threshold = 2.5
+complexity_levels = ["LOW", "MEDIUM", "HIGH", "CRITICAL"]
+
+[layer2.lstar]
+name = "L* Learning Algorithm"
+description = "Active learning of threat automata via membership/equivalence queries"
+max_iterations = 100
+convergence_required = true
+accuracy_threshold = 0.8
+
+[layer2.stock_market]
+name = "Stock Market Universality Validation"
+description = "If 32 primitives work for trading, they're truly universal"
+benchmark_return = 0.02
+sharpe_threshold = 1.0
+
+# =============================================================================
+# HMM PERSONAS (HD4 Phase Discovery)
+# =============================================================================
+
+[hmm_persona]
+name = "Hidden Markov Model for HD4 Phase Discovery"
+description = "Maps tool sequences to operational phases"
+
+[hmm_persona.hidden_states]
+# RFC-9300: CANONICAL ORDER IS IMMUTABLE - Hunt→Detect→Disrupt→Disable→Dominate
+hunt = { id = 0, code = "H", description = "Active threat-seeking, persistent reconnaissance", posture = "Proactive" }
+detect = { id = 1, code = "D¹", description = "Positive identification, confirmation of threat indicators", posture = "Reactive-Aware" }
+disrupt = { id = 2, code = "D²", description = "Active interference, degradation of adversary capability", posture = "Active-Offensive" }
+disable = { id = 3, code = "D³", description = "Neutralization of threat capability, functional elimination", posture = "Decisive" }
+dominate = { id = 4, code = "D⁴", description = "Full control assertion, exploitation, terrain ownership", posture = "Exploitative" }
+
+[hmm_persona.primitive_phase_mapping]
+# Primitives that suggest Hunt phase
+hunt = ["READ", "CONNECT", "RECEIVE", "FILTER"]
+# Primitives that suggest Detect phase
+detect = ["VALIDATE", "TRANSFORM", "ROUTE", "AUTHENTICATE"]
+# Primitives that suggest Disrupt phase
+disrupt = ["SEND", "CALL", "ENCRYPT", "ALLOCATE"]
+# Primitives that suggest Dominate phase
+dominate = ["UPDATE", "COORDINATE", "SYNCHRONIZE", "LOCK"]
+# Primitives that suggest Disable phase
+disable = ["DELETE", "DEALLOCATE", "ROLLBACK", "DISCONNECT"]
+
+# =============================================================================
+# 32 ENHANCED PRIMITIVES (RFC-9001)
+# =============================================================================
+
+[primitives]
+total = 32
+categories = ["crud", "communication", "data", "control", "network", "security", "resource", "state", "coordination"]
+
+[primitives.crud]
+description = "Core data operations"
+members = ["CREATE", "READ", "UPDATE", "DELETE"]
+
+[primitives.communication]
+description = "Information flow"
+members = ["SEND", "RECEIVE"]
+
+[primitives.data]
+description = "Data processing"
+members = ["TRANSFORM", "VALIDATE"]
+
+[primitives.control]
+description = "Control flow"
+members = ["BRANCH", "LOOP", "RETURN", "CALL"]
+
+[primitives.network]
+description = "Network operations"
+members = ["CONNECT", "DISCONNECT", "ROUTE", "FILTER"]
+
+[primitives.security]
+description = "Security operations"
+members = ["AUTHENTICATE", "AUTHORIZE", "ENCRYPT", "DECRYPT"]
+
+[primitives.resource]
+description = "Resource management"
+members = ["ALLOCATE", "DEALLOCATE", "LOCK", "UNLOCK"]
+
+[primitives.state]
+description = "State management"
+members = ["SAVE", "RESTORE", "CHECKPOINT", "ROLLBACK"]
+
+[primitives.coordination]
+description = "Multi-system coordination"
+members = ["COORDINATE", "SYNCHRONIZE", "SIGNAL", "WAIT"]
+
+# =============================================================================
+# APT CAPABILITY LEVELS
+# =============================================================================
+
+[apt_levels]
+script_kiddie = { entropy_max = 1.0, primitive_complexity = "low" }
+intermediate = { entropy_max = 2.0, primitive_complexity = "medium" }
+advanced = { entropy_max = 3.0, primitive_complexity = "high" }
+apt_nation_state = { entropy_max = 4.0, primitive_complexity = "critical" }
+
+# =============================================================================
+# SUCCESS CRITERIA
+# =============================================================================
+
+[validation_criteria]
+universality_score_threshold = 0.75
+all_scenarios_must_validate = true
+electric_football_detection = true
+stock_market_alpha_required = true
+hmm_convergence_required = true
+
+# =============================================================================
+# PLASMA DEFENDER / OSSEC INTEGRATION
+# =============================================================================
+
+[plasma_defender]
+description = "Threat intel → OSSEC rule generation via Plasma Defender"
+workflow = "TOML → JSON → Hot Reload"
+
+[plasma_defender.ossec]
+alert_format = "json"
+rule_format = "toml"
+rule_path = "/plasma/rules/toml"
+json_path = "/plasma/rules/json"
+reload_command = "systemctl reload plasma-ossec"
+
+[plasma_defender.rule_template]
+# Maps threat intel sources to OSSEC rule components
+id_range = { start = 60000, end = 69999 }
+level_mapping = { LOW = 3, MEDIUM = 7, HIGH = 12, CRITICAL = 15 }
+
+[plasma_defender.rule_template.fields]
+primitive = "Maps to 32 primitives (AUTHENTICATE, READ, etc.)"
+unicode_trigger = "Deterministic routing via PUA range U+E000-E9FF"
+sch_semantic_core = "RFC-9001 Synaptic Convergent Hash"
+sch_op_primitive = "Primitive bitmask (0x0000-0xFFFF)"
+cuid_static = "Context User ID for lineage"
+
+[plasma_defender.active_response]
+enabled = true
+commands = ["scorpion-tarpit", "fail2ban-jail", "iptables", "icmp-redirect"]
+timeout_default = 600
+
+[plasma_defender.source_mapping]
+# Which threat intel sources generate which OSSEC rules
+sigma_rules = { generates = "detection_rules", level_default = 7 }
+yara_rules = { generates = "malware_signatures", level_default = 10 }
+wazuh_rules = { generates = "hids_rules", level_default = 5 }
+nuclei_templates = { generates = "vuln_detection", level_default = 8 }
+atomic_red_team = { generates = "emulation_detection", level_default = 12 }
+lolbas = { generates = "lol_detection", level_default = 10 }
+mitre_attack = { generates = "technique_mapping", level_default = 0 }
+
+# =============================================================================
+# COMPLETE PIPELINE: THREAT INTEL → OSSEC
+# =============================================================================
+
+[pipeline]
+name = "Threat Intel to OSSEC Rules"
+description = "Download threat intel, validate with Layer 2, generate Plasma/OSSEC rules"
+
+[[pipeline.stages]]
+name = "fetch"
+description = "Download 27 threat intel sources"
+output = "output/threat_content/"
+
+[[pipeline.stages]]
+name = "spires"
+description = "Extract ontology with SPIRES"
+output = "output/ontology/"
+
+[[pipeline.stages]]
+name = "layer2"
+description = "Validate with TETH + L* + HMM"
+output = "layer2_validation_results.json"
+
+[[pipeline.stages]]
+name = "neo4j"
+description = "Import to graph database"
+endpoint = "bolt://localhost:7687"
+
+[[pipeline.stages]]
+name = "plasma_rules"
+description = "Generate TOML rules for Plasma Defender"
+output = "/plasma/rules/toml/"
+
+[[pipeline.stages]]
+name = "compile"
+description = "Compile TOML → JSON for hot-path"
+command = "sx9-ct rules compile"
+
+[[pipeline.stages]]
+name = "reload"
+description = "Hot reload OSSEC daemon"
+command = "systemctl reload plasma-ossec"
+
+# =============================================================================
+# RFC-9300: HD4 CANONICAL SPECIFICATION
+# =============================================================================
+
+[hd4]
+name = "HD4 Canonical Specification"
+description = "Hunt-Detect-Disrupt-Disable-Dominate unified operational model"
+order = ["HUNT", "DETECT", "DISRUPT", "DISABLE", "DOMINATE"]
+order_is_immutable = true
+
+[hd4.unicode_allocation]
+# U+E700-E70F reserved for HD4 phases
+HD4_HUNT = "U+E700"
+HD4_DETECT = "U+E701"
+HD4_DISRUPT = "U+E702"
+HD4_DISABLE = "U+E703"
+HD4_DOMINATE = "U+E704"
+reserved_range = "U+E705-E70F"
+
+[hd4.delta_angles]
+# RFC-9300 §6: Delta Angle Semantic Mapping (6-decimal precision MANDATORY)
+description = "Trivariate delta angles map to HD4 phases"
+precision = 6
+format = "Δ(X.NNNNNN, Y.NNNNNN, Z.NNNNNN)"
+
+[hd4.delta_angles.axis_x]
+name = "Semantic"
+range = [0.000000, 1.000000]
+description = "Threat classification (Recon=0.0 → Exfil=1.0)"
+
+[hd4.delta_angles.axis_y]
+name = "Operational"
+range = [0.000000, 1.000000]
+description = "HD4 Phase (Hunt=0.0 → Dominate=1.0)"
+hunt = 0.000000
+detect = 0.250000
+disrupt = 0.500000
+disable = 0.750000
+dominate = 1.000000
+
+[hd4.delta_angles.axis_z]
+name = "Temporal"
+range = [0.000000, 1.000000]
+description = "Time perspective (Historical=0.0 → Predictive=1.0)"
+
+[hd4.delta_angles.phase_transitions]
+# Intermediate values represent phase transitions
+hunt_to_detect = 0.125000
+detect_to_disrupt = 0.375000
+disrupt_to_disable = 0.625000
+disable_to_dominate = 0.875000
+
+[hd4.delta_angles.magnitude_thresholds]
+# Δ-Angle magnitude (degrees) → HD4 Phase
+hunt = { max_degrees = 2.000000, response = "Routine monitoring" }
+detect = { max_degrees = 10.000000, response = "Elevated awareness" }
+disrupt = { max_degrees = 25.000000, response = "Active response" }
+disable = { max_degrees = 60.000000, response = "Decisive action" }
+dominate = { min_degrees = 60.000000, response = "Full engagement" }
+
+[hd4.h1_h2_convergence]
+# Phase transition governed by convergence scores (RFC-9024/9025)
+hunt_range = [0.00, 0.74]
+detect_range = [0.75, 0.79]
+disrupt_range = [0.80, 0.84]
+disable_range = [0.85, 0.89]
+dominate_range = [0.90, 1.00]
+convergence_line = 0.75
+transition_formula = "IF (H1 ≥ 0.75) AND (H2 ≥ 0.75) THEN ABOVE_LINE = true → Transition authorized"
+
+[hd4.dread_phase_mapping]
+# DREAD risk score → HD4 phase transition
+hunt = { max_score = 3.0, description = "Monitoring" }
+detect = { max_score = 5.0, description = "Confirmation" }
+disrupt = { max_score = 7.0, description = "Active response" }
+disable = { max_score = 9.0, description = "Neutralization" }
+dominate = { min_score = 9.0, description = "Full control" }
+
+# =============================================================================
+# RFC-9300: FRAMEWORK SUBSUMPTION MAPPINGS
+# =============================================================================
+
+[hd4.subsumption.mitre_attack]
+# MITRE ATT&CK Enterprise Tactics → HD4
+reconnaissance = "HUNT"
+resource_development = "HUNT"
+initial_access = "DETECT"
+execution = "DISRUPT"
+persistence = "DISRUPT"
+privilege_escalation = "DISRUPT"
+defense_evasion = "DISRUPT"
+credential_access = "DISRUPT"
+discovery = "DETECT"
+lateral_movement = "DISRUPT"
+collection = "DISABLE"
+command_and_control = "DISABLE"
+exfiltration = "DOMINATE"
+impact = "DOMINATE"
+
+[hd4.subsumption.mitre_d3fend]
+# D3FEND Tactics → HD4
+model = "HUNT"
+harden = "HUNT"
+detect = "DETECT"
+isolate = "DISRUPT"
+deceive = "DISRUPT"
+evict = "DISABLE"
+restore = "DOMINATE"
+
+[hd4.subsumption.mitre_engage]
+# ENGAGE Activities → HD4
+prepare = "HUNT"
+expose = "DETECT"
+affect = "DISRUPT"
+elicit = "DISRUPT"
+understand = "DOMINATE"
+
+[hd4.subsumption.mitre_atlas]
+# ATLAS AI/ML Tactics → HD4
+reconnaissance = "HUNT"
+resource_development = "HUNT"
+ml_model_access = "DETECT"
+execution = "DISRUPT"
+persistence = "DISRUPT"
+defense_evasion = "DISRUPT"
+collection = "DISABLE"
+ml_attack_staging = "DISABLE"
+exfiltration = "DOMINATE"
+impact = "DOMINATE"
+
+[hd4.subsumption.kill_chain]
+# Lockheed Martin Cyber Kill Chain → HD4
+reconnaissance = "HUNT"
+weaponization = "HUNT"
+delivery = "DETECT"
+exploitation = "DISRUPT"
+installation = "DISRUPT"
+command_and_control = "DISABLE"
+actions_on_objectives = "DOMINATE"
+
+[hd4.subsumption.stride]
+# STRIDE Threat Modeling → HD4
+spoofing = "DISRUPT"
+tampering = ["DISRUPT", "DISABLE"]
+repudiation = "DOMINATE"
+information_disclosure = ["DISABLE", "DOMINATE"]
+denial_of_service = "DISABLE"
+elevation_of_privilege = ["DISRUPT", "DISABLE"]
+
+[hd4.subsumption.physical]
+# Physical/Counter-Terrorism → HD4
+intelligence_collection = "HUNT"
+threat_identification = "DETECT"
+disruption_operations = "DISRUPT"
+direct_action = "DISABLE"
+exploitation = "DOMINATE"
+
+# =============================================================================
+# RFC-9108: THALMIC FILTER & MODEL REGISTRY
+# =============================================================================
+
+[thalmic_filter]
+name = "Thalmic Filter L2 Intercept Layer"
+description = "Always-on inference layer at L2 cognitive fabric level"
+iso_path = "/opt/ctas7/thalmic-filter/"
+
+[thalmic_filter.models]
+# DistilBERT MITRE Classifier
+distilbert_classifier = {
+    name = "distilbert-mitre-v1",
+    base_model = "distilbert-base-uncased",
+    fine_tuned_on = "mitre_attck_techniques",
+    techniques = 1094,
+    tactics = 19,
+    accuracy = 0.94,
+    latency_ms = 50,
+    size_mb = 260
+}
+
+# Phi-3 LoRA Explainer
+phi3_explainer = {
+    name = "phi3-lora-v1",
+    base_model = "microsoft/phi-3-mini-4k-instruct",
+    adapter_type = "lora",
+    training_samples = 227,
+    latency_ms = 200,
+    size_mb = 50
+}
+
+[thalmic_filter.escalation_tiers]
+# Three-tier escalation architecture
+local = { tier = 0, path = "/opt/ctas7/thalmic-filter/models/", latency_ms = 50, use_case = "DevOps/BNE/DevSecOps" }
+gcp = { tier = 1, endpoint = "models.sx9.io", latency_ms = 100, use_case = "Operational analysis" }
+cloudflare = { tier = 2, endpoint = "cdn.sx9.io", latency_ms = 150, use_case = "Strategic/Global ops" }
+
+[thalmic_filter.unicode_block]
+# U+E540-E55F: Thalmic Filter Operations
+THALMIC_CLASSIFY = "U+E540"
+THALMIC_EXPLAIN = "U+E541"
+THALMIC_CACHE_HIT = "U+E542"
+THALMIC_CACHE_MISS = "U+E543"
+THALMIC_ESCALATE = "U+E544"
+THALMIC_BLOCK = "U+E545"
+THALMIC_ENRICH = "U+E546"
+THALMIC_LOCAL = "U+E547"
+THALMIC_GCP = "U+E548"
+THALMIC_CLOUDFLARE = "U+E549"
+THALMIC_ATOMIC_WRITE = "U+E54A"
+THALMIC_ATOMIC_READ = "U+E54B"
+THALMIC_LISP_ENCODE = "U+E54C"
+THALMIC_TRIVARIATE = "U+E54D"
+THALMIC_VOICE_FILTER = "U+E54E"
+THALMIC_PROMPT_FILTER = "U+E54F"
+
+[thalmic_filter.atomic_clipboard]
+description = "Mandatory state layer for all AI operations"
+state_path = "/opt/ctas7/atomic-clipboard/state/clipboard.sled"
+captures = ["prompt_text", "tool_invocations", "voice_commands"]
+shares_state_across = ["prompt_windows", "terminals", "model_inference"]
+
+[thalmic_filter.result_structure]
+fields = ["mitre_techniques", "threat_score", "explanation", "latency_ms", "model_tier"]
+threat_score_range = [0.0, 1.0]
+explanation_escalation = "Operational+"
+
+# =============================================================================
+# LINKML TEMPLATES (SPIRES Ontology Schemas)
+# =============================================================================
+
+[linkml]
+description = "LinkML schemas for SPIRES/OntoGPT zero-shot extraction"
+template_path = "04-abe-iac/linkml_templates/"
+output_format = "LinkML-conformant JSON for Neo4j"
+
+[linkml.schemas]
+threat_technique = { file = "threat_technique.yaml", id = "https://w3id.org/ctas7/threat_technique", classes = ["ThreatTechnique", "DetectionMethod", "Mitigation"] }
+detection_rule = { file = "detection_rule.yaml", id = "https://w3id.org/ctas7/detection_rule", classes = ["DetectionRule", "LogSource", "DetectionLogic"] }
+threat_actor = { file = "threat_actor.yaml", id = "https://w3id.org/ctas7/threat_actor", classes = ["ThreatActor", "Attribution", "TargetSector"] }
+threat_campaign = { file = "threat_campaign.yaml", id = "https://w3id.org/ctas7/threat_campaign" }
+offensive_tool = { file = "offensive_tool.yaml", id = "https://w3id.org/ctas7/offensive_tool" }
+
+[linkml.enums]
+rule_type = ["sigma", "yara", "nuclei", "wazuh", "snort", "suricata"]
+rule_status = ["experimental", "test", "stable", "deprecated"]
+severity_level = ["informational", "low", "medium", "high", "critical"]
+confidence_level = ["high", "medium", "low"]
+
+# =============================================================================
+# TCR TRIAD INTEGRATION (RFC-9301)
+# =============================================================================
+
+[tcr_triad]
+description = "Thyristor-Crystal-RingBus decision architecture"
+
+[tcr_triad.thyristor]
+role = "Latching decision gate with hysteresis"
+properties = ["latching_behavior", "hysteresis", "multi_trigger"]
+states = ["OFF", "ARMED", "LATCHED", "COOLDOWN"]
+
+[tcr_triad.crystal]
+role = "4D decision lattice (X,Y,Z,T)"
+dimensions = ["semantic_angle", "operational_phase", "temporal_context", "decision_weight"]
+geometry = "truncated_octahedron"
+
+[tcr_triad.ringbus]
+role = "Circular interconnect for 9 analytic nodes"
+topology = "bidirectional_ring"
+nodes = 9
+latency_target_us = 100
+
+# =============================================================================
+# NONAGON INTEGRATION (RFC-9302)
+# =============================================================================
+
+[nonagon]
+description = "9-aspect analytic fusion node"
+aspects = 9
+configuration = "3x3 trivariates OR 9 intelligence disciplines"
+
+[nonagon.intelligence_disciplines]
+# 9 intelligence disciplines map to Nonagon aspects
+HUMINT = { aspect = 0, description = "Human Intelligence" }
+SIGINT = { aspect = 1, description = "Signals Intelligence" }
+IMINT = { aspect = 2, description = "Imagery Intelligence" }
+MASINT = { aspect = 3, description = "Measurement and Signature Intelligence" }
+OSINT = { aspect = 4, description = "Open Source Intelligence" }
+TECHINT = { aspect = 5, description = "Technical Intelligence" }
+FININT = { aspect = 6, description = "Financial Intelligence" }
+CYBINT = { aspect = 7, description = "Cyber Intelligence" }
+GEOINT = { aspect = 8, description = "Geospatial Intelligence" }

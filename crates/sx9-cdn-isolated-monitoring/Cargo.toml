@@ -1,0 +1,112 @@
+[package]
+name = "sx9-cdn-isolated-monitoring"
+version = "7.3.1"
+edition = "2021"
+authors = ["CTAS 7.3.1 Development Team"]
+description = "CTAS 7.3.1 Isolated Monitoring CDN - RFC-9001 compliant with trivariate hashing and Lightning QA integration"
+
+[dependencies]
+# Core async runtime
+tokio = { version = "1.0", features = ["full", "rt-multi-thread"] }
+futures = "0.3"
+
+# Serialization and data structures  
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+uuid = { version = "1.0", features = ["v4", "serde"] }
+chrono = { version = "0.4", features = ["serde"] }
+
+# HTTP server and WebSocket support
+axum = { version = "0.7", features = ["ws", "macros", "json"] }
+tower = "0.4"
+tower-http = { version = "0.5", features = ["cors", "trace", "compression-br"] }
+hyper = { version = "1.0", features = ["full"] }
+axum-extra = { version = "0.9", features = ["typed-header"] }
+
+# Database and caching (isolated)
+sled = "0.34"
+tokio-util = "0.7"
+
+# High-precision timing and performance (RFC-9001 compliant)
+murmur3 = "0.5"           # RFC-9001 trivariate hashing
+parking_lot = "0.12"      # Fast RwLock for <15ns reads
+dashmap = "5.5"           # Lock-free routing table <50ns
+atomic = "0.5"
+num_cpus = "1.0"
+fastrand = "2.0"
+
+# Lightning QA integration
+reqwest = { version = "0.11", features = ["json"] }
+
+# Statistical analysis
+statistical = "1.0"
+statrs = "0.16"
+
+# Monitoring and observability
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter", "json"] }
+metrics = "0.22"
+metrics-exporter-prometheus = "0.13"
+
+# Networking and geographic routing
+geo = "0.25"
+geo-types = "0.7"
+
+# Error handling
+thiserror = "1.0" 
+anyhow = "1.0"
+
+# Configuration
+config = "0.14"
+toml = "0.8"
+
+# Security and isolation
+ring = "0.17"
+jsonwebtoken = "9.2"
+
+# CTAS 7.0 Foundation (when available)
+# ctas7-core-foundation = { path = "../ctas7-core-foundation" }
+# ctas7-interface-foundation = { path = "../ctas7-interface-foundation" }
+
+[dev-dependencies]
+tokio-test = "0.4"
+criterion = { version = "0.5", features = ["html_reports"] }
+
+
+
+
+
+[features]
+default = ["statistical-analysis", "cdn-distribution"]
+statistical-analysis = []
+cdn-distribution = []
+isolated-mode = []
+
+# CTAS-7 Smart Crate Features (RFC-9001 compliant)
+foundation-integration = []
+smart-crate = ["foundation-integration"]
+neural-mux = ["foundation-integration"]
+hash-engine = ["foundation-integration"]
+unicode-assembly = ["foundation-integration"]
+tesla-grade = ["foundation-integration", "neural-mux", "hash-engine"]
+
+[dependencies.ctas7-foundation-core]
+path = "../sx9-foundation-core"
+package = "sx9-foundation-core"
+
+[package.metadata.ctas]
+smart_crate = true
+foundation_version = "7.3.1"
+auto_deploy = true
+container_runtime = "orbstack"
+port = 18115
+health_check = "/health"
+requires_port_manager = true
+bernoulli_zone = "isolated"
+
+[profile.release]
+lto = true
+codegen-units = 1
+panic = "abort"
+strip = "symbols"
+overflow-checks = true

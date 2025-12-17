@@ -14,6 +14,7 @@ use std::f64::consts::PI;
 
 /// Biometric Analysis Mathematical Consciousness
 /// Integrates HMM, Gabor filters, and latent fingerprint enhancement
+#[derive(Debug)]
 pub struct BiometricAnalysisConsciousness {
     /// Hidden Markov Model engine for sequential pattern analysis
     pub hmm_engine: HiddenMarkovModelEngine,
@@ -120,7 +121,8 @@ impl BiometricAnalysisConsciousness {
     }
 }
 
-/// Hidden Markov Model Engine for sequential pattern analysis
+/// Hidden Markov Model Engine for Biometric Sequencing
+#[derive(Debug)]
 pub struct HiddenMarkovModelEngine {
     /// HMM model parameters
     pub model_params: HMMParameters,
@@ -624,7 +626,8 @@ impl HiddenMarkovModelEngine {
     }
 }
 
-/// Gabor Filter Bank for ridge pattern extraction
+/// Gabor Filter Bank for Ridge Enhancement
+#[derive(Debug)]
 pub struct GaborFilterBank {
     /// Gabor filters at different orientations
     pub filters: Vec<GaborFilter>,
@@ -915,6 +918,7 @@ impl GaborFilter {
 }
 
 /// Latent Fingerprint Enhancement Engine
+#[derive(Debug)]
 pub struct LatentFingerprintEnhancementEngine {
     /// Enhancement parameters
     pub enhancement_params: LatentEnhancementParameters,

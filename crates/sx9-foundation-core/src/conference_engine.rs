@@ -5,6 +5,7 @@
 use serde::{Deserialize, Serialize};
 
 use chrono::{DateTime, Utc};
+use uuid::Uuid;
 
 // Conference Solutions [INTEGRATE] Platforms [MANAGE] Protocols
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -281,4 +282,71 @@ pub struct CostMetrics {
     pub cost_per_participant: f32,
     pub overage_charges: f32,
     pub cost_trend: String, // "increasing", "decreasing", "stable"
+}
+
+// RFC-9008: Ephemeral Engagement Rooms
+// Secure, ephemeral collaboration spaces with CDN hydration
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct EngagementRoom {
+    pub room_id: String, // Trivariate Hash
+    pub status: RoomStatus,
+    pub created_at: DateTime<Utc>,
+    pub expires_at: DateTime<Utc>,
+    pub participants: Vec<String>, // AgentIds or UserIds
+    pub security_level: String,
+    pub session_key: String, // Ephemeral session key
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub enum RoomStatus {
+    Initializing,
+    Active,
+    Locked,
+    Hydrating,   // Loading from CDN
+    Dehydrating, // Saving to CDN
+    Terminated,
+}
+
+pub struct RoomManager {
+    active_rooms: std::collections::HashMap<String, EngagementRoom>,
+}
+
+impl RoomManager {
+    pub fn new() -> Self {
+        Self {
+            active_rooms: std::collections::HashMap::new(),
+        }
+    }
+
+    pub fn create_room(&mut self, initiator: String, ttl_minutes: i64) -> EngagementRoom {
+        let room_id = uuid::Uuid::new_v4().to_string(); // In real impl, use Trivariate
+        let now = Utc::now();
+        let expires = now + chrono::Duration::minutes(ttl_minutes);
+
+        let room = EngagementRoom {
+            room_id: room_id.clone(),
+            status: RoomStatus::Initializing,
+            created_at: now,
+            expires_at: expires,
+            participants: vec![initiator],
+            security_level: "High".to_string(),
+            session_key: uuid::Uuid::new_v4().to_string(),
+        };
+
+        self.active_rooms.insert(room_id, room.clone());
+        room
+    }
+
+    pub fn get_room(&self, room_id: &str) -> Option<&EngagementRoom> {
+        self.active_rooms.get(room_id)
+    }
+
+    pub fn terminate_room(&mut self, room_id: &str) -> Option<EngagementRoom> {
+        if let Some(mut room) = self.active_rooms.remove(room_id) {
+            room.status = RoomStatus::Terminated;
+            return Some(room);
+        }
+        None
+    }
 }

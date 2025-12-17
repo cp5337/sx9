@@ -23,6 +23,7 @@ use tokio::sync::RwLock;
 use uuid::Uuid;
 
 /// Main orbital mechanics engine with foundation integration
+#[derive(Debug)]
 pub struct OrbitalFoundationEngine {
     /// Trivariate hash engine for orbital object tracking
     pub hash_engine: TrivariteHashEngine,
@@ -599,3 +600,4 @@ impl OrbitalFoundationEngine {
 // Re-export key types for foundation-manifold integration
 pub use OrbitalFoundationEngine as OrbitalEngine;
 pub mod foundation_integration;
+pub mod orbital_systems;

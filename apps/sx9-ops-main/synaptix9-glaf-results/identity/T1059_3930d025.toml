@@ -1,0 +1,10 @@
+name = "Metasploit Exploit Execution"
+domain = "CYBER_PLASMA_CORE"
+crystal = "VARNISH_CRYSTAL_E0"
+teth_entropy = "1.0000"
+h1_hash = "3930d02581416d871840beba43372d2c9f5b6034e916d862217606b0caa8588b"
+
+[ontology]
+phase = "Execution"
+mitre_id = "T1059"
+layer = "Layer 7 (App)"
