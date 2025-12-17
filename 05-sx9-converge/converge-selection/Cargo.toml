@@ -1,0 +1,15 @@
+[package]
+name = "converge-selection"
+version = "0.1.0"
+edition = "2021"
+license = "Apache-2.0"
+description = "Deterministic matroid selection core for CONVERGE (RFC-93X3)"
+
+[dependencies]
+indexmap = "2.2"
+
+[package.metadata.smart_crate]
+class = "analytic.core.selection"
+deterministic = true
+storage = "none"
+rfc = ["93X3"]

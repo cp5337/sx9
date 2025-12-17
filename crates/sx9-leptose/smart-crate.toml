@@ -1,0 +1,55 @@
+# CTAS-7 Smart Crate Manifest
+# Leptose Knowledge Engine - Vector knowledge graphs for operational intelligence
+
+[smart-crate]
+name = "sx9-leptose"
+version = "0.1.0"
+foundation = "sx9-foundation-core"
+classification = "intelligence"
+tesla_grade = true
+
+[integration]
+gold_disk_compatible = true
+neural_mux_enabled = true
+hash_engine_integrated = true
+unicode_assembly_support = true
+chromadb_integration = true
+nats_messaging = true
+
+[metadata]
+ctas_version = "7.3.1"
+sx9_version = "0.1.0"
+smart_crate_type = "intelligence-orchestrator"
+original_crate = true
+description = "Orchestrates OSINT, ChromaDB vectors, and EEI system"
+
+[endpoints]
+health = "/health"
+metrics = "/metrics"
+status = "/smart-crate/status"
+
+[features]
+foundation_core = { required = true }
+glaf_core = { required = true }
+chromadb = { optional = true }
+nats = { optional = true }
+
+[ports]
+primary = 18150
+health = 18151
+
+[dependencies.internal]
+sx9-foundation-core = { path = "../sx9-foundation-core" }
+sx9-glaf-core = { path = "../sx9-glaf-core" }
+sx9-atlas-bus = { path = "../sx9-atlas-bus" }
+
+[semantic_lock]
+enabled = true
+lock_file = "smart-crate.lock"
+auto_update = false
+verify_on_build = true
+
+[semantic_lock.hashes]
+content_hash_algorithm = "murmur3-128"
+interface_hash_algorithm = "murmur3-128"
+

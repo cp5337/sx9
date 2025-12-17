@@ -1,8 +1,8 @@
 use criterion::{black_box, criterion_group, criterion_main, Criterion};
+use ctas7_data_foundation::{DataConfig, DataService};
 use serde::{Deserialize, Serialize};
-use sx9_foundation_data::{DataConfig, DataService};
 
-#[derive(Serialize, Deserialize, Clone)]
+#[derive(Serialize, Deserialize)]
 struct BenchmarkData {
     id: u32,
     name: String,
@@ -204,10 +204,10 @@ fn benchmark_concurrent_operations(c: &mut Criterion) {
             let handles: Vec<_> = (0..10)
                 .map(|_| {
                     let service = service.clone();
-                    let data = data.clone();
+                    let data = &data;
                     std::thread::spawn(move || {
                         for _ in 0..100 {
-                            let _ = service.to_json(&data);
+                            let _ = service.to_json(data);
                             let _ = service.generate_uuid();
                             let _ = service.compile_regex(r"\d+");
                         }

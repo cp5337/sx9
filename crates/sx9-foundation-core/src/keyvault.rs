@@ -7,13 +7,13 @@
 //! - Integrates with macOS Keychain when available
 //! - Auto-backup on every write
 
-use std::collections::HashMap;
-use std::path::{Path, PathBuf};
-use std::fs;
-use std::sync::Arc;
-use serde::{Deserialize, Serialize};
-use tokio::sync::RwLock;
 use chrono::{DateTime, Utc};
+use serde::{Deserialize, Serialize};
+use std::collections::HashMap;
+use std::fs;
+use std::path::{Path, PathBuf};
+use std::sync::Arc;
+use tokio::sync::RwLock;
 
 // NVNN: KeyVault persists credentials across restarts
 
@@ -259,14 +259,17 @@ impl KeyVault {
     /// List all key entries (without exposing values)
     pub async fn list_entries(&self) -> Vec<KeyEntrySummary> {
         let cache = self.cache.read().await;
-        cache.values().map(|e| KeyEntrySummary {
-            name: e.name.clone(),
-            service: e.service.clone(),
-            active: e.active,
-            created_at: e.created_at,
-            last_used: e.last_used,
-            usage_count: e.usage_count,
-        }).collect()
+        cache
+            .values()
+            .map(|e| KeyEntrySummary {
+                name: e.name.clone(),
+                service: e.service.clone(),
+                active: e.active,
+                created_at: e.created_at,
+                last_used: e.last_used,
+                usage_count: e.usage_count,
+            })
+            .collect()
     }
 
     /// Backup all keys to JSON file
@@ -277,8 +280,7 @@ impl KeyVault {
         let json = serde_json::to_string_pretty(&entries)
             .map_err(|e| KeyVaultError::Serialization(e.to_string()))?;
 
-        fs::write(&self.backup_path, &json)
-            .map_err(|e| KeyVaultError::Io(e.to_string()))?;
+        fs::write(&self.backup_path, &json).map_err(|e| KeyVaultError::Io(e.to_string()))?;
 
         Ok(())
     }

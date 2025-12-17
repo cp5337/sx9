@@ -1,0 +1,29 @@
+[package]
+name = "sx9-leptose"
+version.workspace = true
+edition.workspace = true
+description = "Leptose Knowledge Engine - Vector knowledge graphs for operational intelligence"
+license.workspace = true
+
+[dependencies]
+# Foundation crates (bring in most dependencies)
+sx9-foundation-core = { path = "../sx9-foundation-core" }
+sx9-glaf-core = { path = "../sx9-glaf-core" }
+sx9-atlas-bus = { path = "../sx9-atlas-bus", features = ["std"] }
+
+# Workspace dependencies
+serde.workspace = true
+serde_json.workspace = true
+anyhow.workspace = true
+thiserror.workspace = true
+tokio.workspace = true
+uuid.workspace = true
+tracing.workspace = true
+
+# Additional dependencies not in workspace
+chrono = { version = "0.4", features = ["serde"] }
+async-nats = "0.33"
+futures-util = "0.3"
+petgraph = "0.6"
+bytes = "1.0"
+

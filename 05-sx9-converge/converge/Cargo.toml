@@ -1,0 +1,24 @@
+[package]
+name = "converge"
+version = "0.1.0"
+edition = "2021"
+license = "Apache-2.0"
+description = "CONVERGE distributed action-set convergence sensor (RFC-93XX family)"
+
+[features]
+default = ["hot-path"]
+hot-path = []
+sim = []
+
+[dependencies]
+crossbeam = "0.8"
+legion = "0.4"
+apecs = "0.3"
+serde = { version = "1.0", features = ["derive"] }
+thiserror = "1.0"
+
+[package.metadata.smart_crate]
+class = "analytic.sensor.convergence"
+deterministic = true
+storage = "none"
+rfc = ["9101", "9021", "9304", "93X1", "93X2", "93X3", "93X4"]

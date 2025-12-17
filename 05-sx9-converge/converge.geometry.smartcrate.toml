@@ -1,0 +1,18 @@
+[smart_crate]
+name = "converge-geometry"
+class = "analytic.helper.geometry"
+version = "0.1.0"
+
+rfc_compliance = [
+  "RFC-93X2"
+]
+
+deterministic = true
+storage = "none"
+
+[execution]
+runtime = "rust"
+
+[constraints]
+may_adjust = ["confidence"]
+may_not_adjust = ["independence", "selection", "rank"]

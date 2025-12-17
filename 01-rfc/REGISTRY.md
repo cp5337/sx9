@@ -35,18 +35,18 @@ This prevents numbering conflicts across sessions.
 
 ## Core Series (9000-9009) — FULL
 
-| RFC      | Title                              | Status | Location                                              |
-| -------- | ---------------------------------- | ------ | ----------------------------------------------------- |
-| RFC-9000 | Synaptix9 Agnostic Core & Ontology | Final  | `core/RFC-9000-Agnostic-Core.md`                      |
-| RFC-9001 | Trivariate Hashing Standard        | Final  | `core/RFC-9001-Trivariate-Hashing.md`                 |
-| RFC-9002 | Unicode Operational Routing System | Final  | `core/RFC-9002-Unicode-Routing.md`                    |
-| RFC-9003 | Operation Classifier & Escalation  | Final  | `core/RFC-9003-Operation-Classifier.md`               |
-| RFC-9004 | Deterministic Routing Architecture | Draft  | `core/RFC-9004-Deterministic-Routing.md`              |
-| RFC-9005 | Unified Schema Specification       | Final  | `core/RFC-9005-Unified-Schema.md`                     |
-| RFC-9006 | Secure Transport Profiles          | Draft  | `core/RFC-9006-Secure-Transport-Profiles.md`          |
-| RFC-9007 | Obfuscation & Biometric Honeypot   | Draft  | `core/RFC-9007-Obfuscation-Biometric-Honeypot.md`     |
-| RFC-9008 | Ephemeral Engagement Rooms         | Draft  | `core/RFC-9008-Ephemeral-Engagement-Rooms.md`         |
-| RFC-9009 | Quantum Cryptographic Architecture | Draft  | `core/RFC-9009-Quantum-Cryptographic-Architecture.md` |
+| RFC      | Title                              | Status | Location                                                   |
+| -------- | ---------------------------------- | ------ | ---------------------------------------------------------- |
+| RFC-9000 | Synaptix9 Agnostic Core & Ontology | Final  | `9000-core/RFC-9000-Agnostic-Core.md`                      |
+| RFC-9001 | Trivariate Hashing Standard        | Final  | `9000-core/RFC-9001-Trivariate-Hashing.md`                 |
+| RFC-9002 | Unicode Operational Routing System | Final  | `9000-core/RFC-9002-Unicode-Routing.md`                    |
+| RFC-9003 | Operation Classifier & Escalation  | Final  | `9000-core/RFC-9003-Operation-Classifier.md`               |
+| RFC-9004 | Deterministic Routing Architecture | Draft  | `9000-core/RFC-9004-Deterministic-Routing.md`              |
+| RFC-9005 | Unified Schema Specification       | Final  | `9000-core/RFC-9005-Unified-Schema.md`                     |
+| RFC-9006 | Secure Transport Profiles          | Draft  | `9000-core/RFC-9006-Secure-Transport-Profiles.md`          |
+| RFC-9007 | Obfuscation & Biometric Honeypot   | Draft  | `9000-core/RFC-9007-Obfuscation-Biometric-Honeypot.md`     |
+| RFC-9008 | Ephemeral Engagement Rooms         | Draft  | `9000-core/RFC-9008-Ephemeral-Engagement-Rooms.md`         |
+| RFC-9009 | Quantum Cryptographic Architecture | Draft  | `9000-core/RFC-9009-Quantum-Cryptographic-Architecture.md` |
 
 **NEXT_AVAILABLE: NONE (series full, use 9100+ for extensions)**
 
@@ -54,14 +54,14 @@ This prevents numbering conflicts across sessions.
 
 ## Pipeline Series (9010-9019)
 
-| RFC        | Title                             | Status | Location                                                |
-| ---------- | --------------------------------- | ------ | ------------------------------------------------------- |
-| RFC-9010   | Enterprise Information Extraction | Draft  | `pipeline/RFC-9010-Enterprise-Extraction.md`            |
-| RFC-9011   | Threat Content Ingestion          | Draft  | `pipeline/RFC-9011-Threat-Ingestion.md`                 |
-| RFC-9011-A | Canonical Ingestion Pipeline      | Draft  | `pipeline/RFC-9011-A-Ingestion-Pipeline.md`             |
-| RFC-9011-B | YAML Validation & DSL Conversion  | Draft  | `pipeline/RFC-9011-B-YAML-Validation-DSL-Conversion.md` |
-| RFC-9012   | Embeddings & GNN Training Fabric  | Draft  | `pipeline/RFC-9012-GNN-Embeddings.md`                   |
-| RFC-9013   | Sensory Substrate                 | Draft  | `pipeline/RFC-9013-Sensory-Substrate.md`                |
+| RFC        | Title                             | Status | Location                                                     |
+| ---------- | --------------------------------- | ------ | ------------------------------------------------------------ |
+| RFC-9010   | Enterprise Information Extraction | Draft  | `9010-pipeline/RFC-9010-Enterprise-Extraction.md`            |
+| RFC-9011   | Threat Content Ingestion          | Draft  | `9010-pipeline/RFC-9011-Threat-Ingestion.md`                 |
+| RFC-9011-A | Canonical Ingestion Pipeline      | Draft  | `9010-pipeline/RFC-9011-A-Ingestion-Pipeline.md`             |
+| RFC-9011-B | YAML Validation & DSL Conversion  | Draft  | `9010-pipeline/RFC-9011-B-YAML-Validation-DSL-Conversion.md` |
+| RFC-9012   | Embeddings & GNN Training Fabric  | Draft  | `9010-pipeline/RFC-9012-GNN-Embeddings.md`                   |
+| RFC-9013   | Sensory Substrate                 | Draft  | `9010-pipeline/RFC-9013-Sensory-Substrate.md`                |
 
 **NEXT_AVAILABLE: 9014**
 
@@ -69,15 +69,15 @@ This prevents numbering conflicts across sessions.
 
 ## Cognitive Series (9020-9029)
 
-| RFC      | Title                                                | Status    | Location                                                      |
-| -------- | ---------------------------------------------------- | --------- | ------------------------------------------------------------- |
-| RFC-9020 | HD4 Framework (Hunt-Detect-Disable-Disrupt-Dominate) | Final     | `core/RFC-9020-HD4-Framework.md`                              |
-| RFC-9021 | Graph Convergence Theory                             | Canonical | `core/RFC-9021-Graph-Convergence-Theory.md`                   |
-| RFC-9022 | OODA Vertical Escalation                             | Draft     | `core/RFC-9022-OODA-Vertical-Escalation.md`                   |
-| RFC-9023 | Security Framework Integration Map                   | Draft     | `integration/RFC-9023-Security-Framework-Integration-Map.md`  |
-| RFC-9024 | Neurological Foundation                              | Canonical | `core/RFC-9024-Neurological-Foundation.md`                    |
-| RFC-9025 | Unified Interview Schema                             | Draft     | `core/RFC-9025-Unified-Interview-Schema.md`                   |
-| RFC-9026 | Hourglass-Bernoulli Cognitive Architecture           | Canonical | `core/RFC-9026-Hourglass-Bernoulli-Cognitive-Architecture.md` |
+| RFC      | Title                                                | Status    | Location                                                           |
+| -------- | ---------------------------------------------------- | --------- | ------------------------------------------------------------------ |
+| RFC-9020 | HD4 Framework (Hunt-Detect-Disable-Disrupt-Dominate) | Final     | `9000-core/RFC-9020-HD4-Framework.md`                              |
+| RFC-9021 | Graph Convergence Theory                             | Canonical | `9000-core/RFC-9021-Graph-Convergence-Theory.md`                   |
+| RFC-9022 | OODA Vertical Escalation                             | Draft     | `9000-core/RFC-9022-OODA-Vertical-Escalation.md`                   |
+| RFC-9023 | Security Framework Integration Map                   | Draft     | `9100-integration/RFC-9023-Security-Framework-Integration-Map.md`  |
+| RFC-9024 | Neurological Foundation                              | Canonical | `9000-core/RFC-9024-Neurological-Foundation.md`                    |
+| RFC-9025 | Unified Interview Schema                             | Draft     | `9000-core/RFC-9025-Unified-Interview-Schema.md`                   |
+| RFC-9026 | Hourglass-Bernoulli Cognitive Architecture           | Canonical | `9000-core/RFC-9026-Hourglass-Bernoulli-Cognitive-Architecture.md` |
 
 **NEXT_AVAILABLE: 9027**
 
@@ -87,36 +87,37 @@ This prevents numbering conflicts across sessions.
 
 ## Integration Series (9100-9149)
 
-| RFC      | Title                               | Status      | Location                                                           |
-| -------- | ----------------------------------- | ----------- | ------------------------------------------------------------------ |
-| RFC-9100 | Dual-Trivariate PTCC Integration    | Draft       | `integration/RFC-9100-Dual-Trivariate-PTCC-Integration.md`         |
-| RFC-9101 | Smart Crate System v7.3.1+          | Production  | `integration/RFC-9101-Smart-Crate-System.md`                       |
-| RFC-9102 | Executable Document Framework       | POC         | `integration/RFC-9102-Executable-Document-Framework.md`            |
-| RFC-9103 | IAC Adaptive Infrastructure         | Planned     | —                                                                  |
-| RFC-9104 | CTE Cognitive Execution Framework   | Planned     | —                                                                  |
-| RFC-9105 | SPIRES Extraction                   | Draft       | `integration/RFC-9105-SPIRES-Extraction.md`                        |
-| RFC-9030 | Unified Linear Agent Infrastructure | Draft       | `integration/RFC-9030-Unified-Linear-Agent-Infrastructure.md`      |
-| RFC-9106 | sx9-conda Python Execution Layer    | Draft       | `../ctas7-shipyard-system/docs/architecture/RFC-9106-sx9-conda.md` |
-| RFC-9107 | Unified Agent Infrastructure        | Draft       | `integration/RFC-9107-Unified-Agent-Infrastructure.md`             |
-| RFC-9108 | Thalmic Filter Model Registry       | Draft       | `integration/RFC-9108-Thalmic-Filter-Model-Registry.md`            |
-| RFC-9109 | CX9 Custom Kali ISO                 | Planned     | —                                                                  |
-| RFC-9110 | SX9 Lisp Interpreter                | Implemented | `integration/RFC-9110-SX9-Lisp-Interpreter.md`                     |
-| RFC-9111 | Zero-License Data Fabric            | Planned     | —                                                                  |
-| RFC-9112 | Deterministic Prompt Engineering    | Canonical   | `integration/RFC-9112-Deterministic-Prompt-Engineering.md`         |
-| RFC-9113 | TOML Executable Document Spec       | Canonical   | `integration/RFC-9113-TOML-Executable-Document-Specification.md`   |
-| RFC-9114 | SX9 Gateway Neural Retrofit         | Draft       | `integration/RFC-9114-SX9-Gateway-Neural-Retrofit.md`              |
+| RFC      | Title                               | Status      | Location                                                              |
+| -------- | ----------------------------------- | ----------- | --------------------------------------------------------------------- |
+| RFC-9100 | Dual-Trivariate PTCC Integration    | Draft       | `9100-integration/RFC-9100-Dual-Trivariate-PTCC-Integration.md`       |
+| RFC-9101 | Smart Crate System v7.3.1+          | Production  | `9100-integration/RFC-9101-Smart-Crate-System.md`                     |
+| RFC-9102 | Executable Document Framework       | POC         | `9100-integration/RFC-9102-Executable-Document-Framework.md`          |
+| RFC-9103 | IAC Adaptive Infrastructure         | Planned     | —                                                                     |
+| RFC-9104 | CTE Cognitive Execution Framework   | Planned     | —                                                                     |
+| RFC-9105 | SPIRES Extraction                   | Draft       | `9100-integration/RFC-9105-SPIRES-Extraction.md`                      |
+| RFC-9030 | Unified Linear Agent Infrastructure | Draft       | `9100-integration/RFC-9030-Unified-Linear-Agent-Infrastructure.md`    |
+| RFC-9106 | sx9-conda Python Execution Layer    | Draft       | `../ctas7-shipyard-system/docs/architecture/RFC-9106-sx9-conda.md`    |
+| RFC-9107 | Unified Agent Infrastructure        | Draft       | `9100-integration/RFC-9107-Unified-Agent-Infrastructure.md`           |
+| RFC-9108 | Thalmic Filter Model Registry       | Draft       | `9100-integration/RFC-9108-Thalmic-Filter-Model-Registry.md`          |
+| RFC-9109 | CX9 Custom Kali ISO                 | Planned     | —                                                                     |
+| RFC-9110 | SX9 Lisp Interpreter                | Implemented | `9100-integration/RFC-9110-SX9-Lisp-Interpreter.md`                   |
+| RFC-9111 | Zero-License Data Fabric            | Planned     | —                                                                     |
+| RFC-9112 | Deterministic Prompt Engineering    | Canonical   | `9100-integration/RFC-9112-Deterministic-Prompt-Engineering.md`       |
+| RFC-9113 | TOML Executable Document Spec       | Canonical   | `9100-integration/RFC-9113-TOML-Executable-Document-Specification.md` |
+| RFC-9114 | SX9 Gateway Neural Retrofit         | Draft       | `9100-integration/RFC-9114-SX9-Gateway-Neural-Retrofit.md`            |
+| RFC-9115 | SX9 Frontend Adapter Standard       | Draft       | `9100-integration/RFC-9115-Frontend-Adapter-Standard.md`              |
 
-**NEXT_AVAILABLE: 9115**
+**NEXT_AVAILABLE: 9116**
 
 ---
 
 ## Operational Series (9800-9899) — L2 NATS Kali Platform
 
-| RFC      | Title                           | Status    | Location                                                  |
-| -------- | ------------------------------- | --------- | --------------------------------------------------------- |
-| RFC-9876 | Layer-Two Unicode Orchestration | Canonical | `operational/RFC-9876-Layer-Two-Unicode-Orchestration.md` |
-| RFC-9130 | L2 NATS Kali Execution Platform | Canonical | `operational/RFC-9130-L2-NATS-Kali-Execution-Platform.md` |
-| RFC-9131 | Dynamic Resource Escalation     | Draft     | `operational/RFC-9131-Dynamic-Resource-Escalation.md`     |
+| RFC      | Title                           | Status    | Location                                                       |
+| -------- | ------------------------------- | --------- | -------------------------------------------------------------- |
+| RFC-9876 | Layer-Two Unicode Orchestration | Canonical | `9800-operational/RFC-9876-Layer-Two-Unicode-Orchestration.md` |
+| RFC-9130 | L2 NATS Kali Execution Platform | Canonical | `9800-operational/RFC-9130-L2-NATS-Kali-Execution-Platform.md` |
+| RFC-9131 | Dynamic Resource Escalation     | Draft     | `9800-operational/RFC-9131-Dynamic-Resource-Escalation.md`     |
 
 **NEXT_AVAILABLE: 9132**
 
@@ -159,10 +160,10 @@ The **L2 NATS Kali Execution Platform** is a complete microsecond-latency securi
 
 ## Application Series (9150-9199)
 
-| RFC      | Title                                | Status | Location                                      |
-| -------- | ------------------------------------ | ------ | --------------------------------------------- |
-| RFC-9150 | GIS UI Specification                 | Draft  | `application/RFC-9150-GIS-UI.md`              |
-| RFC-9151 | Patrolman's Notebook Evidence System | Draft  | `application/RFC-9151-Patrolmans-Notebook.md` |
+| RFC      | Title                                | Status | Location                                           |
+| -------- | ------------------------------------ | ------ | -------------------------------------------------- |
+| RFC-9150 | GIS UI Specification                 | Draft  | `9400-application/RFC-9150-GIS-UI.md`              |
+| RFC-9151 | Patrolman's Notebook Evidence System | Draft  | `9400-application/RFC-9151-Patrolmans-Notebook.md` |
 
 **NEXT_AVAILABLE: 9152**
 
@@ -170,9 +171,9 @@ The **L2 NATS Kali Execution Platform** is a complete microsecond-latency securi
 
 ## Platform Series (9200-9299)
 
-| RFC      | Title                  | Status | Location                                         |
-| -------- | ---------------------- | ------ | ------------------------------------------------ |
-| RFC-9200 | SX9 Development Center | Draft  | `integration/RFC-9200-SX9-Development-Center.md` |
+| RFC      | Title                  | Status | Location                                              |
+| -------- | ---------------------- | ------ | ----------------------------------------------------- |
+| RFC-9200 | SX9 Development Center | Draft  | `9100-integration/RFC-9200-SX9-Development-Center.md` |
 
 **NEXT_AVAILABLE: 9201**
 
@@ -180,13 +181,13 @@ The **L2 NATS Kali Execution Platform** is a complete microsecond-latency securi
 
 ## Core Graph & Analytics Series (9300-9399)
 
-| RFC      | Title                           | Status    | Location                                           |
-| -------- | ------------------------------- | --------- | -------------------------------------------------- |
-| RFC-9300 | HD4 Canonical Specification     | Canonical | `core/RFC-9300-HD4-Canonical-Specification.md`     |
-| RFC-9301 | Thyristor Crystal RingBus       | Draft     | `core/RFC-9301-Thyristor-Crystal-RingBus.md`       |
-| RFC-9302 | Nonagon Analytic Node           | Validated | `core/RFC-9302-Nonagon-Analytic-Node.md`           |
-| RFC-9303 | Crystal Realms Kinematics       | Draft     | `core/RFC-9303-Crystal-Realms-Kinematics.md`       |
-| RFC-9304 | GLAF Graph Engine Specification | Draft     | `core/RFC-9304-GLAF-Graph-Engine-Specification.md` |
+| RFC      | Title                           | Status    | Location                                                |
+| -------- | ------------------------------- | --------- | ------------------------------------------------------- |
+| RFC-9300 | HD4 Canonical Specification     | Canonical | `9000-core/RFC-9300-HD4-Canonical-Specification.md`     |
+| RFC-9301 | Thyristor Crystal RingBus       | Draft     | `9000-core/RFC-9301-Thyristor-Crystal-RingBus.md`       |
+| RFC-9302 | Nonagon Analytic Node           | Validated | `9000-core/RFC-9302-Nonagon-Analytic-Node.md`           |
+| RFC-9303 | Crystal Realms Kinematics       | Draft     | `9000-core/RFC-9303-Crystal-Realms-Kinematics.md`       |
+| RFC-9304 | GLAF Graph Engine Specification | Draft     | `9000-core/RFC-9304-GLAF-Graph-Engine-Specification.md` |
 
 **NEXT_AVAILABLE: 9305**
 
@@ -194,20 +195,10 @@ The **L2 NATS Kali Execution Platform** is a complete microsecond-latency securi
 
 ## Directory Structure
 
+RFCs are organized by series with numbered folders for proper sorting:
+
 ```
 01-rfc/
-├── REGISTRY.md                          # THIS FILE - Single source of truth
-├── core/                                 # 9000-9009 + 9020-9025 Foundation
-│   ├── RFC-9000-Agnostic-Core.md
-│   ├── RFC-9001-Trivariate-Hashing.md
-│   ├── RFC-9002-Unicode-Routing.md
-│   ├── RFC-9003-Operation-Classifier.md
-│   ├── RFC-9004-Deterministic-Routing.md
-│   ├── RFC-9005-Unified-Schema.md
-│   ├── RFC-9006-Secure-Transport-Profiles.md      # NEW
-│   ├── RFC-9007-Obfuscation-Biometric-Honeypot.md # NEW
-│   ├── RFC-9008-Ephemeral-Engagement-Rooms.md     # NEW
-│   ├── RFC-9009-Quantum-Cryptographic-Architecture.md # NEW
 │   ├── RFC-9020-HD4-Framework.md
 │   ├── RFC-9021-Graph-Convergence-Theory.md
 │   ├── RFC-9022-OODA-Vertical-Escalation.md

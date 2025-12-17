@@ -3,13 +3,13 @@
 //! Integrates with the 4 foundation crates for unified orchestration
 
 #[cfg(feature = "foundation-integration")]
-use sx9_foundation_core::orchestration::*;
+use ctas7_foundation_core::orchestration::*;
 
 #[cfg(feature = "foundation-integration")]
-use sx9_foundation_data::{USIMTrivariate, SCHVector, USIMProcessor};
+use ctas7_data_foundation::{USIMTrivariate, SCHVector, USIMProcessor};
 
 #[cfg(feature = "foundation-integration")]
-use sx9_foundation_interface::{ApiRouter, CdnGateway, PortManager};
+use ctas7_interface_foundation::{ApiRouter, CdnGateway, PortManager};
 
 #[cfg(feature = "foundation-integration")]
 use ctas7_tactical_foundation::{ThreatHunter, NeuralMux, OodaProcessor};

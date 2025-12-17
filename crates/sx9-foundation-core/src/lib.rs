@@ -52,6 +52,10 @@ pub mod cte_integration;
 // Code Watchdog
 pub mod code_watchdog;
 
+// KeyVault and Secrets Management
+pub mod keyvault;
+pub mod secrets_watchdog;
+
 pub mod unified_neural_mux;
 
 // Re-exports for other foundation crates

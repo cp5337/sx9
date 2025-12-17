@@ -1,5 +1,5 @@
 use criterion::{black_box, criterion_group, criterion_main, Criterion};
-use sx9_foundation_data::{DataService, DataConfig};
+use ctas7_data_foundation::{DataService, DataConfig};
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize)]

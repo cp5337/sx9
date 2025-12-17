@@ -1,6 +1,6 @@
+use ctas7_data_foundation::{DataConfig, DataService};
 use serde::{Deserialize, Serialize};
 use std::time::Duration;
-use sx9_foundation_data::{DataConfig, DataService};
 
 fn init_data_foundation() -> Result<DataService, anyhow::Error> {
     let config = DataConfig::default();

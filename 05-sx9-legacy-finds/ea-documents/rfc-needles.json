@@ -1,0 +1,730 @@
+{
+  "01-rfc/RFC-CRATE-ANALYSIS.md": {
+    "fingerprint": "20a1cc1f5cae895b5c9f50ab8882f628c96a49331475ea962aac8a46ff01cf3b",
+    "needle_count": 223,
+    "categories": [
+      "rust_crate",
+      "Concept",
+      "Entity",
+      "identifier"
+    ],
+    "top_concepts": [
+      "ontology",
+      "system",
+      "neural",
+      "semantic",
+      "authentication",
+      "latency",
+      "cognitive",
+      "network"
+    ]
+  },
+  "01-rfc/pipeline/RFC-9012-GNN-Embeddings.md": {
+    "fingerprint": "b29ff2c5677d618b19fe09a50bba14f85f0de27c91385041babd9a5e3be4e8d3",
+    "needle_count": 34,
+    "categories": [
+      "identifier",
+      "Concept",
+      "Entity",
+      "rust_crate",
+      "python_import"
+    ],
+    "top_concepts": [
+      "embedding",
+      "ontology",
+      "semantic",
+      "vector",
+      "latency"
+    ]
+  },
+  "01-rfc/pipeline/RFC-9010-Enterprise-Extraction.md": {
+    "fingerprint": "a4b08196fef8854db46184e6d27539bdf553ba514df8b78e99f4a7f08ac2a6de",
+    "needle_count": 43,
+    "categories": [
+      "Concept",
+      "Entity",
+      "identifier"
+    ],
+    "top_concepts": [
+      "cognitive",
+      "vector",
+      "ontology",
+      "interface"
+    ]
+  },
+  "01-rfc/pipeline/RFC-9011-B-YAML-Validation-DSL-Conversion.md": {
+    "fingerprint": "fd4cf1f75357479062a1dda01e71ed2c7263712d8a0ad02cd0d29b4574a0fb2d",
+    "needle_count": 229,
+    "categories": [
+      "identifier",
+      "protocol",
+      "Concept",
+      "Entity",
+      "version",
+      "python_import"
+    ],
+    "top_concepts": [
+      "semantic",
+      "network",
+      "interface"
+    ]
+  },
+  "01-rfc/pipeline/RFC-9011-Threat-Ingestion.md": {
+    "fingerprint": "46850fe3aaf9808018eccc877017a08a723a2346484e96b1895c6ab266a55890",
+    "needle_count": 63,
+    "categories": [
+      "rust_crate",
+      "Concept",
+      "Entity",
+      "identifier"
+    ],
+    "top_concepts": [
+      "ontology",
+      "semantic"
+    ]
+  },
+  "01-rfc/pipeline/RFC-9011-A-Ingestion-Pipeline.md": {
+    "fingerprint": "e0a8a01c7bdda91dbd93fb75a02692fb7c3145efb50b266e02d5a24790913778",
+    "needle_count": 391,
+    "categories": [
+      "identifier",
+      "protocol",
+      "Concept",
+      "Entity",
+      "version",
+      "rust_crate",
+      "python_import"
+    ],
+    "top_concepts": [
+      "process",
+      "semantic",
+      "vector",
+      "embedding",
+      "inference",
+      "algorithm",
+      "cognitive",
+      "network"
+    ]
+  },
+  "01-rfc/pipeline/RFC-9013-Sensory-Substrate.md": {
+    "fingerprint": "a7f223ffc2b5316fec80b9f796c9e22478730ffe3102c7077dd2b0c853eb1d3b",
+    "needle_count": 37,
+    "categories": [
+      "Entity",
+      "identifier"
+    ],
+    "top_concepts": []
+  },
+  "01-rfc/core/RFC-9020-HD4-Framework.md": {
+    "fingerprint": "9a6503b83780a2cde0f24c9dbef87ddfe7e78e2774c1943504569f5e708bf6e4",
+    "needle_count": 109,
+    "categories": [
+      "identifier",
+      "Concept",
+      "Entity",
+      "version",
+      "python_import"
+    ],
+    "top_concepts": [
+      "cognitive",
+      "device",
+      "network",
+      "semantic"
+    ]
+  },
+  "01-rfc/core/RFC-9009-Quantum-Cryptographic-Architecture.md": {
+    "fingerprint": "64be2322e7b66d002b1a07d179a41f0e3077949ac63aba91989393a6d7204ead",
+    "needle_count": 250,
+    "categories": [
+      "identifier",
+      "Concept",
+      "Entity",
+      "version",
+      "rust_crate",
+      "python_import"
+    ],
+    "top_concepts": [
+      "encryption",
+      "interface",
+      "semantic",
+      "authentication"
+    ]
+  },
+  "01-rfc/core/RFC-9003-Operation-Classifier.md": {
+    "fingerprint": "7dd44c94ef646a1ee35ed30fc86d055ee0845e92b718942a44184327ba127cb6",
+    "needle_count": 12,
+    "categories": [
+      "version",
+      "Concept",
+      "Entity",
+      "identifier"
+    ],
+    "top_concepts": [
+      "authentication"
+    ]
+  },
+  "01-rfc/core/RFC-9022-OODA-Vertical-Escalation.md": {
+    "fingerprint": "3c6f5c0d679dba107238bb73a16e7104b05973b1e1ae004fad928880f399baff",
+    "needle_count": 118,
+    "categories": [
+      "identifier",
+      "Concept",
+      "Entity",
+      "version",
+      "rust_crate",
+      "python_import"
+    ],
+    "top_concepts": [
+      "device",
+      "network"
+    ]
+  },
+  "01-rfc/core/RFC-9008-Ephemeral-Engagement-Rooms.md": {
+    "fingerprint": "ba06ebc53253958b1b495dddb471e4644690f320d758f759997327d1b125424b",
+    "needle_count": 234,
+    "categories": [
+      "identifier",
+      "Concept",
+      "Entity",
+      "version",
+      "rust_crate",
+      "python_import"
+    ],
+    "top_concepts": [
+      "system",
+      "neural",
+      "encryption",
+      "vector",
+      "network",
+      "device"
+    ]
+  },
+  "01-rfc/core/RFC-9006-Secure-Transport-Profiles.md": {
+    "fingerprint": "c2d6000574bbbefdde05e6059cccb08c256f56b3d52529076d2a8950d87c0d34",
+    "needle_count": 165,
+    "categories": [
+      "identifier",
+      "Concept",
+      "ip_address",
+      "Entity",
+      "version",
+      "rust_crate",
+      "python_import"
+    ],
+    "top_concepts": [
+      "neural",
+      "latency",
+      "network",
+      "cognitive",
+      "interface",
+      "encryption"
+    ]
+  },
+  "01-rfc/core/RFC-9001-Trivariate-Hashing.md": {
+    "fingerprint": "be7477310e5969e53e1d83edc020ff5dcbb3f3ef6a43f4aadfc8380ed707d5e1",
+    "needle_count": 107,
+    "categories": [
+      "identifier",
+      "Concept",
+      "Entity",
+      "version",
+      "rust_crate"
+    ],
+    "top_concepts": [
+      "algorithm"
+    ]
+  },
+  "01-rfc/core/RFC-9025-Node-Interview-Schema.md": {
+    "fingerprint": "684ac7540ae4780d71d0c9c83ce12ddebcacf67af214366166dae5beb8485737",
+    "needle_count": 334,
+    "categories": [
+      "identifier",
+      "protocol",
+      "Concept",
+      "Entity",
+      "version",
+      "python_import"
+    ],
+    "top_concepts": [
+      "network",
+      "distributed",
+      "system",
+      "method",
+      "vector",
+      "semantic",
+      "embedding"
+    ]
+  },
+  "01-rfc/core/RFC-9000-Agnostic-Core.md": {
+    "fingerprint": "52a63c56ede39cc9400f784ec138464e232864c4f583b19a1aed5f2c62b9f36f",
+    "needle_count": 53,
+    "categories": [
+      "Entity",
+      "Concept",
+      "python_import",
+      "identifier"
+    ],
+    "top_concepts": [
+      "ontology",
+      "system"
+    ]
+  },
+  "01-rfc/core/RFC-9021-Graph-Convergence-Theory.md": {
+    "fingerprint": "cc04c143b0d493615b2df170c7935ff54a07724d6979b38d66e7531c9f3fb0e1",
+    "needle_count": 189,
+    "categories": [
+      "identifier",
+      "Concept",
+      "Entity",
+      "version",
+      "rust_crate",
+      "python_import"
+    ],
+    "top_concepts": [
+      "system",
+      "semantic",
+      "method",
+      "process",
+      "optimization",
+      "heuristic",
+      "device",
+      "network"
+    ]
+  },
+  "01-rfc/core/RFC-9002-Unicode-Routing.md": {
+    "fingerprint": "48d0c46529ba4c7982de6a59099fc21937c09e9afb105ee2150af34b2285f280",
+    "needle_count": 37,
+    "categories": [
+      "version",
+      "Concept",
+      "Entity",
+      "identifier"
+    ],
+    "top_concepts": [
+      "system",
+      "semantic",
+      "neural",
+      "inference"
+    ]
+  },
+  "01-rfc/core/RFC-9004-Deterministic-Routing.md": {
+    "fingerprint": "019f60554322018d1be4d430ac06bc6fab9bcc20a8a6d9299bc41a21f9a73ca3",
+    "needle_count": 323,
+    "categories": [
+      "identifier",
+      "Concept",
+      "Entity",
+      "version",
+      "rust_crate",
+      "python_import"
+    ],
+    "top_concepts": [
+      "neural",
+      "latency",
+      "system",
+      "optimization",
+      "throughput",
+      "cognitive",
+      "algorithm",
+      "process"
+    ]
+  },
+  "01-rfc/core/RFC-9005-Unified-Schema.md": {
+    "fingerprint": "e4811a0e131c69ab64653cc59c6ff944f769ca59e6f8c03e6a4d2ee78ae44ee2",
+    "needle_count": 477,
+    "categories": [
+      "identifier",
+      "Concept",
+      "Entity",
+      "version",
+      "python_import"
+    ],
+    "top_concepts": [
+      "system",
+      "semantic",
+      "neural",
+      "cognitive",
+      "latency"
+    ]
+  },
+  "01-rfc/core/RFC-9025-Unified-Interview-Schema.md": {
+    "fingerprint": "89d579e317091d24a9b8a1438ad687386ff1d9ec9f7ba9e2b80a3ab0fa22f7d2",
+    "needle_count": 210,
+    "categories": [
+      "identifier",
+      "Concept",
+      "Entity",
+      "version",
+      "rust_crate",
+      "python_import"
+    ],
+    "top_concepts": [
+      "algorithm",
+      "semantic",
+      "method",
+      "vector",
+      "network",
+      "system",
+      "optimization"
+    ]
+  },
+  "01-rfc/core/RFC-9024-Neurological-Foundation.md": {
+    "fingerprint": "b90d8549277773766398b11fa7145dd049e61794d87761aeeacc7bd406008ea9",
+    "needle_count": 115,
+    "categories": [
+      "identifier",
+      "Concept",
+      "Entity",
+      "version",
+      "rust_crate",
+      "python_import"
+    ],
+    "top_concepts": [
+      "system",
+      "neural",
+      "semantic",
+      "cognitive",
+      "network",
+      "distributed",
+      "process",
+      "inference",
+      "embedding"
+    ]
+  },
+  "01-rfc/core/RFC-9007-Obfuscation-Biometric-Honeypot.md": {
+    "fingerprint": "6013bfcb65c0095a813a489162d2cebbff367ee3f64bf7d150a105c16fa38fab",
+    "needle_count": 234,
+    "categories": [
+      "identifier",
+      "protocol",
+      "Concept",
+      "Entity",
+      "version",
+      "rust_crate",
+      "python_import"
+    ],
+    "top_concepts": [
+      "system",
+      "device",
+      "encryption",
+      "authentication",
+      "network"
+    ]
+  },
+  "01-rfc/archive/RFC-CONTINUUM-AUDIT-REPORT.md": {
+    "fingerprint": "b3aac7945eaa568398eead0fb9a015b3d26ebbb9d8aba71404d131657b766e91",
+    "needle_count": 955,
+    "categories": [
+      "identifier",
+      "Concept",
+      "Entity",
+      "rust_crate",
+      "python_import"
+    ],
+    "top_concepts": [
+      "semantic",
+      "neural",
+      "authentication",
+      "ontology",
+      "embedding",
+      "vector",
+      "system"
+    ]
+  },
+  "01-rfc/archive/RFC-IMPLEMENTATION-ROADMAP.md": {
+    "fingerprint": "70c86b87f22555d141e0fc288eb51f9362aa8a6b325d6d741d8b645cc247d45c",
+    "needle_count": 387,
+    "categories": [
+      "cve",
+      "identifier",
+      "Concept",
+      "Entity",
+      "rust_crate",
+      "python_import"
+    ],
+    "top_concepts": [
+      "system",
+      "embedding",
+      "semantic",
+      "algorithm"
+    ]
+  },
+  "01-rfc/archive/RFC-AUDIT-EXECUTIVE-SUMMARY.md": {
+    "fingerprint": "aed1394ef036808829deef47b3daafc9286c4f84a2b64b80bf2a016e6df5b0ff",
+    "needle_count": 349,
+    "categories": [
+      "Concept",
+      "Entity",
+      "identifier"
+    ],
+    "top_concepts": [
+      "semantic",
+      "embedding",
+      "system",
+      "ontology"
+    ]
+  },
+  "01-rfc/integration/RFC-9023-Security-Framework-Integration-Map.md": {
+    "fingerprint": "f311f7c003a10eb34e89b778a1b64313ce87e82dc7e11eb6ad99d80e6ba11dea",
+    "needle_count": 306,
+    "categories": [
+      "identifier",
+      "protocol",
+      "Concept",
+      "Entity",
+      "version",
+      "rust_crate",
+      "python_import"
+    ],
+    "top_concepts": [
+      "cognitive",
+      "taxonomy",
+      "network"
+    ]
+  },
+  "01-rfc/integration/RFC-9102-Executable-Document-Framework.md": {
+    "fingerprint": "78bda8b3d4f56fe0426c64c24e266461501575495d423f08bfc75a9dbb1a9861",
+    "needle_count": 43,
+    "categories": [
+      "version",
+      "protocol",
+      "Entity",
+      "identifier"
+    ],
+    "top_concepts": []
+  },
+  "01-rfc/integration/RFC-9200-SX9-Development-Center.md": {
+    "fingerprint": "f52f40f05723e7a41810f48c7c9b78de5766ba87f896cb9a54e4266bba70c4d6",
+    "needle_count": 387,
+    "categories": [
+      "identifier",
+      "Concept",
+      "Entity",
+      "version",
+      "rust_crate",
+      "python_import"
+    ],
+    "top_concepts": [
+      "system",
+      "cognitive",
+      "process",
+      "ontology",
+      "neural",
+      "optimization",
+      "protocol",
+      "semantic",
+      "network",
+      "interface"
+    ]
+  },
+  "01-rfc/integration/RFC-9101-Smart-Crate-System.md": {
+    "fingerprint": "a689594da29bef75ccb852fbe6bbbc9c4738fc45142f989aca64255f039758b9",
+    "needle_count": 677,
+    "categories": [
+      "python_import",
+      "identifier",
+      "protocol",
+      "Concept",
+      "Entity",
+      "version",
+      "rust_crate",
+      "email"
+    ],
+    "top_concepts": [
+      "system",
+      "semantic",
+      "cognitive",
+      "neural",
+      "encryption",
+      "latency",
+      "protocol",
+      "network"
+    ]
+  },
+  "01-rfc/integration/RFC-9105-SPIRES-Extraction.md": {
+    "fingerprint": "453738a5c99423fa3ef85c8e274ddca6ad34e9bb9b6618d963c3a745e8198ccc",
+    "needle_count": 113,
+    "categories": [
+      "protocol",
+      "Concept",
+      "Entity",
+      "identifier"
+    ],
+    "top_concepts": [
+      "semantic",
+      "vector",
+      "embedding",
+      "system",
+      "method",
+      "authentication"
+    ]
+  },
+  "01-rfc/integration/RFC-9100-Dual-Trivariate-PTCC-Integration.md": {
+    "fingerprint": "05096f849ead35d67b476bd2facb6cbe12de98568ce2e77cbee61ee1ce5805b3",
+    "needle_count": 426,
+    "categories": [
+      "identifier",
+      "Concept",
+      "Entity",
+      "version",
+      "rust_crate"
+    ],
+    "top_concepts": [
+      "cognitive",
+      "system",
+      "network",
+      "latency",
+      "semantic",
+      "algorithm",
+      "vector",
+      "heuristic"
+    ]
+  },
+  "01-rfc/cognitive-session-reference/RFC-9020-Interview-Schema.md": {
+    "fingerprint": "ff407388f0b3cb752c192d81f2ce41e37875addb6bf2cdc6d29943add68a5448",
+    "needle_count": 261,
+    "categories": [
+      "identifier",
+      "protocol",
+      "Concept",
+      "Entity",
+      "version",
+      "rust_crate",
+      "python_import"
+    ],
+    "top_concepts": [
+      "neural",
+      "latency",
+      "cognitive",
+      "ontology"
+    ]
+  },
+  "01-rfc/cognitive-session-reference/RFC-9025-Cognitive-Convergence-Math.md": {
+    "fingerprint": "51f951fb0dab6bdeea2334729f56662ccd60580921c5ea5ed9c5d0df38c7d72a",
+    "needle_count": 164,
+    "categories": [
+      "identifier",
+      "Concept",
+      "Entity",
+      "version",
+      "rust_crate",
+      "python_import"
+    ],
+    "top_concepts": [
+      "cognitive",
+      "algorithm",
+      "semantic",
+      "process",
+      "embedding",
+      "vector",
+      "device"
+    ]
+  },
+  "01-rfc/cognitive-session-reference/RFC-9021-Cognitive-Inference.md": {
+    "fingerprint": "7e8e448330ded1b7bf1983434423edfedc5f9468405223d56474826327149bb9",
+    "needle_count": 218,
+    "categories": [
+      "identifier",
+      "Concept",
+      "ip_address",
+      "Entity",
+      "version",
+      "rust_crate",
+      "python_import"
+    ],
+    "top_concepts": [
+      "cognitive",
+      "inference",
+      "system",
+      "vector",
+      "semantic",
+      "embedding",
+      "latency",
+      "protocol",
+      "process",
+      "network"
+    ]
+  },
+  "01-rfc/cognitive-session-reference/RFC-9024-H2-Convergence-Contract.md": {
+    "fingerprint": "52b339f7a14701d88fd5f2ab5b12241f6805bfce2f6e6514b7fd26dd3aa5f63b",
+    "needle_count": 162,
+    "categories": [
+      "identifier",
+      "protocol",
+      "Concept",
+      "Entity",
+      "version",
+      "rust_crate",
+      "python_import"
+    ],
+    "top_concepts": [
+      "semantic",
+      "interface",
+      "system",
+      "latency",
+      "cognitive",
+      "method",
+      "inference",
+      "neural"
+    ]
+  },
+  "01-rfc/cognitive-session-reference/RFC-9023-GLAF-Matroid-Convergence.md": {
+    "fingerprint": "9213bfa5abd69869c02fc63a1ecc2af636070fd84ddd7947cc3db7d3f9305344",
+    "needle_count": 109,
+    "categories": [
+      "identifier",
+      "protocol",
+      "Concept",
+      "Entity",
+      "version",
+      "rust_crate",
+      "python_import"
+    ],
+    "top_concepts": [
+      "vector",
+      "embedding",
+      "algorithm",
+      "latency",
+      "optimization",
+      "cognitive",
+      "inference"
+    ]
+  },
+  "01-rfc/application/RFC-9150-GIS-UI.md": {
+    "fingerprint": "b6c6e6ff66afd6df0164b2da1a47f69a082a36acc96f3991520f199ce35264c3",
+    "needle_count": 110,
+    "categories": [
+      "identifier",
+      "protocol",
+      "Concept",
+      "Entity",
+      "version",
+      "python_import"
+    ],
+    "top_concepts": [
+      "system",
+      "interface",
+      "network"
+    ]
+  },
+  "01-rfc/application/RFC-9151-Patrolmans-Notebook.md": {
+    "fingerprint": "05d7fff1d057bf4fc7ae9e1bf6354d7e242e8b99259b7b8f2a88af35e4bf45e7",
+    "needle_count": 235,
+    "categories": [
+      "identifier",
+      "Concept",
+      "Entity",
+      "version",
+      "python_import"
+    ],
+    "top_concepts": [
+      "system",
+      "network",
+      "interface",
+      "blockchain",
+      "device",
+      "protocol",
+      "process"
+    ]
+  }
+}

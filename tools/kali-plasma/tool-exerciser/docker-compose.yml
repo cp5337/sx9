@@ -1,0 +1,74 @@
+# SX9 Tool Exerciser - Docker Compose
+# Cycles through Kali tools and captures outputs for hash pipeline
+
+version: '3.8'
+
+services:
+  # Main exerciser container
+  exerciser:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: sx9-tool-exerciser
+    environment:
+      - TIER=${TIER:-0}
+      - VERBOSE=${VERBOSE:-false}
+      - NATS_URL=${NATS_URL:-nats://nats:4222}
+    volumes:
+      # Mount output directory for results (local)
+      - ./output:/sx9/output
+      # Mount canonical corpus (persistent storage)
+      - ../../data/tool-corpus:/sx9/corpus
+      # Mount config for custom profiles
+      - ./tool_profiles.toml:/sx9/config/tool_profiles.toml:ro
+      # Mount logs
+      - ./logs:/sx9/logs
+    networks:
+      - sx9-net
+    depends_on:
+      - nats
+    command: ["-t", "${TIER:-0}", "run"]
+
+  # NATS for streaming results
+  nats:
+    image: nats:2.10-alpine
+    container_name: sx9-nats
+    ports:
+      - "4222:4222"   # Client
+      - "8222:8222"   # Monitoring
+    command: ["--jetstream", "--store_dir=/data"]
+    volumes:
+      - nats-data:/data
+    networks:
+      - sx9-net
+
+  # Optional: Vulnerable target for Tier 3
+  vuln-target:
+    image: vulnerables/web-dvwa
+    container_name: sx9-vuln-target
+    ports:
+      - "8080:80"
+    networks:
+      sx9-net:
+        aliases:
+          - target
+    profiles:
+      - tier3  # Only start with --profile tier3
+
+  # Optional: Result viewer
+  viewer:
+    image: alpine:latest
+    container_name: sx9-result-viewer
+    volumes:
+      - ./output:/output:ro
+    command: ["sh", "-c", "watch -n 2 'ls -la /output/hashed/ 2>/dev/null | tail -20'"]
+    profiles:
+      - viewer
+
+networks:
+  sx9-net:
+    driver: bridge
+
+volumes:
+  nats-data:
+

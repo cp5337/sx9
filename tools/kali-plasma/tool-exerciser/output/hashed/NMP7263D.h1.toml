@@ -1,0 +1,19 @@
+# h1 - Semantic Hash (SCH) - TOML
+# What the output MEANS - design time / configuration
+# Seed: 0xC7A50000
+
+[semantic]
+short_code = "NMP7263D"
+hash = "7263d2a1d2c29b5b"
+seed = "0xC7A50000"
+
+[tool]
+name = "nmap"
+trigger_rune = "0xE000"
+parser = "nmap_xml"
+parser_rune = "0xE920"
+
+[content]
+format_rune = "0xE901"
+size_rune = "0xE912"
+size_bytes = 45230

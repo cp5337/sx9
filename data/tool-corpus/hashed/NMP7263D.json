@@ -1,0 +1,15 @@
+{
+  "short_code": "NMP7263D",
+  "hash_ref": {
+    "h1": "7263d2a1d2c29b5b",
+    "h1_format": "toml",
+    "h1_file": "NMP7263D.h1.toml",
+    "h2": "972311fa391c5cc2",
+    "h2_format": "json",
+    "h2_file": "NMP7263D.h2.json"
+  },
+  "heredity": {
+    "operator": "0xE801",
+    "expr": "(cons 7263d2a1d2c29b5b 972311fa391c5cc2)"
+  }
+}

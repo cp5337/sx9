@@ -1,0 +1,167 @@
+# ═══════════════════════════════════════════════════════════════════════════
+# NATS Configuration for smart-crate.toml
+# ═══════════════════════════════════════════════════════════════════════════
+# Add this section to any crate's smart-crate.toml to configure NATS messaging
+# Copy the sections you need and customize for your crate
+# ═══════════════════════════════════════════════════════════════════════════
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Basic NATS Connection
+# ─────────────────────────────────────────────────────────────────────────────
+[nats]
+enabled = true
+url = "nats://localhost:4222"
+# Optional: cluster URLs for failover
+# cluster_urls = ["nats://node1:4222", "nats://node2:4222"]
+# Connection name (appears in NATS monitoring)
+# name = "sx9-kali-daemon"
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Subject Configuration
+# ─────────────────────────────────────────────────────────────────────────────
+[nats.subjects]
+# Subjects this crate publishes to
+publishes = [
+    "sx9.kali.result.>",
+    "sx9.kali.telemetry.>",
+    "sx9.health.heartbeat.kali",
+]
+# Subjects this crate subscribes to
+subscribes = [
+    "sx9.kali.exec.>",
+    "sx9.kali.chain.>",
+    "sx9.tick.sync",
+]
+
+# ─────────────────────────────────────────────────────────────────────────────
+# JetStream Configuration
+# ─────────────────────────────────────────────────────────────────────────────
+[nats.jetstream]
+enabled = true
+# Streams this crate uses
+streams = ["KALI", "TELEMETRY"]
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Consumer Configuration
+# ─────────────────────────────────────────────────────────────────────────────
+[[nats.consumers]]
+name = "kali-executor"
+stream = "KALI"
+filter_subject = "sx9.kali.exec.>"
+durable = true
+ack_wait_secs = 300
+max_deliver = 3
+
+[[nats.consumers]]
+name = "kali-chain"
+stream = "KALI"
+filter_subject = "sx9.kali.chain.>"
+durable = true
+ack_wait_secs = 600
+max_deliver = 3
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Health/Heartbeat Configuration
+# ─────────────────────────────────────────────────────────────────────────────
+[nats.health]
+heartbeat_interval_secs = 30
+heartbeat_subject = "sx9.health.heartbeat.kali"
+
+# ═══════════════════════════════════════════════════════════════════════════
+# EXAMPLE CONFIGURATIONS BY SERVICE TYPE
+# ═══════════════════════════════════════════════════════════════════════════
+
+# ─────────────────────────────────────────────────────────────────────────────
+# ATLAS Daemon Configuration
+# ─────────────────────────────────────────────────────────────────────────────
+# [nats]
+# enabled = true
+# url = "nats://localhost:4222"
+# name = "sx9-atlas-daemon"
+#
+# [nats.subjects]
+# publishes = [
+#     "sx9.tick.cognitive",
+#     "sx9.tick.sync",
+#     "sx9.atlas.ooda.>",
+#     "sx9.atlas.hd4.>",
+#     "sx9.atlas.convergence.>",
+# ]
+# subscribes = [
+#     "sx9.bus.>",
+#     "sx9.health.heartbeat.>",
+# ]
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Hash Engine Configuration
+# ─────────────────────────────────────────────────────────────────────────────
+# [nats]
+# enabled = true
+# url = "nats://localhost:4222"
+# name = "sx9-hash-engine"
+#
+# [nats.subjects]
+# publishes = ["sx9.hash.result.>"]
+# subscribes = ["sx9.hash.compute.>"]
+#
+# [nats.jetstream]
+# enabled = true
+# streams = ["HASH"]
+#
+# [[nats.consumers]]
+# name = "hash-engine"
+# stream = "HASH"
+# filter_subject = "sx9.hash.compute.>"
+# durable = true
+# ack_wait_secs = 5
+# max_deliver = 3
+
+# ─────────────────────────────────────────────────────────────────────────────
+# CDN Configuration
+# ─────────────────────────────────────────────────────────────────────────────
+# [nats]
+# enabled = true
+# url = "nats://localhost:4222"
+# name = "sx9-cdn-statistical"
+#
+# [nats.subjects]
+# publishes = [
+#     "sx9.cdn.replicate.>",
+#     "sx9.cdn.health.statistical",
+# ]
+# subscribes = [
+#     "sx9.cdn.store.statistical",
+#     "sx9.cdn.retrieve.statistical",
+# ]
+#
+# [nats.jetstream]
+# enabled = true
+# streams = ["CDN"]
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Gateway Configuration (NATS Bridge)
+# ─────────────────────────────────────────────────────────────────────────────
+# [nats]
+# enabled = true
+# url = "nats://localhost:4222"
+# name = "sx9-gateway"
+#
+# [nats.subjects]
+# # Gateway publishes to most subjects (translates HTTP → NATS)
+# publishes = [
+#     "sx9.kali.exec.>",
+#     "sx9.hash.compute.>",
+#     "sx9.crate.spawn.>",
+#     "sx9.gateway.request.>",
+# ]
+# # Gateway subscribes to results (translates NATS → HTTP)
+# subscribes = [
+#     "sx9.kali.result.>",
+#     "sx9.hash.result.>",
+#     "sx9.gateway.response.>",
+#     "sx9.health.heartbeat.>",
+# ]
+#
+# [nats.jetstream]
+# enabled = true
+# streams = ["KALI", "HASH", "GATEWAY", "TELEMETRY"]

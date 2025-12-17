@@ -1,0 +1,13 @@
+{
+  "short_code": "NMP8EF4C",
+  "tool": "nmap",
+  "content_hash": "8ef4c0e82afc6c91aa648d4b2fd5e4ff33211f9bd1834ec5cac3199d725f1dab",
+  "parser_hint": "help",
+  "size_bytes": 40,
+  "size_rune": "0xE910",
+  "timestamp": "2025-12-16T11:40:00-05:00",
+  "heredity": {
+    "operator": "0xE801",
+    "comment": "(cons request response)"
+  }
+}

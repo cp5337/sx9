@@ -1,0 +1,18 @@
+[smart_crate]
+name = "converge-selection"
+class = "analytic.core.selection"
+version = "0.1.0"
+
+rfc_compliance = [
+  "RFC-93X3"
+]
+
+deterministic = true
+storage = "none"
+
+[execution]
+runtime = "rust"
+
+[constraints]
+algorithm = "deterministic-greedy"
+ordering = "explicit"

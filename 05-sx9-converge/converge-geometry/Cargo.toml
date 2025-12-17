@@ -1,0 +1,15 @@
+[package]
+name = "converge-geometry"
+version = "0.1.0"
+edition = "2021"
+license = "Apache-2.0"
+description = "Geometry helpers for CONVERGE (RFC-93X2)"
+
+[dependencies]
+geo = "0.28"
+
+[package.metadata.smart_crate]
+class = "analytic.helper.geometry"
+deterministic = true
+storage = "none"
+rfc = ["93X2"]

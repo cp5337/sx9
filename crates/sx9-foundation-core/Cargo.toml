@@ -88,6 +88,11 @@ rand = "0.8"
 # Database backends for CTAS-7 multi-database support
 sled = "0.34"
 
+# File watching and secrets management
+notify = "6.1"
+md5 = "0.7"
+dirs = "5.0"
+
 # Unicode and Assembly Language support
 unicode-normalization = "0.1"
 unicode-segmentation = "1.10"

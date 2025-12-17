@@ -1,0 +1,42 @@
+[smart_crate]
+name = "converge"
+class = "analytic.sensor.convergence"
+version = "0.1.0"
+status = "experimental"
+
+rfc_compliance = [
+  "RFC-9101",  # Smart Crate System
+  "RFC-9021",  # Graph Convergence Theory
+  "RFC-9304",  # GLAF Graph Engine
+  "RFC-93X1",  # CONVERGE Core
+  "RFC-93X2",  # CONVERGE Geometry
+  "RFC-93X3",  # CONVERGE Selection
+  "RFC-93X4"   # CONVERGE Integration
+]
+
+deterministic = true
+hot_path = true
+storage = "none"
+network_io = "ringbus-only"
+
+[execution]
+runtime = "rust"
+scheduler = "lock-free"
+ecs = ["legion", "apecs"]
+parallelism = "crossbeam"
+
+[input]
+event_type = "ActionEvent"
+source = ["kali", "wazuh", "sensor", "sim"]
+
+[output]
+signal_type = "ConvergeSignal"
+target = "glaf"
+
+[constraints]
+max_window_ms = 300000
+max_events_per_window = 4096
+
+[security]
+raw_event_persistence = false
+external_actuation = false

@@ -1,0 +1,155 @@
+# SX9 Tool Exerciser - Tool Profiles
+# Each tool has a "safe" exercise command that produces output without harm
+
+[meta]
+version = "1.0.0"
+total_tools = 335
+safe_tools = 50  # Start with 50 safe tools
+
+# ============================================================================
+# TIER 0: COMPLETELY SAFE (no network, local only)
+# ============================================================================
+
+[tools.help_only]
+# Tools we just run --help to capture output format
+commands = [
+    { name = "nmap", cmd = "nmap --help", parser = "help" },
+    { name = "masscan", cmd = "masscan --help", parser = "help" },
+    { name = "nikto", cmd = "nikto -H", parser = "help" },
+    { name = "sqlmap", cmd = "sqlmap --help", parser = "help" },
+    { name = "hydra", cmd = "hydra -h", parser = "help" },
+    { name = "john", cmd = "john --help", parser = "help" },
+    { name = "hashcat", cmd = "hashcat --help", parser = "help" },
+    { name = "gobuster", cmd = "gobuster --help", parser = "help" },
+    { name = "ffuf", cmd = "ffuf -h", parser = "help" },
+    { name = "wpscan", cmd = "wpscan --help", parser = "help" },
+    { name = "nuclei", cmd = "nuclei -h", parser = "help" },
+    { name = "amass", cmd = "amass -h", parser = "help" },
+    { name = "subfinder", cmd = "subfinder -h", parser = "help" },
+    { name = "theharvester", cmd = "theHarvester -h", parser = "help" },
+    { name = "dirb", cmd = "dirb", parser = "help" },
+    { name = "whatweb", cmd = "whatweb --help", parser = "help" },
+]
+
+# ============================================================================
+# TIER 1: LOCALHOST ONLY (safe, exercises real functionality)
+# ============================================================================
+
+[tools.localhost]
+# Target 127.0.0.1 or scanme.nmap.org (official test target)
+commands = [
+    # Nmap - official test target
+    { name = "nmap_version", cmd = "nmap -sV -p22,80,443 scanme.nmap.org -oX -", parser = "nmap_xml", timeout = 60 },
+    { name = "nmap_quick", cmd = "nmap -F scanme.nmap.org -oG -", parser = "nmap_grep", timeout = 30 },
+    { name = "nmap_localhost", cmd = "nmap -sT -p1-100 127.0.0.1 -oX -", parser = "nmap_xml", timeout = 30 },
+    
+    # DNS lookups (passive)
+    { name = "nslookup", cmd = "nslookup scanme.nmap.org", parser = "dns", timeout = 10 },
+    { name = "dig", cmd = "dig scanme.nmap.org ANY +noall +answer", parser = "dns", timeout = 10 },
+    { name = "whois", cmd = "whois nmap.org", parser = "whois", timeout = 30 },
+    
+    # Ping (safe)
+    { name = "fping", cmd = "fping -c 3 scanme.nmap.org", parser = "ping", timeout = 15 },
+    { name = "ping", cmd = "ping -c 3 scanme.nmap.org", parser = "ping", timeout = 15 },
+]
+
+# ============================================================================
+# TIER 2: PASSIVE RECON (no active probing, just OSINT)
+# ============================================================================
+
+[tools.passive]
+commands = [
+    # theHarvester - passive sources only
+    { name = "harvester_dns", cmd = "theHarvester -d nmap.org -b dnsdumpster -l 10", parser = "harvester_json", timeout = 60 },
+    
+    # Amass - passive only
+    { name = "amass_passive", cmd = "amass enum -passive -d nmap.org -o -", parser = "amass_json", timeout = 120 },
+    
+    # Subfinder - passive
+    { name = "subfinder", cmd = "subfinder -d nmap.org -silent", parser = "subfinder_json", timeout = 60 },
+    
+    # Whatweb - single page
+    { name = "whatweb", cmd = "whatweb -v scanme.nmap.org --log-json=-", parser = "whatweb_json", timeout = 30 },
+]
+
+# ============================================================================
+# TIER 3: SYNTHETIC TARGETS (docker internal network)
+# ============================================================================
+
+[tools.synthetic]
+# These require a synthetic target container to be running
+requires_target = true
+target_container = "sx9-vuln-target"
+commands = [
+    # Nikto against synthetic target
+    { name = "nikto", cmd = "nikto -h http://target:80 -Format json -o -", parser = "nikto_json", timeout = 300 },
+    
+    # Nuclei against synthetic target
+    { name = "nuclei", cmd = "nuclei -u http://target:80 -json -silent", parser = "nuclei_json", timeout = 300 },
+    
+    # Gobuster against synthetic target
+    { name = "gobuster", cmd = "gobuster dir -u http://target:80 -w /usr/share/wordlists/dirb/common.txt -q -o -", parser = "gobuster", timeout = 300 },
+    
+    # SQLmap against synthetic target (safe mode)
+    { name = "sqlmap", cmd = "sqlmap -u 'http://target:80/vuln.php?id=1' --batch --level=1 --risk=1 --output-dir=/tmp/sqlmap", parser = "sqlmap_json", timeout = 300 },
+]
+
+# ============================================================================
+# TIER 4: PASSWORD CRACKING (offline, synthetic hashes)
+# ============================================================================
+
+[tools.password]
+# Use synthetic hash files
+commands = [
+    # John with synthetic MD5 hashes
+    { name = "john_md5", cmd = "john --format=raw-md5 --wordlist=/usr/share/wordlists/rockyou.txt /sx9/config/test_hashes_md5.txt --pot=/tmp/john.pot", parser = "john_pot", timeout = 60 },
+    
+    # Hashcat with synthetic hashes (CPU mode)
+    { name = "hashcat_md5", cmd = "hashcat -m 0 -a 0 /sx9/config/test_hashes_md5.txt /usr/share/wordlists/rockyou.txt --force -o /tmp/hashcat.pot", parser = "hashcat_pot", timeout = 60 },
+]
+
+# ============================================================================
+# OUTPUT FORMAT MAPPING
+# ============================================================================
+
+[parsers]
+help = { format = "text", rune = 0xE908 }
+nmap_xml = { format = "xml", rune = 0xE920 }
+nmap_grep = { format = "text", rune = 0xE921 }
+masscan_json = { format = "json", rune = 0xE922 }
+nuclei_json = { format = "json", rune = 0xE923 }
+nikto_json = { format = "json", rune = 0xE924 }
+sqlmap_json = { format = "json", rune = 0xE925 }
+hashcat_pot = { format = "text", rune = 0xE926 }
+john_pot = { format = "text", rune = 0xE927 }
+harvester_json = { format = "json", rune = 0xE928 }
+amass_json = { format = "json", rune = 0xE929 }
+subfinder_json = { format = "json", rune = 0xE92A }
+whatweb_json = { format = "json", rune = 0xE92F }
+gobuster = { format = "text", rune = 0xE92F }
+dns = { format = "text", rune = 0xE92F }
+whois = { format = "text", rune = 0xE92F }
+ping = { format = "text", rune = 0xE92F }
+
+# ============================================================================
+# TOOL PREFIXES FOR SHORT CODES
+# ============================================================================
+
+[short_codes]
+nmap = "NMP"
+masscan = "MSC"
+nikto = "NKT"
+nuclei = "NUC"
+sqlmap = "SQL"
+hydra = "HYD"
+john = "JHN"
+hashcat = "HSH"
+gobuster = "GOB"
+ffuf = "FFU"
+wpscan = "WPS"
+amass = "AMS"
+subfinder = "SBF"
+theharvester = "HRV"
+dirb = "DRB"
+whatweb = "WWB"
+
