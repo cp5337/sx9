@@ -48,3 +48,9 @@ temp/
 *.gguf
 models/
 .DS_Store
+
+# Vault for sensitive files
+.vault/
+
+# Node modules
+node_modules/
