@@ -9,7 +9,9 @@ mod rfc;
 mod vault;
 mod atomic_clipboard;
 mod clipboard_commands;
-mod file_index; // NEW: File indexing for AI agent discovery
+mod file_index;  // NEW: File indexing for AI agent discovery
+mod thalmic_filter;  // NEW: Plain language intent parser
+mod key_onboarder;  // NEW: File-based key import
 
 use ide::{BootstrapConfig, BootstrapConstraints, BootstrapContext, IdeBootstrap, IdeType};
 use linear::{CreateIssueInput, LinearClient};
@@ -428,6 +430,22 @@ async fn file_index_tag(relative_path: String, tag: String) -> Result<(), String
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════
+// TAURI COMMANDS - KEY ONBOARDING
+// ═══════════════════════════════════════════════════════════════════════════════
+
+#[tauri::command]
+async fn scan_and_import_keys() -> Result<Vec<String>, String> {
+    let onboarder = key_onboarder::KeyOnboarder::new();
+    onboarder.scan_and_import().await
+}
+
+#[tauri::command]
+fn get_keys_directory() -> String {
+    let onboarder = key_onboarder::KeyOnboarder::new();
+    onboarder.keys_dir_path()
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
 // TAURI COMMANDS - IDE BOOTSTRAP
 // ═══════════════════════════════════════════════════════════════════════════════
 
@@ -555,6 +573,9 @@ pub fn run() {
             file_index_recent,
             file_index_stats,
             file_index_tag,
+            // Key Onboarding
+            scan_and_import_keys,
+            get_keys_directory,
             // IDE
             bootstrap_ide,
             open_in_ide,

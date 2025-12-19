@@ -32,4 +32,7 @@ futures = "0.3"
 sled = "0.34"
 dirs = "5.0"
 
+# CLI
+clap = { version = "4.4", features = ["derive"] }
+
 [workspace]
