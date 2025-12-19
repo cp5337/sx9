@@ -175,7 +175,7 @@ pub enum ExpertiseArea {
 }
 
 /// I represent operational specializations
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub enum OperationalSpecialization {
     // HD4 Phase Specializations
     HuntSpecialist,
