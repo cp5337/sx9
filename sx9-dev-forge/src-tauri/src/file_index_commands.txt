@@ -1,0 +1,45 @@
+// ═══════════════════════════════════════════════════════════════════════════════
+// TAURI COMMANDS - FILE INDEX
+// ═══════════════════════════════════════════════════════════════════════════════
+
+#[tauri::command]
+async fn file_index_build() -> Result<usize, String> {
+    let root = std::env::current_dir().map_err(|e| e.to_string())?;
+    let index = FileIndex::new(root).map_err(|e| e.to_string())?;
+    index.index_workspace().map_err(|e| e.to_string())
+}
+
+#[tauri::command]
+async fn file_index_search_tags(tags: Vec<String>) -> Result<Vec<FileEntry>, String> {
+    let root = std::env::current_dir().map_err(|e| e.to_string())?;
+    let index = FileIndex::new(root).map_err(|e| e.to_string())?;
+    index.search_by_tags(&tags).map_err(|e| e.to_string())
+}
+
+#[tauri::command]
+async fn file_index_search_path(query: String) -> Result<Vec<FileEntry>, String> {
+    let root = std::env::current_dir().map_err(|e| e.to_string())?;
+    let index = FileIndex::new(root).map_err(|e| e.to_string())?;
+    index.search_by_path(&query).map_err(|e| e.to_string())
+}
+
+#[tauri::command]
+async fn file_index_recent(limit: usize) -> Result<Vec<FileEntry>, String> {
+    let root = std::env::current_dir().map_err(|e| e.to_string())?;
+    let index = FileIndex::new(root).map_err(|e| e.to_string())?;
+    index.recent(limit).map_err(|e| e.to_string())
+}
+
+#[tauri::command]
+async fn file_index_stats() -> Result<IndexStats, String> {
+    let root = std::env::current_dir().map_err(|e| e.to_string())?;
+    let index = FileIndex::new(root).map_err(|e| e.to_string())?;
+    index.stats().map_err(|e| e.to_string())
+}
+
+#[tauri::command]
+async fn file_index_tag(relative_path: String, tag: String) -> Result<(), String> {
+    let root = std::env::current_dir().map_err(|e| e.to_string())?;
+    let index = FileIndex::new(root).map_err(|e| e.to_string())?;
+    index.tag_file(&relative_path, tag).map_err(|e| e.to_string())
+}

@@ -1,0 +1,266 @@
+# SX9-PROMPT v2.0
+# Type: Build Pipeline
+# Generated: 2024-12-18
+# Handoff: Claude → Antigravity
+# ═══════════════════════════════════════════════════════════════════════════════
+
+header:
+  id: PRM-20241218-FORGE-HANDOFF
+  rfc: RFC-9107
+  title: "SX9 Dev Forge - Complete Wiring & Polish"
+  author: Charles E. Payne
+  date: 2024-12-18
+  phase: IMPLEMENT
+  classification: INTERNAL
+  priority: P1
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# CONTEXT - WHAT EXISTS
+# ═══════════════════════════════════════════════════════════════════════════════
+
+project:
+  path: /Users/cp5337/Developer/sx9/sx9-dev-forge
+  framework: Tauri 2.0 + React + TypeScript
+  run_command: pnpm tauri dev
+
+existing_backend:
+  location: src-tauri/src/
+  modules:
+    - lib.rs       # Main app, all Tauri commands registered
+    - vault.rs     # KeyVault @ ~/.ctas7/keyvault/ (14 standard keys)
+    - linear.rs    # Linear GraphQL client (teams, projects, issues)
+    - missions.rs  # Mission CRUD + JSON persistence
+    - rfc.rs       # RFC index loader (by category, search)
+    - ide.rs       # IDE bootstrap (Cursor, VSCode, Antigravity)
+
+existing_frontend:
+  location: src/pages/
+  pages:
+    - Dashboard.tsx    # Stats, quick actions, recent missions
+    - PromptForge.tsx  # Full prompt YAML generator
+    - Missions.tsx     # Mission list + detail view
+    - RfcBrowser.tsx   # RFC search + category browse
+    - Settings.tsx     # Vault management UI
+
+tauri_commands_available:
+  vault:
+    - vault_list_keys
+    - vault_list_entries
+    - vault_get_key
+    - vault_set_key
+    - vault_delete_key
+    - vault_stats
+    - vault_activate_key
+    - vault_deactivate_key
+    - vault_standard_keys
+  missions:
+    - create_mission
+    - list_missions
+    - get_mission
+    - start_mission
+    - checkpoint_mission
+    - complete_mission
+    - fail_mission
+  linear:
+    - set_linear_api_key
+    - get_linear_api_key_status
+    - list_linear_teams
+    - list_linear_projects
+    - create_linear_issue
+  rfc:
+    - set_rfc_base_path
+    - load_rfc_index
+    - search_rfcs
+  ide:
+    - bootstrap_ide
+    - open_in_ide
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# MISSION - WHAT TO BUILD
+# ═══════════════════════════════════════════════════════════════════════════════
+
+objective: |
+  Wire up disconnected frontend components to Rust backend commands.
+  Complete the data flow so the app is fully functional end-to-end.
+
+tasks:
+  - id: T1
+    name: "Wire PromptForge → Mission Creation"
+    description: |
+      In PromptForge.tsx, the GENERATE button creates YAML output.
+      Add a "CREATE MISSION" button that:
+      1. Calls invoke('create_mission', { input }) with form data
+      2. Shows success toast with mission ID
+      3. Optionally navigates to Missions page
+    files:
+      - src/pages/PromptForge.tsx
+    commands:
+      - create_mission
+
+  - id: T2
+    name: "Add IDE Bootstrap to Mission Detail"
+    description: |
+      In Missions.tsx, when a mission is selected, add:
+      1. "Bootstrap IDE" button (dropdown: Cursor/VSCode/Antigravity)
+      2. Project path input field
+      3. Calls invoke('bootstrap_ide', { ... }) with mission data
+      4. Shows list of generated files
+      5. Optional "Open in IDE" button calling invoke('open_in_ide')
+    files:
+      - src/pages/Missions.tsx
+    commands:
+      - bootstrap_ide
+      - open_in_ide
+
+  - id: T3
+    name: "RFC Content Viewer"
+    description: |
+      In RfcBrowser.tsx, when an RFC is selected:
+      1. Add "View Content" button
+      2. Read file content (may need new Tauri command or use filesystem)
+      3. Display markdown in a modal or side panel
+      4. Syntax highlight code blocks
+    files:
+      - src/pages/RfcBrowser.tsx
+    new_command_needed: read_rfc_content
+
+  - id: T4
+    name: "Dashboard RFC Count"
+    description: |
+      In Dashboard.tsx, the RFC stat shows hardcoded "0".
+      1. On mount, call set_rfc_base_path with default path
+      2. Call load_rfc_index
+      3. Display actual count
+    files:
+      - src/pages/Dashboard.tsx
+    commands:
+      - set_rfc_base_path
+      - load_rfc_index
+
+  - id: T5
+    name: "Linear Issue Creation from Mission"
+    description: |
+      In Missions.tsx, for drafted/active missions without linear_issue_id:
+      1. Add "Create Linear Issue" button
+      2. Calls create_linear_issue with mission title/objective
+      3. Updates mission with linear_issue_id and linear_issue_url
+      4. Shows link to created issue
+    files:
+      - src/pages/Missions.tsx
+    commands:
+      - create_linear_issue
+      - update_mission (may need to add)
+
+  - id: T6
+    name: "Mobile Initialization (Optional)"
+    description: |
+      Initialize mobile targets:
+      - pnpm tauri ios init
+      - pnpm tauri android init
+      Test that UI works on smaller screens.
+    shell_commands:
+      - pnpm tauri ios init
+      - pnpm tauri android init
+
+constraints:
+  hard:
+    - "DO NOT modify Rust backend files unless adding new commands"
+    - "DO NOT break existing Tauri command signatures"
+    - "All new UI must use existing Tailwind classes (zinc/emerald/cyan/amber)"
+    - "Max 300 lines per component - split if needed"
+  soft:
+    - "Use invoke() from @tauri-apps/api/core for all backend calls"
+    - "Show loading states during async operations"
+    - "Handle errors gracefully with user-visible messages"
+    - "Match existing UI patterns in Settings.tsx"
+
+deliverables:
+  - id: D1
+    name: "PromptForge with CREATE MISSION button"
+  - id: D2
+    name: "Mission detail with IDE Bootstrap"
+  - id: D3
+    name: "RFC content viewer"
+  - id: D4
+    name: "Dashboard with real RFC count"
+  - id: D5
+    name: "Linear issue creation from missions"
+
+acceptance:
+  - "Can generate prompt YAML and create mission in one flow"
+  - "Can bootstrap Cursor/VSCode from mission detail"
+  - "Can read RFC content without leaving app"
+  - "Dashboard shows actual stats"
+  - "Linear issues can be created from missions"
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# REFERENCE
+# ═══════════════════════════════════════════════════════════════════════════════
+
+key_patterns:
+  tauri_invoke: |
+    import { invoke } from '@tauri-apps/api/core';
+    const result = await invoke<ReturnType>('command_name', { param1, param2 });
+  
+  create_mission_input: |
+    interface CreateMissionInput {
+      title: string;
+      prompt_type: string;
+      persona: string;
+      harness: string;
+      objective: string;
+      hard_constraints: string[];
+      soft_constraints: string[];
+      deliverables: string[];
+      rfcs: string[];
+      priority: string;
+      phase: string;
+    }
+
+  bootstrap_ide_input: |
+    interface BootstrapIdeInput {
+      ide: string;              // "cursor" | "vscode" | "antigravity"
+      project_path: string;
+      persona: string;
+      harness: string;
+      mission_title: string;
+      mission_id: string;
+      hard_constraints: string[];
+      soft_constraints: string[];
+      forbidden_paths: string[];
+      max_file_lines?: number;
+      rfcs: string[];
+      linear_issue?: string;
+      working_directory: string;
+    }
+
+vault_keys:
+  - mapbox
+  - elevenlabs
+  - openai
+  - anthropic
+  - linear
+  - github
+  - supabase
+  - nats
+  - aws_access_key
+  - aws_secret_key
+  - google
+  - cloudflare
+  - gemini
+  - grok
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# SHUTTLE METADATA
+# ═══════════════════════════════════════════════════════════════════════════════
+
+shuttle:
+  from: claude
+  to: antigravity
+  created: 2024-12-18
+  status: pending
+  notes: |
+    - Backend is complete and tested
+    - Frontend pages exist but not fully wired
+    - Test with: pnpm tauri dev
+    - May need to add futures = "0.3" to Cargo.toml if build fails

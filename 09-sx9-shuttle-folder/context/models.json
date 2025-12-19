@@ -1,0 +1,32 @@
+{
+  "claude": {
+    "last_seen": "2024-12-18T00:00:00Z",
+    "last_action": "Created shuttle folder, handed off sx9-dev-forge wiring tasks",
+    "status": "idle"
+  },
+  "antigravity": {
+    "last_seen": null,
+    "last_action": null,
+    "status": "unknown"
+  },
+  "cursor": {
+    "last_seen": null,
+    "last_action": null,
+    "status": "unknown"
+  },
+  "gemini": {
+    "last_seen": null,
+    "last_action": null,
+    "status": "unknown"
+  },
+  "gpt": {
+    "last_seen": null,
+    "last_action": null,
+    "status": "unknown"
+  },
+  "claude_code": {
+    "last_seen": null,
+    "last_action": null,
+    "status": "unknown"
+  }
+}

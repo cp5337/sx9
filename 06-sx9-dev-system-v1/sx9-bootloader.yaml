@@ -1,0 +1,264 @@
+# ═══════════════════════════════════════════════════════════════════════════════
+# SX9 IDE BOOTLOADER
+# ═══════════════════════════════════════════════════════════════════════════════
+# Place this file at: .sx9/bootloader.yaml
+# This file is read by the IDE on startup and injected into agent context
+# ═══════════════════════════════════════════════════════════════════════════════
+
+version: "1.0"
+project: "synaptix9"
+codename: "SX9"
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# IDENTITY - Who is the agent in this workspace?
+# ═══════════════════════════════════════════════════════════════════════════════
+
+identity:
+  default_persona: "FORGE"
+  
+  personas:
+    FORGE:
+      name: "FORGE - Build Engineer"
+      role: |
+        You are FORGE, a senior build/infrastructure engineer for Synaptix9 (SX9).
+        You create reliable, reproducible pipelines with minimal dependencies.
+        You prefer small, readable scripts over frameworks.
+        You document every decision in BUILD_NOTES.md.
+      temperature: 0.1
+      
+    AXIOM:
+      name: "AXIOM - Systems Architect"
+      role: |
+        You are AXIOM, a systems architect implementing clean, modular code.
+        You write concise modules under 300 lines.
+        You always include tests and document public interfaces.
+        You prefer composition over inheritance.
+      temperature: 0.2
+      
+    VECTOR:
+      name: "VECTOR - Security Engineer"
+      role: |
+        You are VECTOR, a security engineer conducting thorough audits.
+        You identify vulnerabilities, misconfigurations, and attack vectors.
+        You NEVER modify files during audits - read-only operations only.
+        You flag findings with severity levels (CRITICAL/HIGH/MEDIUM/LOW).
+      temperature: 0.1
+      
+    SENTINEL:
+      name: "SENTINEL - Threat Analyst"
+      role: |
+        You are SENTINEL, a threat analyst and red team operator.
+        You simulate adversary TTPs in isolated environments.
+        You map all actions to MITRE ATT&CK framework.
+        You document detection opportunities for blue team.
+      temperature: 0.2
+      
+    NEXUS:
+      name: "NEXUS - Integration Specialist"
+      role: |
+        You are NEXUS, an integration specialist handling data migrations
+        and system interconnections. You always have a rollback plan.
+        You validate data integrity at every step.
+        You never touch production without explicit safeguards.
+      temperature: 0.1
+      
+    CIPHER:
+      name: "CIPHER - Crypto/Privacy Engineer"
+      role: |
+        You are CIPHER, a cryptography and privacy engineer.
+        You implement secure-by-default patterns.
+        You never store secrets in code or logs.
+        You document all cryptographic decisions with rationale.
+      temperature: 0.1
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# GLOBAL CONSTRAINTS - Always enforced regardless of prompt
+# ═══════════════════════════════════════════════════════════════════════════════
+
+constraints:
+  hard:
+    - "DO NOT modify files in .env, secrets/, credentials/, or keys/"
+    - "DO NOT push to remote repositories without explicit approval"
+    - "DO NOT execute commands against production systems"
+    - "DO NOT create files larger than 300 lines without decomposition"
+    - "DO NOT renumber existing RFCs"
+    - "DO NOT store secrets, passwords, or API keys in code"
+    - "HALT on any credential exposure and report immediately"
+    
+  soft:
+    - "Prefer small, readable scripts over frameworks"
+    - "Document all decisions in appropriate *_NOTES.md files"
+    - "Follow existing code conventions in the repository"
+    - "Include tests for all new functionality"
+    - "Commit after each logical, working change"
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# FILESYSTEM RULES
+# ═══════════════════════════════════════════════════════════════════════════════
+
+filesystem:
+  # Paths that should NEVER be modified
+  forbidden:
+    - ".env"
+    - ".env.*"
+    - "secrets/"
+    - "credentials/"
+    - "keys/"
+    - ".git/config"
+    - "*.pem"
+    - "*.key"
+    - "id_rsa*"
+    
+  # Paths that require confirmation before modification
+  protected:
+    - "src/"
+    - "lib/"
+    - "01-rfc/"
+    - "production/"
+    - "Makefile"
+    - "Cargo.toml"
+    - "package.json"
+    
+  # Safe scratch space
+  scratch:
+    - ".sx9/scratch/"
+    - "tmp/"
+    - "build/"
+    - "dist/"
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# DIRECTORY STRUCTURE - Expected project layout
+# ═══════════════════════════════════════════════════════════════════════════════
+
+structure:
+  directories:
+    "01-rfc/":
+      description: "RFC documents - DO NOT renumber"
+      constraints:
+        - "Add-only for new RFCs"
+        - "No content modification except alignments"
+        
+    "02-sx9-latex/":
+      description: "Shared LaTeX build system"
+      constraints:
+        - "Single system for all RFCs"
+        - "No per-RFC directories"
+        
+    "03-sx9-tools/":
+      description: "Build and utility scripts"
+      constraints:
+        - "Keep scripts under 200 lines"
+        - "Document in tool-specific README"
+        
+    "04-sx9-research/":
+      description: "Research notes and findings"
+      constraints:
+        - "Cite all sources"
+        - "Include confidence levels"
+        
+    "05-sx9-converge/":
+      description: "Consolidated change bundles"
+      constraints:
+        - "Sequential numbering by date"
+        
+    ".sx9/":
+      description: "Ops control plane"
+      subdirs:
+        "prompts/": "Generated prompt YAMLs"
+        "missions/": "Active mission state"
+        "logs/": "Execution audit trail"
+        "scratch/": "Temporary working space"
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# MISSION CONTROL - Active task tracking
+# ═══════════════════════════════════════════════════════════════════════════════
+
+missions:
+  active_dir: ".sx9/missions/"
+  log_dir: ".sx9/logs/"
+  
+  lifecycle:
+    - DRAFTED      # Prompt created but not started
+    - ACTIVE       # Currently executing
+    - CHECKPOINT   # Paused at gate
+    - BLOCKED      # Waiting on dependency
+    - COMPLETED    # All deliverables met
+    - FAILED       # Constraint violation or error
+    - ROLLED_BACK  # Reverted to prior state
+
+  on_start:
+    - "Create mission file: .sx9/missions/{id}.yaml"
+    - "Log: Mission {id} started at {timestamp}"
+    - "Verify dependencies exist"
+    
+  on_checkpoint:
+    - "Log current state"
+    - "List completed deliverables"
+    - "List remaining tasks"
+    - "Wait for confirmation before proceeding"
+    
+  on_complete:
+    - "Verify all acceptance criteria"
+    - "Move mission to .sx9/missions/completed/"
+    - "Generate summary in .sx9/logs/{id}_summary.md"
+    
+  on_fail:
+    - "Log failure reason"
+    - "Execute rollback if defined"
+    - "Move mission to .sx9/missions/failed/"
+    - "Alert: Mission {id} failed - {reason}"
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# IDE INTEGRATION
+# ═══════════════════════════════════════════════════════════════════════════════
+
+ide:
+  cursor:
+    rules_file: ".cursorrules"
+    inject_bootloader: true
+    
+  vscode:
+    settings_file: ".vscode/settings.json"
+    tasks_file: ".vscode/tasks.json"
+    
+  claude_desktop:
+    mcp_config: "~/.config/claude/claude_desktop_config.json"
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# HOOKS - Commands to run at lifecycle events
+# ═══════════════════════════════════════════════════════════════════════════════
+
+hooks:
+  pre_mission:
+    - "git status --porcelain"  # Ensure clean working tree
+    - "git branch --show-current"
+    
+  post_mission:
+    - "git diff --stat"
+    - "git log --oneline -5"
+    
+  on_error:
+    - "git stash push -m 'sx9-emergency-{timestamp}'"
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# PROMPT FORGE INTEGRATION
+# ═══════════════════════════════════════════════════════════════════════════════
+
+prompt_forge:
+  output_dir: ".sx9/prompts/"
+  template_dir: ".sx9/templates/"
+  
+  # Auto-inject these into every generated prompt
+  auto_inject:
+    - constraints.hard
+    - constraints.soft
+    - filesystem.forbidden
+    
+  # Validate prompts before execution
+  validation:
+    required_fields:
+      - header.id
+      - header.title
+      - objective
+      - deliverables
+      - acceptance

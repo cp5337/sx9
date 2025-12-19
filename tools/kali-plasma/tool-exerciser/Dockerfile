@@ -57,3 +57,5 @@ WORKDIR /sx9
 ENTRYPOINT ["/sx9/exerciser.sh"]
 CMD ["--help"]
 
+
+

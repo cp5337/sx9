@@ -1,0 +1,35 @@
+[package]
+name = "sx9-dev-forge"
+version = "0.1.0"
+description = "SX9 Dev Forge - Prompt Engineering & IDE Bootstrap"
+authors = ["Charles E. Payne"]
+edition = "2021"
+
+[lib]
+name = "sx9_dev_forge_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { version = "2", features = [] }
+tauri-plugin-opener = "2"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+serde_yaml = "0.9"
+tokio = { version = "1", features = ["full"] }
+reqwest = { version = "0.12", features = ["json"] }
+chrono = { version = "0.4", features = ["serde"] }
+uuid = { version = "1", features = ["v4", "serde"] }
+directories = "5"
+thiserror = "1"
+walkdir = "2"
+tracing = "0.1"
+futures = "0.3"
+
+# KeyVault - using same backend as sx9-foundation-core
+sled = "0.34"
+dirs = "5.0"
+
+[workspace]

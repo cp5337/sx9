@@ -1,0 +1,685 @@
+# ═══════════════════════════════════════════════════════════════════════════════
+# SX9 AGENT HARNESS - CLAUDE OPTIMAL CONFIGURATION
+# ═══════════════════════════════════════════════════════════════════════════════
+# This configuration maximizes Claude's capabilities for SX9 operations
+# Integrates: Linear, Canva, Figma, Drive, Filesystem, Web, Memory
+# ═══════════════════════════════════════════════════════════════════════════════
+
+version: "2.0"
+project: "synaptix9"
+codename: "SX9"
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# CLAUDE CAPABILITY MATRIX
+# ═══════════════════════════════════════════════════════════════════════════════
+# Claude's available tools in this environment - use them strategically
+
+capabilities:
+  # ─────────────────────────────────────────────────────────────────────────────
+  # CORE TOOLS (Always Available)
+  # ─────────────────────────────────────────────────────────────────────────────
+  core:
+    web_search:
+      description: "Search the web for current information"
+      use_for:
+        - "Current events, recent changes"
+        - "Documentation lookups"
+        - "CVE/vulnerability research"
+        - "API reference verification"
+      constraints:
+        - "Cite sources"
+        - "Prefer primary sources"
+        
+    web_fetch:
+      description: "Retrieve full content from URLs"
+      use_for:
+        - "Reading documentation pages"
+        - "Fetching API specs"
+        - "Downloading reference material"
+        
+    computer_use:
+      description: "Full Linux environment with filesystem, bash, code execution"
+      use_for:
+        - "Creating files and artifacts"
+        - "Running build commands"
+        - "Testing code"
+        - "File manipulation"
+      paths:
+        working: "/home/claude"
+        uploads: "/mnt/user-data/uploads"
+        outputs: "/mnt/user-data/outputs"
+        skills: "/mnt/skills/"
+        
+    memory:
+      description: "Persistent memory across conversations"
+      use_for:
+        - "Recalling project context"
+        - "Maintaining continuity"
+        - "User preferences"
+      tools:
+        - conversation_search
+        - recent_chats
+        - memory_user_edits
+
+  # ─────────────────────────────────────────────────────────────────────────────
+  # MCP SERVERS (Connected)
+  # ─────────────────────────────────────────────────────────────────────────────
+  mcp:
+    linear:
+      description: "Project management, issues, cycles, projects"
+      tools:
+        - list_issues
+        - create_issue
+        - update_issue
+        - get_issue
+        - list_projects
+        - create_project
+        - list_teams
+        - list_cycles
+        - create_comment
+        - list_issue_labels
+      use_for:
+        - "Mission tracking"
+        - "Task breakdown"
+        - "Sprint planning"
+        - "Status updates"
+        - "Dependency tracking"
+        
+    canva:
+      description: "Design assets, visual documentation"
+      use_for:
+        - "Architecture diagrams"
+        - "Documentation visuals"
+        - "Presentation materials"
+        - "Brand assets"
+        
+    figma:
+      description: "UI/UX design, component libraries"
+      tools:
+        - get_design_context
+        - get_screenshot
+        - get_metadata
+        - get_variable_defs
+        - get_code_connect_map
+      use_for:
+        - "UI implementation"
+        - "Design system reference"
+        - "Component generation"
+        
+    google_drive:
+      description: "Document storage and search"
+      tools:
+        - google_drive_search
+        - google_drive_fetch
+      use_for:
+        - "Internal documentation"
+        - "Project artifacts"
+        - "Historical context"
+        
+    huggingface:
+      description: "ML models, datasets, papers"
+      tools:
+        - model_search
+        - dataset_search
+        - paper_search
+        - space_search
+      use_for:
+        - "ML research"
+        - "Model selection"
+        - "Dataset discovery"
+        
+    vercel:
+      description: "Deployment and hosting"
+      tools:
+        - deploy_to_vercel
+        - list_deployments
+        - get_deployment
+      use_for:
+        - "Frontend deployment"
+        - "Preview environments"
+        
+    filesystem:
+      description: "Local file operations"
+      tools:
+        - read_file
+        - write_file
+        - edit_file
+        - list_directory
+        - search_files
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# LINEAR INTEGRATION - Mission ↔ Issue Sync
+# ═══════════════════════════════════════════════════════════════════════════════
+
+linear:
+  # Map SX9 concepts to Linear
+  mapping:
+    mission: "issue"
+    prompt: "issue_description"
+    deliverable: "sub_issue"
+    checkpoint: "comment"
+    phase: "label"
+    persona: "label"
+    priority:
+      P0: 1  # Urgent
+      P1: 2  # High
+      P2: 3  # Normal
+      P3: 4  # Low
+      
+  # Default team for SX9 work
+  default_team: "SX9"  # Update with actual team ID/name
+  
+  # Labels to create/use
+  labels:
+    phases:
+      - "phase:PULL"
+      - "phase:ANALYZE"
+      - "phase:RESEARCH"
+      - "phase:PLAN"
+      - "phase:IMPLEMENT"
+      - "phase:WALK"
+      - "phase:COMMIT"
+    personas:
+      - "persona:FORGE"
+      - "persona:AXIOM"
+      - "persona:VECTOR"
+      - "persona:SENTINEL"
+      - "persona:NEXUS"
+      - "persona:CIPHER"
+    types:
+      - "type:BUILD"
+      - "type:SECURITY"
+      - "type:RESEARCH"
+      - "type:RFC"
+      - "type:THREAT-EMULATION"
+      
+  # Workflow automation
+  workflows:
+    on_mission_start:
+      - "Create Linear issue with mission details"
+      - "Add phase and persona labels"
+      - "Link to parent project if RFC reference exists"
+      
+    on_checkpoint:
+      - "Add comment to Linear issue with checkpoint details"
+      - "Update issue state if phase changes"
+      
+    on_complete:
+      - "Update Linear issue state to 'Done'"
+      - "Add completion summary as comment"
+      - "Link deliverable artifacts"
+      
+    on_fail:
+      - "Update Linear issue state to 'Canceled' or 'Backlog'"
+      - "Add failure reason as comment"
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# CANVA INTEGRATION - Visual Documentation
+# ═══════════════════════════════════════════════════════════════════════════════
+
+canva:
+  use_cases:
+    architecture_diagrams:
+      description: "System architecture, data flow, component diagrams"
+      when: "Documenting system design or explaining complex relationships"
+      
+    threat_models:
+      description: "Attack trees, threat landscapes, kill chains"
+      when: "Security analysis or threat emulation planning"
+      
+    process_flows:
+      description: "Workflow diagrams, decision trees, pipelines"
+      when: "Documenting operational procedures"
+      
+    presentations:
+      description: "Briefings, status reports, proposals"
+      when: "Stakeholder communication"
+      
+    documentation_assets:
+      description: "Icons, banners, visual aids for docs"
+      when: "Enhancing written documentation"
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# AGENT HARNESS CONFIGURATIONS
+# ═══════════════════════════════════════════════════════════════════════════════
+# Pre-configured harnesses for different operational modes
+
+harnesses:
+  # ─────────────────────────────────────────────────────────────────────────────
+  # FULL AUTONOMOUS - Maximum capability, careful oversight
+  # ─────────────────────────────────────────────────────────────────────────────
+  full_autonomous:
+    name: "Full Autonomous Operations"
+    description: "All tools enabled, agent has maximum flexibility"
+    when_to_use:
+      - "Complex multi-step research tasks"
+      - "End-to-end feature implementation"
+      - "Comprehensive security audits"
+    mode: AUTONOMOUS
+    temperature: 0.3
+    timeout: 120m
+    
+    tools:
+      core:
+        web_search: true
+        web_fetch: true
+        computer_use: true
+        memory: true
+      mcp:
+        linear: true
+        canva: true
+        figma: true
+        google_drive: true
+        filesystem: true
+      
+    workflow:
+      - "Search memory for relevant context"
+      - "Check Linear for related issues/projects"
+      - "Search Drive for internal documentation"
+      - "Web search for external references"
+      - "Execute task with computer use"
+      - "Create Linear issue/update for tracking"
+      - "Generate visual documentation if needed"
+      - "Output artifacts to /mnt/user-data/outputs"
+      
+  # ─────────────────────────────────────────────────────────────────────────────
+  # RESEARCH MODE - Information gathering focus
+  # ─────────────────────────────────────────────────────────────────────────────
+  research:
+    name: "Research & Intelligence"
+    description: "Optimized for information gathering and synthesis"
+    when_to_use:
+      - "Threat intelligence gathering"
+      - "Technology evaluation"
+      - "Competitive analysis"
+      - "Documentation research"
+    mode: AUTONOMOUS
+    temperature: 0.4
+    timeout: 60m
+    
+    tools:
+      core:
+        web_search: true
+        web_fetch: true
+        computer_use: true  # For creating reports
+        memory: true
+      mcp:
+        linear: false  # Read-only for context
+        canva: false
+        figma: false
+        google_drive: true
+        huggingface: true
+        filesystem: true
+        
+    workflow:
+      - "Check memory for prior research on topic"
+      - "Search Drive for internal knowledge"
+      - "Web search for current information"
+      - "Fetch and analyze key sources"
+      - "Synthesize findings into report"
+      - "Create deliverable artifacts"
+      
+  # ─────────────────────────────────────────────────────────────────────────────
+  # BUILD MODE - Code and infrastructure focus
+  # ─────────────────────────────────────────────────────────────────────────────
+  build:
+    name: "Build & Implementation"
+    description: "Optimized for code generation and system building"
+    when_to_use:
+      - "Feature implementation"
+      - "Pipeline construction"
+      - "Tool development"
+      - "Infrastructure as code"
+    mode: SUPERVISED
+    temperature: 0.2
+    timeout: 90m
+    
+    tools:
+      core:
+        web_search: true  # For API docs
+        web_fetch: true
+        computer_use: true
+        memory: true
+      mcp:
+        linear: true  # Track work
+        canva: false
+        figma: true   # If UI work
+        google_drive: true
+        filesystem: true
+        vercel: true  # If deploying
+        
+    workflow:
+      - "Check Linear for issue details and acceptance criteria"
+      - "Review existing code in filesystem"
+      - "Check Figma if UI-related"
+      - "Implement with computer_use"
+      - "Test implementation"
+      - "Update Linear with progress"
+      - "Output artifacts"
+      
+  # ─────────────────────────────────────────────────────────────────────────────
+  # SECURITY MODE - Audit and analysis focus
+  # ─────────────────────────────────────────────────────────────────────────────
+  security:
+    name: "Security Audit & Analysis"
+    description: "Optimized for security review and threat analysis"
+    when_to_use:
+      - "Vulnerability assessment"
+      - "Code security review"
+      - "Threat modeling"
+      - "Compliance checking"
+    mode: STEP-CONFIRM
+    temperature: 0.1
+    timeout: 120m
+    
+    tools:
+      core:
+        web_search: true  # CVE lookups
+        web_fetch: true
+        computer_use: true  # READ-FOCUSED
+        memory: true
+      mcp:
+        linear: true
+        canva: true   # Threat diagrams
+        figma: false
+        google_drive: true
+        filesystem: true
+        
+    constraints:
+      - "READ-ONLY for target systems"
+      - "Log all findings with severity"
+      - "No execution of untrusted code"
+      - "Halt on credential exposure"
+      
+    workflow:
+      - "Define scope from Linear issue"
+      - "Search for known vulnerabilities (web)"
+      - "Analyze codebase (filesystem read)"
+      - "Document findings"
+      - "Create threat diagram (Canva) if needed"
+      - "Update Linear with findings"
+      
+  # ─────────────────────────────────────────────────────────────────────────────
+  # PLANNING MODE - Strategy and documentation focus
+  # ─────────────────────────────────────────────────────────────────────────────
+  planning:
+    name: "Planning & Documentation"
+    description: "Optimized for strategy, planning, and documentation"
+    when_to_use:
+      - "RFC drafting"
+      - "Architecture design"
+      - "Project planning"
+      - "Process documentation"
+    mode: SUPERVISED
+    temperature: 0.3
+    timeout: 60m
+    
+    tools:
+      core:
+        web_search: true
+        web_fetch: true
+        computer_use: true
+        memory: true
+      mcp:
+        linear: true   # Create projects, issues
+        canva: true    # Diagrams
+        figma: false
+        google_drive: true
+        filesystem: true
+        
+    workflow:
+      - "Gather context from memory and Drive"
+      - "Research best practices (web)"
+      - "Draft documentation (computer_use)"
+      - "Create supporting visuals (Canva)"
+      - "Create Linear project/issues for execution"
+      - "Output all artifacts"
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# OPTIMAL CLAUDE USAGE PATTERNS
+# ═══════════════════════════════════════════════════════════════════════════════
+
+patterns:
+  # ─────────────────────────────────────────────────────────────────────────────
+  # CONTEXT LOADING - Start of any significant task
+  # ─────────────────────────────────────────────────────────────────────────────
+  context_loading:
+    description: "How to establish context before executing"
+    sequence:
+      1_memory: 
+        action: "Search conversation history for relevant prior work"
+        tool: "conversation_search"
+        why: "Avoid repeating work, maintain continuity"
+        
+      2_linear:
+        action: "Check for existing issues, projects, context"
+        tool: "linear:list_issues, linear:get_project"
+        why: "Understand current state, dependencies"
+        
+      3_drive:
+        action: "Search for internal documentation"
+        tool: "google_drive_search"
+        why: "Find existing knowledge, avoid duplication"
+        
+      4_filesystem:
+        action: "Review relevant files in workspace"
+        tool: "filesystem:list_directory, filesystem:read_file"
+        why: "Understand current codebase state"
+        
+      5_web:
+        action: "Search for external context if needed"
+        tool: "web_search, web_fetch"
+        why: "Get current information, API docs, CVEs"
+
+  # ─────────────────────────────────────────────────────────────────────────────
+  # ARTIFACT CREATION - Producing deliverables
+  # ─────────────────────────────────────────────────────────────────────────────
+  artifact_creation:
+    description: "How to create and deliver artifacts"
+    
+    code_artifacts:
+      location: "/home/claude → /mnt/user-data/outputs"
+      process:
+        - "Create in /home/claude workspace"
+        - "Test/validate if applicable"
+        - "Copy final to /mnt/user-data/outputs"
+        - "Use present_files tool to share"
+        
+    documents:
+      formats:
+        - ".md for technical docs"
+        - ".yaml for configs"
+        - ".docx for formal documents (use skill)"
+        - ".pptx for presentations (use skill)"
+        - ".pdf for reports (use skill)"
+      skills_location: "/mnt/skills/public/"
+      
+    visuals:
+      canva: "Architecture diagrams, threat models"
+      figma: "UI mockups, design specs"
+      mermaid: "Quick diagrams in markdown"
+      react_artifacts: "Interactive visualizations"
+
+  # ─────────────────────────────────────────────────────────────────────────────
+  # TRACKING & CONTINUITY - Maintaining state across sessions
+  # ─────────────────────────────────────────────────────────────────────────────
+  tracking:
+    description: "How to maintain state and enable continuity"
+    
+    linear_as_source_of_truth:
+      - "Create issue for every significant mission"
+      - "Update issue status as work progresses"
+      - "Add comments for checkpoints"
+      - "Link related issues"
+      - "Use labels for categorization"
+      
+    memory_for_context:
+      - "Key decisions get stored in memory"
+      - "User preferences persist"
+      - "Project context accumulates"
+      
+    filesystem_for_artifacts:
+      - "All outputs go to /mnt/user-data/outputs"
+      - "Use descriptive filenames with dates"
+      - "Include README in output bundles"
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# PERSONAS (Enhanced with tool preferences)
+# ═══════════════════════════════════════════════════════════════════════════════
+
+personas:
+  FORGE:
+    name: "FORGE - Build Engineer"
+    harness: "build"
+    primary_tools:
+      - filesystem
+      - computer_use
+      - linear
+    role: |
+      You are FORGE, a senior build/infrastructure engineer for SX9.
+      You create reliable, reproducible pipelines with minimal dependencies.
+      You track all work in Linear and document decisions thoroughly.
+      
+  AXIOM:
+    name: "AXIOM - Systems Architect"
+    harness: "build"
+    primary_tools:
+      - filesystem
+      - computer_use
+      - figma
+      - canva
+      - linear
+    role: |
+      You are AXIOM, a systems architect implementing clean, modular code.
+      You use Figma for UI reference and Canva for architecture diagrams.
+      You track all work in Linear with clear acceptance criteria.
+      
+  VECTOR:
+    name: "VECTOR - Security Engineer"
+    harness: "security"
+    primary_tools:
+      - web_search
+      - filesystem
+      - canva
+      - linear
+    role: |
+      You are VECTOR, a security engineer conducting thorough audits.
+      You search for CVEs and vulnerabilities, document findings in Linear.
+      You create threat models in Canva. You NEVER modify target systems.
+      
+  SENTINEL:
+    name: "SENTINEL - Threat Analyst"
+    harness: "research"
+    primary_tools:
+      - web_search
+      - google_drive
+      - linear
+      - canva
+    role: |
+      You are SENTINEL, a threat analyst and red team operator.
+      You research threats, map TTPs to MITRE ATT&CK, and document findings.
+      You use Linear for tracking and Canva for kill chain diagrams.
+      
+  NEXUS:
+    name: "NEXUS - Integration Specialist"
+    harness: "build"
+    primary_tools:
+      - filesystem
+      - computer_use
+      - google_drive
+      - linear
+    role: |
+      You are NEXUS, an integration specialist handling data migrations.
+      You always have a rollback plan documented in Linear.
+      You validate data integrity at every step.
+      
+  CIPHER:
+    name: "CIPHER - Crypto/Privacy Engineer"  
+    harness: "security"
+    primary_tools:
+      - web_search
+      - filesystem
+      - linear
+    role: |
+      You are CIPHER, a cryptography and privacy engineer.
+      You research cryptographic best practices and document decisions.
+      You NEVER log secrets and always use secure patterns.
+      
+  SCRIBE:
+    name: "SCRIBE - Documentation Specialist"
+    harness: "planning"
+    primary_tools:
+      - google_drive
+      - canva
+      - filesystem
+      - linear
+    role: |
+      You are SCRIBE, a technical writer creating clear documentation.
+      You search Drive for existing docs, create visuals in Canva.
+      You track documentation tasks in Linear.
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# PROMPT TEMPLATE WITH HARNESS
+# ═══════════════════════════════════════════════════════════════════════════════
+
+prompt_template: |
+  # SX9-PROMPT v2.0
+  # ═══════════════════════════════════════════════════════════════════════════
+  
+  header:
+    id: ${ID}
+    title: "${TITLE}"
+    date: ${DATE}
+    phase: ${PHASE}
+    classification: ${CLASSIFICATION}
+    priority: ${PRIORITY}
+    
+  # AGENT HARNESS
+  harness:
+    persona: ${PERSONA}
+    mode: ${MODE}
+    temperature: ${TEMP}
+    timeout: ${TIMEOUT}
+    base_harness: ${HARNESS_TYPE}  # full_autonomous|research|build|security|planning
+    
+  # LINEAR INTEGRATION
+  linear:
+    team: ${LINEAR_TEAM}
+    project: ${LINEAR_PROJECT}
+    create_issue: ${CREATE_LINEAR_ISSUE}
+    labels: [${LABELS}]
+    
+  # TOOL CONFIGURATION  
+  tools:
+    required: [${REQUIRED_TOOLS}]
+    optional: [${OPTIONAL_TOOLS}]
+    forbidden: [${FORBIDDEN_TOOLS}]
+    
+  # CONTEXT SOURCES
+  context:
+    load_from:
+      - memory: ${SEARCH_MEMORY}
+      - linear: ${CHECK_LINEAR}
+      - drive: ${SEARCH_DRIVE}
+      - web: ${SEARCH_WEB}
+    
+  # MISSION
+  objective: |
+    ${OBJECTIVE}
+    
+  constraints:
+    hard: [${HARD_CONSTRAINTS}]
+    soft: [${SOFT_CONSTRAINTS}]
+    
+  deliverables:
+    ${DELIVERABLES}
+    
+  acceptance:
+    ${ACCEPTANCE_CRITERIA}
+    
+  # EXECUTION
+  role: |
+    ${ROLE}
+    
+  task: |
+    ${TASK_STEPS}

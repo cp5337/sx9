@@ -1,0 +1,21 @@
+{
+  "projects": {
+    "sx9-dev-forge": "/Users/cp5337/Developer/sx9/sx9-dev-forge",
+    "sx9-foundation-core": "/Users/cp5337/Developer/sx9/crates/sx9-foundation-core",
+    "sx9-rfc": "/Users/cp5337/Developer/sx9/01-rfc",
+    "sx9-dev-system": "/Users/cp5337/Developer/sx9/06-sx9-dev-system-v1",
+    "sx9-antigravity": "/Users/cp5337/Developer/sx9/07-antigravity"
+  },
+  "key_files": {
+    "keyvault": "/Users/cp5337/.ctas7/keyvault/",
+    "bootloader": "/Users/cp5337/Developer/sx9/06-sx9-dev-system-v1/sx9-bootloader.yaml",
+    "agent_harness": "/Users/cp5337/Developer/sx9/06-sx9-dev-system-v1/sx9-agent-harness-v2.yaml",
+    "prompt_forge_v3": "/Users/cp5337/Developer/sx9/06-sx9-dev-system-v1/sx9-prompt-forge-v3.jsx"
+  },
+  "tauri_app": {
+    "root": "/Users/cp5337/Developer/sx9/sx9-dev-forge",
+    "frontend": "/Users/cp5337/Developer/sx9/sx9-dev-forge/src",
+    "backend": "/Users/cp5337/Developer/sx9/sx9-dev-forge/src-tauri/src",
+    "pages": "/Users/cp5337/Developer/sx9/sx9-dev-forge/src/pages"
+  }
+}
