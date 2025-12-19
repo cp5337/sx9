@@ -7,9 +7,9 @@ mod linear;
 mod missions;
 mod rfc;
 mod vault;
-mod atomic_clipboard;
-mod clipboard_commands;
-mod file_index;  // NEW: File indexing for AI agent discovery
+pub mod atomic_clipboard;
+pub mod clipboard_commands;
+pub mod file_index;  // NEW: File indexing for AI agent discovery
 mod thalmic_filter;  // NEW: Plain language intent parser
 mod key_onboarder;  // NEW: File-based key import
 
