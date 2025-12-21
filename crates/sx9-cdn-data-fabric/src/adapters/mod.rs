@@ -7,7 +7,6 @@ pub mod neo4j;
 pub mod network_flow;
 pub mod postgres;
 pub mod slotgraph;
-pub mod surreal;
 
 use crate::registry::DatabaseInfo;
 use serde_json::Value;

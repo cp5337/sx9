@@ -22,10 +22,12 @@ pub enum OperationalClass {
 }
 
 impl OperationalClass {
+    #[must_use]
     pub fn is_kinetic(&self) -> bool {
         matches!(self, Self::Defensive | Self::Offensive)
     }
 
+    #[must_use]
     pub fn to_code(&self) -> &'static str {
         match self {
             Self::Intelligence => "INT",
@@ -59,6 +61,7 @@ pub enum EscalationTier {
 }
 
 impl EscalationTier {
+    #[must_use]
     pub fn requires_containerization(&self) -> bool {
         matches!(self, Self::Container | Self::Firefly | Self::Orb)
     }

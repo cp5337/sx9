@@ -1,0 +1,82 @@
+version: '3.8'
+
+services:
+  # Tar Pit Defender - The Honeypot
+  tarpit-defender:
+    build:
+      context: .
+      dockerfile: Dockerfile.defender
+    container_name: sx9-tarpit-defender
+    networks:
+      - tarpit-lab
+    ports:
+      - "443:443"
+      - "8080:8080"
+    environment:
+      - RUST_LOG=debug
+      - TARPIT_MODE=training
+      - PTCC_PROFILE=adaptive
+    volumes:
+      - ./intelligence:/intelligence
+      - ./logs:/logs
+
+  # Kali Attacker - The Red Team
+  kali-attacker:
+    image: kalilinux/kali-rolling:latest
+    container_name: sx9-kali-attacker
+    networks:
+      - tarpit-lab
+    privileged: true
+    volumes:
+      - ./attack-scripts:/attack-scripts
+      - ./results:/results
+    environment:
+      - TARGET_HOST=tarpit-defender
+      - ATTACK_PROFILE=auto
+    command: /bin/bash -c "sleep infinity"
+
+  # Attack Orchestrator - Runs PTCC profiles
+  attack-orchestrator:
+    build:
+      context: .
+      dockerfile: Dockerfile.orchestrator
+    container_name: sx9-attack-orchestrator
+    networks:
+      - tarpit-lab
+    depends_on:
+      - tarpit-defender
+      - kali-attacker
+    volumes:
+      - ./ptcc-profiles:/ptcc-profiles
+      - ./results:/results
+      - ./intelligence:/intelligence
+    environment:
+      - KALI_HOST=kali-attacker
+      - DEFENDER_HOST=tarpit-defender
+      - PROFILES_DIR=/ptcc-profiles
+      - RESULTS_DIR=/results
+
+  # Intelligence Collector - Analyzes results
+  intelligence-collector:
+    build:
+      context: .
+      dockerfile: Dockerfile.collector
+    container_name: sx9-intelligence-collector
+    networks:
+      - tarpit-lab
+    depends_on:
+      - tarpit-defender
+    volumes:
+      - ./intelligence:/intelligence
+      - ./results:/results
+      - ./signatures:/signatures
+    environment:
+      - INTELLIGENCE_DIR=/intelligence
+      - SIGNATURES_DIR=/signatures
+
+networks:
+  tarpit-lab:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16

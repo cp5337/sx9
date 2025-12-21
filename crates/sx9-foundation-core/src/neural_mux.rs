@@ -129,6 +129,7 @@ impl Default for NeuralMuxConfig {
 
 impl NeuralMuxRouter {
     /// Create new Neural Mux router
+    #[must_use]
     pub fn new(config: NeuralMuxConfig) -> Self {
         Self {
             config,
@@ -154,8 +155,7 @@ impl NeuralMuxRouter {
             .cloned()
             .ok_or_else(|| {
                 crate::diagnostics::Error::msg(format!(
-                    "No route found for Unicode operation: U+{:04X}",
-                    unicode_value
+                    "No route found for Unicode operation: U+{unicode_value:04X}"
                 ))
             })?;
 
@@ -188,6 +188,7 @@ impl NeuralMuxRouter {
     }
 
     /// Get operation statistics
+    #[must_use]
     pub fn get_statistics(&self) -> NeuralMuxStatistics {
         let total_operations = self.operation_history.len();
         let mut priority_counts = HashMap::new();

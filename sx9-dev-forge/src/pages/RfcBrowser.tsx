@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { invoke } from "@tauri-apps/api/core";
 import { Search, Folder, Tag } from "lucide-react";
 
@@ -223,7 +223,8 @@ export default function RfcBrowser() {
                   <div className="font-medium mb-1">{rfc.title}</div>
                   <div className="flex gap-2 text-xs text-zinc-500">
                     <Folder className="w-3 h-3 inline" /> {rfc.category}
-                      <Tag className="w-3 h-3 inline" /> {rfc.tags.slice(0, 3).join(", ")}
+                    <Tag className="w-3 h-3 inline" />{" "}
+                    {rfc.tags.slice(0, 3).join(", ")}
                   </div>
                 </div>
               ))

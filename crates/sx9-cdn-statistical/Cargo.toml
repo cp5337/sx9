@@ -41,3 +41,6 @@ codegen-units = 1
 panic = "abort"
 strip = "symbols"
 overflow-checks = true
+
+[lints]
+workspace = true

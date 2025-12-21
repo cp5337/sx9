@@ -1,0 +1,56 @@
+[registry.meta]
+version = "1.0.0"
+updated = "2025-12-20"
+enforcement_level = "strict"
+
+# ==============================================================================
+# 🔴 LEGACY CONTAINMENT (The "Archaeological" Layer)
+# We register these to STOP them from growing, not to fix them instantly.
+# ==============================================================================
+
+[[components]]
+name = "CTAS_CLI_Frontend"
+path = "apps/sx9-ops-main/src/components/CTASCLI.tsx"
+type = "react_component"
+pattern = "god_component" # ⚠️ ACKNOWLEDGED ANTI-PATTERN
+owner = "legacy_ops"
+constraints = { max_loc = 1700, max_complexity = 150 } # Capped at current size
+
+[[components]]
+name = "PromptForge_Main"
+path = "sx9-dev-forge/src/PromptForge.tsx"
+type = "react_component"
+pattern = "god_component" # ⚠️ ACKNOWLEDGED ANTI-PATTERN
+owner = "dev_forge"
+constraints = { max_loc = 1200, max_complexity = 70 }
+
+# ==============================================================================
+# 🟢 STANDARDIZED COMPONENTS (The "New World")
+# These must strictly adhere to their declared Design Patterns.
+# ==============================================================================
+
+[[components]]
+name = "Security_Harvester"
+path = "sx9-conda/python-tools/qa/security_harvester.py"
+type = "python_script"
+pattern = "facade" # Aggregates multiple sources
+owner = "sec_ops"
+constraints = { max_loc = 300, max_complexity = 15, allowed_imports = ["toml", "json"] }
+
+[[components]]
+name = "Lightning_QA_Engine"
+path = "sx9-conda/python-tools/qa/sx9-lightning-qa.py"
+type = "python_script"
+pattern = "strategy" # Uses different Analyzers (Rust, JS) as strategies
+owner = "quality_eng"
+constraints = { max_loc = 600, max_complexity = 20 }
+
+[[components]]
+name = "SX9_Smart_Router"
+path = "crates/sx9-nats-router"
+type = "rust_crate"
+pattern = "reactor"
+owner = "Integration_Team"
+# RFC-9101 + RFC-9001 Compliance: Murmur3 required, Blake3 banned.
+constraints = { max_loc = 800, required_deps = ["nats", "pest", "murmur3"], banned_deps = ["tokio-console", "blake3"] }
+

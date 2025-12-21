@@ -7,7 +7,7 @@ import {
   Copy,
   Trash2,
   Search,
-  Filter,
+  // Filter removed
   Zap,
   FileText,
   Target,
@@ -15,8 +15,7 @@ import {
 } from "lucide-react";
 
 export function ClipboardPanel() {
-  const { entries, loading, stats, push, searchByTag, searchBySource, clear } =
-    useAtomicClipboard();
+  const { entries, loading, stats, clear } = useAtomicClipboard();
   const [filter, setFilter] = useState<
     "all" | "mission" | "linear" | "voice" | "manual"
   >("all");

@@ -7,8 +7,8 @@ use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::sync::{Arc, Mutex};
-use std::time::{Duration, Instant};
-use tracing::{debug, error, info, warn};
+use std::time::Duration;
+use tracing::info;
 use uuid::Uuid;
 
 use crate::types::*;
@@ -421,6 +421,12 @@ pub struct HealthCheck {
     pub status: ServiceStatus,
 }
 
+impl Default for GatewayCDN {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl GatewayCDN {
     /// Create a new Gateway CDN instance
     pub fn new() -> Self {
@@ -639,6 +645,12 @@ pub struct GatewayStatus {
 }
 
 // Implement default constructors
+impl Default for NGINXConfigManager {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl NGINXConfigManager {
     pub fn new() -> Self {
         Self {
@@ -654,6 +666,12 @@ impl NGINXConfigManager {
     }
 }
 
+impl Default for CyberOperations {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl CyberOperations {
     pub fn new() -> Self {
         Self {
@@ -662,6 +680,12 @@ impl CyberOperations {
             attack_vectors: Vec::new(),
             defense_strategies: Vec::new(),
         }
+    }
+}
+
+impl Default for ThreatDatabase {
+    fn default() -> Self {
+        Self::new()
     }
 }
 
@@ -675,6 +699,12 @@ impl ThreatDatabase {
     }
 }
 
+impl Default for TrafficIntelligence {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl TrafficIntelligence {
     pub fn new() -> Self {
         Self {
@@ -682,6 +712,12 @@ impl TrafficIntelligence {
             intelligence_reports: Vec::new(),
             threat_indicators: Vec::new(),
         }
+    }
+}
+
+impl Default for TrafficAnalysis {
+    fn default() -> Self {
+        Self::new()
     }
 }
 
@@ -695,6 +731,12 @@ impl TrafficAnalysis {
             suspicious_activity: Vec::new(),
             attack_attempts: 0,
         }
+    }
+}
+
+impl Default for PortManager {
+    fn default() -> Self {
+        Self::new()
     }
 }
 
@@ -715,6 +757,12 @@ impl PortManager {
     ) -> Result<(), CDNError> {
         // Implementation would allocate port
         Ok(())
+    }
+}
+
+impl Default for ServiceRegistry {
+    fn default() -> Self {
+        Self::new()
     }
 }
 

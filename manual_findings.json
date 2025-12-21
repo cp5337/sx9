@@ -1,0 +1,26 @@
+[
+  {
+    "tool": "Human Expert",
+    "file": "src/App.tsx",
+    "line": 90,
+    "column": 5,
+    "severity": "Critical",
+    "message": "Memory Leak: Event listeners attached to `document` in `onMouseDown` are never removed if the component unmounts while dragging. Requires `useEffect` cleanup."
+  },
+  {
+    "tool": "Human Expert",
+    "file": "src/App.tsx",
+    "line": 128,
+    "column": 7,
+    "severity": "UX",
+    "message": "Blocking UX: Use of `alert()` halts the browser thread and provides poor user experience. Should use a Toast/Notification system."
+  },
+  {
+    "tool": "Human Expert",
+    "file": "src/App.tsx",
+    "line": 282,
+    "column": 49,
+    "severity": "Functional",
+    "message": "Broken Feature: `AutoPersistIndicator` status is hardcoded to 'idle'. It effectively lies to the user about sync status."
+  }
+]

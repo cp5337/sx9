@@ -82,9 +82,16 @@ pub struct HashVerification {
     pub critical_violations: Vec<String>,
 }
 
+impl Default for HashEngine {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl HashEngine {
     /// Creates new lightweight hash engine
     /// Creates new lightweight hash engine
+    #[must_use]
     pub fn new() -> Self {
         let trivariate_engine = TrivariateHashEngineV731::new();
         let context = ContextFrame::new(ExecEnv::Native, 0, ExecState::Hot);
@@ -166,11 +173,13 @@ impl HashEngine {
     }
 
     /// Get component hash - O(1) lookup
+    #[must_use]
     pub fn get_component_hash(&self, component_id: &str) -> Option<&ComponentHash> {
         self.component_hashes.get(component_id)
     }
 
     /// Verify ecosystem integrity - lightweight check
+    #[must_use]
     pub fn verify_ecosystem_integrity(&self) -> HashVerification {
         let mut healthy_count = 0;
         let mut compromised_count = 0;
@@ -181,7 +190,7 @@ impl HashEngine {
                 HashHealthStatus::Healthy => healthy_count += 1,
                 HashHealthStatus::Compromised(reason) => {
                     compromised_count += 1;
-                    critical_violations.push(format!("{}: {}", component_id, reason));
+                    critical_violations.push(format!("{component_id}: {reason}"));
                 }
                 HashHealthStatus::Degraded(_) => {} // Not critical
                 HashHealthStatus::Unknown => {}
@@ -197,16 +206,19 @@ impl HashEngine {
     }
 
     /// Get ecosystem hash for external verification
+    #[must_use]
     pub fn get_ecosystem_hash(&self) -> String {
         self.ecosystem_hash.clone()
     }
 
     /// Get hash chain length for integrity metrics
+    #[must_use]
     pub fn get_hash_chain_length(&self) -> u64 {
         self.hash_chain.len() as u64
     }
 
     /// Export minimal hash state for network transmission
+    #[must_use]
     pub fn export_hash_state(&self) -> HashMap<String, String> {
         let mut state = HashMap::new();
 
@@ -226,7 +238,7 @@ impl HashEngine {
                 component.component_type,
                 ComponentType::Foundation | ComponentType::Orchestrator
             ) {
-                state.insert(format!("component_{}", id), component.hash.clone());
+                state.insert(format!("component_{id}"), component.hash.clone());
             }
         }
 
@@ -338,7 +350,7 @@ impl HashEngine {
 
         for &count in &counts {
             if count > 0 {
-                let p = count as f64 / len;
+                let p = f64::from(count) / len;
                 entropy -= p * p.log2();
             }
         }

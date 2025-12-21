@@ -189,3 +189,6 @@ overflow-checks = true
 [build-dependencies]
 # Build-time validation and security checks
 cargo_metadata = "0.18.1"
+
+[lints]
+workspace = true

@@ -1,0 +1,65 @@
+[
+  {
+    "tool": "qodo-ai",
+    "file": "apps/sx9-ops-main/src/components/CTASCLI.tsx",
+    "line": 1,
+    "column": 0,
+    "message": "GOD_COMPONENT: File is 1675 lines and mixes UI, Data Fetching, and State Management. Extract logic to custom hooks.",
+    "severity": "CRITICAL",
+    "type": "refactor"
+  },
+  {
+    "tool": "qodo-ai",
+    "file": "sx9-dev-forge-rn-migration/src/screens/PromptForgeScreen.tsx",
+    "line": 1,
+    "column": 0,
+    "message": "GOD_COMPONENT: File is 824 lines and mixes UI, Data Fetching, and State Management. Extract logic to custom hooks.",
+    "severity": "CRITICAL",
+    "type": "refactor"
+  },
+  {
+    "tool": "qodo-ai",
+    "file": "apps/sx9-ops-main/src/components/MultiCLI.tsx",
+    "line": 95,
+    "column": 0,
+    "message": "SECURITY: Direct call to local backend. Ensure input is sanitized before sending to atomic clipboard.",
+    "severity": "HIGH",
+    "type": "security"
+  },
+  {
+    "tool": "qodo-ai",
+    "file": "apps/sx9-ops-main/src/components/CTASCLI.tsx",
+    "line": 318,
+    "column": 0,
+    "message": "SECURITY: Direct call to local backend. Ensure input is sanitized before sending to atomic clipboard.",
+    "severity": "HIGH",
+    "type": "security"
+  },
+  {
+    "tool": "qodo-ai",
+    "file": "apps/sx9-ops-main/src/pages/Dashboard.tsx",
+    "line": 216,
+    "column": 0,
+    "message": "SECURITY: Direct call to local backend. Ensure input is sanitized before sending to atomic clipboard.",
+    "severity": "HIGH",
+    "type": "security"
+  },
+  {
+    "tool": "qodo-ai",
+    "file": "apps/sx9-ops-main/src/pages/vKali.tsx",
+    "line": 85,
+    "column": 0,
+    "message": "SECURITY: Direct call to local backend. Ensure input is sanitized before sending to atomic clipboard.",
+    "severity": "HIGH",
+    "type": "security"
+  },
+  {
+    "tool": "qodo-ai",
+    "file": "apps/sx9-ops-main/src/components/glaf/GLAFIntelWorksurface.tsx",
+    "line": 52,
+    "column": 0,
+    "message": "SECURITY: Direct call to local backend. Ensure input is sanitized before sending to atomic clipboard.",
+    "severity": "HIGH",
+    "type": "security"
+  }
+]

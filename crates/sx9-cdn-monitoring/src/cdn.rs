@@ -4,7 +4,7 @@ use chrono::Utc;
 use std::collections::HashMap;
 use std::sync::{Arc, Mutex};
 use std::time::Instant;
-use tracing::{error, info};
+use tracing::info;
 use uuid::Uuid;
 
 use crate::analytics::CDNAnalytics;
@@ -21,6 +21,12 @@ pub struct CTASCDN {
     pub route_optimizer: RouteOptimizer,
     pub cache_manager: CacheManager,
     pub analytics: CDNAnalytics,
+}
+
+impl Default for CTASCDN {
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 impl CTASCDN {

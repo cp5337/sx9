@@ -14,3 +14,6 @@ sx9-atlas-bus = { path = "../sx9-atlas-bus", features = ["std"] }
 # - sx9_foundation_core::data::serde (instead of serde)
 # - sx9_foundation_core::diagnostics::anyhow (instead of anyhow)
 # - sx9_foundation_core::diagnostics::tracing (instead of tracing)
+
+[lints]
+workspace = true

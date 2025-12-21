@@ -23,3 +23,6 @@ wasmtime-wasi = "20.0"
 
 # File watching for hot reload (not in foundation-core)
 notify = "6.0"
+
+[lints]
+workspace = true

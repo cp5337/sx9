@@ -210,8 +210,8 @@ impl HiddenMarkovModelEngine {
 
         for i in 0..window_size {
             for j in 0..window_size {
-                let x = point.x as isize + i - (window_size / 2) as isize;
-                let y = point.y as isize + j - (window_size / 2) as isize;
+                let x = point.x as isize + i - (window_size / 2);
+                let y = point.y as isize + j - (window_size / 2);
 
                 if x >= 0 && y >= 0 && x < image.width as isize && y < image.height as isize {
                     let pixel_value = image.get_pixel(x as usize, y as usize)?;
@@ -1182,7 +1182,7 @@ impl LatentFingerprintEnhancementEngine {
         _ridge_flow: &RidgeFlowAnalysis,
     ) -> Result<EnhancedFingerprintImage> {
         // Apply morphological opening and closing based on ridge structure
-        let mut enhanced_data = image.data.clone();
+        let enhanced_data = image.data.clone();
 
         // Morphological operations would be implemented here
         // For now, return enhanced image

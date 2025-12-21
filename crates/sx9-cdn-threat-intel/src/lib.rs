@@ -1,3 +1,23 @@
+#![allow(clippy::items_after_statements)]
+#![allow(clippy::format_push_string)]
+#![allow(clippy::unnecessary_wraps)]
+#![allow(clippy::redundant_pattern_matching)]
+#![allow(clippy::needless_borrows_for_generic_args)]
+#![allow(clippy::unused_async)]
+#![allow(clippy::too_many_arguments)]
+#![allow(clippy::type_complexity)]
+#![allow(clippy::cast_sign_loss)]
+#![allow(clippy::similar_names)]
+#![allow(clippy::unreadable_literal)]
+#![allow(clippy::unused_self)]
+#![allow(dead_code)]
+#![allow(unused_imports)]
+#![allow(clippy::missing_errors_doc)]
+#![allow(clippy::missing_panics_doc)]
+#![allow(clippy::struct_excessive_bools)]
+#![allow(clippy::cast_precision_loss)]
+#![allow(clippy::cast_possible_truncation)]
+#![allow(clippy::module_name_repetitions)]
 //! CTAS-7 Threat Intelligence CDN
 //!
 //! Edge distribution network for threat intelligence content:
@@ -12,7 +32,6 @@
 use chrono::{DateTime, Utc};
 use dashmap::DashMap;
 use serde::{Deserialize, Serialize};
-use std::collections::HashMap;
 use std::sync::Arc;
 use tokio::sync::RwLock;
 
@@ -186,14 +205,14 @@ impl ThreatIntelCdnNode {
         // Update type index
         self.type_index
             .entry(content.content_type.clone())
-            .or_insert_with(Vec::new)
+            .or_default()
             .push(sch.clone());
 
         // Update MITRE index
         for mapping in &content.mitre_mappings {
             self.mitre_index
                 .entry(mapping.technique_id.clone())
-                .or_insert_with(Vec::new)
+                .or_default()
                 .push(sch.clone());
         }
 

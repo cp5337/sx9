@@ -6,7 +6,6 @@
 use axum::response::Json;
 use chrono::Utc;
 use serde_json::{json, Value};
-use tracing::{error, info, warn};
 
 /// Get threat intelligence
 pub async fn get_threat_intel() -> Json<Value> {

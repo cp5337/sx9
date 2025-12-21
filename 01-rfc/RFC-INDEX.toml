@@ -1,0 +1,346 @@
+# ═══════════════════════════════════════════════════════════════════════════════
+# SX9 FORGE SPECIFICATIONS - RFC INDEX
+# Machine-readable registry with dependency tracking
+# ═══════════════════════════════════════════════════════════════════════════════
+
+[meta]
+version = "1.0.0"
+updated = "2025-12-20"
+maintainer = "cpayne@sx9.dev"
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# FOUNDATIONAL RFCs (External Dependencies)
+# These are referenced but defined elsewhere in the SX9 RFC corpus
+# ═══════════════════════════════════════════════════════════════════════════════
+
+[external.RFC-9001]
+title = "Trivariate Hashing"
+status = "stable"
+location = "../01-rfc/9000-core/RFC-9001-TRIVARIATE.md"
+description = "H1/H2 hash generation, murmur3-128, Base96 encoding"
+
+[external.RFC-9005]
+title = "Unified Schema"
+status = "stable"
+location = "../01-rfc/9000-core/RFC-9005-UNIFIED-SCHEMA.md"
+description = "Canonical entity schema for cross-system interoperability"
+
+[external.RFC-9025]
+title = "Interview Schema"
+status = "stable"
+location = "../01-rfc/9000-core/RFC-9025-INTERVIEW-SCHEMA.md"
+description = "Node/crate interview structure for GLAF integration"
+
+[external.RFC-9101]
+title = "SmartCrate Manifest"
+status = "stable"
+location = "../01-rfc/9100-integration/RFC-9101-SMARTCRATE.md"
+description = "smartcrate.toml specification for runtime configuration"
+
+[external.RFC-9112]
+title = "PromptScript v3"
+status = "stable"
+location = "../01-rfc/9100-integration/RFC-9112-PROMPTSCRIPT-V3.md"
+description = "DSL for prompt generation, Thalmic runes, trivariate hashing"
+
+[external.RFC-9116]
+title = "Dev Forge Architecture"
+status = "stable"
+location = "../01-rfc/9100-integration/RFC-9116-DEV-FORGE.md"
+description = "Tauri 2.0 desktop application for prompt engineering"
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# FORGE PIPELINE RFCs (This Repository)
+# ═══════════════════════════════════════════════════════════════════════════════
+
+[rfcs.RFC-9120]
+title = "Prompt Forge v4 — Plain Language Crate Manufacturing"
+status = "draft"
+file = "rfcs/RFC-9120-PROMPT-FORGE-V4.md"
+description = "Plain language → pattern resolution → interview → canonical prompt"
+
+[rfcs.RFC-9120.depends_on]
+required = [
+    "RFC-9001",   # Trivariate hashing for birth certificates
+    "RFC-9005",   # Unified schema for interview structure
+    "RFC-9025",   # Interview schema auto-population
+    "RFC-9101",   # SmartCrate manifest generation
+    "RFC-9112",   # PromptScript DSL and Thalmic filter
+    "RFC-9116",   # Dev Forge UI integration
+]
+
+[rfcs.RFC-9120.outputs]
+crate_interview = { schema = "schemas/crate-interview.json", description = "Birth certificate" }
+smartcrate_toml = { schema = "schemas/smartcrate.toml.json", description = "Runtime manifest" }
+canonical_prompt = { template = "templates/canonical-prompt.md", description = "Gold master prompt" }
+
+[rfcs.RFC-9120.nats_subjects]
+pattern_updated = "sx9.config.pattern.updated"
+forge_session_started = "sx9.forge.session.started"
+forge_session_completed = "sx9.forge.session.completed"
+
+[rfcs.RFC-9120.sledis_keys]
+pattern_registry = "pattern:registry:{name}"
+pattern_resolve = "pattern:resolve:{features}"
+pattern_constraints = "pattern:constraints:{name}"
+forge_session = "forge:session:{id}"
+
+
+[rfcs.RFC-9121]
+title = "Code Quality & Refactor Engine (Lightning QA)"
+status = "draft"
+file = "rfcs/RFC-9121-CODE-QUALITY-REFACTOR-ENGINE.md"
+description = "AST analysis → metrics → anti-patterns → grade → refactor directives"
+
+[rfcs.RFC-9121.depends_on]
+required = [
+    "RFC-9101",   # SmartCrate for constraint validation
+    "RFC-9120",   # Prompt Forge for birth certificate structure
+]
+optional = [
+    "TETH",       # Tool Entropy Testing Harness (anti-pattern source)
+]
+
+[rfcs.RFC-9121.outputs]
+lightning_qa_json = { schema = "schemas/lightning-qa.json", description = "QA report" }
+refactor_directives = { schema = "schemas/refactor-directive.json", description = "Actionable fixes" }
+sarif_report = { schema = "https://raw.githubusercontent.com/oasis-tcs/sarif-spec/main/sarif-2.1/schema/sarif-schema-2.1.0.json", description = "GitHub code scanning" }
+
+[rfcs.RFC-9121.nats_subjects]
+qa_started = "sx9.qa.{crate}.started"
+qa_completed = "sx9.qa.{crate}.completed"
+qa_failed = "sx9.qa.{crate}.failed"
+
+[rfcs.RFC-9121.thresholds]
+grade_a = { min = 85, max = 100 }
+grade_b = { min = 70, max = 84 }
+grade_c = { min = 55, max = 69 }
+grade_d = { min = 40, max = 54 }
+grade_f = { min = 0, max = 39 }
+
+
+[rfcs.RFC-9122]
+title = "Git Workflow, Linear Orchestration & Slack Decision Gates"
+status = "draft"
+file = "rfcs/RFC-9122-GIT-WORKFLOW-LINEAR-SLACK.md"
+description = "Branch isolation → PR gates → Slack decisions → release workflow"
+
+[rfcs.RFC-9122.depends_on]
+required = [
+    "RFC-9120",   # Prompt Forge for issue creation and prompt generation
+    "RFC-9121",   # Lightning QA for PR quality gates
+    "RFC-9116",   # Dev Forge for UI triggering
+]
+
+[rfcs.RFC-9122.integrations]
+linear = { api = "https://api.linear.app/graphql", webhook = true }
+github = { api = "https://api.github.com", app = "sx9-factory-agent" }
+slack = { api = "https://slack.com/api", channels = ["#sx9-factory", "#sx9-review", "#sx9-decisions", "#sx9-alerts", "#sx9-releases"] }
+
+[rfcs.RFC-9122.branch_rules]
+main = { protection = "full", direct_push = false }
+develop = { protection = "pr_required", direct_push = false }
+feature = { pattern = "feature/SX9-*", protection = "none" }
+factory = { pattern = "factory/SX9-*", protection = "none", agent_only = true }
+hotfix = { pattern = "hotfix/SX9-*", protection = "expedited" }
+
+[rfcs.RFC-9122.slack_channels]
+factory = { name = "#sx9-factory", purpose = "Build status updates" }
+review = { name = "#sx9-review", purpose = "PRs ready for review" }
+decisions = { name = "#sx9-decisions", purpose = "Human approval required" }
+alerts = { name = "#sx9-alerts", purpose = "Failures and blocks" }
+releases = { name = "#sx9-releases", purpose = "Production releases" }
+
+
+[rfcs.RFC-9123]
+title = "Gold Disk Reference Architecture & Disaster Recovery"
+status = "draft"
+file = "rfcs/RFC-9123-GOLD-DISK-DISASTER-RECOVERY.md"
+description = "Blessed baselines, Docker sheets, fake code detection, instant restore"
+
+[rfcs.RFC-9123.depends_on]
+required = [
+    "RFC-9120",   # Prompt Forge for factory agent integration
+    "RFC-9121",   # Lightning QA for certification criteria
+    "RFC-9122",   # Git workflow for restore protocol
+]
+
+[rfcs.RFC-9123.outputs]
+gold_manifest = { schema = "schemas/gold-disk-manifest.json", description = "Blessed baseline registry" }
+docker_compose = { file = "templates/gold-disk-compose.yml", description = "Full stack orchestration" }
+canary_report = { schema = "schemas/canary-report.json", description = "Fake code detection output" }
+
+[rfcs.RFC-9123.commands]
+restore_full = "sx9-gold restore --all"
+restore_crate = "sx9-gold restore --crate {name} --version {version}"
+restore_code = "sx9-gold restore --code {name}"
+verify = "sx9-gold verify"
+certify = "sx9-gold certify --crate {name} --version {version}"
+
+[rfcs.RFC-9123.triggers]
+compile_failures = { threshold = 3, action = "restore" }
+canary_critical = { severity = "critical", action = "restore" }
+qa_grade_fail = { grades = ["D", "F"], action = "restore" }
+factory_halt = { event = "agent_halted", action = "restore" }
+
+
+[rfcs.RFC-9124]
+title = "Cloud Reference Architecture — CTAS Primary, Forge Upsell"
+status = "draft"
+file = "rfcs/RFC-9124-CLOUD-REFERENCE-ARCHITECTURE.md"
+description = "Cloudflare + GCP zero-cost demo, CTAS as product, Forge as premium tier"
+
+[rfcs.RFC-9124.depends_on]
+required = [
+    "RFC-9120",   # Prompt Forge for Forge API
+    "RFC-9121",   # Lightning QA for quality gates
+    "RFC-9122",   # Git workflow for CI/CD
+    "RFC-9123",   # Gold Disk for R2 backup
+]
+
+[rfcs.RFC-9124.cloud_providers]
+cloudflare = { services = ["Workers", "KV", "R2"], tier = "free" }
+gcp = { services = ["Cloud Run", "Firestore", "Secret Manager"], tier = "free" }
+
+[rfcs.RFC-9124.endpoints]
+gateway = "api.sx9.dev"
+gateway_demo = "api-demo.sx9.dev"
+ctas_api = "ctas-api-xxx.run.app"
+forge_api = "forge-api-xxx.run.app"
+
+[rfcs.RFC-9124.tiers]
+ctas = { name = "CTAS", features = ["threat_analysis", "pattern_matching", "adversary_profiles", "intel_feeds"] }
+ctas_forge = { name = "CTAS + Forge", features = ["all CTAS", "prompt_generation", "lightning_qa", "pattern_authoring", "private_registry"] }
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# DEPENDENCY GRAPH
+# ═══════════════════════════════════════════════════════════════════════════════
+
+[graph]
+# Visualization of RFC dependencies
+# Use: `sx9-rfc-graph generate` to produce mermaid diagram
+
+[graph.nodes]
+RFC-9001 = { layer = "foundation", category = "core" }
+RFC-9005 = { layer = "foundation", category = "core" }
+RFC-9025 = { layer = "foundation", category = "core" }
+RFC-9101 = { layer = "integration", category = "integration" }
+RFC-9112 = { layer = "integration", category = "integration" }
+RFC-9116 = { layer = "integration", category = "integration" }
+RFC-9120 = { layer = "application", category = "forge" }
+RFC-9121 = { layer = "application", category = "forge" }
+RFC-9122 = { layer = "application", category = "forge" }
+RFC-9123 = { layer = "application", category = "forge" }
+RFC-9124 = { layer = "deployment", category = "cloud" }
+
+[graph.edges]
+# RFC-9120 depends on
+RFC-9120_RFC-9001 = { from = "RFC-9120", to = "RFC-9001", type = "requires" }
+RFC-9120_RFC-9005 = { from = "RFC-9120", to = "RFC-9005", type = "requires" }
+RFC-9120_RFC-9025 = { from = "RFC-9120", to = "RFC-9025", type = "requires" }
+RFC-9120_RFC-9101 = { from = "RFC-9120", to = "RFC-9101", type = "requires" }
+RFC-9120_RFC-9112 = { from = "RFC-9120", to = "RFC-9112", type = "requires" }
+RFC-9120_RFC-9116 = { from = "RFC-9120", to = "RFC-9116", type = "requires" }
+
+# RFC-9121 depends on
+RFC-9121_RFC-9101 = { from = "RFC-9121", to = "RFC-9101", type = "requires" }
+RFC-9121_RFC-9120 = { from = "RFC-9121", to = "RFC-9120", type = "requires" }
+
+# RFC-9122 depends on
+RFC-9122_RFC-9116 = { from = "RFC-9122", to = "RFC-9116", type = "requires" }
+RFC-9122_RFC-9120 = { from = "RFC-9122", to = "RFC-9120", type = "requires" }
+RFC-9122_RFC-9121 = { from = "RFC-9122", to = "RFC-9121", type = "requires" }
+
+# RFC-9123 depends on
+RFC-9123_RFC-9120 = { from = "RFC-9123", to = "RFC-9120", type = "requires" }
+RFC-9123_RFC-9121 = { from = "RFC-9123", to = "RFC-9121", type = "requires" }
+RFC-9123_RFC-9122 = { from = "RFC-9123", to = "RFC-9122", type = "requires" }
+
+# RFC-9124 depends on
+RFC-9124_RFC-9120 = { from = "RFC-9124", to = "RFC-9120", type = "requires" }
+RFC-9124_RFC-9121 = { from = "RFC-9124", to = "RFC-9121", type = "requires" }
+RFC-9124_RFC-9122 = { from = "RFC-9124", to = "RFC-9122", type = "requires" }
+RFC-9124_RFC-9123 = { from = "RFC-9124", to = "RFC-9123", type = "requires" }
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# IMPLEMENTATION STATUS
+# ═══════════════════════════════════════════════════════════════════════════════
+
+[status]
+# Track implementation progress
+
+[status.RFC-9120]
+spec = "complete"
+sledis_loader = "pending"
+thalmic_filter = "pending"
+pattern_resolver = "pending"
+interview_populator = "pending"
+prompt_assembler = "pending"
+ui_integration = "pending"
+
+[status.RFC-9121]
+spec = "complete"
+ast_parser_rust = "pending"
+ast_parser_python = "pending"
+metrics_calculator = "pending"
+teth_detector = "pending"
+security_analyzer = "pending"
+refactor_generator = "pending"
+cli = "pending"
+
+[status.RFC-9122]
+spec = "complete"
+branch_protection = "pending"
+pr_workflow = "pending"
+linear_webhooks = "pending"
+slack_bot = "pending"
+release_pipeline = "pending"
+
+[status.RFC-9123]
+spec = "complete"
+gold_manifest = "pending"
+docker_base_images = "pending"
+crate_dockerfiles = "pending"
+compose_orchestration = "pending"
+canary_detector = "pending"
+restore_cli = "pending"
+certification_pipeline = "pending"
+forensic_snapshot = "pending"
+
+[status.RFC-9124]
+spec = "complete"
+gcp_project = "pending"
+cloud_run_ctas = "pending"
+cloud_run_forge = "pending"
+cloudflare_worker = "pending"
+cloudflare_kv = "pending"
+cloudflare_r2 = "pending"
+terraform_modules = "pending"
+tier_gating = "pending"
+demo_environment = "pending"
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# VALIDATION RULES
+# ═══════════════════════════════════════════════════════════════════════════════
+
+[validation]
+# Rules for validating RFC consistency
+
+[validation.rules]
+# All RFCs must have a file that exists
+file_exists = true
+
+# All dependencies must be resolvable (either in this index or external)
+deps_resolvable = true
+
+# NATS subjects must follow naming convention
+nats_subject_pattern = "^sx9\\.[a-z]+\\..+"
+
+# Sledis keys must follow naming convention  
+sledis_key_pattern = "^[a-z]+:[a-z]+:.+"
+
+# Status must be one of: draft, review, stable, deprecated
+valid_statuses = ["draft", "review", "stable", "deprecated"]

@@ -37,3 +37,6 @@ cuid2 = "0.1"
 [[bin]]
 name = "sx9-port-manager"
 path = "src/main.rs"
+
+[lints]
+workspace = true

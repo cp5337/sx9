@@ -2,8 +2,6 @@
 //!
 //! Implements H1 (Operational) and H2 (Semantic) convergence scoring
 
-use crate::glaf_core::GLAFCore;
-use anyhow::Result;
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 

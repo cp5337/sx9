@@ -556,7 +556,7 @@ DEFINE EVENT entity_supersession ON TABLE entities WHEN $before.superseded_by !=
 
 ## 10. Conformance
 
-Systems claiming RFC-9016 conformance MUST:
+Systems claiming RFC-9100 conformance MUST:
 
 1. Implement dual-trivariate generation
 2. Compute Δ-angle for all context transitions
@@ -640,4 +640,4 @@ Systems claiming RFC-9016 conformance MUST:
 
 ---
 
-**End of RFC-9016**
+**End of RFC-9100**

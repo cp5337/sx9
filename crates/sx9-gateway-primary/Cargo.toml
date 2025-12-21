@@ -70,3 +70,6 @@ neural-retrofit = [
     "sx9-plasma-ecs"
 ]
 
+
+[lints]
+workspace = true

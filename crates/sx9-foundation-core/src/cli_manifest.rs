@@ -4,7 +4,6 @@
 //! and other development interfaces
 
 use serde::{Deserialize, Serialize};
-use std::collections::HashMap;
 
 /// CLI Manifest for frontend integration
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -40,7 +39,7 @@ pub struct CLIParameter {
 }
 
 /// N8N Integration configuration
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, Default)]
 pub struct N8NIntegration {
     pub enabled: bool,
     pub webhook_endpoints: Vec<String>,
@@ -49,7 +48,7 @@ pub struct N8NIntegration {
 }
 
 /// Apple Native Integration configuration
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, Default)]
 pub struct AppleNativeIntegration {
     pub enabled: bool,
     pub swift_bridge_endpoints: Vec<String>,
@@ -58,7 +57,7 @@ pub struct AppleNativeIntegration {
 }
 
 /// Linear workspace integration
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, Default)]
 pub struct LinearIntegration {
     pub enabled: bool,
     pub workspace_url: String,
@@ -86,7 +85,7 @@ pub struct DevInterface {
 }
 
 /// iOS Integration
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, Default)]
 pub struct iOSIntegration {
     pub bundle_id: String,
     pub swift_bridge_version: String,
@@ -94,7 +93,7 @@ pub struct iOSIntegration {
 }
 
 /// macOS Integration
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, Default)]
 pub struct macOSIntegration {
     pub bundle_id: String,
     pub swift_bridge_version: String,
@@ -129,6 +128,7 @@ pub struct CLIFlag {
 }
 
 impl CLIManifest {
+    #[must_use]
     pub fn new() -> Self {
         Self {
             manifest_version: "1.0.0".to_string(),
@@ -332,59 +332,5 @@ impl CLIManifest {
 impl Default for CLIManifest {
     fn default() -> Self {
         Self::new()
-    }
-}
-
-impl Default for N8NIntegration {
-    fn default() -> Self {
-        Self {
-            enabled: false,
-            webhook_endpoints: Vec::new(),
-            workflow_triggers: Vec::new(),
-            linear_integration: LinearIntegration::default(),
-        }
-    }
-}
-
-impl Default for AppleNativeIntegration {
-    fn default() -> Self {
-        Self {
-            enabled: false,
-            swift_bridge_endpoints: Vec::new(),
-            ios_app_integration: iOSIntegration::default(),
-            macos_app_integration: macOSIntegration::default(),
-        }
-    }
-}
-
-impl Default for LinearIntegration {
-    fn default() -> Self {
-        Self {
-            enabled: false,
-            workspace_url: String::new(),
-            api_endpoints: Vec::new(),
-            issue_tracking: false,
-            project_management: false,
-        }
-    }
-}
-
-impl Default for iOSIntegration {
-    fn default() -> Self {
-        Self {
-            bundle_id: String::new(),
-            swift_bridge_version: String::new(),
-            supported_features: Vec::new(),
-        }
-    }
-}
-
-impl Default for macOSIntegration {
-    fn default() -> Self {
-        Self {
-            bundle_id: String::new(),
-            swift_bridge_version: String::new(),
-            supported_features: Vec::new(),
-        }
     }
 }

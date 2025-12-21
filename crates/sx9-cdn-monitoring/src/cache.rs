@@ -1,6 +1,5 @@
 //! Cache management implementation
 
-use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::time::Duration;
@@ -57,6 +56,12 @@ pub struct CacheAnalytics {
     pub eviction_rate: f64,
     pub total_requests: u64,
     pub cache_size: usize,
+}
+
+impl Default for CacheManager {
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 impl CacheManager {

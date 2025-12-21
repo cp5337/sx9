@@ -6,7 +6,7 @@
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
-use tracing::{debug, info, warn};
+use tracing::{debug, info};
 use uuid::Uuid;
 
 use crate::cyber_operations::ThreatLevel;
@@ -203,6 +203,12 @@ pub enum ResponseAction {
     Quarantine,
 }
 
+impl Default for TrafficIntelligence {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl TrafficIntelligence {
     pub fn new() -> Self {
         Self {
@@ -397,6 +403,12 @@ impl TrafficIntelligence {
             "Update firewall rules".to_string(),
             "Enhance monitoring for specific patterns".to_string(),
         ]
+    }
+}
+
+impl Default for TrafficAnalysis {
+    fn default() -> Self {
+        Self::new()
     }
 }
 

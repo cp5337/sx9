@@ -1,0 +1,17 @@
+timestamp = "2025-12-19T18:42:35.808368"
+target = "/Users/cp5337/Developer/sx9"
+issues = []
+
+[metrics]
+loc = 241369
+complexity_score = 10709
+file_count = 938
+halstead_volume = 24136.9
+
+[tools.clippy]
+count = 0
+raw = []
+
+[tools.zencoder]
+status = "skipped"
+message = "Missing ZENCODER_API_KEY env var. Skipping to avoid pain."

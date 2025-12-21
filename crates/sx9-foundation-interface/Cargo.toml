@@ -60,3 +60,6 @@ neural-mux = ["foundation-integration"]
 hash-engine = ["foundation-integration"]
 unicode-assembly = ["foundation-integration"]
 tesla-grade = ["foundation-integration", "neural-mux", "hash-engine"]
+
+[lints]
+workspace = true

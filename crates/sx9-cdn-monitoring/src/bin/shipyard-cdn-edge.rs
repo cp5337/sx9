@@ -4,8 +4,7 @@
 //! with fast response times and intelligent caching.
 
 use axum::{
-    extract::{Path, Query},
-    http::StatusCode,
+    extract::Path,
     response::Json,
     routing::{get, post},
     Router,
@@ -13,14 +12,14 @@ use axum::{
 use chrono::Utc;
 use serde_json::{json, Value};
 use std::collections::HashMap;
-use tracing::{error, info, warn};
+use tracing::{error, info};
 use uuid::Uuid;
 
 use sx9_cdn_monitoring::{
     add_edge_location,
     edge::EdgeLocation,
     get_cdn_analytics, get_cdn_health, route_request,
-    types::{CDNRequest, EdgeStatus, GeographicLocation},
+    types::{CDNRequest, GeographicLocation},
 };
 
 #[tokio::main]

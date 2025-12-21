@@ -1,0 +1,12 @@
+crate_name = "crates"
+analysis_time_seconds = 0.6078910827636719
+files_analyzed = 0
+total_loc = 0
+total_complexity = 0
+security_issues_count = 0
+security_score = 100.0
+maintainability_score = 100.0
+overall_grade = "A+"
+file_metrics = []
+security_issues = []
+timestamp = "2025-12-20T17:51:22.591903"

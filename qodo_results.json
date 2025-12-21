@@ -1,0 +1,58 @@
+[
+  {
+    "tool": "Qodo AI (Simulated)",
+    "file": "src/App.tsx",
+    "line": 95,
+    "column": 5,
+    "severity": "Optimization",
+    "message": "Performance: `handleMouseMove` is attached to `document` on every `mousedown`. While it is cleaned up, ensure `setChatHeight` does not cause excessive re-renders. Consider using `requestAnimationFrame` for smoother resizing or a CSS-based approach."
+  },
+  {
+    "tool": "Qodo AI (Simulated)",
+    "file": "src/App.tsx",
+    "line": 156,
+    "column": 15,
+    "severity": "Security",
+    "message": "Security Risk: Simulated query execution `trimmed.includes(...)` is fragile and vulnerable to injection if this were real SQL/Cypher. Ensure robust parsing or parameterized queries in the actual implementation."
+  },
+  {
+    "tool": "Qodo AI (Simulated)",
+    "file": "src/App.tsx",
+    "line": 190,
+    "column": 12,
+    "severity": "Robustness",
+    "message": "Error Handling: `catch (e: any)` swallows error details. The UI might hang if `e.message` is undefined. Recommendation: Use a structured error type or fallback message."
+  },
+  {
+    "tool": "Qodo AI (Simulated)",
+    "file": "src/components/ConnectionMonitor.tsx",
+    "line": 103,
+    "column": 23,
+    "severity": "Configuration",
+    "message": "Hardcoded Fallback: `http://localhost:18107` is hardcoded. If the port changes in `vite.config.ts`, this breaks. Recommendation: Centralize configuration in a `config.ts` or `constants.ts` file."
+  },
+  {
+    "tool": "Qodo AI (Simulated)",
+    "file": "src/components/ConnectionMonitor.tsx",
+    "line": 118,
+    "column": 17,
+    "severity": "UI/UX",
+    "message": "User Experience: `setBootError` displays raw error strings to the user. This can be confusing. recommending mapping common error codes to user-friendly messages."
+  },
+  {
+    "tool": "Qodo AI (Simulated)",
+    "file": "src/components/ConnectionMonitor.tsx",
+    "line": 159,
+    "column": 13,
+    "severity": "Readability",
+    "message": "Logic Duplication: The `onStart`, `onStop`, `onDelete` handlers for `LLMServicesTable`, `MCPServersTable`, and `DatabasesConnectionTable` are nearly identical. Recommendation: Extract a generic `useServiceManager` hook to handle CRUD operations for these tables."
+  },
+  {
+    "tool": "Qodo AI (Simulated)",
+    "file": "src/components/ConnectionMonitor.tsx",
+    "line": 61,
+    "column": 7,
+    "severity": "Maintainability",
+    "message": "Commented Code: Comments about missing imports (`Terminal`) and re-using `Database` icon suggest incomplete refactoring. Finish the import or remove the comment."
+  }
+]

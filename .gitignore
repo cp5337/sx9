@@ -174,3 +174,12 @@ local-settings.json
 # Test data with real credentials
 test-data/real/
 fixtures/real/
+
+# Inbox and shuttle folder extracts
+09-sx9-shuttle-folder/inbox/teth-extracted/
+09-sx9-shuttle-folder/inbox/full-system-extracted/
+09-sx9-shuttle-folder/inbox/gateway-redux-extracted/
+09-sx9-shuttle-folder/inbox/forge-specs-extracted/
+
+# Temporary extraction directories
+*-extracted/

@@ -48,6 +48,7 @@ pub struct WatchdogThresholds {
 }
 
 impl CodeWatchdog {
+    #[must_use]
     pub fn new() -> Self {
         Self {
             function_monitors: HashMap::new(),
@@ -88,7 +89,8 @@ impl CodeWatchdog {
                 }
 
                 // Check for runaway
-                if duration.as_millis() > self.alert_thresholds.max_function_duration_ms as u128 {
+                if duration.as_millis() > u128::from(self.alert_thresholds.max_function_duration_ms)
+                {
                     monitor.runaway_alerts += 1;
                     println!(
                         "🚨 WATCHDOG: Runaway function detected: {} ({}ms)",
@@ -146,6 +148,7 @@ impl CodeWatchdog {
     }
 
     /// Get watchdog status report
+    #[must_use]
     pub fn get_status_report(&self) -> String {
         let mut report = String::from("🐕 Code Watchdog Status Report:\n");
 

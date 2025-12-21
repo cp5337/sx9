@@ -3,7 +3,6 @@
 //! RFC-9021: Temporal event clustering for self-exciting patterns
 //! λ(t) = μ + Σ α × e^(-β(t-tᵢ))
 
-use anyhow::Result;
 use chrono::{DateTime, Utc};
 
 /// Hawkes process intensity calculator

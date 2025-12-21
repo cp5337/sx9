@@ -16,7 +16,7 @@ foundation-integration = []
 
 [dependencies]
 # Foundation Manifold (Single Source of Truth)
-sx9-foundation-manifold = { path = "../sx9-foundation-manifold", features = ["elastic"] }
+# sx9-foundation-manifold archived
 
 # Third-party dependencies (Not in Foundation)
 dashmap = "5.5"
@@ -24,3 +24,5 @@ dashmap = "5.5"
 # Platform specific
 [target.'cfg(target_arch = "wasm32")'.dependencies]
 getrandom = { version = "0.2", features = ["js"] }
+[lints]
+workspace = true

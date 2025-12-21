@@ -1,0 +1,12 @@
+[package]
+name = "glaf-core"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+serde = { version = "1.0", features = ["derive"] }
+murmur3 = "0.5"
+uuid = { version = "1.0", features = ["v7", "serde"] }
+chrono = { version = "0.4", features = ["serde"] }
+sled = "0.34"
+petgraph = { version = "0.6", features = ["serde-1"] }

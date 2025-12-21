@@ -5,7 +5,7 @@
 
 use chrono::Utc;
 use std::collections::HashMap;
-use tracing::{error, info, warn};
+use tracing::{error, info};
 use uuid::Uuid;
 
 use crate::gateway_cdn::{register_gateway_service, ECSService, ServiceStatus, ServiceType};
@@ -13,6 +13,12 @@ use crate::gateway_cdn::{register_gateway_service, ECSService, ServiceStatus, Se
 /// Core CTAS services configuration
 pub struct ServiceRegistry {
     services: HashMap<String, ECSService>,
+}
+
+impl Default for ServiceRegistry {
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 impl ServiceRegistry {

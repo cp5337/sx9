@@ -53,3 +53,5 @@ financial = ["dep:rust_decimal"]
 orbital = ["dep:sgp4"]
 symbolic = ["dep:rustfft", "dep:ndarray"]
 hft = ["dep:rayon"]  # RFC-9001: crossbeam removed for performance
+[lints]
+workspace = true

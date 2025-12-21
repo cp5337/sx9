@@ -217,7 +217,7 @@ impl Platform {
     // System Information [EXTRACT] Details [PARSE] Version
     fn extract_model_info(info: &str, device_type: &str) -> Result<String, PlatformError> {
         // Model extraction logic
-        Ok(format!("{} Pro", device_type)) // Simplified
+        Ok(format!("{device_type} Pro")) // Simplified
     }
 
     fn extract_year_info(_info: &str) -> Result<u32, PlatformError> {
@@ -240,7 +240,7 @@ impl std::fmt::Display for PlatformError {
         match self {
             PlatformError::DetectionFailed => write!(f, "Platform detection failed"),
             PlatformError::UnsupportedDevice => write!(f, "Unsupported device type"),
-            PlatformError::CapabilityError(msg) => write!(f, "Capability error: {}", msg),
+            PlatformError::CapabilityError(msg) => write!(f, "Capability error: {msg}"),
             PlatformError::SystemInfoError => write!(f, "System information error"),
         }
     }

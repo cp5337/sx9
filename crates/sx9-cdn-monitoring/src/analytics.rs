@@ -47,6 +47,12 @@ pub struct ErrorMetrics {
     pub error_locations: HashMap<Uuid, u64>,
 }
 
+impl Default for CDNAnalytics {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl CDNAnalytics {
     pub fn new() -> Self {
         Self {

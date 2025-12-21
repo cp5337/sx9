@@ -4,8 +4,6 @@
 
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
-use std::collections::HashMap;
-use uuid::Uuid;
 
 use crate::cyber_operations::ThreatLevel;
 
@@ -111,6 +109,12 @@ pub struct CorrelationRule {
     pub threshold: f64,
     pub time_window: u64, // seconds
     pub action: ResponseAction,
+}
+
+impl Default for TrafficAnalysis {
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 impl TrafficAnalysis {
@@ -221,6 +225,12 @@ impl TrafficAnalysis {
     /// Calculate confidence score
     fn calculate_confidence(&self, threat_score: f64) -> f64 {
         (threat_score * 0.8 + 0.2).min(1.0)
+    }
+}
+
+impl Default for AnalysisEngine {
+    fn default() -> Self {
+        Self::new()
     }
 }
 

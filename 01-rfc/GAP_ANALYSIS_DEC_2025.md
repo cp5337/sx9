@@ -19,7 +19,7 @@
 | **Intel System RFC** | No RFC exists for Leptose/EEI/OSINT | CRITICAL |
 | **HashRef 16-byte update** | RFC-9001 needs major revision | HIGH |
 | **32 Primitives at U+E500** | RFC-9002 needs major revision | HIGH |
-| **Delta angle normalization** | RFC-9016 needs update | MEDIUM |
+| **Delta angle normalization** | RFC-9100 needs update | MEDIUM |
 
 ---
 
@@ -368,7 +368,7 @@ cargo test -p sx9-glaf-core -- --test glaf_query_latency
 
 - [ ] Apply RFC-9001 HashRef updates (16-byte, Lisp heredity)
 - [ ] Apply RFC-9002 Unicode class updates (T, P, S, H)
-- [ ] Apply RFC-9016 delta angle normalization
+- [ ] Apply RFC-9100 delta angle normalization
 - [ ] Create RFC-9118 Intelligence Orchestration draft
 
 ### 6.3 Medium-Term (Testing Phase)

@@ -14,3 +14,6 @@ dashmap = "5.5"
 
 # Hash structures from foundation core
 sx9-foundation-core = { path = "../sx9-foundation-core" }
+
+[lints]
+workspace = true

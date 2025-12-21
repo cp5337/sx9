@@ -37,7 +37,7 @@
 //! └─────────────────────────────────────────────────────────────────┘
 //! ```
 
-use crate::crystal::{Crystal, CrystalFamily, DeltaClass, Polycrystal, PolycrystalResult};
+use crate::crystal::{Crystal, DeltaClass, Polycrystal, PolycrystalResult};
 use core::sync::atomic::{AtomicBool, AtomicU16, AtomicU32, AtomicU64, AtomicU8, Ordering};
 
 /// SDT (Software-Defined Thyristor) states

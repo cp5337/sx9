@@ -7,7 +7,7 @@ use axum::{
     routing::{get, post},
     Router,
 };
-use tracing::{error, info, warn};
+use tracing::{error, info};
 
 use sx9_cdn_monitoring::{
     component_cdn::create_component_cdn_routes, gateway_handlers::*, intelligence_handlers::*,

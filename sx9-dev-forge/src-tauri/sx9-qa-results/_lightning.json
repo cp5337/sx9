@@ -1,0 +1,1710 @@
+{
+  "crate_name": "src-tauri",
+  "analysis_time_seconds": 1.954596996307373,
+  "files_analyzed": 51,
+  "total_loc": 142832,
+  "total_complexity": 586,
+  "security_issues_count": 191,
+  "security_score": 0.0,
+  "maintainability_score": 88.50980392156863,
+  "overall_grade": "F",
+  "file_metrics": [
+    {
+      "path": "/Users/cp5337/Developer/sx9/sx9-dev-forge/src-tauri/target/release/build/cssparser-5c76bb3e015608c8/out/tokenizer.rs",
+      "loc": 993,
+      "complexity": 132,
+      "functions": 0,
+      "grade": "C"
+    },
+    {
+      "path": "/Users/cp5337/Developer/sx9/sx9-dev-forge/src-tauri/target/debug/build/cssparser-b2e707b1d32f16b3/out/tokenizer.rs",
+      "loc": 993,
+      "complexity": 132,
+      "functions": 0,
+      "grade": "C"
+    },
+    {
+      "path": "/Users/cp5337/Developer/sx9/sx9-dev-forge/src-tauri/src/thalmic_filter.rs",
+      "loc": 329,
+      "complexity": 52,
+      "functions": 0,
+      "grade": "C"
+    },
+    {
+      "path": "/Users/cp5337/Developer/sx9/sx9-dev-forge/src-tauri/src/lib.rs",
+      "loc": 933,
+      "complexity": 45,
+      "functions": 0,
+      "grade": "C"
+    },
+    {
+      "path": "/Users/cp5337/Developer/sx9/sx9-dev-forge/src-tauri/src/file_index.rs",
+      "loc": 280,
+      "complexity": 33,
+      "functions": 0,
+      "grade": "C"
+    },
+    {
+      "path": "/Users/cp5337/Developer/sx9/sx9-dev-forge/src-tauri/src/bin/sx9-mcp-server.rs",
+      "loc": 435,
+      "complexity": 31,
+      "functions": 0,
+      "grade": "C"
+    },
+    {
+      "path": "/Users/cp5337/Developer/sx9/sx9-dev-forge/src-tauri/src/rfc.rs",
+      "loc": 290,
+      "complexity": 23,
+      "functions": 0,
+      "grade": "C"
+    },
+    {
+      "path": "/Users/cp5337/Developer/sx9/sx9-dev-forge/src-tauri/target/debug/build/crunchy-8d306e63dbb6b35a/out/lib.rs",
+      "loc": 940,
+      "complexity": 18,
+      "functions": 0,
+      "grade": "C"
+    },
+    {
+      "path": "/Users/cp5337/Developer/sx9/sx9-dev-forge/src-tauri/tests/integration_test.rs",
+      "loc": 126,
+      "complexity": 14,
+      "functions": 0,
+      "grade": "C"
+    },
+    {
+      "path": "/Users/cp5337/Developer/sx9/sx9-dev-forge/src-tauri/src/atomic_clipboard.rs",
+      "loc": 202,
+      "complexity": 11,
+      "functions": 0,
+      "grade": "C"
+    },
+    {
+      "path": "/Users/cp5337/Developer/sx9/sx9-dev-forge/src-tauri/src/key_onboarder.rs",
+      "loc": 100,
+      "complexity": 10,
+      "functions": 0,
+      "grade": "C"
+    },
+    {
+      "path": "/Users/cp5337/Developer/sx9/sx9-dev-forge/src-tauri/src/missions.rs",
+      "loc": 270,
+      "complexity": 8,
+      "functions": 0,
+      "grade": "C"
+    },
+    {
+      "path": "/Users/cp5337/Developer/sx9/sx9-dev-forge/src-tauri/src/ide.rs",
+      "loc": 364,
+      "complexity": 7,
+      "functions": 0,
+      "grade": "C"
+    },
+    {
+      "path": "/Users/cp5337/Developer/sx9/sx9-dev-forge/src-tauri/src/voice.rs",
+      "loc": 157,
+      "complexity": 6,
+      "functions": 0,
+      "grade": "C"
+    },
+    {
+      "path": "/Users/cp5337/Developer/sx9/sx9-dev-forge/src-tauri/src/vault.rs",
+      "loc": 73,
+      "complexity": 5,
+      "functions": 0,
+      "grade": "C"
+    },
+    {
+      "path": "/Users/cp5337/Developer/sx9/sx9-dev-forge/src-tauri/target/release/build/markup5ever-ec3bff689d3f49ef/out/generated.rs",
+      "loc": 2941,
+      "complexity": 4,
+      "functions": 0,
+      "grade": "C"
+    },
+    {
+      "path": "/Users/cp5337/Developer/sx9/sx9-dev-forge/src-tauri/target/debug/build/markup5ever-50114f5a14874a85/out/generated.rs",
+      "loc": 2941,
+      "complexity": 4,
+      "functions": 0,
+      "grade": "C"
+    },
+    {
+      "path": "/Users/cp5337/Developer/sx9/sx9-dev-forge/src-tauri/target/debug/build/markup5ever-0d8831cc3bbe232e/out/generated.rs",
+      "loc": 2941,
+      "complexity": 4,
+      "functions": 0,
+      "grade": "C"
+    },
+    {
+      "path": "/Users/cp5337/Developer/sx9/sx9-dev-forge/src-tauri/target/debug/build/markup5ever-9609737632554088/out/generated.rs",
+      "loc": 2941,
+      "complexity": 4,
+      "functions": 0,
+      "grade": "C"
+    },
+    {
+      "path": "/Users/cp5337/Developer/sx9/sx9-dev-forge/src-tauri/target/debug/build/markup5ever-dad713e20f91fde3/out/generated.rs",
+      "loc": 2941,
+      "complexity": 4,
+      "functions": 0,
+      "grade": "C"
+    },
+    {
+      "path": "/Users/cp5337/Developer/sx9/sx9-dev-forge/src-tauri/src/linear.rs",
+      "loc": 260,
+      "complexity": 4,
+      "functions": 0,
+      "grade": "C"
+    },
+    {
+      "path": "/Users/cp5337/Developer/sx9/sx9-dev-forge/src-tauri/target/release/build/markup5ever-ec3bff689d3f49ef/out/named_entities.rs",
+      "loc": 11844,
+      "complexity": 2,
+      "functions": 0,
+      "grade": "C"
+    },
+    {
+      "path": "/Users/cp5337/Developer/sx9/sx9-dev-forge/src-tauri/target/debug/build/markup5ever-50114f5a14874a85/out/named_entities.rs",
+      "loc": 11844,
+      "complexity": 2,
+      "functions": 0,
+      "grade": "C"
+    },
+    {
+      "path": "/Users/cp5337/Developer/sx9/sx9-dev-forge/src-tauri/target/debug/build/markup5ever-0d8831cc3bbe232e/out/named_entities.rs",
+      "loc": 11844,
+      "complexity": 2,
+      "functions": 0,
+      "grade": "C"
+    },
+    {
+      "path": "/Users/cp5337/Developer/sx9/sx9-dev-forge/src-tauri/target/debug/build/markup5ever-9609737632554088/out/named_entities.rs",
+      "loc": 11844,
+      "complexity": 2,
+      "functions": 0,
+      "grade": "C"
+    },
+    {
+      "path": "/Users/cp5337/Developer/sx9/sx9-dev-forge/src-tauri/target/debug/build/markup5ever-dad713e20f91fde3/out/named_entities.rs",
+      "loc": 11844,
+      "complexity": 2,
+      "functions": 0,
+      "grade": "C"
+    },
+    {
+      "path": "/Users/cp5337/Developer/sx9/sx9-dev-forge/src-tauri/target/release/build/serde_core-abdf7e9786e632ca/out/private.rs",
+      "loc": 5,
+      "complexity": 1,
+      "functions": 0,
+      "grade": "C"
+    },
+    {
+      "path": "/Users/cp5337/Developer/sx9/sx9-dev-forge/src-tauri/target/release/build/thiserror-653a606e3c49b270/out/private.rs",
+      "loc": 5,
+      "complexity": 1,
+      "functions": 0,
+      "grade": "C"
+    },
+    {
+      "path": "/Users/cp5337/Developer/sx9/sx9-dev-forge/src-tauri/target/release/build/serde-1c20b7730610615d/out/private.rs",
+      "loc": 6,
+      "complexity": 1,
+      "functions": 0,
+      "grade": "C"
+    },
+    {
+      "path": "/Users/cp5337/Developer/sx9/sx9-dev-forge/src-tauri/target/release/build/serde-2bcf09bf96275e23/out/private.rs",
+      "loc": 6,
+      "complexity": 1,
+      "functions": 0,
+      "grade": "C"
+    },
+    {
+      "path": "/Users/cp5337/Developer/sx9/sx9-dev-forge/src-tauri/target/release/build/serde_core-5307661909ecfda6/out/private.rs",
+      "loc": 5,
+      "complexity": 1,
+      "functions": 0,
+      "grade": "C"
+    },
+    {
+      "path": "/Users/cp5337/Developer/sx9/sx9-dev-forge/src-tauri/target/release/build/typenum-ed67b150c5fbf02b/out/tests.rs",
+      "loc": 20563,
+      "complexity": 1,
+      "functions": 0,
+      "grade": "C"
+    },
+    {
+      "path": "/Users/cp5337/Developer/sx9/sx9-dev-forge/src-tauri/target/release/build/thiserror-33cad38d06bd269b/out/private.rs",
+      "loc": 5,
+      "complexity": 1,
+      "functions": 0,
+      "grade": "C"
+    },
+    {
+      "path": "/Users/cp5337/Developer/sx9/sx9-dev-forge/src-tauri/target/release/build/selectors-2d6dcf82f7991b4f/out/ascii_case_insensitive_html_attributes.rs",
+      "loc": 63,
+      "complexity": 1,
+      "functions": 0,
+      "grade": "C"
+    },
+    {
+      "path": "/Users/cp5337/Developer/sx9/sx9-dev-forge/src-tauri/target/debug/build/serde_core-b9ae053a206281c2/out/private.rs",
+      "loc": 5,
+      "complexity": 1,
+      "functions": 0,
+      "grade": "C"
+    },
+    {
+      "path": "/Users/cp5337/Developer/sx9/sx9-dev-forge/src-tauri/target/debug/build/serde_core-1d99ac0cecb5cb27/out/private.rs",
+      "loc": 5,
+      "complexity": 1,
+      "functions": 0,
+      "grade": "C"
+    },
+    {
+      "path": "/Users/cp5337/Developer/sx9/sx9-dev-forge/src-tauri/target/debug/build/selectors-78f8e41e3d6a7e50/out/ascii_case_insensitive_html_attributes.rs",
+      "loc": 63,
+      "complexity": 1,
+      "functions": 0,
+      "grade": "C"
+    },
+    {
+      "path": "/Users/cp5337/Developer/sx9/sx9-dev-forge/src-tauri/target/debug/build/selectors-e42bde565dd6a16d/out/ascii_case_insensitive_html_attributes.rs",
+      "loc": 63,
+      "complexity": 1,
+      "functions": 0,
+      "grade": "C"
+    },
+    {
+      "path": "/Users/cp5337/Developer/sx9/sx9-dev-forge/src-tauri/target/debug/build/serde-1f259c737b352886/out/private.rs",
+      "loc": 6,
+      "complexity": 1,
+      "functions": 0,
+      "grade": "C"
+    },
+    {
+      "path": "/Users/cp5337/Developer/sx9/sx9-dev-forge/src-tauri/target/debug/build/thiserror-e00d1db028d0f202/out/private.rs",
+      "loc": 5,
+      "complexity": 1,
+      "functions": 0,
+      "grade": "C"
+    },
+    {
+      "path": "/Users/cp5337/Developer/sx9/sx9-dev-forge/src-tauri/target/debug/build/serde-6eb740646054e8ca/out/private.rs",
+      "loc": 6,
+      "complexity": 1,
+      "functions": 0,
+      "grade": "C"
+    },
+    {
+      "path": "/Users/cp5337/Developer/sx9/sx9-dev-forge/src-tauri/target/debug/build/typenum-540909133e97f653/out/tests.rs",
+      "loc": 20563,
+      "complexity": 1,
+      "functions": 0,
+      "grade": "C"
+    },
+    {
+      "path": "/Users/cp5337/Developer/sx9/sx9-dev-forge/src-tauri/target/debug/build/mime_guess-5bf68176f9673256/out/mime_types_generated.rs",
+      "loc": 0,
+      "complexity": 1,
+      "functions": 0,
+      "grade": "A"
+    },
+    {
+      "path": "/Users/cp5337/Developer/sx9/sx9-dev-forge/src-tauri/target/debug/build/selectors-1eaa59625923854c/out/ascii_case_insensitive_html_attributes.rs",
+      "loc": 63,
+      "complexity": 1,
+      "functions": 0,
+      "grade": "C"
+    },
+    {
+      "path": "/Users/cp5337/Developer/sx9/sx9-dev-forge/src-tauri/target/debug/build/mime_guess-1179ef1ce7f6e0be/out/mime_types_generated.rs",
+      "loc": 0,
+      "complexity": 1,
+      "functions": 0,
+      "grade": "A"
+    },
+    {
+      "path": "/Users/cp5337/Developer/sx9/sx9-dev-forge/src-tauri/target/debug/build/selectors-44572d261cf3dc89/out/ascii_case_insensitive_html_attributes.rs",
+      "loc": 63,
+      "complexity": 1,
+      "functions": 0,
+      "grade": "C"
+    },
+    {
+      "path": "/Users/cp5337/Developer/sx9/sx9-dev-forge/src-tauri/target/debug/build/serde_core-811d1c9f88b7b364/out/private.rs",
+      "loc": 5,
+      "complexity": 1,
+      "functions": 0,
+      "grade": "C"
+    },
+    {
+      "path": "/Users/cp5337/Developer/sx9/sx9-dev-forge/src-tauri/target/debug/build/typenum-4b4bd6e7e7174331/out/tests.rs",
+      "loc": 20563,
+      "complexity": 1,
+      "functions": 0,
+      "grade": "C"
+    },
+    {
+      "path": "/Users/cp5337/Developer/sx9/sx9-dev-forge/src-tauri/build.rs",
+      "loc": 3,
+      "complexity": 1,
+      "functions": 0,
+      "grade": "C"
+    },
+    {
+      "path": "/Users/cp5337/Developer/sx9/sx9-dev-forge/src-tauri/src/clipboard_commands.rs",
+      "loc": 85,
+      "complexity": 1,
+      "functions": 0,
+      "grade": "C"
+    },
+    {
+      "path": "/Users/cp5337/Developer/sx9/sx9-dev-forge/src-tauri/src/main.rs",
+      "loc": 6,
+      "complexity": 1,
+      "functions": 0,
+      "grade": "C"
+    }
+  ],
+  "security_issues": [
+    {
+      "file": "build.rs",
+      "line": 2,
+      "message": "consider adding a `;` to the last statement for consistent formatting",
+      "level": "WARNING",
+      "code": "clippy::semicolon_if_nothing_returned"
+    },
+    {
+      "file": "/Users/cp5337/Developer/sx9/crates/sx9-foundation-core/src/cognitive.rs",
+      "line": 8,
+      "message": "unused import: `legion::world::SubWorld`",
+      "level": "WARNING",
+      "code": "unused_imports"
+    },
+    {
+      "file": "/Users/cp5337/Developer/sx9/crates/sx9-foundation-core/src/cognitive.rs",
+      "line": 11,
+      "message": "unused import: `std::collections::VecDeque`",
+      "level": "WARNING",
+      "code": "unused_imports"
+    },
+    {
+      "file": "/Users/cp5337/Developer/sx9/crates/sx9-foundation-core/src/thalamic_filter.rs",
+      "line": 10,
+      "message": "unused imports: `Deserialize` and `Serialize`",
+      "level": "WARNING",
+      "code": "unused_imports"
+    },
+    {
+      "file": "/Users/cp5337/Developer/sx9/crates/sx9-foundation-core/src/matroid.rs",
+      "line": 9,
+      "message": "unused import: `std::collections::HashSet`",
+      "level": "WARNING",
+      "code": "unused_imports"
+    },
+    {
+      "file": "/Users/cp5337/Developer/sx9/crates/sx9-foundation-core/src/cli_manifest.rs",
+      "line": 7,
+      "message": "unused import: `std::collections::HashMap`",
+      "level": "WARNING",
+      "code": "unused_imports"
+    },
+    {
+      "file": "/Users/cp5337/Developer/sx9/crates/sx9-foundation-core/src/cli_manifest.rs",
+      "line": 90,
+      "message": "type `iOSIntegration` should have an upper camel case name",
+      "level": "WARNING",
+      "code": "non_camel_case_types"
+    },
+    {
+      "file": "/Users/cp5337/Developer/sx9/crates/sx9-foundation-core/src/cli_manifest.rs",
+      "line": 98,
+      "message": "type `macOSIntegration` should have an upper camel case name",
+      "level": "WARNING",
+      "code": "non_camel_case_types"
+    },
+    {
+      "file": "/Users/cp5337/Developer/sx9/crates/sx9-foundation-core/src/dsl_unicode_router.rs",
+      "line": 6,
+      "message": "unused import: `Error`",
+      "level": "WARNING",
+      "code": "unused_imports"
+    },
+    {
+      "file": "/Users/cp5337/Developer/sx9/crates/sx9-foundation-core/src/dsl_unicode_router.rs",
+      "line": 7,
+      "message": "unused imports: `ExecutionContext` and `Priority`",
+      "level": "WARNING",
+      "code": "unused_imports"
+    },
+    {
+      "file": "/Users/cp5337/Developer/sx9/crates/sx9-foundation-core/src/dsl_unicode_router.rs",
+      "line": 8,
+      "message": "unused import: `std::collections::HashMap`",
+      "level": "WARNING",
+      "code": "unused_imports"
+    },
+    {
+      "file": "/Users/cp5337/Developer/sx9/crates/sx9-foundation-core/src/session_controller.rs",
+      "line": 11,
+      "message": "unused import: `crate::platform_detection::Platform`",
+      "level": "WARNING",
+      "code": "unused_imports"
+    },
+    {
+      "file": "/Users/cp5337/Developer/sx9/crates/sx9-foundation-core/src/conference_engine.rs",
+      "line": 8,
+      "message": "unused import: `uuid::Uuid`",
+      "level": "WARNING",
+      "code": "unused_imports"
+    },
+    {
+      "file": "/Users/cp5337/Developer/sx9/crates/sx9-foundation-core/src/platform_native_multimedia.rs",
+      "line": 7,
+      "message": "unused import: `tokio::sync::RwLock`",
+      "level": "WARNING",
+      "code": "unused_imports"
+    },
+    {
+      "file": "/Users/cp5337/Developer/sx9/crates/sx9-foundation-core/src/platform_native_multimedia.rs",
+      "line": 42,
+      "message": "variant `iMac` should have an upper camel case name",
+      "level": "WARNING",
+      "code": "non_camel_case_types"
+    },
+    {
+      "file": "/Users/cp5337/Developer/sx9/crates/sx9-foundation-core/src/platform_native_multimedia.rs",
+      "line": 43,
+      "message": "variant `iPad` should have an upper camel case name",
+      "level": "WARNING",
+      "code": "non_camel_case_types"
+    },
+    {
+      "file": "/Users/cp5337/Developer/sx9/crates/sx9-foundation-core/src/platform_native_multimedia.rs",
+      "line": 44,
+      "message": "variant `iPhone` should have an upper camel case name",
+      "level": "WARNING",
+      "code": "non_camel_case_types"
+    },
+    {
+      "file": "/Users/cp5337/Developer/sx9/crates/sx9-foundation-core/src/lib.rs",
+      "line": 72,
+      "message": "use of deprecated struct `trivariate_hash::TrivariteHashEngine`: Use trivariate_hash_v731 instead. v7.2 is legacy.",
+      "level": "WARNING",
+      "code": "deprecated"
+    },
+    {
+      "file": "/Users/cp5337/Developer/sx9/crates/sx9-foundation-core/src/cognitive.rs",
+      "line": 334,
+      "message": "variable does not need to be mutable",
+      "level": "WARNING",
+      "code": "unused_mut"
+    },
+    {
+      "file": "/Users/cp5337/Developer/sx9/crates/sx9-foundation-core/src/cognitive.rs",
+      "line": 351,
+      "message": "variable does not need to be mutable",
+      "level": "WARNING",
+      "code": "unused_mut"
+    },
+    {
+      "file": "/Users/cp5337/Developer/sx9/crates/sx9-foundation-core/src/cognitive.rs",
+      "line": 374,
+      "message": "variable does not need to be mutable",
+      "level": "WARNING",
+      "code": "unused_mut"
+    },
+    {
+      "file": "/Users/cp5337/Developer/sx9/crates/sx9-foundation-core/src/cognitive.rs",
+      "line": 405,
+      "message": "variable does not need to be mutable",
+      "level": "WARNING",
+      "code": "unused_mut"
+    },
+    {
+      "file": "/Users/cp5337/Developer/sx9/crates/sx9-foundation-core/src/unified_neural_mux.rs",
+      "line": 65,
+      "message": "unused variable: `effective_priority`",
+      "level": "WARNING",
+      "code": "unused_variables"
+    },
+    {
+      "file": "/Users/cp5337/Developer/sx9/crates/sx9-foundation-core/src/trivariate_hash.rs",
+      "line": 341,
+      "message": "unused variable: `hash`",
+      "level": "WARNING",
+      "code": "unused_variables"
+    },
+    {
+      "file": "/Users/cp5337/Developer/sx9/crates/sx9-foundation-core/src/thalamic_filter.rs",
+      "line": 103,
+      "message": "unused variable: `signal`",
+      "level": "WARNING",
+      "code": "unused_variables"
+    },
+    {
+      "file": "/Users/cp5337/Developer/sx9/crates/sx9-foundation-core/src/secrets_watchdog.rs",
+      "line": 274,
+      "message": "unused variable: `i`",
+      "level": "WARNING",
+      "code": "unused_variables"
+    },
+    {
+      "file": "/Users/cp5337/Developer/sx9/crates/sx9-foundation-core/src/platform_detection.rs",
+      "line": 218,
+      "message": "unused variable: `info`",
+      "level": "WARNING",
+      "code": "unused_variables"
+    },
+    {
+      "file": "/Users/cp5337/Developer/sx9/crates/sx9-foundation-core/src/context.rs",
+      "line": 9,
+      "message": "field `environments` is never read",
+      "level": "WARNING",
+      "code": "dead_code"
+    },
+    {
+      "file": "/Users/cp5337/Developer/sx9/crates/sx9-foundation-core/src/keyvault.rs",
+      "line": 44,
+      "message": "field `vault_dir` is never read",
+      "level": "WARNING",
+      "code": "dead_code"
+    },
+    {
+      "file": "src/ide.rs",
+      "line": 155,
+      "message": "unnecessary hashes around raw string literal",
+      "level": "WARNING",
+      "code": "clippy::needless_raw_string_hashes"
+    },
+    {
+      "file": "src/ide.rs",
+      "line": 208,
+      "message": "unnecessary hashes around raw string literal",
+      "level": "WARNING",
+      "code": "clippy::needless_raw_string_hashes"
+    },
+    {
+      "file": "src/linear.rs",
+      "line": 119,
+      "message": "unnecessary hashes around raw string literal",
+      "level": "WARNING",
+      "code": "clippy::needless_raw_string_hashes"
+    },
+    {
+      "file": "src/key_onboarder.rs",
+      "line": 13,
+      "message": "unused import: `KeyEntry`",
+      "level": "WARNING",
+      "code": "unused_imports"
+    },
+    {
+      "file": "src/key_onboarder.rs",
+      "line": 14,
+      "message": "unused import: `chrono::Utc`",
+      "level": "WARNING",
+      "code": "unused_imports"
+    },
+    {
+      "file": "src/voice.rs",
+      "line": 4,
+      "message": "unused import: `AUTHORIZATION`",
+      "level": "WARNING",
+      "code": "unused_imports"
+    },
+    {
+      "file": "src/lib.rs",
+      "line": 495,
+      "message": "unused variable: `state`",
+      "level": "WARNING",
+      "code": "unused_variables"
+    },
+    {
+      "file": "src/lib.rs",
+      "line": 466,
+      "message": "function `text_to_speech` is never used",
+      "level": "WARNING",
+      "code": "dead_code"
+    },
+    {
+      "file": "src/lib.rs",
+      "line": 481,
+      "message": "function `list_voices` is never used",
+      "level": "WARNING",
+      "code": "dead_code"
+    },
+    {
+      "file": "src/lib.rs",
+      "line": 493,
+      "message": "function `process_voice_idea` is never used",
+      "level": "WARNING",
+      "code": "dead_code"
+    },
+    {
+      "file": "src/lib.rs",
+      "line": 529,
+      "message": "function `extract_objective` is never used",
+      "level": "WARNING",
+      "code": "dead_code"
+    },
+    {
+      "file": "src/lib.rs",
+      "line": 539,
+      "message": "function `extract_personas` is never used",
+      "level": "WARNING",
+      "code": "dead_code"
+    },
+    {
+      "file": "src/lib.rs",
+      "line": 563,
+      "message": "function `extract_constraints` is never used",
+      "level": "WARNING",
+      "code": "dead_code"
+    },
+    {
+      "file": "src/ide.rs",
+      "line": 8,
+      "message": "variant `UnsupportedIde` is never constructed",
+      "level": "WARNING",
+      "code": "dead_code"
+    },
+    {
+      "file": "src/linear.rs",
+      "line": 8,
+      "message": "variant `NoApiKey` is never constructed",
+      "level": "WARNING",
+      "code": "dead_code"
+    },
+    {
+      "file": "src/linear.rs",
+      "line": 78,
+      "message": "methods `add_comment` and `update_issue_state` are never used",
+      "level": "WARNING",
+      "code": "dead_code"
+    },
+    {
+      "file": "src/rfc.rs",
+      "line": 49,
+      "message": "methods `get`, `by_category`, and `by_tag` are never used",
+      "level": "WARNING",
+      "code": "dead_code"
+    },
+    {
+      "file": "src/atomic_clipboard.rs",
+      "line": 26,
+      "message": "field `path` is never read",
+      "level": "WARNING",
+      "code": "dead_code"
+    },
+    {
+      "file": "src/thalmic_filter.rs",
+      "line": 49,
+      "message": "struct `ThalmicFilter` is never constructed",
+      "level": "WARNING",
+      "code": "dead_code"
+    },
+    {
+      "file": "src/thalmic_filter.rs",
+      "line": 54,
+      "message": "multiple associated items are never used",
+      "level": "WARNING",
+      "code": "dead_code"
+    },
+    {
+      "file": "src/voice.rs",
+      "line": 8,
+      "message": "enum `VoiceError` is never used",
+      "level": "WARNING",
+      "code": "dead_code"
+    },
+    {
+      "file": "src/voice.rs",
+      "line": 55,
+      "message": "struct `VoiceClient` is never constructed",
+      "level": "WARNING",
+      "code": "dead_code"
+    },
+    {
+      "file": "src/voice.rs",
+      "line": 61,
+      "message": "associated items `API_URL`, `new`, `headers`, `text_to_speech`, `list_voices`, and `test_connection` are never used",
+      "level": "WARNING",
+      "code": "dead_code"
+    },
+    {
+      "file": "src/voice.rs",
+      "line": 128,
+      "message": "field `voices` is never read",
+      "level": "WARNING",
+      "code": "dead_code"
+    },
+    {
+      "file": "src/ide.rs",
+      "line": 133,
+      "message": "variables can be used directly in the `format!` string",
+      "level": "WARNING",
+      "code": "clippy::uninlined_format_args"
+    },
+    {
+      "file": "src/ide.rs",
+      "line": 139,
+      "message": "variables can be used directly in the `format!` string",
+      "level": "WARNING",
+      "code": "clippy::uninlined_format_args"
+    },
+    {
+      "file": "src/ide.rs",
+      "line": 145,
+      "message": "variables can be used directly in the `format!` string",
+      "level": "WARNING",
+      "code": "clippy::uninlined_format_args"
+    },
+    {
+      "file": "src/ide.rs",
+      "line": 151,
+      "message": "variables can be used directly in the `format!` string",
+      "level": "WARNING",
+      "code": "clippy::uninlined_format_args"
+    },
+    {
+      "file": "src/ide.rs",
+      "line": 236,
+      "message": "variables can be used directly in the `format!` string",
+      "level": "WARNING",
+      "code": "clippy::uninlined_format_args"
+    },
+    {
+      "file": "src/ide.rs",
+      "line": 237,
+      "message": "variables can be used directly in the `format!` string",
+      "level": "WARNING",
+      "code": "clippy::uninlined_format_args"
+    },
+    {
+      "file": "src/ide.rs",
+      "line": 238,
+      "message": "variables can be used directly in the `format!` string",
+      "level": "WARNING",
+      "code": "clippy::uninlined_format_args"
+    },
+    {
+      "file": "src/ide.rs",
+      "line": 272,
+      "message": "unused `self` argument",
+      "level": "WARNING",
+      "code": "clippy::unused_self"
+    },
+    {
+      "file": "src/ide.rs",
+      "line": 351,
+      "message": "this argument is passed by value, but not consumed in the function body",
+      "level": "WARNING",
+      "code": "clippy::needless_pass_by_value"
+    },
+    {
+      "file": "src/ide.rs",
+      "line": 361,
+      "message": "redundant closure",
+      "level": "WARNING",
+      "code": "clippy::redundant_closure"
+    },
+    {
+      "file": "src/linear.rs",
+      "line": 23,
+      "message": "this `impl` can be derived",
+      "level": "WARNING",
+      "code": "clippy::derivable_impls"
+    },
+    {
+      "file": "src/linear.rs",
+      "line": 114,
+      "message": "enclosing `Ok` and `?` operator are unneeded",
+      "level": "WARNING",
+      "code": "clippy::needless_question_mark"
+    },
+    {
+      "file": "src/linear.rs",
+      "line": 132,
+      "message": "adding items after statements is confusing, since items exist from the start of the scope",
+      "level": "WARNING",
+      "code": "clippy::items_after_statements"
+    },
+    {
+      "file": "src/linear.rs",
+      "line": 160,
+      "message": "adding items after statements is confusing, since items exist from the start of the scope",
+      "level": "WARNING",
+      "code": "clippy::items_after_statements"
+    },
+    {
+      "file": "src/linear.rs",
+      "line": 145,
+      "message": "variables can be used directly in the `format!` string",
+      "level": "WARNING",
+      "code": "clippy::uninlined_format_args"
+    },
+    {
+      "file": "src/linear.rs",
+      "line": 217,
+      "message": "adding items after statements is confusing, since items exist from the start of the scope",
+      "level": "WARNING",
+      "code": "clippy::items_after_statements"
+    },
+    {
+      "file": "src/linear.rs",
+      "line": 178,
+      "message": "variables can be used directly in the `format!` string",
+      "level": "WARNING",
+      "code": "clippy::uninlined_format_args"
+    },
+    {
+      "file": "src/linear.rs",
+      "line": 211,
+      "message": "variables can be used directly in the `format!` string",
+      "level": "WARNING",
+      "code": "clippy::uninlined_format_args"
+    },
+    {
+      "file": "src/linear.rs",
+      "line": 212,
+      "message": "variables can be used directly in the `format!` string",
+      "level": "WARNING",
+      "code": "clippy::uninlined_format_args"
+    },
+    {
+      "file": "src/linear.rs",
+      "line": 247,
+      "message": "variables can be used directly in the `format!` string",
+      "level": "WARNING",
+      "code": "clippy::uninlined_format_args"
+    },
+    {
+      "file": "src/missions.rs",
+      "line": 93,
+      "message": "this method could have a `#[must_use]` attribute",
+      "level": "WARNING",
+      "code": "clippy::must_use_candidate"
+    },
+    {
+      "file": "src/missions.rs",
+      "line": 188,
+      "message": "this method could have a `#[must_use]` attribute",
+      "level": "WARNING",
+      "code": "clippy::must_use_candidate"
+    },
+    {
+      "file": "src/missions.rs",
+      "line": 222,
+      "message": "this method could have a `#[must_use]` attribute",
+      "level": "WARNING",
+      "code": "clippy::must_use_candidate"
+    },
+    {
+      "file": "src/missions.rs",
+      "line": 247,
+      "message": "this method could have a `#[must_use]` attribute",
+      "level": "WARNING",
+      "code": "clippy::must_use_candidate"
+    },
+    {
+      "file": "src/missions.rs",
+      "line": 253,
+      "message": "this method could have a `#[must_use]` attribute",
+      "level": "WARNING",
+      "code": "clippy::must_use_candidate"
+    },
+    {
+      "file": "src/missions.rs",
+      "line": 253,
+      "message": "this argument is passed by value, but not consumed in the function body",
+      "level": "WARNING",
+      "code": "clippy::needless_pass_by_value"
+    },
+    {
+      "file": "src/missions.rs",
+      "line": 260,
+      "message": "this method could have a `#[must_use]` attribute",
+      "level": "WARNING",
+      "code": "clippy::must_use_candidate"
+    },
+    {
+      "file": "src/missions.rs",
+      "line": 266,
+      "message": "this function could have a `#[must_use]` attribute",
+      "level": "WARNING",
+      "code": "clippy::must_use_candidate"
+    },
+    {
+      "file": "src/missions.rs",
+      "line": 267,
+      "message": "called `map(<f>).unwrap_or_else(<g>)` on an `Option` value",
+      "level": "WARNING",
+      "code": "clippy::map_unwrap_or"
+    },
+    {
+      "file": "src/rfc.rs",
+      "line": 161,
+      "message": "this `map_or` can be simplified",
+      "level": "WARNING",
+      "code": "clippy::unnecessary_map_or"
+    },
+    {
+      "file": "src/rfc.rs",
+      "line": 183,
+      "message": "redundant closure",
+      "level": "WARNING",
+      "code": "clippy::redundant_closure_for_method_calls"
+    },
+    {
+      "file": "src/rfc.rs",
+      "line": 187,
+      "message": "variables can be used directly in the `format!` string",
+      "level": "WARNING",
+      "code": "clippy::uninlined_format_args"
+    },
+    {
+      "file": "src/rfc.rs",
+      "line": 192,
+      "message": "called `map(<f>).unwrap_or_else(<g>)` on an `Option` value",
+      "level": "WARNING",
+      "code": "clippy::map_unwrap_or"
+    },
+    {
+      "file": "src/rfc.rs",
+      "line": 218,
+      "message": "unused `self` argument",
+      "level": "WARNING",
+      "code": "clippy::unused_self"
+    },
+    {
+      "file": "src/rfc.rs",
+      "line": 225,
+      "message": "adding items after statements is confusing, since items exist from the start of the scope",
+      "level": "WARNING",
+      "code": "clippy::items_after_statements"
+    },
+    {
+      "file": "src/rfc.rs",
+      "line": 255,
+      "message": "redundant closure",
+      "level": "WARNING",
+      "code": "clippy::redundant_closure_for_method_calls"
+    },
+    {
+      "file": "src/vault.rs",
+      "line": 1,
+      "message": "item in documentation is missing backticks",
+      "level": "WARNING",
+      "code": "clippy::doc_markdown"
+    },
+    {
+      "file": "src/vault.rs",
+      "line": 3,
+      "message": "item in documentation is missing backticks",
+      "level": "WARNING",
+      "code": "clippy::doc_markdown"
+    },
+    {
+      "file": "src/vault.rs",
+      "line": 39,
+      "message": "item in documentation is missing backticks",
+      "level": "WARNING",
+      "code": "clippy::doc_markdown"
+    },
+    {
+      "file": "src/vault.rs",
+      "line": 40,
+      "message": "docs for function which may panic missing `# Panics` section",
+      "level": "WARNING",
+      "code": "clippy::missing_panics_doc"
+    },
+    {
+      "file": "src/vault.rs",
+      "line": 50,
+      "message": "these match arms have identical bodies",
+      "level": "WARNING",
+      "code": "clippy::match_same_arms"
+    },
+    {
+      "file": "src/vault.rs",
+      "line": 50,
+      "message": "matching over `()` is more explicit",
+      "level": "WARNING",
+      "code": "clippy::ignored_unit_patterns"
+    },
+    {
+      "file": "src/vault.rs",
+      "line": 55,
+      "message": "item in documentation is missing backticks",
+      "level": "WARNING",
+      "code": "clippy::doc_markdown"
+    },
+    {
+      "file": "src/vault.rs",
+      "line": 55,
+      "message": "item in documentation is missing backticks",
+      "level": "WARNING",
+      "code": "clippy::doc_markdown"
+    },
+    {
+      "file": "src/file_index.rs",
+      "line": 57,
+      "message": "redundant closure",
+      "level": "WARNING",
+      "code": "clippy::redundant_closure"
+    },
+    {
+      "file": "src/file_index.rs",
+      "line": 75,
+      "message": "redundant closure",
+      "level": "WARNING",
+      "code": "clippy::redundant_closure_for_method_calls"
+    },
+    {
+      "file": "src/file_index.rs",
+      "line": 103,
+      "message": "unused `self` argument",
+      "level": "WARNING",
+      "code": "clippy::unused_self"
+    },
+    {
+      "file": "src/file_index.rs",
+      "line": 144,
+      "message": "unused `self` argument",
+      "level": "WARNING",
+      "code": "clippy::unused_self"
+    },
+    {
+      "file": "src/file_index.rs",
+      "line": 152,
+      "message": "unused `self` argument",
+      "level": "WARNING",
+      "code": "clippy::unused_self"
+    },
+    {
+      "file": "src/file_index.rs",
+      "line": 176,
+      "message": "redundant closure",
+      "level": "WARNING",
+      "code": "clippy::redundant_closure_for_method_calls"
+    },
+    {
+      "file": "src/file_index.rs",
+      "line": 188,
+      "message": "redundant closure",
+      "level": "WARNING",
+      "code": "clippy::redundant_closure_for_method_calls"
+    },
+    {
+      "file": "src/file_index.rs",
+      "line": 199,
+      "message": "redundant closure",
+      "level": "WARNING",
+      "code": "clippy::redundant_closure_for_method_calls"
+    },
+    {
+      "file": "src/file_index.rs",
+      "line": 216,
+      "message": "redundant closure",
+      "level": "WARNING",
+      "code": "clippy::redundant_closure_for_method_calls"
+    },
+    {
+      "file": "src/thalmic_filter.rs",
+      "line": 136,
+      "message": "unused `self` argument",
+      "level": "WARNING",
+      "code": "clippy::unused_self"
+    },
+    {
+      "file": "src/thalmic_filter.rs",
+      "line": 145,
+      "message": "this expression creates a reference which is immediately dereferenced by the compiler",
+      "level": "WARNING",
+      "code": "clippy::needless_borrow"
+    },
+    {
+      "file": "src/thalmic_filter.rs",
+      "line": 148,
+      "message": "this expression creates a reference which is immediately dereferenced by the compiler",
+      "level": "WARNING",
+      "code": "clippy::needless_borrow"
+    },
+    {
+      "file": "src/thalmic_filter.rs",
+      "line": 151,
+      "message": "this expression creates a reference which is immediately dereferenced by the compiler",
+      "level": "WARNING",
+      "code": "clippy::needless_borrow"
+    },
+    {
+      "file": "src/thalmic_filter.rs",
+      "line": 154,
+      "message": "this expression creates a reference which is immediately dereferenced by the compiler",
+      "level": "WARNING",
+      "code": "clippy::needless_borrow"
+    },
+    {
+      "file": "src/key_onboarder.rs",
+      "line": 9,
+      "message": "item in documentation is missing backticks",
+      "level": "WARNING",
+      "code": "clippy::doc_markdown"
+    },
+    {
+      "file": "src/key_onboarder.rs",
+      "line": 40,
+      "message": "variables can be used directly in the `format!` string",
+      "level": "WARNING",
+      "code": "clippy::uninlined_format_args"
+    },
+    {
+      "file": "src/key_onboarder.rs",
+      "line": 42,
+      "message": "redundant closure",
+      "level": "WARNING",
+      "code": "clippy::redundant_closure_for_method_calls"
+    },
+    {
+      "file": "src/key_onboarder.rs",
+      "line": 70,
+      "message": "variables can be used directly in the `format!` string",
+      "level": "WARNING",
+      "code": "clippy::uninlined_format_args"
+    },
+    {
+      "file": "src/voice.rs",
+      "line": 1,
+      "message": "item in documentation is missing backticks",
+      "level": "WARNING",
+      "code": "clippy::doc_markdown"
+    },
+    {
+      "file": "src/voice.rs",
+      "line": 82,
+      "message": "item in documentation is missing backticks",
+      "level": "WARNING",
+      "code": "clippy::doc_markdown"
+    },
+    {
+      "file": "src/voice.rs",
+      "line": 128,
+      "message": "adding items after statements is confusing, since items exist from the start of the scope",
+      "level": "WARNING",
+      "code": "clippy::items_after_statements"
+    },
+    {
+      "file": "src/voice.rs",
+      "line": 136,
+      "message": "item in documentation is missing backticks",
+      "level": "WARNING",
+      "code": "clippy::doc_markdown"
+    },
+    {
+      "file": "src/voice.rs",
+      "line": 145,
+      "message": "field name starts with the struct's name",
+      "level": "WARNING",
+      "code": "clippy::struct_field_names"
+    },
+    {
+      "file": "src/lib.rs",
+      "line": 182,
+      "message": "assigning the result of `Clone::clone()` may be inefficient",
+      "level": "WARNING",
+      "code": "clippy::assigning_clones"
+    },
+    {
+      "file": "src/lib.rs",
+      "line": 183,
+      "message": "assigning the result of `Clone::clone()` may be inefficient",
+      "level": "WARNING",
+      "code": "clippy::assigning_clones"
+    },
+    {
+      "file": "src/lib.rs",
+      "line": 184,
+      "message": "assigning the result of `Clone::clone()` may be inefficient",
+      "level": "WARNING",
+      "code": "clippy::assigning_clones"
+    },
+    {
+      "file": "src/lib.rs",
+      "line": 185,
+      "message": "assigning the result of `Clone::clone()` may be inefficient",
+      "level": "WARNING",
+      "code": "clippy::assigning_clones"
+    },
+    {
+      "file": "src/lib.rs",
+      "line": 186,
+      "message": "assigning the result of `Clone::clone()` may be inefficient",
+      "level": "WARNING",
+      "code": "clippy::assigning_clones"
+    },
+    {
+      "file": "src/lib.rs",
+      "line": 187,
+      "message": "assigning the result of `Clone::clone()` may be inefficient",
+      "level": "WARNING",
+      "code": "clippy::assigning_clones"
+    },
+    {
+      "file": "src/lib.rs",
+      "line": 188,
+      "message": "assigning the result of `Clone::clone()` may be inefficient",
+      "level": "WARNING",
+      "code": "clippy::assigning_clones"
+    },
+    {
+      "file": "src/lib.rs",
+      "line": 219,
+      "message": "variables can be used directly in the `format!` string",
+      "level": "WARNING",
+      "code": "clippy::uninlined_format_args"
+    },
+    {
+      "file": "src/lib.rs",
+      "line": 535,
+      "message": "variables can be used directly in the `format!` string",
+      "level": "WARNING",
+      "code": "clippy::uninlined_format_args"
+    },
+    {
+      "file": "src/lib.rs",
+      "line": 590,
+      "message": "`format!(..)` appended to existing `String`",
+      "level": "WARNING",
+      "code": "clippy::format_push_string"
+    },
+    {
+      "file": "src/lib.rs",
+      "line": 590,
+      "message": "useless use of `format!`",
+      "level": "WARNING",
+      "code": "clippy::useless_format"
+    },
+    {
+      "file": "src/lib.rs",
+      "line": 591,
+      "message": "`format!(..)` appended to existing `String`",
+      "level": "WARNING",
+      "code": "clippy::format_push_string"
+    },
+    {
+      "file": "src/lib.rs",
+      "line": 591,
+      "message": "unnecessary `Debug` formatting in `format!` args",
+      "level": "WARNING",
+      "code": "clippy::unnecessary_debug_formatting"
+    },
+    {
+      "file": "src/lib.rs",
+      "line": 591,
+      "message": "variables can be used directly in the `format!` string",
+      "level": "WARNING",
+      "code": "clippy::uninlined_format_args"
+    },
+    {
+      "file": "src/lib.rs",
+      "line": 592,
+      "message": "`format!(..)` appended to existing `String`",
+      "level": "WARNING",
+      "code": "clippy::format_push_string"
+    },
+    {
+      "file": "src/lib.rs",
+      "line": 592,
+      "message": "unnecessary `Debug` formatting in `format!` args",
+      "level": "WARNING",
+      "code": "clippy::unnecessary_debug_formatting"
+    },
+    {
+      "file": "src/lib.rs",
+      "line": 592,
+      "message": "variables can be used directly in the `format!` string",
+      "level": "WARNING",
+      "code": "clippy::uninlined_format_args"
+    },
+    {
+      "file": "src/lib.rs",
+      "line": 593,
+      "message": "`format!(..)` appended to existing `String`",
+      "level": "WARNING",
+      "code": "clippy::format_push_string"
+    },
+    {
+      "file": "src/lib.rs",
+      "line": 601,
+      "message": "`format!(..)` appended to existing `String`",
+      "level": "WARNING",
+      "code": "clippy::format_push_string"
+    },
+    {
+      "file": "src/lib.rs",
+      "line": 601,
+      "message": "useless use of `format!`",
+      "level": "WARNING",
+      "code": "clippy::useless_format"
+    },
+    {
+      "file": "src/lib.rs",
+      "line": 602,
+      "message": "`format!(..)` appended to existing `String`",
+      "level": "WARNING",
+      "code": "clippy::format_push_string"
+    },
+    {
+      "file": "src/lib.rs",
+      "line": 605,
+      "message": "unnecessary `if let` since only the `Ok` variant of the iterator element is used",
+      "level": "WARNING",
+      "code": "clippy::manual_flatten"
+    },
+    {
+      "file": "src/lib.rs",
+      "line": 609,
+      "message": "`format!(..)` appended to existing `String`",
+      "level": "WARNING",
+      "code": "clippy::format_push_string"
+    },
+    {
+      "file": "src/lib.rs",
+      "line": 609,
+      "message": "variables can be used directly in the `format!` string",
+      "level": "WARNING",
+      "code": "clippy::uninlined_format_args"
+    },
+    {
+      "file": "src/lib.rs",
+      "line": 610,
+      "message": "`format!(..)` appended to existing `String`",
+      "level": "WARNING",
+      "code": "clippy::format_push_string"
+    },
+    {
+      "file": "src/lib.rs",
+      "line": 610,
+      "message": "variables can be used directly in the `format!` string",
+      "level": "WARNING",
+      "code": "clippy::uninlined_format_args"
+    },
+    {
+      "file": "src/lib.rs",
+      "line": 611,
+      "message": "`format!(..)` appended to existing `String`",
+      "level": "WARNING",
+      "code": "clippy::format_push_string"
+    },
+    {
+      "file": "src/lib.rs",
+      "line": 617,
+      "message": "`format!(..)` appended to existing `String`",
+      "level": "WARNING",
+      "code": "clippy::format_push_string"
+    },
+    {
+      "file": "src/lib.rs",
+      "line": 618,
+      "message": "`format!(..)` appended to existing `String`",
+      "level": "WARNING",
+      "code": "clippy::format_push_string"
+    },
+    {
+      "file": "src/lib.rs",
+      "line": 619,
+      "message": "`format!(..)` appended to existing `String`",
+      "level": "WARNING",
+      "code": "clippy::format_push_string"
+    },
+    {
+      "file": "src/lib.rs",
+      "line": 622,
+      "message": "`format!(..)` appended to existing `String`",
+      "level": "WARNING",
+      "code": "clippy::format_push_string"
+    },
+    {
+      "file": "src/lib.rs",
+      "line": 622,
+      "message": "variables can be used directly in the `format!` string",
+      "level": "WARNING",
+      "code": "clippy::uninlined_format_args"
+    },
+    {
+      "file": "src/lib.rs",
+      "line": 626,
+      "message": "`format!(..)` appended to existing `String`",
+      "level": "WARNING",
+      "code": "clippy::format_push_string"
+    },
+    {
+      "file": "src/lib.rs",
+      "line": 626,
+      "message": "variables can be used directly in the `format!` string",
+      "level": "WARNING",
+      "code": "clippy::uninlined_format_args"
+    },
+    {
+      "file": "src/lib.rs",
+      "line": 635,
+      "message": "`format!(..)` appended to existing `String`",
+      "level": "WARNING",
+      "code": "clippy::format_push_string"
+    },
+    {
+      "file": "src/lib.rs",
+      "line": 639,
+      "message": "`format!(..)` appended to existing `String`",
+      "level": "WARNING",
+      "code": "clippy::format_push_string"
+    },
+    {
+      "file": "src/lib.rs",
+      "line": 639,
+      "message": "variables can be used directly in the `format!` string",
+      "level": "WARNING",
+      "code": "clippy::uninlined_format_args"
+    },
+    {
+      "file": "src/lib.rs",
+      "line": 807,
+      "message": "this argument is passed by value, but not consumed in the function body",
+      "level": "WARNING",
+      "code": "clippy::needless_pass_by_value"
+    },
+    {
+      "file": "src/lib.rs",
+      "line": 812,
+      "message": "variables can be used directly in the `format!` string",
+      "level": "WARNING",
+      "code": "clippy::uninlined_format_args"
+    },
+    {
+      "file": "src/lib.rs",
+      "line": 836,
+      "message": "variables can be used directly in the `format!` string",
+      "level": "WARNING",
+      "code": "clippy::uninlined_format_args"
+    },
+    {
+      "file": "src/lib.rs",
+      "line": 854,
+      "message": "docs for function which may panic missing `# Panics` section",
+      "level": "WARNING",
+      "code": "clippy::missing_panics_doc"
+    },
+    {
+      "file": "src/vault.rs",
+      "line": 57,
+      "message": "use of `async fn` in public traits is discouraged as auto trait bounds cannot be specified",
+      "level": "WARNING",
+      "code": "async_fn_in_trait"
+    },
+    {
+      "file": "src/main.rs",
+      "line": 5,
+      "message": "consider adding a `;` to the last statement for consistent formatting",
+      "level": "WARNING",
+      "code": "clippy::semicolon_if_nothing_returned"
+    },
+    {
+      "file": "src/bin/sx9-mcp-server.rs",
+      "line": 56,
+      "message": "variables can be used directly in the `format!` string",
+      "level": "WARNING",
+      "code": "clippy::uninlined_format_args"
+    },
+    {
+      "file": "src/bin/sx9-mcp-server.rs",
+      "line": 68,
+      "message": "variables can be used directly in the `format!` string",
+      "level": "WARNING",
+      "code": "clippy::uninlined_format_args"
+    },
+    {
+      "file": "src/bin/sx9-mcp-server.rs",
+      "line": 75,
+      "message": "variables can be used directly in the `format!` string",
+      "level": "WARNING",
+      "code": "clippy::uninlined_format_args"
+    },
+    {
+      "file": "src/bin/sx9-mcp-server.rs",
+      "line": 208,
+      "message": "this could be rewritten as `let...else`",
+      "level": "WARNING",
+      "code": "clippy::manual_let_else"
+    },
+    {
+      "file": "src/bin/sx9-mcp-server.rs",
+      "line": 213,
+      "message": "this could be rewritten as `let...else`",
+      "level": "WARNING",
+      "code": "clippy::manual_let_else"
+    },
+    {
+      "file": "src/bin/sx9-mcp-server.rs",
+      "line": 233,
+      "message": "casting `u64` to `usize` may truncate the value on targets with 32-bit wide pointers",
+      "level": "WARNING",
+      "code": "clippy::cast_possible_truncation"
+    },
+    {
+      "file": "src/bin/sx9-mcp-server.rs",
+      "line": 233,
+      "message": "redundant closure",
+      "level": "WARNING",
+      "code": "clippy::redundant_closure_for_method_calls"
+    },
+    {
+      "file": "src/bin/sx9-mcp-server.rs",
+      "line": 253,
+      "message": "variables can be used directly in the `format!` string",
+      "level": "WARNING",
+      "code": "clippy::uninlined_format_args"
+    },
+    {
+      "file": "src/bin/sx9-mcp-server.rs",
+      "line": 256,
+      "message": "variables can be used directly in the `format!` string",
+      "level": "WARNING",
+      "code": "clippy::uninlined_format_args"
+    },
+    {
+      "file": "src/bin/sx9-mcp-server.rs",
+      "line": 261,
+      "message": "this could be rewritten as `let...else`",
+      "level": "WARNING",
+      "code": "clippy::manual_let_else"
+    },
+    {
+      "file": "src/bin/sx9-mcp-server.rs",
+      "line": 291,
+      "message": "variables can be used directly in the `format!` string",
+      "level": "WARNING",
+      "code": "clippy::uninlined_format_args"
+    },
+    {
+      "file": "src/bin/sx9-mcp-server.rs",
+      "line": 294,
+      "message": "variables can be used directly in the `format!` string",
+      "level": "WARNING",
+      "code": "clippy::uninlined_format_args"
+    },
+    {
+      "file": "src/bin/sx9-mcp-server.rs",
+      "line": 305,
+      "message": "variables can be used directly in the `format!` string",
+      "level": "WARNING",
+      "code": "clippy::uninlined_format_args"
+    },
+    {
+      "file": "src/bin/sx9-mcp-server.rs",
+      "line": 324,
+      "message": "variables can be used directly in the `format!` string",
+      "level": "WARNING",
+      "code": "clippy::uninlined_format_args"
+    },
+    {
+      "file": "src/bin/sx9-mcp-server.rs",
+      "line": 327,
+      "message": "variables can be used directly in the `format!` string",
+      "level": "WARNING",
+      "code": "clippy::uninlined_format_args"
+    },
+    {
+      "file": "src/bin/sx9-mcp-server.rs",
+      "line": 332,
+      "message": "this could be rewritten as `let...else`",
+      "level": "WARNING",
+      "code": "clippy::manual_let_else"
+    },
+    {
+      "file": "src/bin/sx9-mcp-server.rs",
+      "line": 343,
+      "message": "redundant closure",
+      "level": "WARNING",
+      "code": "clippy::redundant_closure_for_method_calls"
+    },
+    {
+      "file": "src/bin/sx9-mcp-server.rs",
+      "line": 344,
+      "message": "called `map(<f>).unwrap_or(false)` on an `Option` value",
+      "level": "WARNING",
+      "code": "clippy::map_unwrap_or"
+    },
+    {
+      "file": "src/bin/sx9-mcp-server.rs",
+      "line": 358,
+      "message": "variables can be used directly in the `format!` string",
+      "level": "WARNING",
+      "code": "clippy::uninlined_format_args"
+    },
+    {
+      "file": "src/bin/sx9-mcp-server.rs",
+      "line": 372,
+      "message": "redundant closure",
+      "level": "WARNING",
+      "code": "clippy::redundant_closure_for_method_calls"
+    },
+    {
+      "file": "src/bin/sx9-mcp-server.rs",
+      "line": 373,
+      "message": "called `map(<f>).unwrap_or(false)` on an `Option` value",
+      "level": "WARNING",
+      "code": "clippy::map_unwrap_or"
+    },
+    {
+      "file": "src/bin/sx9-mcp-server.rs",
+      "line": 381,
+      "message": "redundant closure",
+      "level": "WARNING",
+      "code": "clippy::redundant_closure_for_method_calls"
+    },
+    {
+      "file": "src/bin/sx9-mcp-server.rs",
+      "line": 382,
+      "message": "called `map(<f>).unwrap_or(false)` on an `Option` value",
+      "level": "WARNING",
+      "code": "clippy::map_unwrap_or"
+    },
+    {
+      "file": "src/bin/sx9-mcp-server.rs",
+      "line": 384,
+      "message": "case-sensitive file extension comparison",
+      "level": "WARNING",
+      "code": "clippy::case_sensitive_file_extension_comparisons"
+    },
+    {
+      "file": "src/bin/sx9-mcp-server.rs",
+      "line": 384,
+      "message": "case-sensitive file extension comparison",
+      "level": "WARNING",
+      "code": "clippy::case_sensitive_file_extension_comparisons"
+    },
+    {
+      "file": "src/bin/sx9-mcp-server.rs",
+      "line": 298,
+      "message": "unused `async` for function with no await statements",
+      "level": "WARNING",
+      "code": "clippy::unused_async"
+    },
+    {
+      "file": "src/bin/sx9-mcp-server.rs",
+      "line": 331,
+      "message": "unused `async` for function with no await statements",
+      "level": "WARNING",
+      "code": "clippy::unused_async"
+    },
+    {
+      "file": "src/bin/sx9-mcp-server.rs",
+      "line": 365,
+      "message": "unused `async` for function with no await statements",
+      "level": "WARNING",
+      "code": "clippy::unused_async"
+    }
+  ],
+  "timestamp": "2025-12-20T08:00:16.179313"
+}

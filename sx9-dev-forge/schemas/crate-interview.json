@@ -1,0 +1,196 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://sx9.dev/schemas/crate-interview.json",
+  "title": "Crate Interview (Birth Certificate)",
+  "description": "RFC-9025 interview schema for crate generation, serves as birth certificate",
+  "type": "object",
+  "required": ["metadata", "identity", "voice", "capabilities", "constraints", "foundations", "health_contract", "lineage"],
+  "properties": {
+    "metadata": {
+      "type": "object",
+      "required": ["interview_id", "created_at", "forge_version", "thalmic_score", "pattern_resolved"],
+      "properties": {
+        "interview_id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Unique identifier for this interview"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "ISO-8601 timestamp of creation"
+        },
+        "forge_version": {
+          "type": "string",
+          "pattern": "^\\d+\\.\\d+\\.\\d+$",
+          "description": "Prompt Forge version that generated this"
+        },
+        "thalmic_score": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Clarity score from Thalmic filter"
+        },
+        "pattern_resolved": {
+          "type": "string",
+          "description": "Design pattern resolved from intent"
+        }
+      }
+    },
+    "identity": {
+      "type": "object",
+      "required": ["name", "type", "category", "description"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9-]*$",
+          "description": "Crate name (kebab-case)"
+        },
+        "type": {
+          "type": "string",
+          "enum": ["crate", "tool", "service", "library"],
+          "description": "Component type"
+        },
+        "category": {
+          "type": "string",
+          "description": "Functional category"
+        },
+        "description": {
+          "type": "string",
+          "description": "Brief description of purpose"
+        }
+      }
+    },
+    "voice": {
+      "type": "object",
+      "required": ["narrative", "purpose", "ownership", "vector"],
+      "properties": {
+        "narrative": {
+          "type": "string",
+          "description": "First-person narrative describing the crate's role"
+        },
+        "purpose": {
+          "type": "string",
+          "description": "Primary purpose statement"
+        },
+        "ownership": {
+          "type": "string",
+          "description": "Owning project or team"
+        },
+        "vector": {
+          "type": "string",
+          "description": "N-V-N-N data flow pattern"
+        }
+      }
+    },
+    "capabilities": {
+      "type": "object",
+      "required": ["primary"],
+      "properties": {
+        "primary": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Primary capabilities"
+        },
+        "operational": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Operational capabilities"
+        },
+        "integration": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Integration points"
+        }
+      }
+    },
+    "constraints": {
+      "type": "object",
+      "required": ["required_structures", "forbidden_structures", "limits"],
+      "properties": {
+        "required_structures": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "object",
+            "description": "Structure specification"
+          },
+          "description": "Structures that MUST be present"
+        },
+        "forbidden_structures": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "boolean"
+          },
+          "description": "Structures that MUST NOT be present"
+        },
+        "limits": {
+          "type": "object",
+          "properties": {
+            "max_lines_per_file": { "type": "integer", "minimum": 1 },
+            "max_dependencies": { "type": "integer", "minimum": 1 },
+            "max_public_functions": { "type": "integer", "minimum": 1 },
+            "cyclomatic_complexity_max": { "type": "integer", "minimum": 1 }
+          },
+          "description": "Numerical limits"
+        }
+      }
+    },
+    "foundations": {
+      "type": "object",
+      "required": ["required"],
+      "properties": {
+        "required": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Required crate dependencies"
+        },
+        "recommended": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Recommended crate dependencies"
+        }
+      }
+    },
+    "health_contract": {
+      "type": "object",
+      "required": ["structure_subject", "contract_subject", "check_interval_ms"],
+      "properties": {
+        "structure_subject": {
+          "type": "string",
+          "pattern": "^sx9\\.health\\.[a-z0-9-]+\\.structure$",
+          "description": "NATS subject for structure checks"
+        },
+        "contract_subject": {
+          "type": "string",
+          "pattern": "^sx9\\.health\\.[a-z0-9-]+\\.contract$",
+          "description": "NATS subject for contract checks"
+        },
+        "check_interval_ms": {
+          "type": "integer",
+          "minimum": 1000,
+          "description": "Health check interval in milliseconds"
+        }
+      }
+    },
+    "lineage": {
+      "type": "object",
+      "required": ["parent_rfc", "pattern", "forge_session"],
+      "properties": {
+        "parent_rfc": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Parent RFC references"
+        },
+        "pattern": {
+          "type": "string",
+          "description": "Design pattern used"
+        },
+        "forge_session": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Forge session that created this"
+        }
+      }
+    }
+  }
+}

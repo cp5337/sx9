@@ -10,7 +10,14 @@ pub struct ContextualIntelligence {
     environments: HashMap<String, EnvironmentalMask>,
 }
 
+impl Default for ContextualIntelligence {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl ContextualIntelligence {
+    #[must_use]
     pub fn new() -> Self {
         Self {
             environments: HashMap::new(),
@@ -22,11 +29,13 @@ impl ContextualIntelligence {
         HashMap::new()
     }
 
+    #[must_use]
     pub fn generate_environmental_tails(&self) -> HashMap<String, String> {
         // Stub implementation
         HashMap::new()
     }
 
+    #[must_use]
     pub fn generate_analysis_report(&self) -> String {
         // Stub implementation
         "status = \"Nominal\"".to_string()

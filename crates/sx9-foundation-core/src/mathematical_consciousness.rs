@@ -40,6 +40,7 @@ pub enum PrimitiveType {
 }
 
 impl MathematicalFoundation {
+    #[must_use]
     pub fn new() -> Self {
         Self {
             consciousness: "I am the CTAS 7.0 mathematical foundation",
@@ -139,6 +140,7 @@ impl MathematicalFoundation {
     }
 
     /// Validate primitive consciousness
+    #[must_use]
     pub fn validate_primitive(&self, primitive_name: &str) -> bool {
         self.primitives
             .iter()
@@ -146,6 +148,7 @@ impl MathematicalFoundation {
     }
 
     /// Get primitive by type
+    #[must_use]
     pub fn get_primitive(&self, primitive_type: PrimitiveType) -> Option<&CTASPrimitive> {
         self.primitives.iter().find(|p| {
             std::mem::discriminant(&p.primitive_type) == std::mem::discriminant(&primitive_type)
@@ -153,6 +156,7 @@ impl MathematicalFoundation {
     }
 
     /// Mathematical consciousness self-validation
+    #[must_use]
     pub fn self_validate(&self) -> bool {
         self.active
             && self.primitives.iter().all(|p| p.active)
@@ -160,6 +164,7 @@ impl MathematicalFoundation {
     }
 
     /// Generate consciousness report
+    #[must_use]
     pub fn consciousness_report(&self) -> String {
         let active_primitives = self.primitives.iter().filter(|p| p.active).count();
 

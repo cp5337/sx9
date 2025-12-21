@@ -78,6 +78,12 @@ impl EdgeLocation {
     }
 }
 
+impl Default for LocalCache {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl LocalCache {
     pub fn new() -> Self {
         Self {
@@ -99,6 +105,12 @@ impl EdgeAPI {
             active_connections: 0,
             response_time_avg: Duration::from_millis(50),
         }
+    }
+}
+
+impl Default for PerformanceMetrics {
+    fn default() -> Self {
+        Self::new()
     }
 }
 

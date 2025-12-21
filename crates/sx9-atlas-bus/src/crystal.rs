@@ -18,11 +18,12 @@ use core::sync::atomic::{AtomicU32, AtomicU64, Ordering};
 
 /// Crystal family determines resonance behavior
 #[repr(u8)]
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
 pub enum CrystalFamily {
     /// Orbital operations - high entropy tolerance, Van Allen belt
     Orbital = 0,
     /// Ground station - stable, strict thresholds
+    #[default]
     GroundStation = 1,
     /// Tar pit / honeypot - rings on suspicious patterns
     TarPit = 2,
@@ -30,12 +31,6 @@ pub enum CrystalFamily {
     Silent = 3,
     /// Adaptive - learns from traffic patterns
     Adaptive = 4,
-}
-
-impl Default for CrystalFamily {
-    fn default() -> Self {
-        CrystalFamily::GroundStation
-    }
 }
 
 /// Resonance thresholds per family
@@ -134,7 +129,7 @@ impl ResonanceProfile {
 
 /// Voting policy for polycrystal resonance
 #[repr(u8)]
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
 pub enum VotingPolicy {
     /// ANY crystal fires → pass (most sensitive, tripwire)
     Any = 0,
@@ -143,15 +138,10 @@ pub enum VotingPolicy {
     /// Majority must fire → pass
     Majority = 2,
     /// Weighted average ≥ threshold → pass
+    #[default]
     WeightedAverage = 3,
     /// Quorum (N of M) must fire → pass
     Quorum { required: u8 } = 4,
-}
-
-impl Default for VotingPolicy {
-    fn default() -> Self {
-        VotingPolicy::WeightedAverage
-    }
 }
 
 /// Software-Defined Crystal
@@ -301,7 +291,7 @@ impl Crystal {
 
         // Update accumulators
         self.entropy_acc
-            .fetch_add(entropy.wrapping_shr(16) as u32, Ordering::Relaxed);
+            .fetch_add(entropy.wrapping_shr(16), Ordering::Relaxed);
         self.last_ring
             .store(ring_strength.to_bits(), Ordering::Release);
 

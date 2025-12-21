@@ -5,7 +5,6 @@
 use serde::{Deserialize, Serialize};
 
 use chrono::{DateTime, Utc};
-use uuid::Uuid;
 
 // Conference Solutions [INTEGRATE] Platforms [MANAGE] Protocols
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -312,7 +311,14 @@ pub struct RoomManager {
     active_rooms: std::collections::HashMap<String, EngagementRoom>,
 }
 
+impl Default for RoomManager {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl RoomManager {
+    #[must_use]
     pub fn new() -> Self {
         Self {
             active_rooms: std::collections::HashMap::new(),
@@ -338,6 +344,7 @@ impl RoomManager {
         room
     }
 
+    #[must_use]
     pub fn get_room(&self, room_id: &str) -> Option<&EngagementRoom> {
         self.active_rooms.get(room_id)
     }

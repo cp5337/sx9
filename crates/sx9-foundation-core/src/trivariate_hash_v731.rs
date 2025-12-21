@@ -25,6 +25,7 @@ pub enum ExecEnv {
 
 impl ExecEnv {
     /// Encode to 3 Base96 characters (E1..E3)
+    #[must_use]
     pub fn to_base96(&self) -> String {
         let code = match self {
             ExecEnv::Wasm => 0,
@@ -50,6 +51,7 @@ pub enum ExecState {
 
 impl ExecState {
     /// Encode to single Base96 character (S)
+    #[must_use]
     pub fn to_base96(&self) -> char {
         let code = match self {
             ExecState::Cold => 0,
@@ -61,7 +63,7 @@ impl ExecState {
     }
 }
 
-/// ContextFrame for CUID generation (CTAS-7.3.1 Canonical)
+/// `ContextFrame` for CUID generation (CTAS-7.3.1 Canonical)
 #[derive(Debug, Clone)]
 pub struct ContextFrame {
     pub timestamp: u64,
@@ -74,7 +76,8 @@ pub struct ContextFrame {
 }
 
 impl ContextFrame {
-    /// Create new ContextFrame with current timestamp
+    /// Create new `ContextFrame` with current timestamp
+    #[must_use]
     pub fn new(exec_env: ExecEnv, agent_id: u16, state: ExecState) -> Self {
         let timestamp = SystemTime::now()
             .duration_since(UNIX_EPOCH)
@@ -92,7 +95,8 @@ impl ContextFrame {
         }
     }
 
-    /// Create ContextFrame with all parameters
+    /// Create `ContextFrame` with all parameters
+    #[must_use]
     pub fn with_all(
         timestamp: u64,
         exec_env: ExecEnv,
@@ -198,6 +202,7 @@ impl From<&ContextFrame> for CuidSlots {
 
 impl CuidSlots {
     /// Convert CUID slots to 16-character string
+    #[must_use]
     pub fn to_string(&self) -> String {
         let mut result = String::with_capacity(16);
         result.extend(self.timestamp_shard.iter());
@@ -212,11 +217,12 @@ impl CuidSlots {
 
     /// Convert CUID slots to Unicode runes (U+E200-E2FF) for semantic routing
     /// Encodes slot values directly into Unicode for Neural Mux affinity weighting
+    #[must_use]
     pub fn to_unicode_runes(&self) -> String {
         let mut result = String::with_capacity(16);
 
         // Map each Base96 char to Unicode Private Use Block (U+E200-E2FF)
-        for &ch in self.timestamp_shard.iter() {
+        for &ch in &self.timestamp_shard {
             let code = 0xE200 + ((ch as u32) % 0xFF);
             if let Some(unicode_char) = std::char::from_u32(code) {
                 result.push(unicode_char);
@@ -225,7 +231,7 @@ impl CuidSlots {
             }
         }
 
-        for &ch in self.exec_env.iter() {
+        for &ch in &self.exec_env {
             let code = 0xE200 + ((ch as u32) % 0xFF);
             if let Some(unicode_char) = std::char::from_u32(code) {
                 result.push(unicode_char);
@@ -234,7 +240,7 @@ impl CuidSlots {
             }
         }
 
-        for &ch in self.agent_id.iter() {
+        for &ch in &self.agent_id {
             let code = 0xE200 + ((ch as u32) % 0xFF);
             if let Some(unicode_char) = std::char::from_u32(code) {
                 result.push(unicode_char);
@@ -243,7 +249,7 @@ impl CuidSlots {
             }
         }
 
-        for &ch in self.delta_angle.iter() {
+        for &ch in &self.delta_angle {
             let code = 0xE200 + ((ch as u32) % 0xFF);
             if let Some(unicode_char) = std::char::from_u32(code) {
                 result.push(unicode_char);
@@ -259,7 +265,7 @@ impl CuidSlots {
             result.push('\u{E200}');
         }
 
-        for &ch in self.lineage.iter() {
+        for &ch in &self.lineage {
             let code = 0xE200 + ((ch as u32) % 0xFF);
             if let Some(unicode_char) = std::char::from_u32(code) {
                 result.push(unicode_char);
@@ -268,7 +274,7 @@ impl CuidSlots {
             }
         }
 
-        for &ch in self.nonce.iter() {
+        for &ch in &self.nonce {
             let code = 0xE200 + ((ch as u32) % 0xFF);
             if let Some(unicode_char) = std::char::from_u32(code) {
                 result.push(unicode_char);
@@ -291,11 +297,13 @@ pub struct TrivariateHash {
 
 impl TrivariateHash {
     /// Create new trivariate hash
+    #[must_use]
     pub fn new(sch: String, cuid: String, uuid: String) -> Self {
         Self { sch, cuid, uuid }
     }
 
     /// Convert to canonical format: triv:[SCH]_[CUID]_[UUID]
+    #[must_use]
     pub fn to_canonical_format(&self) -> String {
         format!("triv:{}_{}_{}", self.sch, self.cuid, self.uuid)
     }
@@ -319,6 +327,7 @@ impl TrivariateHash {
     }
 
     /// Get full 48-character hash (SCH + CUID + UUID hex converted to Base96)
+    #[must_use]
     pub fn to_48char_hash(&self) -> String {
         // Convert UUID hex to Base96 (16 chars)
         let uuid_base96 = uuid_to_base96(&self.uuid);
@@ -335,6 +344,7 @@ pub struct DualTrivariateHash {
 
 impl DualTrivariateHash {
     /// Create primary-only trivariate (for low-complexity verticals)
+    #[must_use]
     pub fn primary_only(primary: TrivariateHash) -> Self {
         Self {
             primary,
@@ -343,6 +353,7 @@ impl DualTrivariateHash {
     }
 
     /// Create dual trivariate (for Synaptix9, ATLAS, PLASMA, GLAF)
+    #[must_use]
     pub fn dual(primary: TrivariateHash, secondary: TrivariateHash) -> Self {
         Self {
             primary,
@@ -363,6 +374,7 @@ pub enum SupersessionLevel {
 
 impl SupersessionLevel {
     /// Determine supersession level from delta angle (degrees)
+    #[must_use]
     pub fn from_delta_angle(delta_degrees: f32) -> Self {
         let abs_delta = delta_degrees.abs();
         if abs_delta < 2.0 {
@@ -406,6 +418,7 @@ pub struct TrivariateHashEngineV731 {
 
 impl TrivariateHashEngineV731 {
     /// Create new engine with canonical seeds
+    #[must_use]
     pub fn new() -> Self {
         Self {
             _murmur_sch_seed: 0x5BD1E995,  // CTAS-7.3.1 SCH seed
@@ -415,6 +428,7 @@ impl TrivariateHashEngineV731 {
     }
 
     /// Generate SCH with domain and execution class masks (CTAS-7.3.1 Canonical)
+    #[must_use]
     pub fn generate_sch(
         &self,
         semantic: &str,
@@ -441,24 +455,27 @@ impl TrivariateHashEngineV731 {
         let exec_mask = exec_class_bitmask(exec_class);
 
         // Step 7: Rehash final 128-bit → "SCH" output
-        let final_input = format!("{}{}{}", base96_intermediate, domain_mask, exec_mask);
+        let final_input = format!("{base96_intermediate}{domain_mask}{exec_mask}");
         let final_hash = murmur3_128(&final_input);
 
         encode_base96_128bit(&final_hash)
     }
 
-    /// Generate CUID from ContextFrame (slot-by-slot encoding)
+    /// Generate CUID from `ContextFrame` (slot-by-slot encoding)
+    #[must_use]
     pub fn generate_cuid(&self, context: &ContextFrame) -> String {
         let slots = CuidSlots::from(context);
         slots.to_string()
     }
 
-    /// Generate UUID (standard UUIDv4)
+    /// Generate UUID (standard `UUIDv4`)
+    #[must_use]
     pub fn generate_uuid(&self) -> String {
         Uuid::new_v4().to_string()
     }
 
     /// Generate complete trivariate hash
+    #[must_use]
     pub fn generate_trivariate(
         &self,
         semantic: &str,
@@ -476,6 +493,7 @@ impl TrivariateHashEngineV731 {
 
     /// Generate dual trivariate hash (primary + secondary)
     /// Auto-generates secondary for high-cognitive layers (Synaptix9/ATLAS/Plasma/GLAF/etc.)
+    #[must_use]
     pub fn generate_dual_trivariate(
         &self,
         semantic: &str,
@@ -516,11 +534,13 @@ impl TrivariateHashEngineV731 {
     }
 
     /// Check if hash requires supersession based on delta angle
+    #[must_use]
     pub fn check_supersession(&self, delta_angle: f32) -> SupersessionLevel {
         SupersessionLevel::from_delta_angle(delta_angle)
     }
 
     /// Check if CUID has expired based on TTL
+    #[must_use]
     pub fn is_cuid_expired(&self, context: &ContextFrame, ttl_type: &str) -> bool {
         let now = SystemTime::now()
             .duration_since(UNIX_EPOCH)
@@ -541,6 +561,7 @@ impl TrivariateHashEngineV731 {
     /// Generate a simple hash from bytes using the canonical Murmur3-128 algorithm
     /// encoded in Base96. Used for general content integrity (replacing MD5/Blake3).
     /// Returns 16-character Base96 string.
+    #[must_use]
     pub fn generate_hash_from_bytes(&self, bytes: &[u8]) -> String {
         let hash = murmur3_128_bytes(bytes);
         encode_base96_128bit(&hash)
@@ -600,7 +621,7 @@ fn tokenize_nvn_grammar(s: &str) -> String {
         "lineage",
     ];
 
-    let verbs = vec![
+    let verbs = [
         "act", "mutate", "sense", "evaluate", "route", "map", "hash", "emit", "escalate",
     ];
 
@@ -613,12 +634,12 @@ fn tokenize_nvn_grammar(s: &str) -> String {
 
         // Check if word matches grammar
         if nouns.iter().any(|&n| normalized.contains(n)) {
-            tokens.push(format!("N:{}", normalized));
+            tokens.push(format!("N:{normalized}"));
         } else if verbs.iter().any(|&v| normalized.contains(v)) {
-            tokens.push(format!("V:{}", normalized));
+            tokens.push(format!("V:{normalized}"));
         } else {
             // Default: treat as noun
-            tokens.push(format!("N:{}", normalized));
+            tokens.push(format!("N:{normalized}"));
         }
     }
 
@@ -627,7 +648,7 @@ fn tokenize_nvn_grammar(s: &str) -> String {
 }
 
 /// Murmur3-128 implementation (CTAS-7.3.1 Canonical)
-/// Full 128-bit MurmurHash3 algorithm - bit-exact reproducibility required
+/// Full 128-bit `MurmurHash3` algorithm - bit-exact reproducibility required
 /// ~3.5ns/word performance, zero ambiguity for delta-angle supersession
 fn murmur3_128(input: &str) -> [u8; 16] {
     murmur3_128_bytes(input.as_bytes())
@@ -688,50 +709,50 @@ fn murmur3_128_bytes(data: &[u8]) -> [u8; 16] {
         let mut k2: u64 = 0;
 
         if remainder.len() >= 15 {
-            k2 ^= (remainder[14] as u64) << 48;
+            k2 ^= u64::from(remainder[14]) << 48;
         }
         if remainder.len() >= 14 {
-            k2 ^= (remainder[13] as u64) << 40;
+            k2 ^= u64::from(remainder[13]) << 40;
         }
         if remainder.len() >= 13 {
-            k2 ^= (remainder[12] as u64) << 32;
+            k2 ^= u64::from(remainder[12]) << 32;
         }
         if remainder.len() >= 12 {
-            k2 ^= (remainder[11] as u64) << 24;
+            k2 ^= u64::from(remainder[11]) << 24;
         }
         if remainder.len() >= 11 {
-            k2 ^= (remainder[10] as u64) << 16;
+            k2 ^= u64::from(remainder[10]) << 16;
         }
         if remainder.len() >= 10 {
-            k2 ^= (remainder[9] as u64) << 8;
+            k2 ^= u64::from(remainder[9]) << 8;
         }
         if remainder.len() >= 9 {
-            k2 ^= remainder[8] as u64;
+            k2 ^= u64::from(remainder[8]);
         }
 
         if remainder.len() >= 8 {
-            k1 ^= (remainder[7] as u64) << 56;
+            k1 ^= u64::from(remainder[7]) << 56;
         }
         if remainder.len() >= 7 {
-            k1 ^= (remainder[6] as u64) << 48;
+            k1 ^= u64::from(remainder[6]) << 48;
         }
         if remainder.len() >= 6 {
-            k1 ^= (remainder[5] as u64) << 40;
+            k1 ^= u64::from(remainder[5]) << 40;
         }
         if remainder.len() >= 5 {
-            k1 ^= (remainder[4] as u64) << 32;
+            k1 ^= u64::from(remainder[4]) << 32;
         }
         if remainder.len() >= 4 {
-            k1 ^= (remainder[3] as u64) << 24;
+            k1 ^= u64::from(remainder[3]) << 24;
         }
         if remainder.len() >= 3 {
-            k1 ^= (remainder[2] as u64) << 16;
+            k1 ^= u64::from(remainder[2]) << 16;
         }
         if remainder.len() >= 2 {
-            k1 ^= (remainder[1] as u64) << 8;
+            k1 ^= u64::from(remainder[1]) << 8;
         }
-        if remainder.len() >= 1 {
-            k1 ^= remainder[0] as u64;
+        if !remainder.is_empty() {
+            k1 ^= u64::from(remainder[0]);
         }
 
         // Mix remainder
@@ -778,7 +799,7 @@ fn fmix64(mut k: u64) -> u64 {
 
 fn encode_base96_128bit(bytes: &[u8; 16]) -> String {
     let mut result = String::with_capacity(16);
-    for &byte in bytes.iter() {
+    for &byte in bytes {
         result.push(encode_base96_char(byte as usize));
     }
     result

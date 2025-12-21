@@ -106,8 +106,12 @@ This prevents numbering conflicts across sessions.
 | RFC-9113 | TOML Executable Document Spec       | Canonical   | `9100-integration/RFC-9113-TOML-Executable-Document-Specification.md` |
 | RFC-9114 | SX9 Gateway Neural Retrofit         | Draft       | `9100-integration/RFC-9114-SX9-Gateway-Neural-Retrofit.md`            |
 | RFC-9115 | SX9 Frontend Adapter Standard       | Draft       | `9100-integration/RFC-9115-Frontend-Adapter-Standard.md`              |
+| RFC-9116 | APECS Legion Bridge ECS             | Draft       | `9000-core/RFC-9116-APECS-Legion-Bridge-ECS.md`                       |
+| RFC-9117 | Tool Response Block                 | Draft       | `9100-integration/RFC-9117-Tool-Response-Block.md`                    |
+| RFC-9118 | Planned Stub                        | Planned     | `9100-integration/RFC-9118-Planned.md`                                |
+| RFC-9120 | Planned Stub                        | Planned     | `9100-integration/RFC-9120-Planned.md`                                |
 
-**NEXT_AVAILABLE: 9116**
+**NEXT_AVAILABLE: 9121**
 
 ---
 
@@ -188,8 +192,12 @@ The **L2 NATS Kali Execution Platform** is a complete microsecond-latency securi
 | RFC-9302 | Nonagon Analytic Node           | Validated | `9000-core/RFC-9302-Nonagon-Analytic-Node.md`           |
 | RFC-9303 | Crystal Realms Kinematics       | Draft     | `9000-core/RFC-9303-Crystal-Realms-Kinematics.md`       |
 | RFC-9304 | GLAF Graph Engine Specification | Draft     | `9000-core/RFC-9304-GLAF-Graph-Engine-Specification.md` |
+| RFC-9305 | CONVERGE Core Specification     | Draft     | `9000-core/RFC-9305-CONVERGE-Core.md`                   |
+| RFC-9306 | CONVERGE Geometry Specification | Draft     | `9000-core/RFC-9306-CONVERGE-Geometry.md`               |
+| RFC-9307 | CONVERGE Selection Logic        | Draft     | `9000-core/RFC-9307-CONVERGE-Selection.md`              |
+| RFC-9308 | CONVERGE Integration Standard   | Draft     | `9000-core/RFC-9308-CONVERGE-Integration.md`            |
 
-**NEXT_AVAILABLE: 9305**
+**NEXT_AVAILABLE: 9309**
 
 ---
 

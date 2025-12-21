@@ -4,7 +4,7 @@
 **Version:** 3.0  
 **Date:** 03 December 2025  
 **Author:** CTAS Core Engineering + Synaptix9 Architectures  
-**Supersedes:** RFC-9112 v2.0  
+**Supersedes:** RFC-9112 v2.0
 
 ---
 
@@ -52,14 +52,14 @@ With this pipeline, **97.3%** of domain adaptation and agent task instantiation 
 
 The canonical ingest point for all domain data. Accepts heterogeneous input and normalizes to Unicode memory mesh.
 
-| Input Type | Handler | Normalization |
-|------------|---------|---------------|
-| Text | `text/plain` | UTF-8 → NFC |
-| JSON | `application/json` | Schema validation → AST |
-| CSV | `text/csv` | Column typing → typed tuples |
-| TLE | `application/tle` | Epoch extraction → orbital state |
-| Voice | `audio/*` | Whisper ASR → text → NFC |
-| Diagrams | `image/*` | OCR + graph extraction |
+| Input Type | Handler            | Normalization                    |
+| ---------- | ------------------ | -------------------------------- |
+| Text       | `text/plain`       | UTF-8 → NFC                      |
+| JSON       | `application/json` | Schema validation → AST          |
+| CSV        | `text/csv`         | Column typing → typed tuples     |
+| TLE        | `application/tle`  | Epoch extraction → orbital state |
+| Voice      | `audio/*`          | Whisper ASR → text → NFC         |
+| Diagrams   | `image/*`          | OCR + graph extraction           |
 
 **Determinism Guarantee:** All inputs receive a monotonic sequence ID (`atomic_seq_id`) and Murmur3-64 content hash (per RFC-9001) before downstream processing.
 
@@ -79,6 +79,7 @@ Semantic suppression and prioritization gate. Annotates input with Private Use A
 Converts filtered semantic vectors into validated PromptScript v3. Enforces deterministic N-V-N-N grammar and seeds dual trivariate hash.
 
 **Pipeline:**
+
 ```
 SemanticVector → GrammarEnforcer → TypeChecker → HashSeeder → PromptScript
 ```
@@ -89,13 +90,13 @@ Lisp-based DSL with Unicode operators, formal grammar, and static type checking.
 
 **Verb Domains:**
 
-| Domain | Verbs | Unicode Range |
-|--------|-------|---------------|
-| Cyber | INJECT, SPOOF, EVADE, PIVOT, EXFIL, PERSIST | U+E800–U+E83F |
-| Dataflow | INGEST, TRANSFORM, ROUTE, ARCHIVE, REPLICATE | U+E840–U+E87F |
-| Orbital | PROPAGATE, STATIONKEEP, HANDOFF, DEORBIT, RENDEZVOUS | U+E880–U+E8BF |
-| Industrial | ACTUATE, SENSE, CALIBRATE, INTERLOCK, SHUTDOWN | U+E8C0–U+E8FF |
-| Cognitive | INFER, CLASSIFY, RANK, FUSE, ALERT | U+E900–U+E93F |
+| Domain     | Verbs                                                | Unicode Range |
+| ---------- | ---------------------------------------------------- | ------------- |
+| Cyber      | INJECT, SPOOF, EVADE, PIVOT, EXFIL, PERSIST          | U+E800–U+E83F |
+| Dataflow   | INGEST, TRANSFORM, ROUTE, ARCHIVE, REPLICATE         | U+E840–U+E87F |
+| Orbital    | PROPAGATE, STATIONKEEP, HANDOFF, DEORBIT, RENDEZVOUS | U+E880–U+E8BF |
+| Industrial | ACTUATE, SENSE, CALIBRATE, INTERLOCK, SHUTDOWN       | U+E8C0–U+E8FF |
+| Cognitive  | INFER, CLASSIFY, RANK, FUSE, ALERT                   | U+E900–U+E93F |
 
 ### 1.5 Dual Trivariate Hashing (RFC-9001 Compliant)
 
@@ -108,6 +109,7 @@ Per RFC-9001, the trivariate hash is a structured 3-element set:
 - **UUID:** UUIDv7 for storage and lineage
 
 **Dual-Trivariate** provides primary and secondary hash sets:
+
 - **Primary:** `[SCH]_[CUID]_[UUID]`
 - **Secondary:** `[SCH*]_[CUID*]_[UUID*]`
 
@@ -118,6 +120,7 @@ Encoded via **Murmur3-64** (RFC-9001 Section 4.1), compressed to **Base96** (48 
 Bounded neural architecture derivation from prompt metadata.
 
 **Stack Options:**
+
 - LoRA (adapter layers)
 - Phi-3-mini (compact LLM)
 - GNN (graph neural network)
@@ -167,16 +170,16 @@ ECS-based simulation and execution engine.
 
 ### 2.2 Type System
 
-| Type | Notation | Constraints |
-|------|----------|-------------|
-| `Ident` | `:name "foo"` | `[a-z][a-z0-9-]*`, max 64 chars |
-| `LayerList` | `:layers '(a b c)` | Valid domain identifiers |
-| `Mode` | `:ann-mode "symbolic+GNN"` | Enum: symbolic, GNN, LoRA, hybrid |
-| `HashMode` | `:hash-mode "dual-trivariate"` | Enum: single, dual-trivariate |
-| `Threshold` | `:threshold 0.67` | Float ∈ [0.0, 1.0] |
-| `TickSpec` | `:tick "250ns"` | Duration with unit suffix |
-| `PhaseList` | `:phases '(plan build ...)` | Ordered, no duplicates |
-| `AgentList` | `:agents '(ALPHA BETA)` | Valid agent identifiers |
+| Type        | Notation                       | Constraints                       |
+| ----------- | ------------------------------ | --------------------------------- |
+| `Ident`     | `:name "foo"`                  | `[a-z][a-z0-9-]*`, max 64 chars   |
+| `LayerList` | `:layers '(a b c)`             | Valid domain identifiers          |
+| `Mode`      | `:ann-mode "symbolic+GNN"`     | Enum: symbolic, GNN, LoRA, hybrid |
+| `HashMode`  | `:hash-mode "dual-trivariate"` | Enum: single, dual-trivariate     |
+| `Threshold` | `:threshold 0.67`              | Float ∈ [0.0, 1.0]                |
+| `TickSpec`  | `:tick "250ns"`                | Duration with unit suffix         |
+| `PhaseList` | `:phases '(plan build ...)`    | Ordered, no duplicates            |
+| `AgentList` | `:agents '(ALPHA BETA)`        | Valid agent identifiers           |
 
 ### 2.3 Validation Rules
 
@@ -194,24 +197,25 @@ ECS-based simulation and execution engine.
 
 Private Use Area allocation for semantic annotation:
 
-| Range | Category | Purpose |
-|-------|----------|---------|
-| U+E800–U+E80F | **Priority** | Urgency levels (P0–P15) |
-| U+E810–U+E81F | **Confidence** | Certainty bands (0.0–1.0 quantized) |
-| U+E820–U+E82F | **Suppression** | Filter reasons (noise, legacy, overlap, etc.) |
-| U+E830–U+E83F | **Domain Tag** | Primary domain assignment |
-| U+E840–U+E84F | **Agent Route** | Target agent identifier |
-| U+E850–U+E85F | **Lineage** | Source tracking markers |
-| U+E860–U+E86F | **Temporal** | Time-sensitivity classification |
-| U+E870–U+E87F | **Security** | Classification level markers |
-| U+E880–U+E8FF | **Verb Encoding** | Compressed verb opcodes |
-| U+E900–U+E93F | **State Markers** | FSM state annotations |
-| U+E940–U+E97F | **Delta Markers** | Change/transition indicators |
-| U+E980–U+E9FF | **Reserved** | Future expansion |
+| Range         | Category          | Purpose                                       |
+| ------------- | ----------------- | --------------------------------------------- |
+| U+E800–U+E80F | **Priority**      | Urgency levels (P0–P15)                       |
+| U+E810–U+E81F | **Confidence**    | Certainty bands (0.0–1.0 quantized)           |
+| U+E820–U+E82F | **Suppression**   | Filter reasons (noise, legacy, overlap, etc.) |
+| U+E830–U+E83F | **Domain Tag**    | Primary domain assignment                     |
+| U+E840–U+E84F | **Agent Route**   | Target agent identifier                       |
+| U+E850–U+E85F | **Lineage**       | Source tracking markers                       |
+| U+E860–U+E86F | **Temporal**      | Time-sensitivity classification               |
+| U+E870–U+E87F | **Security**      | Classification level markers                  |
+| U+E880–U+E8FF | **Verb Encoding** | Compressed verb opcodes                       |
+| U+E900–U+E93F | **State Markers** | FSM state annotations                         |
+| U+E940–U+E97F | **Delta Markers** | Change/transition indicators                  |
+| U+E980–U+E9FF | **Reserved**      | Future expansion                              |
 
 ### 3.2 Rune Semantics
 
 **Priority Runes (U+E800–U+E80F):**
+
 ```
 U+E800: P0 (CRITICAL - immediate action)
 U+E801: P1 (URGENT - within tick)
@@ -222,6 +226,7 @@ U+E805–U+E80F: Reserved priorities
 ```
 
 **Confidence Runes (U+E810–U+E81F):**
+
 ```
 U+E810: [0.00–0.0625)  NEGLIGIBLE
 U+E811: [0.0625–0.125) VERY_LOW
@@ -237,6 +242,7 @@ U+E81A–U+E81F: Reserved
 ```
 
 **Suppression Runes (U+E820–U+E82F):**
+
 ```
 U+E820: NOISE      - Signal below threshold
 U+E821: LEGACY     - Deprecated format/protocol
@@ -252,11 +258,13 @@ U+E828–U+E82F: Reserved
 ### 3.3 Rune Composition
 
 Runes compose left-to-right with the following precedence:
+
 ```
 [Priority][Confidence][Domain][Agent][Temporal][Security][Verb]
 ```
 
 Example annotation:
+
 ```
 U+E801 U+E817 U+E830 U+E840 U+E860 U+E870 U+E880
   P1     HIGH  CYBER  ALPHA  IMMED   CONF  INJECT
@@ -281,62 +289,62 @@ pub fn generate_sch(input: &SchInput) -> u64 {
     data.push(input.execution_mask);   // 4 bits
     data.push(input.delta_angle_class);
     data.extend_from_slice(&input.tail_state);
-    
+
     murmur3_64(&data, seeds::SCH)  // Seed: 0xC7A5_0000
 }
 ```
 
 **SCH Input Material:**
 
-| Component | Bits | Source |
-|-----------|------|--------|
-| Operation text | Variable | Raw N-V-N-N operation |
-| Domain mask | 4 | cyber/orbital/industrial/cognitive |
-| Execution mask | 4 | local/remote/distributed/hybrid |
-| Δ-angle class | 8 | None/Micro/Soft/Hard/Critical |
-| Tail state | 16 | Previous SCH suffix |
+| Component      | Bits     | Source                             |
+| -------------- | -------- | ---------------------------------- |
+| Operation text | Variable | Raw N-V-N-N operation              |
+| Domain mask    | 4        | cyber/orbital/industrial/cognitive |
+| Execution mask | 4        | local/remote/distributed/hybrid    |
+| Δ-angle class  | 8        | None/Micro/Soft/Hard/Critical      |
+| Tail state     | 16       | Previous SCH suffix                |
 
 ### 4.2 CUID: Contextual Unique Identifier
 
 Per RFC-9001 Section 6, CUID is 16 Base96 characters with exact slot mapping:
 
-| Slots | Meaning | Source |
-|-------|---------|--------|
-| 1–4 | Timestamp shard (T1–T4) | ContextFrame.timestamp |
-| 5–7 | Execution Env (E1–E3) | ContextFrame.exec_env |
-| 8–9 | Agent ID | agent_id |
-| **10–11** | **Δ-Angle Derivative** | **delta_angle (tick-aligned)** |
-| 12 | State Flag | Cold/Warm/Hot/L2 |
-| 13–14 | Lineage | ContextFrame.lineage |
-| 15–16 | Nonce/Salt | ContextFrame.nonce |
+| Slots     | Meaning                 | Source                         |
+| --------- | ----------------------- | ------------------------------ |
+| 1–4       | Timestamp shard (T1–T4) | ContextFrame.timestamp         |
+| 5–7       | Execution Env (E1–E3)   | ContextFrame.exec_env          |
+| 8–9       | Agent ID                | agent_id                       |
+| **10–11** | **Δ-Angle Derivative**  | **delta_angle (tick-aligned)** |
+| 12        | State Flag              | Cold/Warm/Hot/L2               |
+| 13–14     | Lineage                 | ContextFrame.lineage           |
+| 15–16     | Nonce/Salt              | ContextFrame.nonce             |
 
 ```rust
 pub fn generate_cuid(ctx: &ContextFrame, delta_angle: f64, tick: u64) -> String {
     let mut cuid = [0u8; 16];
-    
+
     // Slots 1-4: Timestamp shard
     let ts = (ctx.timestamp >> 32) as u32;
     cuid[0..4].copy_from_slice(&ts.to_be_bytes());
-    
+
     // Slots 5-7: Execution environment
     cuid[4..7].copy_from_slice(&ctx.exec_env);
-    
+
     // Slots 8-9: Agent ID
     cuid[7..9].copy_from_slice(&ctx.agent_id);
-    
+
     // Slots 10-11: Δ-Angle derivative (TICK-ALIGNED)
     let delta_encoded = encode_delta_angle(delta_angle, tick);
     cuid[9..11].copy_from_slice(&delta_encoded);
-    
+
     // Slot 12: State flag
     cuid[11] = ctx.state_flag;
-    
+
     // Slots 13-14: Lineage
     cuid[12..14].copy_from_slice(&ctx.lineage);
-    
+
     // Slots 15-16: Nonce
     cuid[14..16].copy_from_slice(&ctx.nonce);
-    
+
     base96_encode(&cuid)
 }
 
@@ -364,6 +372,7 @@ triv:[SCH]_[CUID]_[UUID]
 ```
 
 **Validation Requirements:**
+
 - SCH length = 16 Base96 chars (11 chars from 64-bit hash)
 - CUID length = 16 Base96 chars
 - UUID = 36 chars (standard UUID format)
@@ -373,18 +382,18 @@ triv:[SCH]_[CUID]_[UUID]
 
 When delta angle changes, trivariate regeneration is triggered:
 
-| Δ-Angle | Class | Action |
-|---------|-------|--------|
-| < 2° | None | No supersession |
-| 2–10° | Micro | Adjust CUID slots 10-11 only |
-| 10–25° | Soft | Regenerate SCH + CUID |
-| 25–60° | Hard | Full trivariate regeneration |
-| > 60° | Critical | Supersede with new lineage |
+| Δ-Angle | Class    | Action                       |
+| ------- | -------- | ---------------------------- |
+| < 2°    | None     | No supersession              |
+| 2–10°   | Micro    | Adjust CUID slots 10-11 only |
+| 10–25°  | Soft     | Regenerate SCH + CUID        |
+| 25–60°  | Hard     | Full trivariate regeneration |
+| > 60°   | Critical | Supersede with new lineage   |
 
 ```rust
 pub fn check_supersession(old_angle: f64, new_angle: f64, tick: u64) -> SupersessionAction {
     let delta = (new_angle - old_angle).abs();
-    
+
     match delta {
         d if d < 2.0 => SupersessionAction::None,
         d if d < 10.0 => SupersessionAction::AdjustCuidDelta(tick),
@@ -397,13 +406,13 @@ pub fn check_supersession(old_angle: f64, new_angle: f64, tick: u64) -> Superses
 
 ### 4.6 Standard Seeds (RFC-9001 Section 4.2)
 
-| Component | Seed | Purpose |
-|-----------|------|---------|
-| SCH | 0xC7A5_0000 | Schema Context Hash |
-| CUID | 0xC7A5_0001 | Context User ID |
-| UUID | 0xC7A5_0002 | Universal Unique ID |
-| ENV | 0xC7A5_00FF | Environmental |
-| SLOT | 0xC7A5_0100 | Unicode Slot Assignment |
+| Component | Seed        | Purpose                 |
+| --------- | ----------- | ----------------------- |
+| SCH       | 0xC7A5_0000 | Schema Context Hash     |
+| CUID      | 0xC7A5_0001 | Context User ID         |
+| UUID      | 0xC7A5_0002 | Universal Unique ID     |
+| ENV       | 0xC7A5_00FF | Environmental           |
+| SLOT      | 0xC7A5_0100 | Unicode Slot Assignment |
 
 ### 4.7 Base96 Encoding (RFC-9001 Section 4.3)
 
@@ -419,36 +428,40 @@ All hash outputs MUST be Base96 encoded:
 
 ### 5.1 Architecture Selection Heuristics
 
-| Condition | Selected Architecture | Rationale |
-|-----------|----------------------|-----------|
-| Corpus < 10K samples | Symbolic | Insufficient data for neural |
-| Corpus 10K–100K, structured | GNN | Graph structure exploitable |
-| Corpus 10K–100K, unstructured | DistilBERT-lite | Text classification |
-| Corpus 100K–1M | LoRA + base model | Efficient fine-tuning |
-| Corpus > 1M | Full Phi-3-mini | Sufficient for full training |
-| Real-time constraint < 10ms | Symbolic or pruned GNN | Latency requirement |
-| Interpretability required | Symbolic | Explainable decisions |
+| Condition                     | Selected Architecture  | Rationale                    |
+| ----------------------------- | ---------------------- | ---------------------------- |
+| Corpus < 10K samples          | Symbolic               | Insufficient data for neural |
+| Corpus 10K–100K, structured   | GNN                    | Graph structure exploitable  |
+| Corpus 10K–100K, unstructured | DistilBERT-lite        | Text classification          |
+| Corpus 100K–1M                | LoRA + base model      | Efficient fine-tuning        |
+| Corpus > 1M                   | Full Phi-3-mini        | Sufficient for full training |
+| Real-time constraint < 10ms   | Symbolic or pruned GNN | Latency requirement          |
+| Interpretability required     | Symbolic               | Explainable decisions        |
 
 ### 5.2 Layer Sizing Bounds
 
 **Input Layer:**
+
 ```
 input_dim = min(feature_count, 512)
 ```
 
 **Hidden Layers:**
+
 ```
 hidden_count = ceil(log2(corpus_size / 1000))
 hidden_dim = clamp(input_dim * 2, 32, 256)
 ```
 
 Bounds:
+
 - Minimum hidden layers: 1
 - Maximum hidden layers: 8
 - Minimum hidden dimension: 32
 - Maximum hidden dimension: 256
 
 **Output Layer:**
+
 ```
 output_dim = class_count  (classification)
 output_dim = 1            (regression)
@@ -457,23 +470,23 @@ output_dim = state_count  (transition prediction)
 
 ### 5.3 Activation Function Selection
 
-| Task Type | Activation | Output Activation |
-|-----------|------------|-------------------|
-| Classification | ReLU | Softmax |
-| Regression | ReLU | Linear |
-| Probability | ReLU | Sigmoid |
-| State transition | GELU | Softmax |
-| Anomaly score | LeakyReLU | Sigmoid |
+| Task Type        | Activation | Output Activation |
+| ---------------- | ---------- | ----------------- |
+| Classification   | ReLU       | Softmax           |
+| Regression       | ReLU       | Linear            |
+| Probability      | ReLU       | Sigmoid           |
+| State transition | GELU       | Softmax           |
+| Anomaly score    | LeakyReLU  | Sigmoid           |
 
 ### 5.4 Training Constraints
 
-| Parameter | Bound | Rationale |
-|-----------|-------|-----------|
-| Max epochs | 100 | Prevent overfitting |
-| Early stopping patience | 10 | Resource efficiency |
-| Batch size | `clamp(corpus_size / 100, 16, 512)` | Memory/convergence balance |
-| Learning rate | 1e-4 to 1e-2 (scheduled) | Stability |
-| Dropout | 0.1–0.3 | Regularization |
+| Parameter               | Bound                               | Rationale                  |
+| ----------------------- | ----------------------------------- | -------------------------- |
+| Max epochs              | 100                                 | Prevent overfitting        |
+| Early stopping patience | 10                                  | Resource efficiency        |
+| Batch size              | `clamp(corpus_size / 100, 16, 512)` | Memory/convergence balance |
+| Learning rate           | 1e-4 to 1e-2 (scheduled)            | Stability                  |
+| Dropout                 | 0.1–0.3                             | Regularization             |
 
 ---
 
@@ -493,6 +506,7 @@ For orbital operations, delta angles govern maneuver planning:
 ```
 
 **Phase Angle Computation:**
+
 ```lisp
 (delta-angle-compute
   :mode "hohmann"
@@ -514,6 +528,7 @@ For FSM transitions, delta angles encode transition costs:
 ```
 
 Where similarity is computed via:
+
 - Jaccard index (discrete states)
 - Cosine similarity (vector states)
 - Graph edit distance (structural states)
@@ -527,6 +542,7 @@ For cognitive state evolution in agent systems:
 ```
 
 Tracked metrics:
+
 - Belief drift rate
 - Confidence delta
 - Attention shift magnitude
@@ -534,12 +550,12 @@ Tracked metrics:
 
 ### 6.5 Delta Angle Thresholds
 
-| Domain | Minor Δθ | Significant Δθ | Critical Δθ |
-|--------|----------|----------------|-------------|
-| Orbital | < 1° | 1°–15° | > 15° |
-| FSM | < 0.1 | 0.1–0.5 | > 0.5 |
-| Cognitive | < 0.05 | 0.05–0.2 | > 0.2 |
-| Cyber | < 0.01 | 0.01–0.1 | > 0.1 |
+| Domain    | Minor Δθ | Significant Δθ | Critical Δθ |
+| --------- | -------- | -------------- | ----------- |
+| Orbital   | < 1°     | 1°–15°         | > 15°       |
+| FSM       | < 0.1    | 0.1–0.5        | > 0.5       |
+| Cognitive | < 0.05   | 0.05–0.2       | > 0.2       |
+| Cyber     | < 0.01   | 0.01–0.1       | > 0.1       |
 
 ---
 
@@ -547,22 +563,23 @@ Tracked metrics:
 
 ### 7.1 Error Classification
 
-| Error Class | Code Range | Recovery Strategy |
-|-------------|------------|-------------------|
-| `E_INGEST` | 1000–1099 | Retry with backoff |
-| `E_PARSE` | 1100–1199 | Reject, log, alert |
-| `E_VALIDATE` | 1200–1299 | Reject with diagnostic |
-| `E_HASH` | 1300–1399 | Collision resolution |
-| `E_SYNTH` | 1400–1499 | Fallback architecture |
-| `E_RUNTIME` | 1500–1599 | Graceful degradation |
-| `E_TIMEOUT` | 1600–1699 | Partial result + continue |
-| `E_RESOURCE` | 1700–1799 | Queue and retry |
-| `E_SECURITY` | 1800–1899 | Halt, isolate, alert |
-| `E_FATAL` | 1900–1999 | Full stop, snapshot state |
+| Error Class  | Code Range | Recovery Strategy         |
+| ------------ | ---------- | ------------------------- |
+| `E_INGEST`   | 1000–1099  | Retry with backoff        |
+| `E_PARSE`    | 1100–1199  | Reject, log, alert        |
+| `E_VALIDATE` | 1200–1299  | Reject with diagnostic    |
+| `E_HASH`     | 1300–1399  | Collision resolution      |
+| `E_SYNTH`    | 1400–1499  | Fallback architecture     |
+| `E_RUNTIME`  | 1500–1599  | Graceful degradation      |
+| `E_TIMEOUT`  | 1600–1699  | Partial result + continue |
+| `E_RESOURCE` | 1700–1799  | Queue and retry           |
+| `E_SECURITY` | 1800–1899  | Halt, isolate, alert      |
+| `E_FATAL`    | 1900–1999  | Full stop, snapshot state |
 
 ### 7.2 Layer-Specific Failure Modes
 
 **Atomic Clipboard (Layer 1.1):**
+
 ```
 E_INGEST_1001: Input exceeds size limit (max 100MB)
   → Chunked processing with reassembly
@@ -575,6 +592,7 @@ E_INGEST_1004: Checksum mismatch
 ```
 
 **Thalmic Filter (Layer 1.2):**
+
 ```
 E_PARSE_1101: Rune encoding failure
   → Emit without runes, flag for manual annotation
@@ -585,6 +603,7 @@ E_VALIDATE_1201: Confidence score out of bounds
 ```
 
 **Prompt Generator (Layer 1.3):**
+
 ```
 E_VALIDATE_1210: Grammar violation
   → Reject with parse tree and error location
@@ -597,6 +616,7 @@ E_VALIDATE_1213: Cycle detected in task hierarchy
 ```
 
 **Hash Construction (Layer 1.5):**
+
 ```
 E_HASH_1301: Collision detected
   → Invoke collision resolution protocol
@@ -607,6 +627,7 @@ E_HASH_1303: Base96 encoding failure
 ```
 
 **ANN Synthesis (Layer 1.6):**
+
 ```
 E_SYNTH_1401: Insufficient corpus
   → Fallback to symbolic processor
@@ -619,6 +640,7 @@ E_SYNTH_1404: Validation accuracy below threshold
 ```
 
 **Plasma Runtime (Layer 1.7):**
+
 ```
 E_RUNTIME_1501: Tick deadline missed
   → Log skipped tick, interpolate state
@@ -672,16 +694,17 @@ Current version: `0x3` (v3.0)
 
 ### 8.2 Schema Registry
 
-| Version | H1 Schema | H2 Schema | Status |
-|---------|-----------|-----------|--------|
-| 0x1 | tick(u32), mode(u8) | SCH(Murmur3-32) | DEPRECATED |
-| 0x2 | tick(u64), mode(u8), esc(u8) | SCH(Murmur3-64), CUID(partial) | DEPRECATED |
-| 0x3 | SCH + domain_mask + Δ-angle | CUID(16 slots) + UUIDv7 | CURRENT (RFC-9001) |
-| 0x4 | Reserved | Reserved | FUTURE |
+| Version | H1 Schema                    | H2 Schema                      | Status             |
+| ------- | ---------------------------- | ------------------------------ | ------------------ |
+| 0x1     | tick(u32), mode(u8)          | SCH(Murmur3-32)                | DEPRECATED         |
+| 0x2     | tick(u64), mode(u8), esc(u8) | SCH(Murmur3-64), CUID(partial) | DEPRECATED         |
+| 0x3     | SCH + domain_mask + Δ-angle  | CUID(16 slots) + UUIDv7        | CURRENT (RFC-9001) |
+| 0x4     | Reserved                     | Reserved                       | FUTURE             |
 
 ### 8.3 Migration Protocol
 
 **On Hash Encounter:**
+
 ```
 1. Extract schema_version from H1[127:124]
 2. If version == CURRENT:
@@ -697,6 +720,7 @@ Current version: `0x3` (v3.0)
 ```
 
 **Migration Functions:**
+
 ```rust
 fn migrate_v2_to_v3(old_h1: H1v2, old_h2: H2v2) -> (H1v3, H2v3) {
     let new_h1 = H1v3 {
@@ -749,23 +773,25 @@ All schema changes logged to immutable append-only store:
 
 ### 9.2 Tick Specification
 
-| Parameter | Default | Range | Description |
-|-----------|---------|-------|-------------|
-| `tick_duration` | 250 ns | 100 ns – 1 s | Wall-clock per tick |
-| `tick_budget` | 200 ns | 80% of duration | Max system execution time |
-| `tick_overflow` | WARN | WARN, SKIP, HALT | Overflow behavior |
-| `tick_alignment` | REALTIME | REALTIME, SIMTIME, FREERUN | Clock source |
+| Parameter        | Default  | Range                      | Description               |
+| ---------------- | -------- | -------------------------- | ------------------------- |
+| `tick_duration`  | 250 ns   | 100 ns – 1 s               | Wall-clock per tick       |
+| `tick_budget`    | 200 ns   | 80% of duration            | Max system execution time |
+| `tick_overflow`  | WARN     | WARN, SKIP, HALT           | Overflow behavior         |
+| `tick_alignment` | REALTIME | REALTIME, SIMTIME, FREERUN | Clock source              |
 
 ### 9.3 GLAF Matroid Slot Allocation
 
 Slots allocated via matroid optimization:
 
 **Matroid Definition:**
+
 - Ground set: All available compute slots
 - Independent sets: Non-conflicting slot assignments
 - Rank function: Maximum parallel agents without contention
 
 **Allocation Algorithm:**
+
 ```
 1. Build conflict graph from agent resource requirements
 2. Find maximum independent set (greedy matroid algorithm)
@@ -792,6 +818,7 @@ enum SlotState {
 ### 9.5 Convergence Criteria
 
 Agent reaches `Converged` state when:
+
 ```
 ||state_t - state_{t-1}|| < ε  for n consecutive ticks
 ```
@@ -991,6 +1018,7 @@ flowchart TB
 ### 12.1 Purpose
 
 Generates hundreds to thousands of task graph variants from a single intent to:
+
 - Validate ontological integrity
 - Stress-test grammar constraints
 - Discover edge cases
@@ -998,14 +1026,14 @@ Generates hundreds to thousands of task graph variants from a single intent to:
 
 ### 12.2 Generation Parameters
 
-| Parameter | Default | Description |
-|-----------|---------|-------------|
-| `seed_count` | 1000 | Number of variants to generate |
-| `branch_factor` | 3 | Max branches per decision point |
-| `mutation_rate` | 0.1 | Probability of parameter mutation |
-| `crossover_rate` | 0.2 | Probability of subgraph crossover |
-| `validity_filter` | true | Reject invalid variants |
-| `dedup_threshold` | 0.95 | Similarity threshold for deduplication |
+| Parameter         | Default | Description                            |
+| ----------------- | ------- | -------------------------------------- |
+| `seed_count`      | 1000    | Number of variants to generate         |
+| `branch_factor`   | 3       | Max branches per decision point        |
+| `mutation_rate`   | 0.1     | Probability of parameter mutation      |
+| `crossover_rate`  | 0.2     | Probability of subgraph crossover      |
+| `validity_filter` | true    | Reject invalid variants                |
+| `dedup_threshold` | 0.95    | Similarity threshold for deduplication |
 
 ### 12.3 Validation Checks
 
@@ -1064,15 +1092,15 @@ monte_carlo_run/
 
 ### 13.2 HUD Update Frequency
 
-| Field | Update Trigger |
-|-------|----------------|
-| STATUS | On state change |
-| VELOCITY | Every 100 ticks |
-| MISSION | On mission change |
-| HASH STATE | Every tick |
+| Field        | Update Trigger        |
+| ------------ | --------------------- |
+| STATUS       | On state change       |
+| VELOCITY     | Every 100 ticks       |
+| MISSION      | On mission change     |
+| HASH STATE   | Every tick            |
 | DELTA ANGLES | On threshold crossing |
-| AGENTS | On slot state change |
-| ACTION | On command |
+| AGENTS       | On slot state change  |
+| ACTION       | On command            |
 
 ---
 
@@ -1088,6 +1116,7 @@ A PromptScript program is deterministic if:
 ```
 
 **Verification Protocol:**
+
 1. Execute program with fixed seed
 2. Record all outputs and state transitions
 3. Re-execute with same seed
@@ -1096,23 +1125,23 @@ A PromptScript program is deterministic if:
 
 ### 14.2 Compliance Checklist
 
-| Requirement | Verification Method |
-|-------------|---------------------|
-| Grammar conformance | BNF parser acceptance |
-| Type safety | Static type checker |
-| Reference integrity | Symbol table lookup |
-| Acyclicity | Tarjan's SCC algorithm |
-| Hash correctness | Test vector validation |
-| Error handling | Fault injection testing |
-| Determinism | Repeated execution comparison |
+| Requirement         | Verification Method           |
+| ------------------- | ----------------------------- |
+| Grammar conformance | BNF parser acceptance         |
+| Type safety         | Static type checker           |
+| Reference integrity | Symbol table lookup           |
+| Acyclicity          | Tarjan's SCC algorithm        |
+| Hash correctness    | Test vector validation        |
+| Error handling      | Fault injection testing       |
+| Determinism         | Repeated execution comparison |
 
 ### 14.3 Certification Levels
 
-| Level | Requirements |
-|-------|--------------|
-| **L1: Basic** | Grammar + Type conformance |
-| **L2: Standard** | L1 + Reference integrity + Acyclicity |
-| **L3: Strict** | L2 + Error handling + Determinism |
+| Level             | Requirements                                      |
+| ----------------- | ------------------------------------------------- |
+| **L1: Basic**     | Grammar + Type conformance                        |
+| **L2: Standard**  | L1 + Reference integrity + Acyclicity             |
+| **L3: Strict**    | L2 + Error handling + Determinism                 |
 | **L4: Certified** | L3 + Monte Carlo validation + Penetration testing |
 
 ---
@@ -1164,6 +1193,7 @@ sx9.
 ### 15.3 Message Formats
 
 **Workflow Spawned:**
+
 ```json
 {
   "subject": "sx9.workflow.spawned",
@@ -1179,6 +1209,7 @@ sx9.
 ```
 
 **Tool Completed:**
+
 ```json
 {
   "subject": "sx9.l2.tool.nmap.completed",
@@ -1196,6 +1227,7 @@ sx9.
 ```
 
 **L2 Response:**
+
 ```json
 {
   "subject": "sx9.l2.response",
@@ -1224,17 +1256,17 @@ streams:
       - "sx9.>"
     retention: limits
     max_msgs: 10000000
-    max_bytes: 10737418240  # 10GB
-    max_age: 2592000s       # 30 days
+    max_bytes: 10737418240 # 10GB
+    max_age: 2592000s # 30 days
     storage: file
     replicas: 1
-    
+
   - name: SX9_L2_CHAINS
     subjects:
       - "sx9.l2.>"
     retention: workqueue
     max_msgs: 1000
-    max_bytes: 104857600    # 100MB
+    max_bytes: 104857600 # 100MB
     storage: memory
     replicas: 1
 
@@ -1244,7 +1276,7 @@ consumers:
     filter_subject: "sx9.l2.trigger"
     ack_policy: explicit
     max_deliver: 3
-    
+
   - name: ANN_TRAINER
     stream: SX9_AUDIT
     filter_subject: "sx9.ann.>"
@@ -1253,14 +1285,14 @@ consumers:
 
 ### 15.5 NATS Integration Points
 
-| Component | Publishes | Subscribes |
-|-----------|-----------|------------|
-| sx9-orchestrator | `sx9.workflow.*`, `sx9.ann.*` | `sx9.error.*` |
-| L2 XDP Stack | `sx9.l2.trigger` | — |
-| L2 Rust Orchestrator | `sx9.l2.tool.*`, `sx9.l2.response` | `sx9.l2.trigger` |
-| Legion ECS | `sx9.tick.sync` | `sx9.tick.drift` |
-| GLAF Core | `sx9.threat.*` | `sx9.ann.model.ready` |
-| Visualizer | — | `sx9.>` (read-only) |
+| Component            | Publishes                          | Subscribes            |
+| -------------------- | ---------------------------------- | --------------------- |
+| sx9-orchestrator     | `sx9.workflow.*`, `sx9.ann.*`      | `sx9.error.*`         |
+| L2 XDP Stack         | `sx9.l2.trigger`                   | —                     |
+| L2 Rust Orchestrator | `sx9.l2.tool.*`, `sx9.l2.response` | `sx9.l2.trigger`      |
+| Legion ECS           | `sx9.tick.sync`                    | `sx9.tick.drift`      |
+| GLAF Core            | `sx9.threat.*`                     | `sx9.ann.model.ready` |
+| Visualizer           | —                                  | `sx9.>` (read-only)   |
 
 ---
 
@@ -1321,21 +1353,21 @@ impl HermeticTool {
     pub async fn execute(&mut self, params: ToolParams) -> Result<ToolOutput> {
         // 1. Decode Unicode parameters
         let args = params.decode_unicode()?;
-        
+
         // 2. Execute via FFI (no shell)
         let result = unsafe {
             self.ffi_execute(&args)?
         };
-        
+
         // 3. Capture output in memory (no files)
         self.output = result.stdout_buffer;
-        
+
         // 4. Emit to NATS (no logs)
         self.nats.publish(
             format!("sx9.l2.tool.{}.completed", self.name),
             self.output.clone().into()
         ).await?;
-        
+
         // 5. Return Unicode-encoded result
         Ok(ToolOutput {
             rune: '\u{F8FF}',
@@ -1454,284 +1486,32 @@ fields = ["cves", "report"]
 
 **Failure Handling:**
 
-| `on_failure` | Behavior |
-|--------------|----------|
-| `abort` | Stop chain, emit NATS error, return partial via L2 |
-| `continue` | Emit NATS warning, proceed to next step |
-| `retry` | Retry up to 3 times with exponential backoff |
-| `skip` | Skip step, proceed without outputs |
+| `on_failure` | Behavior                                           |
+| ------------ | -------------------------------------------------- |
+| `abort`      | Stop chain, emit NATS error, return partial via L2 |
+| `continue`   | Emit NATS warning, proceed to next step            |
+| `retry`      | Retry up to 3 times with exponential backoff       |
+| `skip`       | Skip step, proceed without outputs                 |
 
 **Note:** No "logging"—all events flow through NATS. No "files"—all state in NATS KV.
 
-### 16.5 Response Format
+## 13. Prompt HUD Implementation
 
-**Chain Completion Response:**
+**Moved to RFC-9116.**
 
-```json
-{
-  "chain_id": "uuid",
-  "chain_name": "Initial Access Kill Chain",
-  "persona": "initial_access",
-  "status": "completed",
-  "started_at": "2025-12-03T18:30:00Z",
-  "completed_at": "2025-12-03T18:45:30Z",
-  "duration_ms": 930000,
-  "steps": [
-    {
-      "order": 1,
-      "tool": "ReconNG",
-      "status": "success",
-      "exit_code": 0,
-      "duration_ms": 45000,
-      "trivariate": "triv:abc123...",
-      "filtered": false
-    },
-    {
-      "order": 2,
-      "tool": "masscan",
-      "status": "success",
-      "exit_code": 0,
-      "duration_ms": 120000,
-      "trivariate": "triv:def456...",
-      "filtered": false
-    }
-    // ... additional steps
-  ],
-  "findings": {
-    "subdomains_found": 47,
-    "open_ports": 156,
-    "services_identified": 89,
-    "vulnerabilities": 12,
-    "critical": 2,
-    "high": 4,
-    "medium": 6
-  },
-  "report": {
-    "path": "client_report.md",
-    "trivariate": "triv:...",
-    "size_bytes": 45678,
-    "filter_score": 0.94
-  },
-  "trivariate_hash": "sch:...:cuid:...:uuid:...",
-  "l2_response_byte": "U+F8FF"
-}
-```
+The "Prompt HUD" described in previous versions of this RFC is implemented as the **SX9 Dev Forge**.
 
-### 16.6 L2 Response Packet Format
-
-Per RFC-9876, the response is encoded in a Layer-2 ARP reply:
-
-```
-| Offset | Content |
-|--------|---------|
-| 0x00–0x06 | Target MAC (original sender) |
-| 0x06–0x0C | 00:00:00:00:00:00 (broadcast) |
-| 0x0C–0x0E | EtherType 0x88B5 |
-| 0x0E–0x10 | U+F8FF byte (completion flag) |
-| 0x10–0x30 | Lisp(Murmur3-64(response)) (11-byte Base96 prefix) |
-| 0x30–0xFF | Compressed JSON response (up to 240B) |
-```
-
-**Compressed Response (240 bytes max):**
-
-```json
-{"s":"ok","t":930000,"f":12,"c":2,"h":4,"m":6,"triv":"[SCH]_[CUID]"}
-```
-
-| Field | Meaning |
-|-------|---------|
-| `s` | Status (ok/err) |
-| `t` | Duration ms |
-| `f` | Total findings |
-| `c` | Critical count |
-| `h` | High count |
-| `m` | Medium count |
-| `r` | Report hash (truncated) |
-
-### 16.7 Rust Tool Wrapper Crates
-
-Each security tool is wrapped in a hermetic Rust crate:
-
-```
-sx9-tools/
-├── Cargo.toml                    # Workspace
-├── sx9-tool-core/                # Shared traits and types
-│   └── src/lib.rs
-├── sx9-tool-nmap/                # nmap wrapper
-│   ├── Cargo.toml
-│   ├── src/lib.rs
-│   └── src/ffi.rs               # FFI to nmap binary
-├── sx9-tool-masscan/             # masscan wrapper
-├── sx9-tool-nuclei/              # nuclei wrapper
-├── sx9-tool-reconng/             # ReconNG wrapper
-└── sx9-tool-report/              # Report generator
-```
-
-**Core Trait:**
-
-```rust
-/// All tools implement this trait - no shell, no files, no air
-#[async_trait]
-pub trait HermeticTool: Send + Sync {
-    /// Tool name for NATS subject
-    fn name(&self) -> &'static str;
-    
-    /// Unicode trigger rune (U+E0xx range)
-    fn trigger_rune(&self) -> char;
-    
-    /// Execute with zero shell interaction
-    async fn execute(
-        &self,
-        params: UnicodeParams,
-        nats: &NatsClient,
-    ) -> Result<UnicodeResponse>;
-    
-    /// Embedded binary bytes (no filesystem read)
-    fn binary(&self) -> &'static [u8];
-}
-
-/// Parameters decoded from Unicode payload
-pub struct UnicodeParams {
-    pub rune: char,
-    pub hash_prefix: [u8; 20],
-    pub payload: Vec<u8>,
-}
-
-/// Response encoded to Unicode payload
-pub struct UnicodeResponse {
-    pub rune: char,           // U+F8FF for completion
-    pub trivariate: String,   // triv:[SCH]_[CUID]_[UUID] per RFC-9001
-    pub compressed: Vec<u8>,  // zstd compressed result
-}
-```
-
-**Example: nmap Wrapper:**
-
-```rust
-pub struct NmapTool {
-    /// nmap binary embedded at compile time
-    binary: &'static [u8] = include_bytes!("../bin/nmap"),
-}
-
-#[async_trait]
-impl HermeticTool for NmapTool {
-    fn name(&self) -> &'static str { "nmap" }
-    fn trigger_rune(&self) -> char { '\u{E003}' }
-    fn binary(&self) -> &'static [u8] { self.binary }
-    
-    async fn execute(
-        &self,
-        params: UnicodeParams,
-        nats: &NatsClient,
-    ) -> Result<UnicodeResponse> {
-        // 1. Get targets from NATS KV (not filesystem)
-        let targets = nats.kv("sx9-state")
-            .get("targets")
-            .await?;
-        
-        // 2. Execute via FFI (not shell)
-        let output = unsafe {
-            nmap_ffi::scan(
-                &targets,
-                "-sV",
-                "-p1-65535",
-            )?
-        };
-        
-        // 3. Store result in NATS KV (not filesystem)
-        nats.kv("sx9-state")
-            .put("services", &output)
-            .await?;
-        
-        // 4. Publish completion (not log)
-        nats.publish(
-            "sx9.l2.tool.nmap.completed",
-            serde_json::to_vec(&ToolResult {
-                exit_code: 0,
-                trivariate: generate_trivariate(&output, tick),
-                output_size: output.len(),
-            })?
-        ).await?;
-        
-        // 5. Return Unicode response
-        Ok(UnicodeResponse {
-            rune: '\u{F8FF}',
-            trivariate: generate_trivariate(&output, tick),
-            compressed: zstd::encode(&output, 3)?,
-        })
-    }
-}
-```
-
-### 16.8 NATS KV State Store
-
-All inter-tool state flows through NATS KV (not filesystem):
-
-```yaml
-bucket: sx9-state
-  keys:
-    - targets          # Initial targets
-    - subdomains       # ReconNG output
-    - ports            # masscan output
-    - services         # nmap output
-    - cves             # nuclei output
-    - report           # Final report
-  
-  ttl: 3600s           # Auto-expire after 1 hour
-  history: 1           # No history (ephemeral)
-  storage: memory      # Never touches disk
-```
-
-**State Flow:**
-
-```
-U+E001 (ReconNG) ──▶ NATS KV: subdomains
-                          │
-U+E002 (masscan) ◀────────┘
-        │
-        └──────────▶ NATS KV: ports
-                          │
-U+E003 (nmap) ◀───────────┘
-        │
-        └──────────▶ NATS KV: services
-                          │
-U+E004 (nuclei) ◀─────────┘
-        │
-        └──────────▶ NATS KV: cves
-                          │
-U+E005 (report) ◀─────────┘
-        │
-        └──────────▶ L2 Response (U+F8FF)
-```
-
-### 16.9 PromptScript Tool Chain Form
-
-```lisp
-(tool-chain-execute
-  :name "initial-access-chain"
-  :persona "initial_access"
-  :target "{target_domain}"
-  :hermetic true                    ; NO SHELL
-  :state-store "nats-kv"            ; NO FILES
-  :steps '(
-    (ReconNG :rune U+E001 :input target :output subdomains)
-    (masscan :rune U+E002 :input subdomains :output ports)
-    (nmap :rune U+E003 :input ports :output services)
-    (nuclei :rune U+E004 :input services :output cves)
-    (report :rune U+E005 :input cves :output report)
-  )
-  :filter '(distilbert :threshold 0.9 :in-process true)
-  :on-complete '(l2-respond :byte U+F8FF)
-  :emit-nats true
-  :no-shell true
-  :no-files true
-  :no-logs true
-)
-```
+See: **[RFC-9116: SX9 Dev Forge System Architecture](../9100-integration/RFC-9116-Dev-Forge-System.md)**
 
 ---
 
-## 17. Future Work
+## 14. Validation and Compliance
+
+(Unchanged from v2.0 - see legacy archives for checklist)
+
+---
+
+## 15. Future Work
 
 ### 15.1 Near-Term (Q1 2026)
 
@@ -1756,26 +1536,36 @@ U+E005 (report) ◀─────────┘
 
 ---
 
+## 16. Tool Execution & Response
+
+**Moved to RFC-9117.**
+
+The specification for Tool Responses (U+E900 range), Hermetic Execution, and Rust Wrappers has been extracted to its own RFC.
+
+See: **[RFC-9117: Tool Response Block](../9100-integration/RFC-9117-Tool-Response-Block.md)**
+
+---
+
 ## Appendices
 
 ### Appendix A: Required Keywords by Form
 
-| Form | Required Keywords |
-|------|-------------------|
-| `domain-init` | `:name`, `:layers`, `:hash-mode` |
-| `intent-capture` | `:source`, `:thalmic-gating` |
-| `task-hierarchy-generate` | `:grammar`, `:phases` |
-| `cyber-defense-activate` | `:profile` |
-| `data-flow-define` | `:ingest`, `:route` |
-| `ann-derive` | `:type`, `:input-features`, `:output-types` |
-| `delta-angle-compute` | `:mode` |
-| `hash-evolve` | `:current-version` |
-| `plasma-deploy` | `:ecs`, `:tick`, `:agents` |
-| `tool-chain-execute` | `:name`, `:persona`, `:steps` |
-| `l2-respond` | `:byte` |
-| `nats-publish` | `:subject`, `:payload` |
-| `error-handling` | `:retry-max` |
-| `validation` | (none required) |
+| Form                      | Required Keywords                           |
+| ------------------------- | ------------------------------------------- |
+| `domain-init`             | `:name`, `:layers`, `:hash-mode`            |
+| `intent-capture`          | `:source`, `:thalmic-gating`                |
+| `task-hierarchy-generate` | `:grammar`, `:phases`                       |
+| `cyber-defense-activate`  | `:profile`                                  |
+| `data-flow-define`        | `:ingest`, `:route`                         |
+| `ann-derive`              | `:type`, `:input-features`, `:output-types` |
+| `delta-angle-compute`     | `:mode`                                     |
+| `hash-evolve`             | `:current-version`                          |
+| `plasma-deploy`           | `:ecs`, `:tick`, `:agents`                  |
+| `tool-chain-execute`      | `:name`, `:persona`, `:steps`               |
+| `l2-respond`              | `:byte`                                     |
+| `nats-publish`            | `:subject`, `:payload`                      |
+| `error-handling`          | `:retry-max`                                |
+| `validation`              | (none required)                             |
 
 ### Appendix B: Error Code Reference
 
@@ -1783,20 +1573,20 @@ See Section 7.2 for complete error code listing.
 
 ### Appendix C: Rune Quick Reference
 
-| Range | Category |
-|-------|----------|
-| U+E800–U+E80F | Priority |
-| U+E810–U+E81F | Confidence |
-| U+E820–U+E82F | Suppression |
-| U+E830–U+E83F | Domain Tag |
-| U+E840–U+E84F | Agent Route |
-| U+E850–U+E85F | Lineage |
-| U+E860–U+E86F | Temporal |
-| U+E870–U+E87F | Security |
+| Range         | Category      |
+| ------------- | ------------- |
+| U+E800–U+E80F | Priority      |
+| U+E810–U+E81F | Confidence    |
+| U+E820–U+E82F | Suppression   |
+| U+E830–U+E83F | Domain Tag    |
+| U+E840–U+E84F | Agent Route   |
+| U+E850–U+E85F | Lineage       |
+| U+E860–U+E86F | Temporal      |
+| U+E870–U+E87F | Security      |
 | U+E880–U+E8FF | Verb Encoding |
 | U+E900–U+E93F | State Markers |
 | U+E940–U+E97F | Delta Markers |
-| U+E980–U+E9FF | Reserved |
+| U+E980–U+E9FF | Reserved      |
 
 ### Appendix D: Hash Test Vectors
 
@@ -1817,49 +1607,39 @@ Expected Base96: "ΨαβΓδ..." (43 chars)
 
 ### Appendix E: Glossary
 
-| Term | Definition |
-|------|------------|
-| **Atomic Clipboard** | Canonical ingest point for all input data |
-| **Delta Angle (Δθ)** | Phase transition vector between states |
-| **GLAF** | Graph-Lattice Allocation Framework |
-| **H1** | Operational trivariate hash |
-| **H2** | Semantic trivariate hash |
-| **Hermetic Tool** | Rust-wrapped tool with no shell/file/log access |
-| **L2 Frame** | Layer-2 Ethernet frame for Unicode triggers |
-| **Legion** | ECS runtime library |
-| **Matroid** | Combinatorial structure for independence |
-| **NATS KV** | Key-value store for inter-tool state (no files) |
-| **Plasma** | Event-driven simulation engine |
-| **PromptScript** | Lisp-based DSL for domain specification |
-| **Rune** | Unicode Private Use Area annotation character |
-| **Thalmic Filter** | Semantic suppression and routing layer |
-| **Tool Chain** | Deterministic sequence of hermetic tools |
-| **Trivariate Hash** | Three-component hash construction |
-| **XDP** | eXpress Data Path for packet-level triggers |
+| Term                 | Definition                                      |
+| -------------------- | ----------------------------------------------- |
+| **Atomic Clipboard** | Canonical ingest point for all input data       |
+| **Delta Angle (Δθ)** | Phase transition vector between states          |
+| **GLAF**             | Graph-Lattice Allocation Framework              |
+| **H1**               | Operational trivariate hash                     |
+| **H2**               | Semantic trivariate hash                        |
+| **Hermetic Tool**    | Rust-wrapped tool with no shell/file/log access |
+| **L2 Frame**         | Layer-2 Ethernet frame for Unicode triggers     |
+| **Legion**           | ECS runtime library                             |
+| **Matroid**          | Combinatorial structure for independence        |
+| **NATS KV**          | Key-value store for inter-tool state (no files) |
+| **Plasma**           | Event-driven simulation engine                  |
+| **PromptScript**     | Lisp-based DSL for domain specification         |
+| **Rune**             | Unicode Private Use Area annotation character   |
+| **Thalmic Filter**   | Semantic suppression and routing layer          |
+| **Tool Chain**       | Deterministic sequence of hermetic tools        |
+| **Trivariate Hash**  | Three-component hash construction               |
+| **XDP**              | eXpress Data Path for packet-level triggers     |
 
 ### Appendix F: Hermetic Execution Constraints
 
-**Tools MUST NOT:**
-- Invoke shell (`/bin/sh`, `/bin/bash`, `system()`, `popen()`)
-- Write to filesystem (`open()`, `fwrite()`, `/tmp/*`)
-- Read environment variables (`getenv()`, `std::env`)
-- Spawn processes (`fork()`, `exec()`, `Command::new()`)
-- Open network sockets (`socket()`, `connect()`)
-- Write to stdout/stderr (captured, not emitted)
-- Access syslog/journald
-
-**Tools MUST:**
-- Execute via Rust FFI only
-- Store state in NATS KV only
-- Communicate via NATS pub/sub only
-- Trigger via Unicode runes only
-- Respond via L2 frames only
-- Embed binaries at compile time
+**Refactored to separate spec.**
+See **[RFC-9117: Tool Response Block](../9100-integration/RFC-9117-Tool-Response-Block.md)**
 
 ---
 
-**End of RFC-9112 v3.0**
+**End of RFC-9112 v3.1**
 
 ---
 
-*"Prompt is program. Hash is compute. Lisp is law."*
+_"Prompt is program. Hash is compute. Lisp is law."_
+
+```
+
+```

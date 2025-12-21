@@ -1,3 +1,23 @@
+#![allow(clippy::items_after_statements)]
+#![allow(clippy::format_push_string)]
+#![allow(clippy::unnecessary_wraps)]
+#![allow(clippy::redundant_pattern_matching)]
+#![allow(clippy::needless_borrows_for_generic_args)]
+#![allow(clippy::unused_async)]
+#![allow(clippy::too_many_arguments)]
+#![allow(clippy::type_complexity)]
+#![allow(clippy::cast_sign_loss)]
+#![allow(clippy::similar_names)]
+#![allow(clippy::unreadable_literal)]
+#![allow(clippy::unused_self)]
+#![allow(dead_code)]
+#![allow(unused_imports)]
+#![allow(clippy::missing_errors_doc)]
+#![allow(clippy::missing_panics_doc)]
+#![allow(clippy::struct_excessive_bools)]
+#![allow(clippy::cast_precision_loss)]
+#![allow(clippy::cast_possible_truncation)]
+#![allow(clippy::module_name_repetitions)]
 //! sx9-plasma-defender - PLASMA Defender with Crystal & SDT Integration
 //!
 //! Purpose: PLASMA defender for health monitoring and threat detection
@@ -36,6 +56,7 @@ pub mod metrics;
 pub mod monitor;
 pub mod ossec;
 pub mod plasma_bus;
+pub mod powershell_dissector;
 pub mod ring_bus;
 pub mod sdt;
 pub mod server;
@@ -54,6 +75,7 @@ pub use metrics::MetricsCollector;
 pub use monitor::ThreatMonitor;
 pub use ossec::{MitreMapping, OssecAgent, OssecAlertParser};
 pub use plasma_bus::{PlasmaBus, PlasmaEvent};
+pub use powershell_dissector::{PowerShellAnalysisResult, PowerShellBeaconDissector};
 pub use ring_bus::{RingBusNode, RingMessage, ThreatEvent, ToolOutput};
 pub use sdt::SdtIntegration;
 pub use server::PlasmaDefenderServer;

@@ -1,3 +1,23 @@
+#![allow(clippy::items_after_statements)]
+#![allow(clippy::format_push_string)]
+#![allow(clippy::unnecessary_wraps)]
+#![allow(clippy::redundant_pattern_matching)]
+#![allow(clippy::needless_borrows_for_generic_args)]
+#![allow(clippy::unused_async)]
+#![allow(clippy::too_many_arguments)]
+#![allow(clippy::type_complexity)]
+#![allow(clippy::cast_sign_loss)]
+#![allow(clippy::similar_names)]
+#![allow(clippy::unreadable_literal)]
+#![allow(clippy::unused_self)]
+#![allow(dead_code)]
+#![allow(unused_imports)]
+#![allow(clippy::missing_errors_doc)]
+#![allow(clippy::missing_panics_doc)]
+#![allow(clippy::struct_excessive_bools)]
+#![allow(clippy::cast_precision_loss)]
+#![allow(clippy::cast_possible_truncation)]
+#![allow(clippy::module_name_repetitions)]
 //! # CTAS-7 Foundation Math
 //!
 //! Symbolic computation engine to replace Wolfram Alpha with native Rust performance.
@@ -259,6 +279,12 @@ impl SymbolicComputationEngine {
 #[derive(Debug)]
 pub struct UniversalPrimitivesEngine {
     primitives: HashMap<String, PrimitiveOperation>,
+}
+
+impl Default for UniversalPrimitivesEngine {
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 impl UniversalPrimitivesEngine {

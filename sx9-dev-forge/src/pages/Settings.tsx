@@ -33,7 +33,7 @@ export default function Settings() {
   const [standardKeys, setStandardKeys] = useState<string[]>([]);
   const [newKeyName, setNewKeyName] = useState("");
   const [newKeyValue, setNewKeyValue] = useState("");
-  const [newKeyService, setNewKeyService] = useState("api");
+  const [newKeyService] = useState("api");
   const [showAddKey, setShowAddKey] = useState(false);
 
   // Linear state
@@ -168,9 +168,37 @@ export default function Settings() {
 
   return (
     <div className="p-6 max-w-3xl">
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold text-emerald-400">Settings</h1>
-        <p className="text-zinc-500">Configure SX9 Dev Forge integrations</p>
+      <div className="mb-6 flex justify-between items-center">
+        <div>
+          <h1 className="text-2xl font-bold text-emerald-400">Settings</h1>
+          <p className="text-zinc-500">Configure SX9 Dev Forge integrations</p>
+        </div>
+        <button
+          onClick={async () => {
+            try {
+              setMessage({ type: "success", text: "Testing Slack..." });
+              const res = await invoke("send_slack", {
+                message: "🦅 Verification: SX9 Frontend Bridge Operational.",
+                channel: null,
+              });
+              console.log(res);
+              setMessage({
+                type: "success",
+                text: "✅ Slack Verified: " + res,
+              });
+            } catch (e: any) {
+              console.error(e);
+              setMessage({
+                type: "error",
+                text: "❌ Slack Failed: " + e.toString(),
+              });
+            }
+          }}
+          className="px-4 py-2 bg-emerald-600/20 text-emerald-400 border border-emerald-600/30 rounded-lg hover:bg-emerald-600/30 transition-colors flex items-center gap-2"
+        >
+          <Zap className="w-4 h-4" />
+          Test Slack
+        </button>
       </div>
 
       {message && (

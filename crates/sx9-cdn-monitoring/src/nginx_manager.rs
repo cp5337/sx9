@@ -6,7 +6,6 @@
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
-use tracing::{error, info};
 
 use crate::cyber_operations::{CyberOpsFeature, ThreatLevel};
 use crate::types::CDNError;
@@ -44,6 +43,12 @@ pub struct CyberOpsConfig {
     pub features: Vec<CyberOpsFeature>,
     pub threat_level: ThreatLevel,
     pub active_operations: Vec<String>,
+}
+
+impl Default for NGINXConfigManager {
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 impl NGINXConfigManager {

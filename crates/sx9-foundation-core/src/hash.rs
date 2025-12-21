@@ -4,7 +4,7 @@
 //! RFC-9100: PTCC Primitives
 //!
 //! Core Element: Identity & Hashing
-//! Implementation: ctas7-foundation-core::hash
+//! Implementation: `ctas7-foundation-core::hash`
 //!
 //! This module provides the canonical trivariate hash system:
 //! - SCH-T (Semantic Context Hash - Tools/Actions)
@@ -41,6 +41,7 @@ pub struct PrimaryTrivariate {
 
 impl PrimaryTrivariate {
     /// Create new trivariate from components
+    #[must_use]
     pub fn new(sch_t: HashValue, cuid_t: HashValue, uuid_t: Uuid) -> Self {
         Self {
             sch_t,
@@ -50,6 +51,7 @@ impl PrimaryTrivariate {
     }
 
     /// Generate trivariate from key and data
+    #[must_use]
     pub fn from_key(key: &str, data: &str) -> Self {
         let sch_t = compute_sch(key.as_bytes());
         let cuid_t = compute_cuid(data.as_bytes());
@@ -65,11 +67,12 @@ impl PrimaryTrivariate {
     ///
     /// Note: Uses hash-based determinism from SCH and CUID components
     /// since foundation-core uses uuid v4 only
+    #[must_use]
     pub fn from_key_deterministic(key: &str, data: &str) -> Self {
         let sch_t = compute_sch(key.as_bytes());
         let cuid_t = compute_cuid(data.as_bytes());
         // Use combined hash to create deterministic UUID bytes
-        let combined = format!("{}:{}:{:032x}:{:032x}", key, data, sch_t, cuid_t);
+        let combined = format!("{key}:{data}:{sch_t:032x}:{cuid_t:032x}");
         let hash = compute_sch(combined.as_bytes());
         let uuid_bytes: [u8; 16] = hash.to_le_bytes();
         let uuid_t = Uuid::from_bytes(uuid_bytes);
@@ -81,6 +84,7 @@ impl PrimaryTrivariate {
     }
 
     /// Convert to 48-character hex string
+    #[must_use]
     pub fn to_hex_string(&self) -> String {
         format!(
             "{:016x}{:016x}{}",
@@ -91,11 +95,13 @@ impl PrimaryTrivariate {
     }
 
     /// Get the SCH component as 64-bit value
+    #[must_use]
     pub fn sch_64(&self) -> u64 {
         self.sch_t as u64
     }
 
     /// Get the CUID component as 64-bit value
+    #[must_use]
     pub fn cuid_64(&self) -> u64 {
         self.cuid_t as u64
     }
@@ -118,12 +124,14 @@ impl std::fmt::Display for PrimaryTrivariate {
 }
 
 /// Compute SCH (Semantic Context Hash) component
+#[must_use]
 pub fn compute_sch(data: &[u8]) -> HashValue {
     let mut cursor = Cursor::new(data);
     murmur3_x64_128(&mut cursor, SEED_SCH).unwrap_or(0)
 }
 
 /// Compute CUID (Context User Identity) component
+#[must_use]
 pub fn compute_cuid(data: &[u8]) -> HashValue {
     let mut cursor = Cursor::new(data);
     murmur3_x64_128(&mut cursor, SEED_CUID).unwrap_or(0)
@@ -136,25 +144,29 @@ pub fn compute_cuid(data: &[u8]) -> HashValue {
 /// * `data` - Context data for CUID component
 ///
 /// # Returns
-/// PrimaryTrivariate with all three components
+/// `PrimaryTrivariate` with all three components
+#[must_use]
 pub fn generate_primary_trivariate(key: &str, data: &str) -> PrimaryTrivariate {
     PrimaryTrivariate::from_key(key, data)
 }
 
 /// Generate deterministic trivariate (reproducible UUID)
+#[must_use]
 pub fn generate_deterministic_trivariate(key: &str, data: &str) -> PrimaryTrivariate {
     PrimaryTrivariate::from_key_deterministic(key, data)
 }
 
 /// Quick hash function for simple lookups
+#[must_use]
 pub fn quick_hash(data: &str) -> u64 {
     let mut cursor = Cursor::new(data.as_bytes());
     murmur3_x64_128(&mut cursor, SEED_SCH).unwrap_or(0) as u64
 }
 
 /// Hash for route table lookups (Neural Mux compatible)
+#[must_use]
 pub fn route_hash(sch: &str, domain: u8) -> u64 {
-    let combined = format!("{}:{:02x}", sch, domain);
+    let combined = format!("{sch}:{domain:02x}");
     quick_hash(&combined)
 }
 
@@ -198,7 +210,8 @@ impl TacticalInstruction {
 /// * `instr` - Tactical instruction with primitive and payload
 ///
 /// # Returns
-/// PrimaryTrivariate with all three components
+/// `PrimaryTrivariate` with all three components
+#[must_use]
 pub fn generate_primary_trivariate_from_instruction(
     instr: &TacticalInstruction,
 ) -> PrimaryTrivariate {
@@ -208,7 +221,7 @@ pub fn generate_primary_trivariate_from_instruction(
 
     // CUID-T includes Delta-Angle encoding (simplified - uses UUID for now)
     // In production, this would include delta-angle calculation
-    let cuid_input = format!("{}:{}", Uuid::new_v4().to_string(), instr.payload);
+    let cuid_input = format!("{}:{}", Uuid::new_v4(), instr.payload);
     let cuid_t = compute_cuid(cuid_input.as_bytes());
 
     PrimaryTrivariate {

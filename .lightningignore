@@ -1,0 +1,19 @@
+# Build & Dependency Directories
+target/
+node_modules/
+dist/
+build/
+.next/
+out/
+.git/
+.venv/
+
+# Generated Code / Third Party
+jquery.js
+*.min.js
+*.bundle.js
+
+# Specific Project Excludes
+apps/sx9-graph-viewer/.next/
+tools/abe/iac/node-interview-generator/output/
+crates/sx9-foundation-core/build.rs

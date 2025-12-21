@@ -7,7 +7,7 @@ import {
   Settings as SettingsIcon,
   Zap,
 } from "lucide-react";
-import PromptForge from "./pages/PromptForge";
+import PromptForge from "./PromptForge";
 import Dashboard from "./pages/Dashboard";
 import Missions from "./pages/Missions";
 import RfcBrowser from "./pages/RfcBrowser";
@@ -16,7 +16,7 @@ import Settings from "./pages/Settings";
 type Page = "dashboard" | "forge" | "missions" | "rfcs" | "settings";
 
 function App() {
-  const [currentPage, setCurrentPage] = useState<Page>("dashboard");
+  const [currentPage, setCurrentPage] = useState<Page>("forge");
 
   const navItems: { id: Page; label: string; icon: React.ReactNode }[] = [
     {

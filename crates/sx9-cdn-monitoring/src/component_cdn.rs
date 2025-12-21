@@ -3,16 +3,11 @@
 //! Serves as the central repository and delivery system for all
 //! CTAS frontend components and visualization methods.
 
-use axum::{
-    extract::{Path, Query},
-    response::Json,
-    routing::{get, post},
-    Router,
-};
+use axum::{extract::Path, response::Json, routing::get, Router};
 use chrono::Utc;
 use serde_json::{json, Value};
 use std::collections::HashMap;
-use tracing::{error, info, warn};
+use tracing::info;
 
 /// CTAS Component Registry Entry
 #[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
@@ -90,6 +85,12 @@ pub enum VisualizationMethod {
 pub struct ComponentCDN {
     components: HashMap<String, ComponentEntry>,
     visualization_methods: HashMap<String, Vec<String>>,
+}
+
+impl Default for ComponentCDN {
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 impl ComponentCDN {
@@ -204,7 +205,7 @@ impl ComponentCDN {
             let method_name = format!("{:?}", method);
             self.visualization_methods
                 .entry(method_name)
-                .or_insert_with(Vec::new)
+                .or_default()
                 .push(component_id.clone());
         }
     }

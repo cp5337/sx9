@@ -54,7 +54,7 @@ fn main() {
 
 fn clone_dependency(git_url: &str, target_path: &Path) -> Result<(), Box<dyn std::error::Error>> {
     let output = Command::new("git")
-        .args(&["clone", git_url, &target_path.to_string_lossy()])
+        .args(["clone", git_url, &target_path.to_string_lossy()])
         .output()?;
 
     if !output.status.success() {
@@ -115,7 +115,7 @@ impl Default for StubStruct {{
 
 fn generate_xsd_schema(manifest_dir: &str) {
     let schemas_dir = Path::new(manifest_dir).join("schemas");
-    if let Err(_) = fs::create_dir_all(&schemas_dir) {
+    if fs::create_dir_all(&schemas_dir).is_err() {
         return;
     }
 

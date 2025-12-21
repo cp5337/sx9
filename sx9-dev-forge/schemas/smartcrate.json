@@ -1,0 +1,100 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://sx9.dev/schemas/smartcrate.json",
+  "title": "SmartCrate Manifest",
+  "description": "RFC-9101 runtime manifest for SX9 crates",
+  "type": "object",
+  "required": ["crate", "semantic_lock", "neural_mux", "zero_trust", "health", "lineage"],
+  "properties": {
+    "crate": {
+      "type": "object",
+      "required": ["name", "version", "pattern"],
+      "properties": {
+        "name": { "type": "string", "pattern": "^[a-z][a-z0-9-]*$" },
+        "version": { "type": "string", "pattern": "^\\d+\\.\\d+\\.\\d+$" },
+        "pattern": { "type": "string" }
+      }
+    },
+    "semantic_lock": {
+      "type": "object",
+      "description": "Murmur3-128 hashes for drift detection",
+      "required": ["interview_hash", "code_hash"],
+      "properties": {
+        "interview_hash": { "type": "string", "pattern": "^[a-f0-9]{32}$" },
+        "code_hash": { "type": "string", "pattern": "^[a-f0-9]{32}$" },
+        "combined_hash": { "type": "string", "pattern": "^[a-f0-9]{32}$" }
+      }
+    },
+    "neural_mux": {
+      "type": "object",
+      "description": "NATS channel configuration",
+      "properties": {
+        "command": { "type": "string", "pattern": "^sx9\\..+" },
+        "telemetry": { "type": "string", "pattern": "^sx9\\..+" },
+        "health": { "type": "string", "pattern": "^sx9\\..+" }
+      }
+    },
+    "zero_trust": {
+      "type": "object",
+      "description": "Two-factor authentication gates",
+      "required": ["factor_1", "factor_2"],
+      "properties": {
+        "factor_1": {
+          "type": "object",
+          "properties": {
+            "type": { "type": "string", "enum": ["presence", "atlas_tick"] },
+            "source": { "type": "string" },
+            "max_age_ms": { "type": "integer" }
+          }
+        },
+        "factor_2": {
+          "type": "object",
+          "properties": {
+            "type": { "type": "string", "enum": ["grammar", "trivariate", "signature"] },
+            "parser": { "type": "string" },
+            "validator": { "type": "string" }
+          }
+        }
+      }
+    },
+    "health": {
+      "type": "object",
+      "required": ["structure_subject", "contract_subject"],
+      "properties": {
+        "structure_subject": { "type": "string" },
+        "contract_subject": { "type": "string" },
+        "check_interval_ms": { "type": "integer", "minimum": 1000 }
+      }
+    },
+    "constraints": {
+      "type": "object",
+      "properties": {
+        "limits": {
+          "type": "object",
+          "properties": {
+            "max_lines_per_file": { "type": "integer" },
+            "max_dependencies": { "type": "integer" },
+            "cyclomatic_complexity_max": { "type": "integer" }
+          }
+        },
+        "forbidden_imports": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      }
+    },
+    "lineage": {
+      "type": "object",
+      "required": ["interview_id", "forge_session", "created_at"],
+      "properties": {
+        "interview_id": { "type": "string", "format": "uuid" },
+        "forge_session": { "type": "string", "format": "uuid" },
+        "created_at": { "type": "string", "format": "date-time" },
+        "parent_rfcs": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      }
+    }
+  }
+}

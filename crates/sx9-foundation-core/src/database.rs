@@ -9,13 +9,13 @@ use std::collections::HashMap;
 /// Database backend options for CTAS-7
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub enum DatabaseBackend {
-    /// Supabase for cloud-native PostgreSQL with real-time features
+    /// Supabase for cloud-native `PostgreSQL` with real-time features
     Supabase {
         url: String,
         anon_key: String,
         service_role_key: Option<String>,
     },
-    /// SurrealDB for multi-model database operations
+    /// `SurrealDB` for multi-model database operations
     SurrealDB {
         endpoint: String,
         namespace: String,
@@ -23,7 +23,7 @@ pub enum DatabaseBackend {
         username: Option<String>,
         password: Option<String>,
     },
-    /// SlotGraph for graph-based data relationships
+    /// `SlotGraph` for graph-based data relationships
     SlotGraph {
         host: String,
         port: u16,
@@ -89,7 +89,7 @@ pub struct SupabaseClient {
     service_role_key: Option<String>,
 }
 
-/// SurrealDB client wrapper
+/// `SurrealDB` client wrapper
 #[allow(dead_code)]
 pub struct SurrealClient {
     endpoint: String,
@@ -98,7 +98,7 @@ pub struct SurrealClient {
     credentials: Option<(String, String)>,
 }
 
-/// SlotGraph client wrapper
+/// `SlotGraph` client wrapper
 #[allow(dead_code)]
 pub struct SlotGraphClient {
     host: String,
@@ -252,25 +252,23 @@ impl DatabaseManager {
             }
             DatabaseClient::Sled(client) => {
                 let db = sled::open(&client.path).map_err(|e| {
-                    crate::diagnostics::Error::msg(format!("Failed to open Sled database: {}", e))
+                    crate::diagnostics::Error::msg(format!("Failed to open Sled database: {e}"))
                 })?;
 
                 // Create trees for different data types
                 db.open_tree("agents").map_err(|e| {
-                    crate::diagnostics::Error::msg(format!("Failed to create agents tree: {}", e))
+                    crate::diagnostics::Error::msg(format!("Failed to create agents tree: {e}"))
                 })?;
 
                 db.open_tree("smart_crates").map_err(|e| {
                     crate::diagnostics::Error::msg(format!(
-                        "Failed to create smart_crates tree: {}",
-                        e
+                        "Failed to create smart_crates tree: {e}"
                     ))
                 })?;
 
                 db.open_tree("unicode_operations").map_err(|e| {
                     crate::diagnostics::Error::msg(format!(
-                        "Failed to create unicode_operations tree: {}",
-                        e
+                        "Failed to create unicode_operations tree: {e}"
                     ))
                 })?;
 
@@ -434,6 +432,7 @@ impl DatabaseManager {
     }
 
     /// Get compression statistics
+    #[must_use]
     pub fn get_compression_stats(&self) -> &CompressionStats {
         &self.compression_stats
     }
@@ -450,6 +449,7 @@ impl DatabaseManager {
     }
 
     /// Get database backend type
+    #[must_use]
     pub fn get_backend_type(&self) -> &str {
         match &self.backend_client {
             DatabaseClient::Supabase(_) => "Supabase",

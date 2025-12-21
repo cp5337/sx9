@@ -4,24 +4,19 @@
 //! from shipyard operations.
 
 use axum::{
-    extract::{Path, Query},
-    http::StatusCode,
+    extract::Path,
     response::Json,
     routing::{get, post},
     Router,
 };
 use chrono::Utc;
 use serde_json::{json, Value};
-use std::collections::HashMap;
 use std::time::Duration;
 use tokio::time::sleep;
-use tracing::{error, info, warn};
-use uuid::Uuid;
+use tracing::{error, info};
 
 use sx9_cdn_monitoring::{
-    add_origin_server, get_cdn_analytics, get_cdn_health,
-    origin::OriginServer,
-    types::{GeographicLocation, OriginStatus},
+    add_origin_server, get_cdn_analytics, get_cdn_health, origin::OriginServer,
 };
 
 #[tokio::main]

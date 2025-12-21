@@ -1,0 +1,18 @@
+// SX9 Router Grammar
+// RFC-9101 Compliant
+
+WHITESPACE = _{ " " | "\t" | "\r" | "\n" }
+
+// Commands
+route_cmd = { "ROUTE" ~ target_hash ~ "TO" ~ destination ~ ("VIA" ~ channel)? }
+status_cmd = { "STATUS" }
+
+// Data Types
+target_hash = @{ "triv:" ~ hash_segment ~ "_" ~ hash_segment ~ "_" ~ hash_segment }
+hash_segment = @{ ASCII_ALPHANUMERIC+ }
+
+destination = @{ ASCII_ALPHANUMERIC+ }
+channel = @{ ASCII_ALPHANUMERIC+ }
+
+// Root
+main = { SOI ~ (route_cmd | status_cmd) ~ EOI }

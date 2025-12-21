@@ -7,7 +7,7 @@ use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::sync::{Arc, Mutex};
-use tracing::{error, info, warn};
+use tracing::info;
 use uuid::Uuid;
 
 use crate::types::CDNError;
@@ -182,6 +182,12 @@ pub enum DefenseType {
     Hybrid,
 }
 
+impl Default for CyberOperations {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl CyberOperations {
     pub fn new() -> Self {
         Self {
@@ -207,7 +213,7 @@ impl CyberOperations {
     /// Stop cyber operation
     pub async fn stop_operation(&self, operation_id: Uuid) -> Result<(), CDNError> {
         let mut ops = self.active_operations.lock().unwrap();
-        if let Some(mut operation) = ops.get_mut(&operation_id) {
+        if let Some(operation) = ops.get_mut(&operation_id) {
             operation.status = OperationStatus::Completed;
             operation.end_time = Some(Utc::now());
             info!("🛑 Stopped cyber operation: {}", operation_id);
@@ -221,6 +227,12 @@ impl CyberOperations {
     pub fn get_active_operations(&self) -> Vec<ActiveOperation> {
         let ops = self.active_operations.lock().unwrap();
         ops.values().cloned().collect()
+    }
+}
+
+impl Default for ThreatDatabase {
+    fn default() -> Self {
+        Self::new()
     }
 }
 

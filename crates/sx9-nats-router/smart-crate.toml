@@ -1,0 +1,50 @@
+# ==============================================================================
+# SMART CRATE MANIFEST (RFC-9101 Appendix A)
+# ==============================================================================
+
+[smart-crate]
+name = "sx9-nats-router"
+version = "0.1.0"
+edition = "2021"
+smart_crate_version = "7.3.1"
+foundation = "ctas7-foundation-core"
+classification = "router"
+tesla_grade = true
+
+[smart_meta]
+description = "Reference implementation of a Neural Mux compatible router"
+domains = ["routing", "dev"]
+capabilities = ["nats", "dsl", "trivariate"]
+xsd_schemas = ["config/router.xsd"]
+unicode_operators = true
+
+[integration]
+gold_disk_compatible = true
+neural_mux_enabled = true
+hash_engine_integrated = true
+unicode_assembly_support = true
+
+[ports]
+management = 18001 # Dynamic range start
+
+[port_manager]
+endpoint = "http://localhost:18104"
+crystal_gated = true
+mirror_ports = true
+
+[semantic_lock]
+enabled = true
+lock_file = "smart-crate.lock"
+auto_update = false
+verify_on_build = true
+
+[semantic_lock.hashes]
+content_hash_algorithm = "murmur3-128" # RFC-9001 STRICT
+interface_hash_algorithm = "murmur3-128"
+dependency_hash_algorithm = "murmur3-128"
+
+[deployment.docker]
+base_image = "ctas7-foundation-core:gold-disk"
+multi_stage = true
+layer_caching = true
+security_scanning = true

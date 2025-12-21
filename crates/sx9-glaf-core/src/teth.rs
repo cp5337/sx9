@@ -4,10 +4,15 @@
 //! H(G) = -Σ p(v) log p(v) where p(v) = degree(v) / Σ degree(w)
 
 use crate::types::Node;
-use anyhow::Result;
 
 /// TETH analyzer for graph entropy calculation
 pub struct TethAnalyzer;
+
+impl Default for TethAnalyzer {
+    fn default() -> Self {
+        Self::new()
+    }
+}
 
 impl TethAnalyzer {
     pub fn new() -> Self {
@@ -19,8 +24,6 @@ impl TethAnalyzer {
 ///
 /// Uses node degree relative to total graph degree
 pub async fn calculate_entropy(node: &Node) -> f64 {
-    use serde_json::Value;
-
     // Simplified: use node property "degree" if available
     // Otherwise calculate from relationships
     let degree = node
@@ -43,8 +46,6 @@ pub async fn calculate_entropy(node: &Node) -> f64 {
 ///
 /// H(G) = -Σ p(v) log p(v)
 pub async fn calculate_graph_entropy(nodes: &[Node]) -> f64 {
-    use serde_json::Value;
-
     if nodes.is_empty() {
         return 0.0;
     }

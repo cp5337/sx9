@@ -5,10 +5,8 @@
 
 use chrono::{DateTime, Utc};
 use legion::systems::{Runnable, SystemBuilder};
-use legion::world::SubWorld;
-use legion::*;
+use legion::{component, Entity, EntityStore, IntoQuery};
 use serde::{Deserialize, Serialize};
-use std::collections::VecDeque;
 use uuid::Uuid;
 
 /// Cognitive state of an entity (threats, agents, reasoning processes)
@@ -30,7 +28,14 @@ pub struct CognitiveState {
     pub last_update: DateTime<Utc>,
 }
 
+impl Default for CognitiveState {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl CognitiveState {
+    #[must_use]
     pub fn new() -> Self {
         Self {
             cognitive_load: 0.0,
@@ -86,6 +91,7 @@ pub struct ThoughtProcess {
 }
 
 impl ThoughtProcess {
+    #[must_use]
     pub fn new(subject: Entity) -> Self {
         Self {
             id: Uuid::new_v4(),
@@ -187,6 +193,7 @@ pub struct MemoryTrace {
 }
 
 impl MemoryTrace {
+    #[must_use]
     pub fn new(memory_type: MemoryType, content: MemoryContent) -> Self {
         Self {
             id: Uuid::new_v4(),
@@ -281,6 +288,7 @@ pub struct AssignedAgent {
 }
 
 impl AssignedAgent {
+    #[must_use]
     pub fn threat_analyst() -> Self {
         Self {
             agent_type: AgentType::ThreatAnalyst,
@@ -291,6 +299,7 @@ impl AssignedAgent {
         }
     }
 
+    #[must_use]
     pub fn pattern_detector() -> Self {
         Self {
             agent_type: AgentType::PatternDetector,
@@ -327,11 +336,12 @@ pub enum AgentType {
 // Cognitive Systems for Legion Schedule
 
 /// Thought generation system - creates new reasoning processes
+#[must_use]
 pub fn thought_generation_system() -> impl Runnable {
     SystemBuilder::new("thought_generation")
         .with_query(<(Entity, &mut CognitiveState, Option<&ThoughtProcess>)>::query())
         .build(move |cmd, world, _resources, query| {
-            for (entity, mut cognitive_state, thought_process) in query.iter_mut(world) {
+            for (entity, cognitive_state, thought_process) in query.iter_mut(world) {
                 // Only create new thoughts if not already thinking and cognitive load allows
                 if thought_process.is_none() && cognitive_state.cognitive_load < 0.8 {
                     // Create new thought process for this entity
@@ -344,11 +354,12 @@ pub fn thought_generation_system() -> impl Runnable {
 }
 
 /// Memory consolidation system - manages memory decay and strengthening
+#[must_use]
 pub fn memory_consolidation_system() -> impl Runnable {
     SystemBuilder::new("memory_consolidation")
         .with_query(<&mut MemoryTrace>::query())
         .build(move |_cmd, world, _resources, query| {
-            for mut memory in query.iter_mut(world) {
+            for memory in query.iter_mut(world) {
                 // Decay memory strength over time
                 let time_since_access = Utc::now()
                     .signed_duration_since(memory.last_accessed)
@@ -367,11 +378,12 @@ pub fn memory_consolidation_system() -> impl Runnable {
 }
 
 /// Reasoning chain system - advances thought processes
+#[must_use]
 pub fn reasoning_chain_system() -> impl Runnable {
     SystemBuilder::new("reasoning_chain")
         .with_query(<&mut ThoughtProcess>::query())
         .build(move |_cmd, world, _resources, query| {
-            for mut thought in query.iter_mut(world) {
+            for thought in query.iter_mut(world) {
                 // Check if reasoning chain needs advancement
                 if thought.current_step < 5 && Utc::now() < thought.deadline {
                     // This will be connected to Phi-3 inference in the next step
@@ -398,11 +410,12 @@ pub fn reasoning_chain_system() -> impl Runnable {
 }
 
 /// Inference dispatch system - queues thoughts for Phi-3 processing
+#[must_use]
 pub fn inference_dispatch_system() -> impl Runnable {
     SystemBuilder::new("inference_dispatch")
         .with_query(<&mut ThoughtProcess>::query().filter(component::<CognitiveState>()))
         .build(move |_cmd, world, _resources, query| {
-            for mut thought in query.iter_mut(world) {
+            for thought in query.iter_mut(world) {
                 // Assign Phi-3 worker if not already assigned
                 if thought.phi3_worker_id.is_none() && thought.reasoning_chain.len() < 3 {
                     // Round-robin assignment to Phi-3 workers

@@ -8,8 +8,6 @@ use std::collections::HashMap;
 use tokio::sync::RwLock;
 use uuid::Uuid;
 
-use crate::platform_detection::Platform;
-
 // Session Controller [MANAGE] Lifecycle [COORDINATE] States
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct MultimediaSession {
@@ -183,8 +181,15 @@ pub struct SessionController {
     active_sessions: RwLock<HashMap<String, MultimediaSession>>,
 }
 
+impl Default for SessionController {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl SessionController {
     // Controller Creation [INITIALIZE] Manager [SETUP] Configuration
+    #[must_use]
     pub fn new() -> Self {
         Self {
             active_sessions: RwLock::new(HashMap::new()),

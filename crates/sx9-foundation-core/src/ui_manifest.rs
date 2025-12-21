@@ -42,7 +42,7 @@ pub struct GISIntegration {
 }
 
 /// Graphics UI Bake-off configuration
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, Default)]
 pub struct GraphicsBakeoff {
     pub enabled: bool,
     pub ui_option_a: UIOption,
@@ -52,7 +52,7 @@ pub struct GraphicsBakeoff {
 }
 
 /// Apple UI Integration
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, Default)]
 pub struct AppleUIIntegration {
     pub enabled: bool,
     pub swiftui_components: Vec<SwiftUIComponent>,
@@ -72,7 +72,7 @@ pub struct WebDashboard {
 }
 
 /// Hash-IS-UI Configuration (GROUND TRUTH)
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, Default)]
 pub struct HashIsUIConfig {
     pub enabled: bool,
     pub color_lut: HashMap<String, String>,
@@ -82,7 +82,7 @@ pub struct HashIsUIConfig {
 }
 
 /// Position mappings for Hash-IS-UI
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, Default)]
 pub struct PositionMappings {
     pub sch_visual_properties: SCHVisualMapping, // Positions 1-16
     pub cuid_animation_properties: CUIDAnimationMapping, // Positions 17-32
@@ -163,7 +163,7 @@ pub struct GISLayerStyling {
 }
 
 /// Spatial Analysis configuration
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, Default)]
 pub struct SpatialAnalysis {
     pub enabled: bool,
     pub analysis_types: Vec<String>,
@@ -181,7 +181,7 @@ pub struct UIOption {
 }
 
 /// Performance metrics for UI comparison
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, Default)]
 pub struct PerformanceMetrics {
     pub load_time_ms: u32,
     pub first_paint_ms: u32,
@@ -198,7 +198,7 @@ pub struct TestScenario {
     pub success_criteria: Vec<String>,
 }
 
-/// SwiftUI Component
+/// `SwiftUI` Component
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct SwiftUIComponent {
     pub component_name: String,
@@ -206,7 +206,7 @@ pub struct SwiftUIComponent {
     pub data_bindings: Vec<String>,
 }
 
-/// UIKit Component
+/// `UIKit` Component
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct UIKitComponent {
     pub component_name: String,
@@ -214,7 +214,7 @@ pub struct UIKitComponent {
     pub interface_builder: bool,
 }
 
-/// AppKit Component (macOS)
+/// `AppKit` Component (macOS)
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct AppKitComponent {
     pub component_name: String,
@@ -249,6 +249,7 @@ pub struct KeyboardShortcut {
 }
 
 impl UIManifest {
+    #[must_use]
     pub fn new() -> Self {
         Self {
             manifest_version: "1.0.0".to_string(),
@@ -551,30 +552,6 @@ impl Default for GISIntegration {
     }
 }
 
-impl Default for GraphicsBakeoff {
-    fn default() -> Self {
-        Self {
-            enabled: false,
-            ui_option_a: UIOption::default(),
-            ui_option_b: UIOption::default(),
-            comparison_metrics: Vec::new(),
-            test_scenarios: Vec::new(),
-        }
-    }
-}
-
-impl Default for AppleUIIntegration {
-    fn default() -> Self {
-        Self {
-            enabled: false,
-            swiftui_components: Vec::new(),
-            uikit_components: Vec::new(),
-            appkit_components: Vec::new(),
-            native_styling: NativeStyling::default(),
-        }
-    }
-}
-
 impl Default for WebDashboard {
     fn default() -> Self {
         Self {
@@ -583,28 +560,6 @@ impl Default for WebDashboard {
             dashboard_panels: Vec::new(),
             real_time_updates: false,
             responsive_design: true,
-        }
-    }
-}
-
-impl Default for HashIsUIConfig {
-    fn default() -> Self {
-        Self {
-            enabled: false,
-            color_lut: HashMap::new(),
-            symbol_lut: HashMap::new(),
-            animation_lut: HashMap::new(),
-            position_mappings: PositionMappings::default(),
-        }
-    }
-}
-
-impl Default for PositionMappings {
-    fn default() -> Self {
-        Self {
-            sch_visual_properties: SCHVisualMapping::default(),
-            cuid_animation_properties: CUIDAnimationMapping::default(),
-            uuid_state_properties: UUIDStateMapping::default(),
         }
     }
 }
@@ -642,16 +597,6 @@ impl Default for UUIDStateMapping {
     }
 }
 
-impl Default for SpatialAnalysis {
-    fn default() -> Self {
-        Self {
-            enabled: false,
-            analysis_types: Vec::new(),
-            real_time_processing: false,
-        }
-    }
-}
-
 impl Default for UIOption {
     fn default() -> Self {
         Self {
@@ -660,17 +605,6 @@ impl Default for UIOption {
             components: Vec::new(),
             performance_metrics: PerformanceMetrics::default(),
             user_experience_score: 0.0,
-        }
-    }
-}
-
-impl Default for PerformanceMetrics {
-    fn default() -> Self {
-        Self {
-            load_time_ms: 0,
-            first_paint_ms: 0,
-            interactive_time_ms: 0,
-            memory_usage_mb: 0,
         }
     }
 }

@@ -55,6 +55,7 @@ pub enum ConnectionStatus {
 }
 
 impl FrontendBridge {
+    #[must_use]
     pub fn new() -> Self {
         Self {
             cli_manifest: None,
@@ -177,6 +178,7 @@ impl FrontendBridge {
     }
 
     /// Get connection status summary
+    #[must_use]
     pub fn get_connection_summary(&self) -> String {
         let active_count = self.bridge_endpoints.iter().filter(|e| e.active).count();
         let total_count = self.bridge_endpoints.len();

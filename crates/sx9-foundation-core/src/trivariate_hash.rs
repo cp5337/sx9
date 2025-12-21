@@ -51,6 +51,7 @@ pub enum GraduatedLevel {
 }
 
 impl GraduatedLevel {
+    #[must_use]
     pub fn from_value(val: f64) -> Self {
         match val {
             v if v <= 0.2 => Self::Critical,
@@ -61,6 +62,7 @@ impl GraduatedLevel {
         }
     }
 
+    #[must_use]
     pub fn symbol(&self) -> char {
         match self {
             Self::Critical => '!',
@@ -109,6 +111,7 @@ impl Default for EnvironmentalMasks {
 }
 
 impl TrivariteHashEngine {
+    #[must_use]
     pub fn new() -> Self {
         Self {
             murmur_sch_seed: 0x5BD1E995,  // CTAS-7 v7.2 constant
@@ -119,6 +122,7 @@ impl TrivariteHashEngine {
         }
     }
 
+    #[must_use]
     pub fn with_environmental_masks(mut self, masks: EnvironmentalMasks) -> Self {
         self.environmental_masks = Some(masks);
         self
@@ -143,6 +147,7 @@ impl TrivariteHashEngine {
     }
 
     /// GROUND TRUTH: Generate SCH (Positions 1-16) using Murmur3
+    #[must_use]
     pub fn generate_sch_murmur3(&self, content: &str, primitive_type: &str) -> String {
         let semantic_input = format!("{}:{}:{}", primitive_type, content, self.murmur_sch_seed);
 
@@ -152,7 +157,7 @@ impl TrivariteHashEngine {
         for (i, &byte) in semantic_input.as_bytes().iter().enumerate() {
             hash_accumulator = hash_accumulator
                 .wrapping_mul(0xCC9E2D51) // Murmur3 constant
-                .wrapping_add(byte as u64)
+                .wrapping_add(u64::from(byte))
                 .wrapping_add(i as u64);
         }
 
@@ -161,6 +166,7 @@ impl TrivariteHashEngine {
     }
 
     /// CTAS-7 v7.2: Generate CUID with Environmental Masks (Positions 17-32)
+    #[must_use]
     pub fn generate_cuid_murmur3(&self, context: &str) -> String {
         let timestamp = SystemTime::now()
             .duration_since(UNIX_EPOCH)
@@ -174,7 +180,7 @@ impl TrivariteHashEngine {
             String::new()
         };
 
-        let cuid_input = format!("{}:{}:{}", context, timestamp, mask_tail);
+        let cuid_input = format!("{context}:{timestamp}:{mask_tail}");
 
         // Murmur3 constants for CUID (different seed)
         let mut hash_accumulator: u64 = self.murmur_cuid_seed;
@@ -182,7 +188,7 @@ impl TrivariteHashEngine {
         for (i, &byte) in cuid_input.as_bytes().iter().enumerate() {
             hash_accumulator = hash_accumulator
                 .wrapping_mul(0xC2B2AE35) // Murmur3 constant
-                .wrapping_add(byte as u64)
+                .wrapping_add(u64::from(byte))
                 .wrapping_add(i as u64);
         }
 
@@ -211,14 +217,15 @@ impl TrivariteHashEngine {
     }
 
     /// GROUND TRUTH: Generate UUID (Positions 33-48) using Murmur3
+    #[must_use]
     pub fn generate_uuid_murmur3(&self, content: &str, context: &str) -> String {
-        let combined = format!("{}{}", content, context);
+        let combined = format!("{content}{context}");
 
         // Murmur3 finalization constants
         let mut hash_accumulator: u64 = self.murmur_uuid_seed;
 
-        for &byte in combined.as_bytes().iter() {
-            hash_accumulator = hash_accumulator.wrapping_add(byte as u64);
+        for &byte in combined.as_bytes() {
+            hash_accumulator = hash_accumulator.wrapping_add(u64::from(byte));
         }
 
         // Apply Murmur3 finalization
@@ -232,6 +239,7 @@ impl TrivariteHashEngine {
     }
 
     /// Generate complete 48-position trivariate hash (CTAS-7 v7.2)
+    #[must_use]
     pub fn generate_trivariate_hash(
         &self,
         content: &str,
@@ -242,12 +250,13 @@ impl TrivariteHashEngine {
         let cuid = self.generate_cuid_murmur3(context);
         let uuid = self.generate_uuid_murmur3(content, context);
 
-        format!("{}{}{}", sch, cuid, uuid)
+        format!("{sch}{cuid}{uuid}")
     }
 
     /// CTAS-7 v7.2: Generate Unicode compressed hash (U+E000–E9FF)
+    #[must_use]
     pub fn generate_unicode_compressed(&self, sch: &str, cuid: &str, uuid: &str) -> String {
-        let full_hash = format!("{}{}{}", sch, cuid, uuid);
+        let full_hash = format!("{sch}{cuid}{uuid}");
         self.compress_to_unicode(&full_hash)
     }
 
@@ -277,12 +286,13 @@ impl TrivariteHashEngine {
     }
 
     /// Generate hash from raw bytes (for assembly language integration)
+    #[must_use]
     pub fn generate_hash_from_bytes(&self, data: &[u8]) -> String {
         let mut hash_val = 0u64;
         for (i, &byte) in data.iter().enumerate() {
             hash_val = hash_val
                 .wrapping_mul(self.murmur_sch_seed)
-                .wrapping_add(byte as u64)
+                .wrapping_add(u64::from(byte))
                 .wrapping_add(i as u64);
         }
 
@@ -299,6 +309,7 @@ impl TrivariteHashEngine {
     }
 
     /// Assembly Language Opcode Mapping (U+E000–E5FF)
+    #[must_use]
     pub fn get_assembly_opcode(&self, operation: &str) -> char {
         match operation {
             // Core operations (U+E000–E0FF)
@@ -338,6 +349,7 @@ impl TrivariteHashEngine {
     }
 
     /// Deterministic routing based on environmental conditions
+    #[must_use]
     pub fn route_based_on_environment(&self, hash: &str) -> String {
         if let Some(ref masks) = self.environmental_masks {
             if masks.th > 0.8 {
@@ -381,6 +393,7 @@ impl TrivariteHashEngine {
     }
 
     /// Validate trivariate hash format
+    #[must_use]
     pub fn validate_trivariate_hash(&self, hash: &str) -> bool {
         hash.len() == 48 && hash.chars().all(|c| self.base96_charset.contains(c))
     }

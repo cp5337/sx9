@@ -1,4 +1,4 @@
-//! CTAS-7 KeyVault: Persistent, Reliable API Key Storage
+//! CTAS-7 `KeyVault`: Persistent, Reliable API Key Storage
 //!
 //! NO MORE LOST KEYS. This vault:
 //! - Uses Sled embedded database for persistence
@@ -40,7 +40,7 @@ pub struct KeyEntry {
     pub notes: Option<String>,
 }
 
-/// Persistent KeyVault - NEVER loses your keys
+/// Persistent `KeyVault` - NEVER loses your keys
 pub struct KeyVault {
     /// Sled database for persistence
     db: Option<sled::Db>,
@@ -54,6 +54,7 @@ pub struct KeyVault {
 
 impl KeyVault {
     /// Get the standard vault directory (~/.ctas7/keyvault)
+    #[must_use]
     pub fn default_vault_dir() -> PathBuf {
         dirs::home_dir()
             .unwrap_or_else(|| PathBuf::from("."))
@@ -61,16 +62,16 @@ impl KeyVault {
             .join("keyvault")
     }
 
-    /// Create new KeyVault with persistent storage
+    /// Create new `KeyVault` with persistent storage
     pub fn new() -> Result<Self, KeyVaultError> {
         Self::with_path(&Self::default_vault_dir())
     }
 
-    /// Create KeyVault at specific path
+    /// Create `KeyVault` at specific path
     pub fn with_path(vault_dir: &Path) -> Result<Self, KeyVaultError> {
         // Ensure directory exists
         fs::create_dir_all(vault_dir)
-            .map_err(|e| KeyVaultError::Io(format!("Failed to create vault dir: {}", e)))?;
+            .map_err(|e| KeyVaultError::Io(format!("Failed to create vault dir: {e}")))?;
 
         let db_path = vault_dir.join("keys.sled");
         let backup_path = vault_dir.join("keys.backup.json");
@@ -103,14 +104,12 @@ impl KeyVault {
 
         // Try sled first
         if let Some(db) = &self.db {
-            for item in db.iter() {
-                if let Ok((key, value)) = item {
-                    if let (Ok(name), Ok(entry)) = (
-                        String::from_utf8(key.to_vec()),
-                        serde_json::from_slice::<KeyEntry>(&value),
-                    ) {
-                        loaded.insert(name, entry);
-                    }
+            for (key, value) in db.iter().flatten() {
+                if let (Ok(name), Ok(entry)) = (
+                    String::from_utf8(key.to_vec()),
+                    serde_json::from_slice::<KeyEntry>(&value),
+                ) {
+                    loaded.insert(name, entry);
                 }
             }
         }
@@ -211,7 +210,7 @@ impl KeyVault {
         cache.get(name).cloned()
     }
 
-    /// Record key usage (updates last_used and count)
+    /// Record key usage (updates `last_used` and count)
     pub async fn record_usage(&self, name: &str) {
         let mut cache = self.cache.write().await;
         if let Some(entry) = cache.get_mut(name) {
@@ -353,7 +352,7 @@ pub struct KeyEntrySummary {
     pub usage_count: u64,
 }
 
-/// KeyVault errors
+/// `KeyVault` errors
 #[derive(Debug, thiserror::Error)]
 pub enum KeyVaultError {
     #[error("I/O error: {0}")]
@@ -369,7 +368,7 @@ pub enum KeyVaultError {
 /// Global key vault instance (lazy initialized)
 static GLOBAL_VAULT: std::sync::OnceLock<Arc<KeyVault>> = std::sync::OnceLock::new();
 
-/// Get the global KeyVault instance
+/// Get the global `KeyVault` instance
 pub fn global_vault() -> Result<Arc<KeyVault>, KeyVaultError> {
     if let Some(vault) = GLOBAL_VAULT.get() {
         return Ok(vault.clone());
@@ -400,26 +399,30 @@ pub mod keys {
 
 // RFC-9107 §7: Agent credential adapter for persona registry integration
 pub mod agent_keys {
-    use super::*;
+    use super::{KeyVault, KeyVaultError};
 
     // NVNN: Agent keys map to persona registry voice and API credentials
 
     /// Get the vault key for an agent's voice ID
+    #[must_use]
     pub fn voice_id(agent: &str) -> String {
         format!("agent.{}.voice_id", agent.to_lowercase())
     }
 
     /// Get the vault key for an agent's API key
+    #[must_use]
     pub fn api_key(agent: &str) -> String {
         format!("agent.{}.api_key", agent.to_lowercase())
     }
 
     /// Get the vault key for an agent's gRPC endpoint
+    #[must_use]
     pub fn grpc_endpoint(agent: &str) -> String {
         format!("agent.{}.grpc_endpoint", agent.to_lowercase())
     }
 
     /// Get the vault key for an agent's embedding collection
+    #[must_use]
     pub fn embedding_collection(agent: &str) -> String {
         format!("agent.{}.embedding_collection", agent.to_lowercase())
     }

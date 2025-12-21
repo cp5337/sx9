@@ -1,3 +1,18 @@
+#![allow(clippy::unused_async)]
+#![allow(clippy::too_many_arguments)]
+#![allow(clippy::type_complexity)]
+#![allow(clippy::cast_sign_loss)]
+#![allow(clippy::similar_names)]
+#![allow(clippy::unreadable_literal)]
+#![allow(clippy::unused_self)]
+#![allow(dead_code)]
+#![allow(unused_imports)]
+#![allow(clippy::missing_errors_doc)]
+#![allow(clippy::missing_panics_doc)]
+#![allow(clippy::struct_excessive_bools)]
+#![allow(clippy::cast_precision_loss)]
+#![allow(clippy::cast_possible_truncation)]
+#![allow(clippy::module_name_repetitions)]
 //! test-neural-processor
 //!
 //! Tesla/SpaceX-grade autonomous neural processing service

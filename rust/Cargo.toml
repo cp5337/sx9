@@ -1,0 +1,7 @@
+[workspace]
+resolver = "2"
+members = ["firefly-core", "firefly-axum", "glaf-core"]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2021"

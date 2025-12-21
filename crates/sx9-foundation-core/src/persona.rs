@@ -12,35 +12,25 @@ const DEFAULT_GRPC_PORT_START: u16 = 50051;
 const DEFAULT_TTL_HOURS: u64 = 48;
 
 /// Entropy symbol for visual identification
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, Default)]
 pub enum EntropySymbol {
     Squid,
     Vortex,
+    #[default]
     Spiral,
     Wave,
     Geometric,
 }
 
-impl Default for EntropySymbol {
-    fn default() -> Self {
-        EntropySymbol::Spiral
-    }
-}
-
 /// Trust level (1-5 scale)
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, PartialOrd)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, PartialOrd, Default)]
 pub enum TrustLevel {
     One = 1,
     Two = 2,
+    #[default]
     Three = 3,
     Four = 4,
     Five = 5,
-}
-
-impl Default for TrustLevel {
-    fn default() -> Self {
-        TrustLevel::Three
-    }
 }
 
 /// Individual persona configuration
@@ -70,10 +60,11 @@ pub struct Persona {
 
 impl Persona {
     /// Create a new persona with default values
+    #[must_use]
     pub fn new(cuid: String, persona: String) -> Self {
         Self {
-            grpc_endpoint: format!("localhost:{}", DEFAULT_GRPC_PORT_START),
-            ttl: format!("{}h", DEFAULT_TTL_HOURS),
+            grpc_endpoint: format!("localhost:{DEFAULT_GRPC_PORT_START}"),
+            ttl: format!("{DEFAULT_TTL_HOURS}h"),
             entropy_symbol: EntropySymbol::default(),
             trust_level: TrustLevel::default(),
             metadata: None,
@@ -90,6 +81,7 @@ impl Persona {
     }
 
     /// Check if persona is expired
+    #[must_use]
     pub fn is_expired(&self, created_at: DateTime<Utc>) -> bool {
         match self.ttl_duration() {
             Ok(ttl) => {
@@ -124,11 +116,13 @@ impl PersonaConfig {
     }
 
     /// Find persona by CUID
+    #[must_use]
     pub fn find_persona(&self, cuid: &str) -> Option<&Persona> {
         self.personas.iter().find(|p| p.cuid == cuid)
     }
 
     /// Get all personas with trust level >= threshold
+    #[must_use]
     pub fn trusted_personas(&self, min_trust: TrustLevel) -> Vec<&Persona> {
         self.personas
             .iter()

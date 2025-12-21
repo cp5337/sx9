@@ -1,6 +1,6 @@
 //! Unified Neural Mux Integration for CTAS-7 Foundation Core
 //!
-//! Extends the neural_mux module with unified operations across the foundation
+//! Extends the `neural_mux` module with unified operations across the foundation
 //! Provides consolidated routing for multi-system neural operations
 
 use crate::data::{DateTime, Deserialize, Serialize, Utc};
@@ -37,6 +37,7 @@ pub struct UnifiedRoutingRule {
 
 impl UnifiedNeuralMux {
     /// Create a new unified neural mux
+    #[must_use]
     pub fn new() -> Self {
         Self {
             system_configs: HashMap::new(),
@@ -122,6 +123,7 @@ impl Default for UnifiedNeuralMux {
 }
 
 /// Helper function to create a basic cross-system routing rule
+#[must_use]
 pub fn create_routing_rule(
     source: &str,
     target: &str,

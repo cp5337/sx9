@@ -3,20 +3,15 @@
 //! Handles HTTP requests for the CTAS Gateway CDN, providing
 //! both content delivery and cyber warfare capabilities.
 
-use axum::{
-    extract::{Path, Query},
-    http::StatusCode,
-    response::Json,
-};
+use axum::{extract::Path, response::Json};
 use chrono::Utc;
 use serde_json::{json, Value};
-use tracing::{error, info, warn};
+use tracing::error;
 use uuid::Uuid;
 
 use crate::gateway_cdn::{
-    generate_cyber_ops_nginx_config, get_gateway_status, register_gateway_service,
-    start_cyber_operation, ActiveOperation, ECSService, OperationStatus, OperationType,
-    ServiceStatus, ServiceType,
+    generate_cyber_ops_nginx_config, get_gateway_status, start_cyber_operation, ActiveOperation,
+    OperationStatus, OperationType,
 };
 
 /// Health check endpoint

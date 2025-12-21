@@ -22,7 +22,7 @@ pm2-compatibility = []
 sx9-foundation-core = { path = "../sx9-foundation-core" }
 sx9-foundation-data = { path = "../sx9-foundation-data" }
 sx9-glaf-core = { path = "../sx9-glaf-core" }
-sx9-foundation-orbital = { path = "../sx9-foundation-orbital" }
+# sx9-foundation-orbital archived - remove if needed
 # sx9-foundation-math = { path = "../sx9-foundation-math" }
 # sx9-foundation-interface = { path = "../sx9-foundation-interface" }
 
@@ -100,3 +100,6 @@ criterion = { version = "0.5", features = ["html_reports"] }
 tempfile = "3.8"
 assert_cmd = "2.0"
 
+
+[lints]
+workspace = true

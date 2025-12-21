@@ -110,6 +110,7 @@ pub struct HealthCheckResult {
 }
 
 impl CTEHealthBridge {
+    #[must_use]
     pub fn new() -> Self {
         Self {
             agent_registry: AgentRegistry::new(),
@@ -241,7 +242,7 @@ impl CTEHealthBridge {
     async fn test_agent_connection(&self, base_url: &str) -> bool {
         // In a real implementation, this would make HTTP requests
         // For now, simulate connection test
-        println!("🔍 Testing connection to: {}", base_url);
+        println!("🔍 Testing connection to: {base_url}");
         false // Simulate offline for now
     }
 
@@ -298,6 +299,7 @@ impl CTEHealthBridge {
     }
 
     /// Get overall health status
+    #[must_use]
     pub fn get_health_status(&self) -> OverallHealth {
         if !self.connected {
             return OverallHealth::Critical;
@@ -311,6 +313,7 @@ impl CTEHealthBridge {
     }
 
     /// Generate health report
+    #[must_use]
     pub fn generate_health_report(&self) -> String {
         let status = match self.get_health_status() {
             OverallHealth::Healthy => "🟢 HEALTHY",
@@ -337,7 +340,14 @@ impl CTEHealthBridge {
     }
 }
 
+impl Default for AgentRegistry {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl AgentRegistry {
+    #[must_use]
     pub fn new() -> Self {
         Self {
             registry_version: "1.0".to_string(),
@@ -346,7 +356,14 @@ impl AgentRegistry {
     }
 }
 
+impl Default for PortManager {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl PortManager {
+    #[must_use]
     pub fn new() -> Self {
         Self {
             primary_ports: HashMap::new(),
@@ -383,7 +400,14 @@ impl PortManager {
     }
 }
 
+impl Default for RollcallBridge {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl RollcallBridge {
+    #[must_use]
     pub fn new() -> Self {
         Self {
             rollcall_script_path: "./rollcall.sh".to_string(),

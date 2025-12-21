@@ -3,7 +3,6 @@
 //! RFC-9021: Detects adversary behavior phases
 //! Hidden States: [Recon] → [Staging] → [Execution] → [Exfil]
 
-use anyhow::Result;
 use serde::{Deserialize, Serialize};
 
 /// Adversary phase states
@@ -27,6 +26,12 @@ pub struct PhaseResult {
 /// HMM phase detector
 pub struct HmmPhaseDetector {
     transition_matrix: [[f64; 4]; 4], // 4 phases
+}
+
+impl Default for HmmPhaseDetector {
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 impl HmmPhaseDetector {

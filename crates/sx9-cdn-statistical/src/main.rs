@@ -33,7 +33,7 @@ struct ServiceConfig {
     port_manager_url: String,
     axon_url: String,
     legion_url: String,
-    surrealdb_url: String,
+    slotgraph_url: String,
     wazuh_url: String,
     sledis_url: String,
 }
@@ -50,8 +50,8 @@ impl ServiceConfig {
                 .unwrap_or_else(|_| "http://localhost:15176".to_string()),
             legion_url: std::env::var("LEGION_URL")
                 .unwrap_or_else(|_| "http://localhost:15177".to_string()),
-            surrealdb_url: std::env::var("SURREALDB_URL")
-                .unwrap_or_else(|_| "http://localhost:8000".to_string()),
+            slotgraph_url: std::env::var("SLOTGRAPH_URL")
+                .unwrap_or_else(|_| "http://localhost:18410".to_string()),
             wazuh_url: std::env::var("WAZUH_URL")
                 .unwrap_or_else(|_| "http://localhost:55000".to_string()),
             sledis_url: std::env::var("SLEDIS_URL")
@@ -316,7 +316,7 @@ async fn register_with_port_manager(state: &AppState) -> Result<()> {
             .config
             .bind_addr
             .split(':')
-            .last()
+            .next_back()
             .unwrap_or("18108")
             .parse::<u16>()
             .unwrap_or(18108),

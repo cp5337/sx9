@@ -1,9 +1,6 @@
 //! Foundation Daemon Integration v7.3.1
 //! Connects this crate to the CTAS-7 foundation daemon system
 
-use std::sync::Arc;
-use tokio::sync::RwLock;
-
 /// Foundation daemon client for this crate
 pub struct FoundationDaemonClient {
     pub daemon_url: String,
@@ -33,7 +30,7 @@ impl FoundationDaemonClient {
         });
 
         let _response = client
-            .post(&format!("{}/register", self.daemon_url))
+            .post(format!("{}/register", self.daemon_url))
             .json(&registration)
             .send()
             .await?;
@@ -53,7 +50,7 @@ impl FoundationDaemonClient {
         });
 
         let _response = client
-            .post(&format!("{}/health", self.daemon_url))
+            .post(format!("{}/health", self.daemon_url))
             .json(&health)
             .send()
             .await?;

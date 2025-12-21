@@ -7,7 +7,6 @@
 use crate::cognitive::{CognitiveMode, CognitiveState};
 use crate::neural_mux::Priority;
 use chrono::{DateTime, Utc};
-use serde::{Deserialize, Serialize};
 
 /// Signal entering the cognitive system
 #[derive(Debug, Clone)]
@@ -34,7 +33,14 @@ pub struct ThalamicFilter {
     pub urgency_threshold: f32,
 }
 
+impl Default for ThalamicFilter {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl ThalamicFilter {
+    #[must_use]
     pub fn new() -> Self {
         Self {
             salience_threshold: 0.4, // Default baseline
@@ -69,6 +75,7 @@ impl ThalamicFilter {
     }
 
     /// Process a signal and determine if it should pass
+    #[must_use]
     pub fn process_signal(&self, signal: SensorySignal) -> Option<ThalamicInput> {
         let urgency = self.calculate_urgency(&signal);
         let salience = self.calculate_salience(&signal);
@@ -89,15 +96,13 @@ impl ThalamicFilter {
     }
 
     fn calculate_urgency(&self, signal: &SensorySignal) -> f32 {
-        let base = match signal.priority {
+        // Decay logic could go here
+        match signal.priority {
             Priority::Critical => 1.0,
             Priority::High => 0.75,
             Priority::Medium => 0.5,
             Priority::Low => 0.25,
-        };
-
-        // Decay logic could go here
-        base
+        }
     }
 
     fn calculate_salience(&self, signal: &SensorySignal) -> f32 {

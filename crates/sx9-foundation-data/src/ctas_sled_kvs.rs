@@ -2,13 +2,11 @@
 //! Hash-centric KVS implementation bridging Supabase (ACID) → Sled (KVS) → SurrealDB (Document+SVM)
 
 use anyhow::Result;
-use async_trait::async_trait;
 use serde::{Deserialize, Serialize};
 use sled::Db;
 use std::collections::HashMap;
 use std::sync::Arc;
 use tokio::sync::RwLock;
-use uuid::Uuid;
 
 use crate::hash::TrivariateHashEngine;
 

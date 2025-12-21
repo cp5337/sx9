@@ -3,20 +3,18 @@
 //! Orchestrates advanced traffic analysis, threat detection, and intelligence
 //! gathering capabilities using focused sub-modules.
 
-use chrono::{DateTime, Utc};
+use chrono::Utc;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
-use tracing::{debug, info, warn};
+use tracing::{info, warn};
 
 use crate::analysis_engine::AnalysisEngine;
 use crate::cyber_operations::ThreatLevel;
 use crate::intelligence_reports::{
     IntelligenceManager, IntelligenceReport, ReportType, ThreatIndicator,
 };
-use crate::traffic_analysis_core::{TrafficAnalysis, TrafficStatistics};
-use crate::traffic_types::{
-    ActivityType, AnalysisResult, RequestData, ResponseAction, SuspiciousActivity,
-};
+use crate::traffic_analysis_core::TrafficAnalysis;
+use crate::traffic_types::{ActivityType, AnalysisResult, RequestData, SuspiciousActivity};
 
 /// Traffic Intelligence System (Tesla-Grade)
 pub struct TrafficIntelligence {
@@ -24,6 +22,12 @@ pub struct TrafficIntelligence {
     pub intelligence_manager: IntelligenceManager,
     pub analysis_engine: AnalysisEngine,
     pub suspicious_activities: Vec<SuspiciousActivity>,
+}
+
+impl Default for TrafficIntelligence {
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 impl TrafficIntelligence {

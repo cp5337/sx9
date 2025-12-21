@@ -66,3 +66,6 @@ elevenlabs_api = ["synthesis"]
 [lib]
 name = "foundation_voice"
 path = "src/lib.rs"
+
+[lints]
+workspace = true

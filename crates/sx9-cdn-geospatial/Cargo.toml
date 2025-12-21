@@ -58,14 +58,14 @@ thiserror = "1.0"
 reqwest = { version = "0.12", features = ["json", "gzip"] }
 
 # CTAS Foundation (optional)
-sx9-foundation-orbital = { package = "sx9-foundation-orbital", path = "../sx9-foundation-orbital", optional = true }
+# sx9-foundation-orbital archived
 sx9-foundation-core = { package = "sx9-foundation-core", path = "../sx9-foundation-core", optional = true }
 
 [features]
 default = ["hft", "foundation"]
-foundation = ["sx9-foundation-orbital", "sx9-foundation-core"]
+foundation = ["sx9-foundation-core"]
 cesium = []
-orbital = ["sx9-foundation-orbital"]
+# orbital = ["sx9-foundation-orbital"] # archived
 hft = []  # High-frequency trading mode for rapid position updates
 
 [dev-dependencies]
@@ -88,3 +88,6 @@ codegen-units = 1
 panic = "abort"
 strip = "symbols"
 overflow-checks = true
+
+[lints]
+workspace = true

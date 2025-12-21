@@ -70,3 +70,6 @@ data_persistence = true
 
 
 
+
+[lints]
+workspace = true

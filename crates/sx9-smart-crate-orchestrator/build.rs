@@ -509,7 +509,7 @@ fn generate_build_metadata() {
     );
 
     if let Ok(git_hash) = Command::new("git")
-        .args(&["rev-parse", "--short", "HEAD"])
+        .args(["rev-parse", "--short", "HEAD"])
         .output()
     {
         if git_hash.status.success() {

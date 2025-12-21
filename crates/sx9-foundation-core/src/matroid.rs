@@ -6,7 +6,6 @@
 //! Ground Truth: "A signal is only valuable if it is independent from existing knowledge."
 
 use serde::{Deserialize, Serialize};
-use std::collections::HashSet;
 
 /// Latent Matroid structure representing a subspace of information
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -17,6 +16,7 @@ pub struct LatentMatroid {
 }
 
 impl LatentMatroid {
+    #[must_use]
     pub fn new(dimension: usize) -> Self {
         Self {
             dimension,
@@ -27,6 +27,7 @@ impl LatentMatroid {
 
     /// Calculate H2 Score (Information Independence/Density)
     /// Returns 0.0 (Redundant) to 1.0 (Completely Orthogonal/New)
+    #[must_use]
     pub fn calculate_h2_score(&self, input_vector: &[f64]) -> f64 {
         if self.basis_vectors.is_empty() {
             return 1.0; // First piece of info is always 100% new
@@ -39,7 +40,7 @@ impl LatentMatroid {
             .basis_vectors
             .iter()
             .map(|basis| self.cosine_similarity(basis, input_vector))
-            .fold(0.0f64, |a, b| a.max(b));
+            .fold(0.0f64, f64::max);
 
         // H2 Score is inverse of max similarity
         (1.0 - max_similarity).max(0.0)

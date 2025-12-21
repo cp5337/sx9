@@ -4,9 +4,7 @@
 //! analysis for threat detection.
 
 use chrono::{DateTime, Utc};
-use serde::{Deserialize, Serialize};
-use std::collections::HashMap;
-use tracing::{debug, warn};
+use tracing::debug;
 
 use crate::cyber_operations::ThreatLevel;
 use crate::traffic_types::{AnalysisResult, RequestData, ResponseAction};
@@ -56,6 +54,12 @@ pub struct CorrelationRule {
     pub threshold: f64,
     pub time_window: u64, // seconds
     pub action: ResponseAction,
+}
+
+impl Default for AnalysisEngine {
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 impl AnalysisEngine {

@@ -1,7 +1,7 @@
 //! CTAS-7 Canonical 64-bit Hash Module
 //!
-//! RFC-9001 compliant 64-bit MurmurHash3 implementation.
-//! Extracts lower 64 bits from murmur3_x64_128 for optimal collision resistance
+//! RFC-9001 compliant 64-bit `MurmurHash3` implementation.
+//! Extracts lower 64 bits from `murmur3_x64_128` for optimal collision resistance
 //! while maintaining reasonable output size.
 //!
 //! All outputs are Base96 encoded for Unicode assembly compatibility.
@@ -27,9 +27,9 @@ pub mod seeds {
     pub const SLOT: u32 = 0xC7A5_0100;
 }
 
-/// Compute 64-bit MurmurHash3 from data
+/// Compute 64-bit `MurmurHash3` from data
 ///
-/// Extracts lower 64 bits from murmur3_x64_128 for optimal performance
+/// Extracts lower 64 bits from `murmur3_x64_128` for optimal performance
 /// while maintaining collision resistance suitable for billions of hashes.
 ///
 /// # Arguments
@@ -38,13 +38,15 @@ pub mod seeds {
 ///
 /// # Returns
 /// 64-bit hash value
+#[must_use]
 pub fn murmur3_64(data: &[u8], seed: u32) -> u64 {
     let mut cursor = Cursor::new(data);
     let hash_128 = murmur3_x64_128(&mut cursor, seed).unwrap_or(0);
     hash_128 as u64 // Lower 64 bits
 }
 
-/// Compute 64-bit MurmurHash3 and return as hex string (16 chars)
+/// Compute 64-bit `MurmurHash3` and return as hex string (16 chars)
+#[must_use]
 pub fn murmur3_64_hex(data: &[u8], seed: u32) -> String {
     format!("{:016x}", murmur3_64(data, seed))
 }
@@ -57,6 +59,7 @@ pub fn murmur3_64_hex(data: &[u8], seed: u32) -> String {
 ///
 /// # Returns
 /// Base96 encoded string of specified length
+#[must_use]
 pub fn encode_base96(mut value: u64, length: usize) -> String {
     if value == 0 {
         return "0".repeat(length);
@@ -78,7 +81,7 @@ pub fn encode_base96(mut value: u64, length: usize) -> String {
     result.into_iter().rev().collect()
 }
 
-/// Compute 64-bit MurmurHash3 and return as Base96 string
+/// Compute 64-bit `MurmurHash3` and return as Base96 string
 ///
 /// # Arguments
 /// * `data` - Byte slice to hash
@@ -87,6 +90,7 @@ pub fn encode_base96(mut value: u64, length: usize) -> String {
 ///
 /// # Returns
 /// Base96 encoded hash string
+#[must_use]
 pub fn murmur3_64_base96(data: &[u8], seed: u32, length: usize) -> String {
     let hash = murmur3_64(data, seed);
     encode_base96(hash, length)
@@ -103,18 +107,20 @@ pub fn murmur3_64_base96(data: &[u8], seed: u32, length: usize) -> String {
 ///
 /// # Returns
 /// 48-character trivariate hash string
+#[must_use]
 pub fn trivariate_hash(sch_data: &[u8], cuid_data: &[u8], uuid_data: &[u8]) -> String {
     let sch = murmur3_64_base96(sch_data, seeds::SCH, 16);
     let cuid = murmur3_64_base96(cuid_data, seeds::CUID, 16);
     let uuid = murmur3_64_base96(uuid_data, seeds::UUID, 16);
-    format!("{}{}{}", sch, cuid, uuid)
+    format!("{sch}{cuid}{uuid}")
 }
 
 /// Generate trivariate hash from key and data (convenience function)
+#[must_use]
 pub fn trivariate_from_key(key: &str, data: &str) -> String {
-    let sch_data = format!("SCH:{}", key);
+    let sch_data = format!("SCH:{key}");
     let cuid_data = format!("CUID:{}:{}", key, data.len());
-    let uuid_data = format!("UUID:{}:{}", key, data);
+    let uuid_data = format!("UUID:{key}:{data}");
     trivariate_hash(
         sch_data.as_bytes(),
         cuid_data.as_bytes(),
@@ -125,6 +131,7 @@ pub fn trivariate_from_key(key: &str, data: &str) -> String {
 /// Generate Unicode slot assignment from data (U+E000-E9FF range)
 ///
 /// Uses 64-bit hash for better distribution across 2560 possible slots.
+#[must_use]
 pub fn unicode_slot(data: &[u8], seed: u32) -> char {
     let hash = murmur3_64(data, seed);
     let slot = (hash % 2560) as u32 + 0xE000;
@@ -132,6 +139,7 @@ pub fn unicode_slot(data: &[u8], seed: u32) -> char {
 }
 
 /// Generate Unicode slot as hex escape string
+#[must_use]
 pub fn unicode_slot_hex(data: &[u8], seed: u32) -> String {
     let c = unicode_slot(data, seed);
     format!("\\u{{{:04X}}}", c as u32)

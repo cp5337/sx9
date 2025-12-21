@@ -10,11 +10,12 @@ pub struct FoundationDaemonClient {
 
 impl FoundationDaemonClient {
     /// Create new foundation daemon client
+    #[must_use]
     pub fn new(crate_name: &str) -> Self {
         Self {
             daemon_url: "http://localhost:8001".to_string(),
-            crate_id: format!("ctas7_{}", crate_name.replace("-", "_")),
-            health_endpoint: format!("/health/{}", crate_name),
+            crate_id: format!("ctas7_{}", crate_name.replace('-', "_")),
+            health_endpoint: format!("/health/{crate_name}"),
         }
     }
 
@@ -30,7 +31,7 @@ impl FoundationDaemonClient {
         });
 
         let _response = client
-            .post(&format!("{}/register", self.daemon_url))
+            .post(format!("{}/register", self.daemon_url))
             .json(&registration)
             .send()
             .await?;
@@ -50,7 +51,7 @@ impl FoundationDaemonClient {
         });
 
         let _response = client
-            .post(&format!("{}/health", self.daemon_url))
+            .post(format!("{}/health", self.daemon_url))
             .json(&health)
             .send()
             .await?;

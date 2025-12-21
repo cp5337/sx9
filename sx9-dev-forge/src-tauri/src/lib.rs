@@ -4,20 +4,22 @@
 
 mod ide;
 mod linear;
-mod missions;
+pub mod missions;
 mod rfc;
-mod vault;
+pub mod vault;
 pub mod atomic_clipboard;
 pub mod clipboard_commands;
 pub mod file_index;  // NEW: File indexing for AI agent discovery
 mod thalmic_filter;  // NEW: Plain language intent parser
 mod key_onboarder;  // NEW: File-based key import
+mod voice;  // NEW: Voice integration with ElevenLabs
+mod qa; // NEW: Code Quality Integration
 
 use ide::{BootstrapConfig, BootstrapConstraints, BootstrapContext, IdeBootstrap, IdeType};
 use linear::{CreateIssueInput, LinearClient};
 use missions::{Mission, MissionStore};
 use rfc::RfcLoader;
-use vault::{global_vault, KeyEntrySummary, VaultStats};
+use vault::{global_vault, KeyEntrySummary, VaultStats, KeyVaultExt};
 use atomic_clipboard::AtomicClipboard;
 use serde::{Deserialize, Serialize};
 use std::path::PathBuf;
@@ -30,10 +32,11 @@ use file_index::{FileIndex, FileEntry, IndexStats}; // NEW
 // ═══════════════════════════════════════════════════════════════════════════════
 
 pub struct AppState {
-    pub mission_store: Mutex<MissionStore>,
+    pub mission_store: Mutex<missions::MissionStore>,
     pub linear_api_key: Mutex<Option<String>>,
-    pub rfc_base_path: Mutex<Option<PathBuf>>,
-    pub atomic_clipboard: Mutex<AtomicClipboard>,
+    pub rfc_base_path: Mutex<Option<std::path::PathBuf>>,
+    pub atomic_clipboard: Mutex<atomic_clipboard::AtomicClipboard>,
+    pub elevenlabs_api_key: Mutex<Option<String>>,
 }
 
 impl Default for AppState {
@@ -44,17 +47,9 @@ impl Default for AppState {
         });
 
         // Try to load Linear API key from vault
-        let linear_api_key = if let Ok(vault) = global_vault() {
-            // Use tokio runtime to get the key
-            let rt = tokio::runtime::Runtime::new().ok();
-            rt.and_then(|rt| {
-                rt.block_on(async {
-                    vault.get(vault::keys::LINEAR).await
-                })
-            })
-        } else {
-            None
-        };
+        // NOTE: Disabled to avoid tokio runtime panic on startup
+        // Key will be loaded lazily when needed via set_linear_api_key command
+        let linear_api_key = None;
 
         if linear_api_key.is_some() {
             tracing::info!("Loaded Linear API key from vault");
@@ -77,6 +72,7 @@ impl Default for AppState {
             linear_api_key: Mutex::new(linear_api_key),
             rfc_base_path: Mutex::new(None),
             atomic_clipboard: Mutex::new(atomic_clipboard),
+            elevenlabs_api_key: Mutex::new(None),
         }
     }
 }
@@ -162,6 +158,13 @@ pub struct CreateMissionInput {
 async fn create_mission(
     input: CreateMissionInput,
     state: State<'_, AppState>,
+) -> Result<Mission, String> {
+    process_mission_creation(input, &state).await
+}
+
+pub async fn process_mission_creation(
+    input: CreateMissionInput,
+    state: &AppState,
 ) -> Result<Mission, String> {
     let mut mission = Mission::new(
         input.title.clone(),
@@ -341,6 +344,298 @@ async fn create_linear_issue(
     client.create_issue(input).await.map_err(|e| e.to_string())
 }
 
+#[tauri::command]
+async fn create_linear_issue_from_mission(
+    mission_id: String,
+    team_id: String,
+    state: State<'_, AppState>,
+) -> Result<linear::LinearIssue, String> {
+    // Get mission data
+    let mission_store = state.mission_store.lock().await;
+    let mission = mission_store
+        .get(&mission_id)
+        .ok_or("Mission not found")?
+        .clone();
+    drop(mission_store);
+    
+    // Check if already linked
+    if mission.linear_issue_id.is_some() {
+        return Err("Mission already linked to Linear issue".to_string());
+    }
+    
+    // Auto-generate labels based on persona, phase, priority
+    let mut labels = Vec::new();
+    
+    // Persona → Label mapping
+    match mission.persona.as_str() {
+        "FORGE" => labels.push("dev".to_string()),
+        "VECTOR" => labels.push("security".to_string()),
+        "CIPHER" => labels.push("crypto".to_string()),
+        "SENTINEL" => labels.push("monitoring".to_string()),
+        "ATLAS" => labels.push("architecture".to_string()),
+        _ => {}
+    }
+    
+    // Phase → Label
+    match mission.phase.as_str() {
+        "PLANNING" => labels.push("planning".to_string()),
+        "IMPLEMENTATION" => labels.push("in-progress".to_string()),
+        "TESTING" => labels.push("qa".to_string()),
+        "DEPLOYMENT" => labels.push("deploy".to_string()),
+        _ => {}
+    }
+    
+    // Priority → Linear priority level
+    let priority = match mission.priority.as_str() {
+        "CRITICAL" => Some(1), // Urgent
+        "HIGH" => Some(2),     // High
+        "MEDIUM" => Some(3),   // Normal
+        "LOW" => Some(4),      // Low
+        _ => None,
+    };
+    
+    // Build description with mission context
+    let description = format!(
+        "## Mission Objective\n{}\n\n## Assigned Persona\n{}\n\n## Current Phase\n{}\n\n## Test Harness\n{}\n\n---\n*Auto-created from SX9 Dev Forge*",
+        mission.objective,
+        mission.persona,
+        mission.phase,
+        mission.harness
+    );
+    
+    // Create Linear issue
+    let key = state.linear_api_key.lock().await;
+    let api_key = key.clone().ok_or("Linear API key not set")?;
+    drop(key);
+    
+    let client = LinearClient::new(api_key);
+    let input = CreateIssueInput {
+        title: mission.title.clone(),
+        description: Some(description),
+        team_id,
+        project_id: None,
+        priority,
+        labels,
+    };
+    
+    let issue = client.create_issue(input).await.map_err(|e| e.to_string())?;
+    
+    // Update mission with Linear issue info
+    let mut mission_store = state.mission_store.lock().await;
+    if let Some(mission) = mission_store.get(&mission_id).cloned() {
+        let mut updated_mission = mission;
+        updated_mission.linear_issue_id = Some(issue.id.clone());
+        updated_mission.linear_issue_url = Some(issue.url.clone());
+        mission_store.update(updated_mission).map_err(|e| e.to_string())?;
+    }
+    drop(mission_store);
+    
+    // Save to Atomic Clipboard
+    let clipboard_entry = atomic_clipboard::ClipboardEntry {
+        id: uuid::Uuid::new_v4().to_string(),
+        content: serde_json::to_string(&issue).unwrap_or_default(),
+        source: "linear".to_string(),
+        tags: vec!["linear".to_string(), "issue".to_string(), mission_id],
+        created_at: chrono::Utc::now(),
+        metadata: serde_json::json!({
+            "issue_id": issue.id,
+            "issue_url": issue.url,
+            "identifier": issue.identifier,
+        }),
+    };
+    
+    if let Ok(clipboard) = atomic_clipboard::AtomicClipboard::new() {
+        let _ = clipboard.push(clipboard_entry).await;
+    }
+    
+    Ok(issue)
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// TAURI COMMANDS - VOICE & IDEATION
+// ═══════════════════════════════════════════════════════════════════════════════
+
+#[tauri::command]
+async fn text_to_speech(
+    text: String,
+    state: State<'_, AppState>,
+) -> Result<Vec<u8>, String> {
+    let key = state.elevenlabs_api_key.lock().await;
+    let api_key = key.clone().ok_or("ElevenLabs API key not set")?;
+    drop(key);
+
+    let config = voice::VoiceConfig::default();
+    let client = voice::VoiceClient::new(api_key, config);
+    
+    client.text_to_speech(&text, None).await.map_err(|e| e.to_string())
+}
+
+#[tauri::command]
+async fn list_voices(state: State<'_, AppState>) -> Result<Vec<voice::Voice>, String> {
+    let key = state.elevenlabs_api_key.lock().await;
+    let api_key = key.clone().ok_or("ElevenLabs API key not set")?;
+    drop(key);
+
+    let config = voice::VoiceConfig::default();
+    let client = voice::VoiceClient::new(api_key, config);
+    
+    client.list_voices().await.map_err(|e| e.to_string())
+}
+
+#[tauri::command]
+async fn process_voice_idea(
+    transcript: String,
+    state: State<'_, AppState>,
+) -> Result<serde_json::Value, String> {
+    // Run through Thalmic Filter to extract structured data
+    let mut filter = thalmic_filter::ThalmicFilter::new();
+    let intent = filter.parse(&transcript);
+    
+    // Extract mission components
+    let concept = serde_json::json!({
+        "raw_idea": transcript,
+        "intent": intent,
+        "objective": extract_objective(&transcript),
+        "potential_personas": extract_personas(&transcript),
+        "constraints": extract_constraints(&transcript),
+        "timestamp": chrono::Utc::now().to_rfc3339(),
+    });
+    
+    // Save to Atomic Clipboard
+    let clipboard_entry = atomic_clipboard::ClipboardEntry {
+        id: uuid::Uuid::new_v4().to_string(),
+        content: serde_json::to_string(&concept).unwrap_or_default(),
+        source: "voice-ideation".to_string(),
+        tags: vec!["ideation".to_string(), "voice".to_string()],
+        created_at: chrono::Utc::now(),
+        metadata: concept.clone(),
+    };
+    
+    if let Ok(clipboard) = atomic_clipboard::AtomicClipboard::new() {
+        let _ = clipboard.push(clipboard_entry).await;
+    }
+    
+    Ok(concept)
+}
+
+// Helper functions for voice idea processing
+fn extract_objective(text: &str) -> String {
+    // Simple extraction - can be enhanced with NLP
+    let lower = text.to_lowercase();
+    if lower.contains("build") || lower.contains("create") || lower.contains("implement") {
+        text.to_string()
+    } else {
+        format!("Implement: {}", text)
+    }
+}
+
+fn extract_personas(text: &str) -> Vec<String> {
+    let lower = text.to_lowercase();
+    let mut personas = Vec::new();
+    
+    if lower.contains("security") || lower.contains("threat") {
+        personas.push("VECTOR".to_string());
+    }
+    if lower.contains("architecture") || lower.contains("design") {
+        personas.push("ATLAS".to_string());
+    }
+    if lower.contains("crypto") || lower.contains("encryption") {
+        personas.push("CIPHER".to_string());
+    }
+    if lower.contains("monitor") || lower.contains("observability") {
+        personas.push("SENTINEL".to_string());
+    }
+    
+    if personas.is_empty() {
+        personas.push("FORGE".to_string());
+    }
+    
+    personas
+}
+
+fn extract_constraints(text: &str) -> Vec<String> {
+    let mut constraints = Vec::new();
+    let lower = text.to_lowercase();
+    
+    if lower.contains("fast") || lower.contains("performance") {
+        constraints.push("High performance required".to_string());
+    }
+    if lower.contains("secure") || lower.contains("safe") {
+        constraints.push("Security critical".to_string());
+    }
+    if lower.contains("simple") || lower.contains("minimal") {
+        constraints.push("Keep implementation simple".to_string());
+    }
+    
+    constraints
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// TAURI COMMANDS - KEYVAULT DIAGNOSTICS
+// ═══════════════════════════════════════════════════════════════════════════════
+
+#[tauri::command]
+async fn diagnose_keyvault() -> Result<String, String> {
+    let vault_path = vault::KeyVault::default_vault_dir();
+    let db_path = vault_path.join("keys.sled");
+    
+    let mut report = String::new();
+    report.push_str(&format!("🔍 KeyVault Diagnostic Report\n\n"));
+    report.push_str(&format!("Path: {:?}\n", vault_path));
+    report.push_str(&format!("Database: {:?}\n", db_path));
+    report.push_str(&format!("Exists: {}\n\n", db_path.exists()));
+    
+    if !db_path.exists() {
+        return Ok(report + "❌ Database does not exist");
+    }
+    
+    match sled::open(&db_path) {
+        Ok(db) => {
+            report.push_str(&format!("✅ Database opened successfully\n"));
+            report.push_str(&format!("Total entries: {}\n\n", db.len()));
+            
+            let mut count = 0;
+            for item in db.iter().take(5) {
+                if let Ok((key, value)) = item {
+                    count += 1;
+                    let key_str = String::from_utf8_lossy(&key);
+                    report.push_str(&format!("Entry #{}:\n", count));
+                    report.push_str(&format!("  Key: {}\n", key_str));
+                    report.push_str(&format!("  Value size: {} bytes\n", value.len()));
+                    
+                    // Try to parse as KeyEntry
+                    match serde_json::from_slice::<vault::KeyEntry>(&value) {
+                        Ok(entry) => {
+                            report.push_str("  ✅ Valid KeyEntry\n");
+                            report.push_str(&format!("     Name: {}\n", entry.name));
+                            report.push_str(&format!("     Service: {}\n", entry.service));
+                            report.push_str(&format!("     Active: {}\n", entry.active));
+                        }
+                        Err(e) => {
+                            report.push_str(&format!("  ❌ Parse error: {}\n", e));
+                            // Show first 200 chars of value
+                            if let Ok(json_str) = String::from_utf8(value.to_vec()) {
+                                let preview = &json_str[..json_str.len().min(200)];
+                                report.push_str(&format!("     Raw: {}...\n", preview));
+                            }
+                        }
+                    }
+                    report.push('\n');
+                }
+            }
+            
+            if db.len() > 5 {
+                report.push_str(&format!("... and {} more entries\n", db.len() - 5));
+            }
+        }
+        Err(e) => {
+            report.push_str(&format!("❌ Failed to open database: {}\n", e));
+        }
+    }
+    
+    Ok(report)
+}
+
 // ═══════════════════════════════════════════════════════════════════════════════
 // TAURI COMMANDS - RFC
 // ═══════════════════════════════════════════════════════════════════════════════
@@ -517,21 +812,54 @@ fn open_in_ide(ide: String, project_path: String) -> Result<(), String> {
 // APP INITIALIZATION
 // ═══════════════════════════════════════════════════════════════════════════════
 
+// ═══════════════════════════════════════════════════════════════════════════════
+// TAURI COMMANDS - NOTIFICATIONS (SLACK)
+// ═══════════════════════════════════════════════════════════════════════════════
+
+#[tauri::command]
+async fn send_slack(channel: Option<String>, message: String) -> Result<String, String> {
+    use reqwest::Client;
+    use serde_json::json;
+
+    let token = std::env::var("SLACK_BOT_TOKEN")
+        .map_err(|_| "SLACK_BOT_TOKEN not found in environment".to_string())?;
+
+    let client = Client::new();
+    let res = client.post("https://slack.com/api/chat.postMessage")
+        .header("Authorization", format!("Bearer {}", token))
+        .json(&json!({
+            "channel": channel.unwrap_or_else(|| "#general".to_string()),
+            "text": message
+        }))
+        .send()
+        .await
+        .map_err(|e| e.to_string())?;
+
+    if !res.status().is_success() {
+        return Err(format!("Slack API Error: {}", res.status()));
+    }
+
+    let body = res.text().await.map_err(|e| e.to_string())?;
+    Ok(body)
+}
+
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     // Initialize vault early
+    /* 
     match global_vault() {
         Ok(vault) => {
             // Log vault status
-            let rt = tokio::runtime::Runtime::new().unwrap();
-            let stats = rt.block_on(vault.stats());
-            println!("🔐 KeyVault loaded: {} keys ({} active)", stats.total, stats.active);
-            println!("   Path: {}", stats.vault_path);
+            // let rt = tokio::runtime::Runtime::new().unwrap();
+            // let stats = rt.block_on(vault.stats());
+            // println!("🔐 KeyVault loaded: {} keys ({} active)", stats.total, stats.active);
+            println!("🔐 KeyVault loaded (stats disabled to avoid tokio panic)");
         }
         Err(e) => {
             eprintln!("⚠️ KeyVault failed to load: {}", e);
         }
     }
+    */
 
     tauri::Builder::default()
         .plugin(tauri_plugin_opener::init())
@@ -561,6 +889,7 @@ pub fn run() {
             list_linear_teams,
             list_linear_projects,
             create_linear_issue,
+            create_linear_issue_from_mission,
             // RFC
             set_rfc_base_path,
             load_rfc_index,
@@ -576,9 +905,13 @@ pub fn run() {
             // Key Onboarding
             scan_and_import_keys,
             get_keys_directory,
+            // KeyVault Diagnostics
+            diagnose_keyvault,
             // IDE
             bootstrap_ide,
             open_in_ide,
+            // Notifications
+            send_slack,
             // Atomic Clipboard
             clipboard_commands::clipboard_push,
             clipboard_commands::clipboard_list,
@@ -587,6 +920,9 @@ pub fn run() {
             clipboard_commands::clipboard_search_by_source,
             clipboard_commands::clipboard_stats,
             clipboard_commands::clipboard_clear,
+            
+            // QA
+            qa::run_lightning_qa
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

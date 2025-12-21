@@ -7,7 +7,7 @@ use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::sync::{Arc, Mutex};
-use tracing::{error, info};
+use tracing::info;
 use uuid::Uuid;
 
 use crate::cyber_operations::{ActiveOperation, CyberOperations};
@@ -147,6 +147,12 @@ pub struct GatewayStatus {
     pub last_updated: DateTime<Utc>,
 }
 
+impl Default for GatewayCDN {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl GatewayCDN {
     /// Create a new Gateway CDN instance
     pub fn new() -> Self {
@@ -218,6 +224,12 @@ impl GatewayCDN {
 }
 
 // Implementation for supporting structures
+impl Default for PortManager {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl PortManager {
     pub fn new() -> Self {
         Self {
@@ -239,6 +251,12 @@ impl PortManager {
 
         info!("📡 Allocated port {} for service: {}", port, service_name);
         Ok(())
+    }
+}
+
+impl Default for ServiceRegistry {
+    fn default() -> Self {
+        Self::new()
     }
 }
 

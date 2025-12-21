@@ -58,8 +58,8 @@ pub fn find_best_database(
             // Check query language support
             match query_lang {
                 QueryLanguage::Cypher => db.db_type == "neo4j",
-                QueryLanguage::SQL => db.db_type == "postgres" || db.db_type == "surrealdb",
-                QueryLanguage::SurrealQL => db.db_type == "surrealdb",
+                QueryLanguage::SQL => db.db_type == "postgres" || db.db_type == "slotgraph",
+                QueryLanguage::SurrealQL => db.db_type == "slotgraph",
                 QueryLanguage::Gremlin => false, // Not supported yet
                 QueryLanguage::Unknown => true,
             }
@@ -90,7 +90,7 @@ pub fn plan_route(
 
         // Transform query if needed
         let transformed = match (&query_lang, db.db_type.as_str()) {
-            (QueryLanguage::Cypher, "surrealdb") => crate::transform::cypher_to_surql(query),
+            (QueryLanguage::Cypher, "slotgraph") => crate::transform::cypher_to_surql(query),
             (QueryLanguage::SurrealQL, "neo4j") => crate::transform::surql_to_cypher(query),
             _ => query.to_string(),
         };

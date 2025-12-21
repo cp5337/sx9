@@ -1,0 +1,134 @@
+name: RFC Validation
+
+on:
+  push:
+    branches: [main, develop]
+    paths:
+      - 'rfcs/**'
+      - 'RFC-INDEX.toml'
+      - 'schemas/**'
+  pull_request:
+    branches: [main, develop]
+    paths:
+      - 'rfcs/**'
+      - 'RFC-INDEX.toml'
+      - 'schemas/**'
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      
+      - name: Install dependencies
+        run: |
+          pip install jsonschema tomli
+      
+      - name: Validate RFC Index
+        run: |
+          python scripts/validate-rfcs.py --index RFC-INDEX.toml --format json > validation-result.json
+          cat validation-result.json
+          
+          # Check if validation passed
+          PASSED=$(jq -r '.passed' validation-result.json)
+          if [ "$PASSED" != "true" ]; then
+            echo "::error::RFC validation failed"
+            exit 1
+          fi
+      
+      - name: Validate JSON Schemas
+        run: |
+          for schema in schemas/*.json; do
+            echo "Validating $schema..."
+            python -c "import json; json.load(open('$schema'))"
+          done
+      
+      - name: Generate Dependency Graph
+        run: |
+          python scripts/validate-rfcs.py --index RFC-INDEX.toml --graph > dependency-graph.md
+          cat dependency-graph.md
+      
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: rfc-validation
+          path: |
+            validation-result.json
+            dependency-graph.md
+
+  check-links:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Check internal links
+        run: |
+          # Find all markdown files and check internal links
+          find rfcs -name "*.md" | while read file; do
+            echo "Checking links in $file"
+            # Extract RFC references and verify they exist
+            grep -oE 'RFC-[0-9]+' "$file" | sort -u | while read rfc; do
+              if ! grep -q "\"$rfc\"" RFC-INDEX.toml; then
+                echo "::warning file=$file::Reference to unknown RFC: $rfc"
+              fi
+            done
+          done
+
+  schema-validation:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      
+      - name: Install jsonschema
+        run: pip install jsonschema
+      
+      - name: Validate schemas are valid JSON Schema
+        run: |
+          python << 'EOF'
+          import json
+          import sys
+          from pathlib import Path
+          from jsonschema import Draft7Validator
+          
+          errors = []
+          for schema_file in Path('schemas').glob('*.json'):
+              print(f"Validating {schema_file}...")
+              with open(schema_file) as f:
+                  schema = json.load(f)
+              
+              # Check if it's a valid JSON Schema
+              try:
+                  Draft7Validator.check_schema(schema)
+                  print(f"  ✓ Valid JSON Schema")
+              except Exception as e:
+                  errors.append(f"{schema_file}: {e}")
+                  print(f"  ✗ Invalid: {e}")
+          
+          if errors:
+              print("\nSchema validation failed:")
+              for e in errors:
+                  print(f"  - {e}")
+              sys.exit(1)
+          
+          print("\nAll schemas valid!")
+          EOF
+
+  notify:
+    needs: [validate, check-links, schema-validation]
+    if: failure()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Notify Slack on failure
+        run: |
+          # Would use sx9-slack-notify here
+          echo "RFC validation failed - notification would be sent to #sx9-alerts"

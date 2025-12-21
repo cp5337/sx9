@@ -13,6 +13,12 @@ pub struct RouteOptimizer {
     pub load_balancing_weights: HashMap<Uuid, f64>,
 }
 
+impl Default for RouteOptimizer {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl RouteOptimizer {
     pub fn new() -> Self {
         Self {

@@ -102,16 +102,19 @@ impl Primitive {
     /// Convert primitive to Unicode route character
     ///
     /// Maps to Private Use Area D1 Class (U+E400-E41F)
+    #[must_use]
     pub fn to_unicode_route(&self) -> char {
         char::from_u32(PUA_BASE_OFFSET + *self as u32).unwrap_or('\u{FFFD}')
     }
 
     /// Get Unicode codepoint as hex string
+    #[must_use]
     pub fn to_unicode_hex(&self) -> String {
         format!("U+{:04X}", PUA_BASE_OFFSET + *self as u32)
     }
 
     /// Create primitive from opcode value
+    #[must_use]
     pub fn from_opcode(opcode: u8) -> Option<Self> {
         match opcode {
             0x00 => Some(Primitive::Create),
@@ -151,9 +154,10 @@ impl Primitive {
     }
 
     /// Create primitive from Unicode character
+    #[must_use]
     pub fn from_unicode(c: char) -> Option<Self> {
         let code = c as u32;
-        if code >= PUA_BASE_OFFSET && code <= PUA_BASE_OFFSET + 0x1F {
+        if (PUA_BASE_OFFSET..=PUA_BASE_OFFSET + 0x1F).contains(&code) {
             Self::from_opcode((code - PUA_BASE_OFFSET) as u8)
         } else {
             None
@@ -161,6 +165,7 @@ impl Primitive {
     }
 
     /// Get human-readable name
+    #[must_use]
     pub fn name(&self) -> &'static str {
         match self {
             Primitive::Create => "CREATE",
@@ -199,6 +204,7 @@ impl Primitive {
     }
 
     /// Get category for this primitive
+    #[must_use]
     pub fn category(&self) -> PrimitiveCategory {
         match *self as u8 >> 2 {
             0 => PrimitiveCategory::Crud,
@@ -214,6 +220,7 @@ impl Primitive {
     }
 
     /// Check if this primitive requires approval (RFC-9003)
+    #[must_use]
     pub fn requires_approval(&self) -> bool {
         matches!(
             self,
@@ -251,6 +258,7 @@ pub enum PrimitiveCategory {
 
 impl PrimitiveCategory {
     /// Get all primitives in this category
+    #[must_use]
     pub fn primitives(&self) -> &'static [Primitive] {
         match self {
             PrimitiveCategory::Crud => &[
@@ -324,6 +332,7 @@ pub struct TacticalInstruction {
 
 impl TacticalInstruction {
     /// Create new instruction
+    #[must_use]
     pub fn new(primitive: Primitive) -> Self {
         Self {
             approval_required: primitive.requires_approval(),
@@ -354,17 +363,19 @@ impl TacticalInstruction {
     }
 
     /// Set priority
+    #[must_use]
     pub fn with_priority(mut self, priority: u8) -> Self {
         self.priority = priority;
         self
     }
 
     /// Encode to Unicode instruction string
+    #[must_use]
     pub fn to_unicode(&self) -> String {
         let mut result = String::new();
         result.push(self.primitive.to_unicode_route());
         // Encode priority in next byte
-        result.push(char::from_u32(0xE420 + self.priority as u32 / 16).unwrap_or('\u{E420}'));
+        result.push(char::from_u32(0xE420 + u32::from(self.priority) / 16).unwrap_or('\u{E420}'));
         result
     }
 }

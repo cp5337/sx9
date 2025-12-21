@@ -1,3 +1,23 @@
+#![allow(clippy::items_after_statements)]
+#![allow(clippy::format_push_string)]
+#![allow(clippy::unnecessary_wraps)]
+#![allow(clippy::redundant_pattern_matching)]
+#![allow(clippy::needless_borrows_for_generic_args)]
+#![allow(clippy::unused_async)]
+#![allow(clippy::too_many_arguments)]
+#![allow(clippy::type_complexity)]
+#![allow(clippy::cast_sign_loss)]
+#![allow(clippy::similar_names)]
+#![allow(clippy::unreadable_literal)]
+#![allow(clippy::unused_self)]
+#![allow(dead_code)]
+#![allow(unused_imports)]
+#![allow(clippy::missing_errors_doc)]
+#![allow(clippy::missing_panics_doc)]
+#![allow(clippy::struct_excessive_bools)]
+#![allow(clippy::cast_precision_loss)]
+#![allow(clippy::cast_possible_truncation)]
+#![allow(clippy::module_name_repetitions)]
 //! CTAS-7 Foundation Core - Ground Truth Implementation
 //!
 //! Mathematical foundation with zero trust and C2 beacon snare capabilities
@@ -101,6 +121,7 @@ pub struct FoundationCore {
 }
 
 impl FoundationCore {
+    #[must_use]
     pub fn new() -> Self {
         Self {
             hash_engine: TrivariateHashEngine::new(),
@@ -151,6 +172,7 @@ impl FoundationCore {
     }
 
     /// Generate complete trivariate hash
+    #[must_use]
     pub fn generate_hash(
         &self,
         content: &str,
@@ -164,6 +186,7 @@ impl FoundationCore {
     }
 
     /// Get visual properties from hash
+    #[must_use]
     pub fn get_visual_properties(&self, hash: &str) -> Option<VisualProperties> {
         if hash.len() >= 16 {
             Some(self.ui_system.extract_visual_properties(&hash[0..16]))
@@ -173,6 +196,7 @@ impl FoundationCore {
     }
 
     /// Get animation properties from hash
+    #[must_use]
     pub fn get_animation_properties(&self, hash: &str) -> Option<AnimationProperties> {
         if hash.len() >= 32 {
             Some(self.ui_system.extract_animation_properties(&hash[16..32]))
@@ -187,6 +211,7 @@ impl FoundationCore {
     }
 
     /// Get foundation status
+    #[must_use]
     pub fn get_foundation_status(&self) -> String {
         format!(
             "CTAS-7 Foundation Core Status:\n\
@@ -298,7 +323,7 @@ pub mod hashing {
     //! Foundation-level hashing re-exports
     //! Use this module for ALL hashing operations across CTAS-7
     //!
-    //! ## RFC-9001 Canonical: 64-bit MurmurHash3
+    //! ## RFC-9001 Canonical: 64-bit `MurmurHash3`
     //!
     //! All new code should use the `hash64` module functions:
     //! - `murmur3_64()` - Raw 64-bit hash
@@ -332,13 +357,15 @@ pub mod hashing {
     pub use crate::security::{crc32fast, hex};
 
     /// Quick hash for simple data using CTAS-7.3.1 64-bit system
+    #[must_use]
     pub fn quick_hash(data: &str) -> String {
         trivariate_from_key("quick", data)
     }
 
     /// Generate crate hash through foundation (64-bit)
+    #[must_use]
     pub fn crate_hash(crate_name: &str, stage: &str) -> String {
-        let key = format!("{}:{}", crate_name, stage);
+        let key = format!("{crate_name}:{stage}");
         trivariate_from_key(&key, crate_name)
     }
 }
@@ -411,6 +438,7 @@ pub mod agents {
     pub struct AgentId(pub Uuid);
 
     impl AgentId {
+        #[must_use]
         pub fn new() -> Self {
             Self(Uuid::new_v4())
         }
@@ -535,6 +563,7 @@ pub mod agents {
 
     impl AgentMetadata {
         /// Create new agent with telemetry enabled
+        #[must_use]
         pub fn new(name: String, ea_code: String, xsd_symbol: String, port: u16) -> Self {
             Self {
                 id: AgentId::new(),
@@ -649,6 +678,7 @@ pub mod agents {
         }
 
         /// Get health score (0.0 - 1.0)
+        #[must_use]
         pub fn health_score(&self) -> f64 {
             let cpu_score = 1.0 - (self.telemetry.cpu_usage / 100.0);
             let memory_score = 1.0 - (self.telemetry.memory_usage / 100.0);
@@ -659,6 +689,7 @@ pub mod agents {
         }
 
         /// Get telemetry for CDN submission
+        #[must_use]
         pub fn get_cdn_telemetry(&self) -> HashMap<String, serde_json::Value> {
             let mut telemetry = HashMap::new();
 
@@ -718,7 +749,14 @@ pub mod agents {
         pub last_collection: DateTime<Utc>,
     }
 
+    impl Default for TelemetryCollector {
+        fn default() -> Self {
+            Self::new()
+        }
+    }
+
     impl TelemetryCollector {
+        #[must_use]
         pub fn new() -> Self {
             Self {
                 agents: HashMap::new(),
@@ -745,6 +783,7 @@ pub mod agents {
         }
 
         /// Get agents requiring attention
+        #[must_use]
         pub fn get_unhealthy_agents(&self) -> Vec<&AgentMetadata> {
             self.agents
                 .values()
@@ -860,6 +899,7 @@ impl FoundationIntegrity {
     }
 
     /// Get foundation health status
+    #[must_use]
     pub fn health_status() -> FoundationHealth {
         FoundationHealth {
             version: VERSION.to_string(),

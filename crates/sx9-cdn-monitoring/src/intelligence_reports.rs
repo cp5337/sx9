@@ -9,8 +9,6 @@ use std::collections::HashMap;
 use tracing::{debug, info};
 use uuid::Uuid;
 
-use crate::cyber_operations::ThreatLevel;
-
 /// Intelligence Report Generation
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct IntelligenceReport {
@@ -78,6 +76,12 @@ pub enum IndicatorType {
 pub struct IntelligenceManager {
     pub reports: Vec<IntelligenceReport>,
     pub threat_indicators: Vec<ThreatIndicator>,
+}
+
+impl Default for IntelligenceManager {
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 impl IntelligenceManager {

@@ -216,7 +216,7 @@ async fn execute_query(
 
     // Route to appropriate adapter based on db_type
     let result = match db_info.db_type.as_str() {
-        "surrealdb" => adapters::surreal::execute(&db_info, &req.query).await,
+        "slotgraph" => adapters::slotgraph::execute(&db_info, &req.query).await,
         "postgres" => adapters::postgres::execute(&db_info, &req.query).await,
         "neo4j" => adapters::neo4j::execute(&db_info, &req.query).await,
         _ => Err(anyhow::anyhow!("Unsupported database type")),
@@ -257,7 +257,7 @@ async fn get_graph(
         None => format!("SELECT * FROM any_table LIMIT {}", limit),
     };
 
-    let result = adapters::surreal::execute(&db_info, &query)
+    let result = adapters::slotgraph::execute(&db_info, &query)
         .await
         .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
 
@@ -272,7 +272,7 @@ async fn get_table(
     let db_info = state.registry.get(&db_id).ok_or(StatusCode::NOT_FOUND)?;
 
     let query = format!("SELECT * FROM {} LIMIT 1000", table);
-    let result = adapters::surreal::execute(&db_info, &query)
+    let result = adapters::slotgraph::execute(&db_info, &query)
         .await
         .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
 

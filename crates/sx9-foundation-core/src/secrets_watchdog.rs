@@ -1,7 +1,7 @@
-//! ABE DropZone Secrets Watchdog
+//! ABE `DropZone` Secrets Watchdog
 //!
 //! Monitors ~/Desktop/ABE-DropZone/secrets/ for new .txt and .md files
-//! and auto-imports them into the KeyVault.
+//! and auto-imports them into the `KeyVault`.
 //!
 //! File naming convention:
 //! - "Eleven Labs API Key.txt" → key name: "elevenlabs"
@@ -72,7 +72,7 @@ pub struct ParsedSecret {
     pub notes: Option<String>,
 }
 
-/// Secrets Watchdog - monitors ABE DropZone and syncs to KeyVault
+/// Secrets Watchdog - monitors ABE `DropZone` and syncs to `KeyVault`
 pub struct SecretsWatchdog {
     config: WatchdogConfig,
     vault: Arc<KeyVault>,
@@ -82,11 +82,13 @@ pub struct SecretsWatchdog {
 
 impl SecretsWatchdog {
     /// Create new watchdog with default config
+    #[must_use]
     pub fn new(vault: Arc<KeyVault>) -> Self {
         Self::with_config(vault, WatchdogConfig::default())
     }
 
     /// Create watchdog with custom config
+    #[must_use]
     pub fn with_config(vault: Arc<KeyVault>, config: WatchdogConfig) -> Self {
         Self {
             config,
@@ -238,7 +240,7 @@ impl SecretsWatchdog {
             self.vault
                 .store_entry(entry)
                 .await
-                .map_err(|e| WatchdogError::Vault(e))?;
+                .map_err(WatchdogError::Vault)?;
         }
 
         // Mark as processed
@@ -407,8 +409,8 @@ impl SecretsWatchdog {
             .replace(" api key", "")
             .replace(" key", "")
             .replace("api ", "")
-            .replace(" ", "_")
-            .replace("-", "_");
+            .replace(' ', "_")
+            .replace('-', "_");
 
         // Known normalizations
         match cleaned.as_str() {
@@ -431,7 +433,7 @@ pub enum WatchdogError {
     Watch(String),
 }
 
-/// One-shot import: scan ABE DropZone and import all secrets
+/// One-shot import: scan ABE `DropZone` and import all secrets
 pub async fn import_dropzone_secrets(vault: Arc<KeyVault>) -> Result<usize, WatchdogError> {
     let mut watchdog = SecretsWatchdog::new(vault);
     watchdog.config.process_existing = true;
@@ -441,7 +443,8 @@ pub async fn import_dropzone_secrets(vault: Arc<KeyVault>) -> Result<usize, Watc
     Ok(watchdog.processed_files.len())
 }
 
-/// Get the default ABE DropZone secrets path
+/// Get the default ABE `DropZone` secrets path
+#[must_use]
 pub fn default_dropzone_path() -> PathBuf {
     dirs::home_dir()
         .unwrap_or_else(|| PathBuf::from("."))

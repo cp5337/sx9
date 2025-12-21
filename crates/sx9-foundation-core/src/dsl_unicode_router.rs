@@ -3,9 +3,8 @@
 //! Routes DSL operations through Neural Mux with <250ns latency target.
 //! Provides high-performance routing for Unicode Assembly Language operations.
 
-use crate::diagnostics::{Error, Result};
-use crate::neural_mux::{ExecutionContext, NeuralMuxRouter, OperationRoute, Priority};
-use std::collections::HashMap;
+use crate::diagnostics::Result;
+use crate::neural_mux::{NeuralMuxRouter, OperationRoute};
 use std::time::{Duration, Instant};
 
 /// DSL Unicode router with performance tracking
@@ -18,6 +17,7 @@ pub struct DSLUnicodeRouter {
 
 impl DSLUnicodeRouter {
     /// Create new DSL Unicode router
+    #[must_use]
     pub fn new(neural_mux: NeuralMuxRouter) -> Self {
         Self {
             neural_mux,
@@ -63,6 +63,7 @@ impl DSLUnicodeRouter {
     }
 
     /// Get average routing latency
+    #[must_use]
     pub fn average_latency(&self) -> Duration {
         if self.routing_times.is_empty() {
             return Duration::from_nanos(0);
@@ -73,6 +74,7 @@ impl DSLUnicodeRouter {
     }
 
     /// Get p99 latency (99th percentile)
+    #[must_use]
     pub fn p99_latency(&self) -> Duration {
         if self.routing_times.is_empty() {
             return Duration::from_nanos(0);
@@ -89,11 +91,13 @@ impl DSLUnicodeRouter {
     }
 
     /// Check if router meets performance target (<250ns)
+    #[must_use]
     pub fn meets_performance_target(&self) -> bool {
         self.average_latency().as_nanos() < 250
     }
 
     /// Get performance statistics
+    #[must_use]
     pub fn performance_stats(&self) -> PerformanceStats {
         PerformanceStats {
             average_latency: self.average_latency(),

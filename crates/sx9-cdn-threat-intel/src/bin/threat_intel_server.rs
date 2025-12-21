@@ -7,15 +7,14 @@ use std::net::SocketAddr;
 use std::sync::Arc;
 
 use axum::{
-    extract::{Path, Query, State},
+    extract::{Path, State},
     http::StatusCode,
     response::Json,
     routing::{get, post},
     Router,
 };
 use futures::StreamExt;
-use serde::{Deserialize, Serialize};
-use tokio::sync::RwLock;
+use serde::Deserialize;
 use tracing::{error, info, warn};
 
 use sx9_cdn_threat_intel::{

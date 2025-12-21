@@ -2,11 +2,9 @@
 //!
 //! Focused traffic analysis implementation meeting Tesla-grade standards.
 
-use chrono::{DateTime, Utc};
+use chrono::Utc;
 use serde::{Deserialize, Serialize};
-use std::collections::HashMap;
 
-use crate::cyber_operations::ThreatLevel;
 use crate::traffic_types::{AnalysisResult, RequestData, ResponseAction, SuspiciousActivity};
 
 /// Traffic Analysis Engine
@@ -20,6 +18,12 @@ pub struct TrafficAnalysis {
     pub attack_attempts: u64,
     pub blocked_requests: u64,
     pub threat_score: f64,
+}
+
+impl Default for TrafficAnalysis {
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 impl TrafficAnalysis {

@@ -4,7 +4,6 @@
 //! RFC-9002: Routing Protocol
 
 use anyhow::Result;
-use dashmap::DashMap;
 use std::sync::Arc;
 
 use crate::route_table::{RouteEntry, RouteTable};

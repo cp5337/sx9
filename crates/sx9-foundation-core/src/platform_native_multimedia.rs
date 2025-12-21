@@ -4,7 +4,6 @@
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
-use tokio::sync::RwLock;
 use uuid::Uuid;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -965,7 +964,7 @@ pub async fn create_platform_session_endpoint(
         .as_array()
         .unwrap_or(&Vec::new())
         .iter()
-        .filter_map(|v| v.as_str().map(|s| s.to_string()))
+        .filter_map(|v| v.as_str().map(std::string::ToString::to_string))
         .collect();
 
     match engine

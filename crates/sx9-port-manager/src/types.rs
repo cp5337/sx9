@@ -33,6 +33,7 @@ pub struct PortAllocation {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub enum ServiceType {
     Foundation,
+    Gateway,
     CDN,
     XSD,
     Orbital,

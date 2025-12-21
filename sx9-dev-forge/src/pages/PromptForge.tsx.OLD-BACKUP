@@ -1,0 +1,604 @@
+import React, { useState, useCallback, useEffect } from "react";
+import { invoke } from "@tauri-apps/api/core";
+import {
+  ChevronLeft,
+  ChevronRight,
+  Activity,
+  CheckCircle,
+  Wifi,
+  Flag,
+  Zap,
+  Target,
+  Lock,
+  Brain,
+  Wrench,
+  Clock,
+  BookOpen,
+  List,
+} from "lucide-react";
+import { Accordion } from "../components/Accordion";
+import { Checkbox } from "../components/Checkbox";
+import {
+  PROMPT_TYPES,
+  HARNESSES,
+  PERSONAS,
+  TOOLS_LIST,
+  CONTEXT_SOURCES,
+  RECENT_MISSIONS,
+  DEFAULT_FORM_STATE,
+} from "../config/prompt-forge.config";
+
+export const PromptForge = () => {
+  // Drawer State
+  const [leftOpen, setLeftOpen] = useState(true);
+  const [rightOpen, setRightOpen] = useState(true);
+
+  // Configuration State
+  const [promptType, setPromptType] =
+    useState<keyof typeof PROMPT_TYPES>("CUSTOM");
+  const [harness, setHarness] = useState<keyof typeof HARNESSES>("build");
+  const [persona, setPersona] = useState<keyof typeof PERSONAS>("FORGE");
+
+  // Form State
+  const [form, setForm] = useState<any>(DEFAULT_FORM_STATE);
+
+  const set = (k: string, v: any) => setForm((f: any) => ({ ...f, [k]: v }));
+
+  // Render Output
+  const [output, setOutput] = useState("");
+  const [copyFeedback, setCopyFeedback] = useState("");
+  const [isSaving, setIsSaving] = useState(false);
+
+  // Generate YAML
+  const generate = useCallback(() => {
+    const enabledTools = TOOLS_LIST.filter((t) => form[t.id])
+      .map((t) => t.id)
+      .join(", ");
+    const contextSrcs = CONTEXT_SOURCES.filter((t) => form[t.id])
+      .map((t) => t.id)
+      .join(", ");
+
+    const pType = PROMPT_TYPES[promptType];
+    const hType = HARNESSES[harness];
+    const pPersona = PERSONAS[persona];
+
+    const yaml = `# SX9-PROMPT v3.0
+# Generated: ${new Date().toISOString()}
+# Type: ${pType.name}
+
+header:
+  title: "${form.title}"
+  rfc: ${form.rfc}
+  phase: ${form.phase}
+  priority: ${form.priority}
+  
+utilization:
+  harness: ${hType.name}
+  persona: ${pPersona.role}
+  mode: ${form.mode}
+  temp: ${hType.temp}
+  timeout: ${form.timeout}
+
+tools: [${enabledTools}]
+context_sources: [${contextSrcs}]
+
+mission:
+  objective: "${form.objective}"
+  context: "${form.context}"
+
+constraints:
+  hard:
+${form.hardConstraints
+  .split("\n")
+  .map((l: string) => `    - "${l}"`)
+  .join("\n")}
+  soft:
+${form.softConstraints
+  .split("\n")
+  .map((l: string) => `    - "${l}"`)
+  .join("\n")}
+
+deliverables:
+${form.deliverables
+  .split("\n")
+  .map((l: string) => `  - "${l}"`)
+  .join("\n")}
+
+acceptance:
+${form.acceptance
+  .split("\n")
+  .map((l: string) => `  - "${l}"`)
+  .join("\n")}
+  
+integration:
+  linear:
+    team: "${form.linearTeam}"
+    project: "${form.linearProject}"
+    labels: [${form.linearLabels}]
+    create_issue: ${form.createLinearIssue}
+  filesystem:
+    workdir: "${form.workdir}"
+    forbid: [${form.forbidPaths}]
+`;
+    setOutput(yaml);
+  }, [form, harness, persona, promptType]);
+
+  useEffect(() => {
+    generate();
+  }, [form, harness, persona, promptType, generate]);
+
+  const copyToClipboard = async () => {
+    setIsSaving(true);
+    try {
+      await navigator.clipboard.writeText(output);
+      setCopyFeedback("COPIED!");
+      setTimeout(() => setCopyFeedback(""), 2000);
+    } catch (e) {
+      console.error("Failed to copy", e);
+      setCopyFeedback("ERROR");
+    }
+    setIsSaving(false);
+  };
+
+  const createMission = async () => {
+    try {
+      await invoke("create_mission", { input: output });
+      setCopyFeedback("MISSION CREATED!");
+      setTimeout(() => setCopyFeedback(""), 2000);
+    } catch (e) {
+      console.error("Failed to create mission", e);
+      setCopyFeedback("ERROR");
+    }
+  };
+
+  return (
+    <div className="flex flex-row h-screen bg-[#0F172A] text-slate-100 font-mono">
+      {/* LEFT DRAWER (DO-ERS) */}
+      <div
+        className={`${
+          leftOpen ? "w-80" : "w-12"
+        } bg-[#1e293b] border-r border-slate-700 flex flex-col transition-all duration-200`}
+      >
+        <div className="h-9 flex items-center justify-between px-2 border-b border-slate-700 bg-[#0F172A]">
+          <button
+            onClick={() => setLeftOpen(!leftOpen)}
+            className="w-6 h-6 flex items-center justify-center rounded hover:bg-slate-800"
+          >
+            {leftOpen ? (
+              <ChevronLeft size={16} className="text-slate-400" />
+            ) : (
+              <ChevronRight size={16} className="text-slate-400" />
+            )}
+          </button>
+          {leftOpen && (
+            <span className="text-[10px] font-bold text-slate-500 tracking-widest">
+              DO-ERS (ACTION)
+            </span>
+          )}
+        </div>
+
+        <div className="flex-1 overflow-y-auto p-2 bg-[#020617]">
+          {leftOpen ? (
+            <div className="space-y-2">
+              {/* GROUP 1: IDENTITY */}
+              <Accordion title="1. IDENTITY" expanded={true}>
+                <div className="grid grid-cols-4 gap-1 mb-2">
+                  {Object.entries(PROMPT_TYPES).map(([k, t]) => (
+                    <button
+                      key={k}
+                      onClick={() => setPromptType(k as any)}
+                      className={`h-8 flex items-center justify-center border rounded ${
+                        promptType === k
+                          ? "border-emerald-600 bg-emerald-600/20"
+                          : "border-slate-600"
+                      }`}
+                    >
+                      <t.icon
+                        size={14}
+                        className={
+                          promptType === k
+                            ? "text-emerald-600"
+                            : "text-slate-500"
+                        }
+                      />
+                    </button>
+                  ))}
+                </div>
+                <div className="space-y-1">
+                  <div>
+                    <label className="text-[10px] text-slate-500 uppercase font-bold">
+                      Title
+                    </label>
+                    <input
+                      type="text"
+                      value={form.title}
+                      onChange={(e) => set("title", e.target.value)}
+                      className="w-full bg-slate-900 border border-slate-700 rounded px-2 py-1 text-xs text-slate-300"
+                    />
+                  </div>
+                  <div className="grid grid-cols-2 gap-1">
+                    <div>
+                      <label className="text-[10px] text-slate-500 uppercase font-bold">
+                        RFC
+                      </label>
+                      <input
+                        type="text"
+                        value={form.rfc}
+                        onChange={(e) => set("rfc", e.target.value)}
+                        className="w-full bg-slate-900 border border-slate-700 rounded px-2 py-1 text-xs text-slate-300"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-[10px] text-slate-500 uppercase font-bold">
+                        Phase
+                      </label>
+                      <input
+                        type="text"
+                        value={form.phase}
+                        onChange={(e) => set("phase", e.target.value)}
+                        className="w-full bg-slate-900 border border-slate-700 rounded px-2 py-1 text-xs text-slate-300"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </Accordion>
+
+              {/* GROUP 2: STRATEGY */}
+              <Accordion title="2. STRATEGY" expanded={true}>
+                <div className="space-y-1">
+                  {Object.entries(HARNESSES)
+                    .slice(0, 3)
+                    .map(([k, h]) => (
+                      <button
+                        key={k}
+                        onClick={() => setHarness(k as any)}
+                        className={`w-full flex items-center gap-2 px-1 py-1 rounded ${
+                          harness === k ? "bg-slate-800" : ""
+                        }`}
+                      >
+                        <h.Icon
+                          size={14}
+                          className={
+                            harness === k
+                              ? "text-emerald-600"
+                              : "text-slate-400"
+                          }
+                        />
+                        <span
+                          className={`text-xs ${
+                            harness === k
+                              ? "text-emerald-600"
+                              : "text-slate-400"
+                          }`}
+                        >
+                          {h.name}
+                        </span>
+                      </button>
+                    ))}
+                </div>
+                <div className="grid grid-cols-3 gap-1 mt-2">
+                  {Object.entries(PERSONAS).map(([k, p]) => (
+                    <button
+                      key={k}
+                      onClick={() => setPersona(k as any)}
+                      className={`h-7 flex items-center justify-center border rounded ${
+                        persona === k
+                          ? `border-[${p.color}] bg-[${p.color}]/10`
+                          : "border-slate-600"
+                      }`}
+                      style={{
+                        borderColor: persona === k ? p.color : undefined,
+                        backgroundColor:
+                          persona === k ? `${p.color}10` : undefined,
+                      }}
+                    >
+                      <span
+                        className="text-[9px] font-bold"
+                        style={{
+                          color: persona === k ? p.color : "#64748b",
+                        }}
+                      >
+                        {p.name}
+                      </span>
+                    </button>
+                  ))}
+                </div>
+              </Accordion>
+
+              {/* GROUP 3: OUTPUT */}
+              <Accordion title="3. OUTPUT SPECS">
+                <div className="space-y-1">
+                  <div>
+                    <label className="text-[10px] text-slate-500 uppercase font-bold">
+                      Deliverables
+                    </label>
+                    <textarea
+                      value={form.deliverables}
+                      onChange={(e) => set("deliverables", e.target.value)}
+                      className="w-full bg-slate-900 border border-slate-700 rounded px-2 py-1 text-xs text-slate-300 h-16"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-[10px] text-slate-500 uppercase font-bold">
+                      Acceptance
+                    </label>
+                    <textarea
+                      value={form.acceptance}
+                      onChange={(e) => set("acceptance", e.target.value)}
+                      className="w-full bg-slate-900 border border-slate-700 rounded px-2 py-1 text-xs text-slate-300 h-16"
+                    />
+                  </div>
+                  <Checkbox
+                    label="Create Linear Issue"
+                    checked={form.createLinearIssue}
+                    onChange={(c) => set("createLinearIssue", c)}
+                  />
+                  {form.createLinearIssue && (
+                    <div className="ml-6 pl-2 border-l border-slate-700 space-y-1">
+                      <Checkbox
+                        label="Notify Slack"
+                        checked={form.notifySlack}
+                        onChange={(c) => set("notifySlack", c)}
+                      />
+                      {form.notifySlack && (
+                        <input
+                          type="text"
+                          value={form.slackChannel}
+                          onChange={(e) => set("slackChannel", e.target.value)}
+                          placeholder="#builds"
+                          className="w-full bg-slate-900 border border-slate-700 rounded px-2 py-1 text-[10px] text-slate-300"
+                        />
+                      )}
+                    </div>
+                  )}
+                </div>
+              </Accordion>
+
+              {/* GROUP 4: RULES */}
+              <Accordion title="4. RULES & CONSTRAINTS">
+                <div className="space-y-1">
+                  <div>
+                    <label className="text-[10px] text-slate-500 uppercase font-bold">
+                      Hard Constraints
+                    </label>
+                    <textarea
+                      value={form.hardConstraints}
+                      onChange={(e) => set("hardConstraints", e.target.value)}
+                      className="w-full bg-slate-900 border border-slate-700 rounded px-2 py-1 text-xs text-slate-300 h-12"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-[10px] text-slate-500 uppercase font-bold">
+                      Soft Constraints
+                    </label>
+                    <textarea
+                      value={form.softConstraints}
+                      onChange={(e) => set("softConstraints", e.target.value)}
+                      className="w-full bg-slate-900 border border-slate-700 rounded px-2 py-1 text-xs text-slate-300 h-12"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-[10px] text-slate-500 uppercase font-bold">
+                      Workdir
+                    </label>
+                    <input
+                      type="text"
+                      value={form.workdir}
+                      onChange={(e) => set("workdir", e.target.value)}
+                      className="w-full bg-slate-900 border border-slate-700 rounded px-2 py-1 text-xs text-slate-300"
+                    />
+                  </div>
+                </div>
+              </Accordion>
+            </div>
+          ) : (
+            <div className="flex flex-col items-center gap-6 pt-4">
+              <button>
+                <Flag size={20} className="text-slate-500" />
+              </button>
+              <button>
+                <Zap size={20} className="text-slate-500" />
+              </button>
+              <button>
+                <Target size={20} className="text-slate-500" />
+              </button>
+              <button>
+                <Lock size={20} className="text-slate-500" />
+              </button>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* CENTER WORKSPACE */}
+      <div className="flex-1 flex flex-col bg-[#0B1120]">
+        {/* Status Bar */}
+        <div className="h-9 bg-[#0F172A] border-b border-slate-700 flex items-center justify-between px-4">
+          <div className="flex items-center gap-3">
+            <Wifi size={14} className="text-emerald-600" />
+            <span className="text-xs font-mono text-slate-400">
+              {copyFeedback || "ONLINE"}
+            </span>
+            <div className="w-px h-4 bg-slate-700" />
+            <span className="text-xs font-mono text-slate-400">
+              {PROMPT_TYPES[promptType].name.toUpperCase()}
+            </span>
+          </div>
+          <div className="flex gap-2">
+            <button
+              onClick={copyToClipboard}
+              className="px-3 py-1 text-xs bg-slate-700 hover:bg-slate-600 rounded"
+            >
+              {isSaving ? "SAVING..." : "COPY"}
+            </button>
+            <button
+              onClick={createMission}
+              className="px-3 py-1 text-xs bg-emerald-600 hover:bg-emerald-500 rounded"
+            >
+              CREATE MISSION
+            </button>
+          </div>
+        </div>
+
+        {/* Editor Area */}
+        <div className="flex-1 flex">
+          <div className="w-10 bg-[#1e293b] border-r border-slate-700 flex flex-col items-center py-4">
+            {Array.from({ length: 30 }).map((_, i) => (
+              <div
+                key={i}
+                className="text-xs font-mono text-slate-600 leading-5"
+              >
+                {i + 1}
+              </div>
+            ))}
+          </div>
+          <div className="flex-1 overflow-auto p-4">
+            <pre className="font-mono text-xs text-slate-300 leading-5">
+              {output}
+            </pre>
+          </div>
+        </div>
+
+        {/* Bottom Prompter */}
+        <div className="h-36 border-t border-slate-700 bg-[#1e293b] p-4">
+          <div className="text-[10px] font-bold text-slate-500 mb-2 tracking-wide">
+            MISSION OBJECTIVE
+          </div>
+          <textarea
+            value={form.objective}
+            onChange={(e) => set("objective", e.target.value)}
+            className="w-full h-20 bg-[#0F172A] border-0 text-xs text-slate-300 font-mono resize-none focus:outline-none"
+          />
+        </div>
+      </div>
+
+      {/* RIGHT DRAWER (FINDERS) */}
+      <div
+        className={`${
+          rightOpen ? "w-64" : "w-12"
+        } bg-[#1e293b] border-l border-slate-700 flex flex-col transition-all duration-200`}
+      >
+        <div className="h-9 flex items-center justify-between px-2 border-b border-slate-700 bg-[#0F172A]">
+          {rightOpen && (
+            <span className="text-[10px] font-bold text-slate-500 tracking-widest">
+              FINDERS (CONTEXT)
+            </span>
+          )}
+          <button
+            onClick={() => setRightOpen(!rightOpen)}
+            className="w-6 h-6 flex items-center justify-center rounded hover:bg-slate-800"
+          >
+            {rightOpen ? (
+              <ChevronRight size={16} className="text-slate-400" />
+            ) : (
+              <ChevronLeft size={16} className="text-slate-400" />
+            )}
+          </button>
+        </div>
+
+        <div className="flex-1 overflow-y-auto p-2 bg-[#020617]">
+          {rightOpen ? (
+            <div className="space-y-2">
+              {/* GROUP 1: CONTEXT */}
+              <Accordion title="1. CONTEXT SOURCES" expanded={true}>
+                <div className="space-y-1">
+                  {CONTEXT_SOURCES.map((tool) => (
+                    <Checkbox
+                      key={tool.id}
+                      label={tool.label}
+                      checked={form[tool.id]}
+                      onChange={(c) => set(tool.id, c)}
+                    />
+                  ))}
+                </div>
+              </Accordion>
+
+              {/* GROUP 2: TOOLS */}
+              <Accordion title="2. ACTIVE TOOLS" expanded={true}>
+                <div className="grid grid-cols-2 gap-1">
+                  {TOOLS_LIST.map((tool) => (
+                    <button
+                      key={tool.id}
+                      onClick={() => set(tool.id, !form[tool.id])}
+                      className={`flex items-center gap-1 p-1 rounded border ${
+                        form[tool.id]
+                          ? "border-emerald-600 bg-emerald-600/10"
+                          : "border-transparent"
+                      }`}
+                    >
+                      <tool.Icon
+                        size={12}
+                        className={
+                          form[tool.id] ? "text-emerald-600" : "text-slate-500"
+                        }
+                      />
+                      <span
+                        className={`text-[9px] ${
+                          form[tool.id] ? "text-emerald-600" : "text-slate-500"
+                        }`}
+                      >
+                        {tool.label}
+                      </span>
+                    </button>
+                  ))}
+                </div>
+              </Accordion>
+
+              {/* GROUP 3: HISTORY */}
+              <Accordion title="3. MISSION HISTORY">
+                <div className="space-y-1">
+                  {RECENT_MISSIONS.map((m) => (
+                    <button key={m.id} className="w-full p-1 text-left">
+                      <div className="flex items-center gap-2">
+                        {m.status === "COMPLETE" ? (
+                          <CheckCircle size={10} className="text-emerald-600" />
+                        ) : (
+                          <Activity size={10} className="text-emerald-600" />
+                        )}
+                        <span className="text-xs font-bold text-slate-400">
+                          {m.title}
+                        </span>
+                      </div>
+                      <div className="text-[9px] text-slate-600">{m.time}</div>
+                    </button>
+                  ))}
+                </div>
+              </Accordion>
+
+              {/* GROUP 4: REFERENCE */}
+              <Accordion title="4. REFERENCE">
+                <div className="space-y-1">
+                  <button className="w-full flex items-center gap-2 p-1 rounded hover:bg-slate-800">
+                    <BookOpen size={12} className="text-slate-500" />
+                    <span className="text-xs text-slate-400">RFC Index</span>
+                  </button>
+                  <button className="w-full flex items-center gap-2 p-1 rounded hover:bg-slate-800">
+                    <List size={12} className="text-slate-500" />
+                    <span className="text-xs text-slate-400">
+                      Prompt Templates
+                    </span>
+                  </button>
+                </div>
+              </Accordion>
+            </div>
+          ) : (
+            <div className="flex flex-col items-center gap-6 pt-4">
+              <button>
+                <Brain size={20} className="text-slate-500" />
+              </button>
+              <button>
+                <Wrench size={20} className="text-slate-500" />
+              </button>
+              <button>
+                <Clock size={20} className="text-slate-500" />
+              </button>
+              <button>
+                <BookOpen size={20} className="text-slate-500" />
+              </button>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};

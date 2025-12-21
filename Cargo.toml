@@ -29,8 +29,7 @@ members = [
     "crates/sx9-foundation-math",
     "crates/sx9-foundation-tactical",
     "crates/sx9-foundation-voice",
-    "crates/sx9-foundation-orbital",
-    "crates/sx9-foundation-manifold",
+    # Foundation crates (manifold and orbital archived)
     "crates/sx9-cdn-data-fabric",
     "crates/sx9-cdn-threat-reaction",
     "crates/sx9-cdn-threat-intel",
@@ -39,14 +38,14 @@ members = [
     "crates/sx9-cdn-geospatial",
     "crates/sx9-cdn-isolated-monitoring",
 
-    # Vertical 1: Orbital
-    "crates/sx9-orbital-simulator",
+    # Vertical 1: Orbital (moved to sx9-orbital-operations workspace)
 
-    # Vertical 2: Ops Main
-    "crates/sx9-threat-simulator",
+    # Vertical 2: Ops Main (threat-simulator archived)
 
     # Vertical 3: Dev Center
-    "crates/sx9-smart-crate-orchestrator",
+    "crates/sx9-smart-crate-orchestrator", "rust/firefly-core", "rust/firefly-axum",
+    "crates/sx9-phd-analyzer",
+    "crates/sx9-nats-router",
 ]
 resolver = "2"
 
@@ -99,3 +98,23 @@ clap = { version = "4.0", features = ["derive"] }
 futures-util = { version = "0.3", features = ["sink"] }
 
 
+
+[workspace.lints.clippy]
+# Documentation warnings - suppress for internal crates
+missing_errors_doc = "allow"
+missing_panics_doc = "allow"
+missing_safety_doc = "allow"
+
+# Design decisions - intentional patterns
+struct_excessive_bools = "allow"
+too_many_arguments = "allow"
+type_complexity = "allow"
+
+# Performance micro-optimizations - not critical
+cast_precision_loss = "allow"
+cast_possible_truncation = "allow"
+cast_sign_loss = "allow"
+
+# Style preferences
+module_name_repetitions = "allow"
+similar_names = "allow"

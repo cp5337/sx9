@@ -41,10 +41,10 @@ impl DatabaseRegistry {
 
     /// Pre-register known CTAS databases
     fn register_defaults(&self) {
-        // SurrealDB Main
+        // SlotGraph Main
         self.register(DatabaseInfo {
-            db_id: "surrealdb-main".to_string(),
-            db_type: "surrealdb".to_string(),
+            db_id: "slotgraph-main".to_string(),
+            db_type: "slotgraph".to_string(),
             host: "localhost".to_string(),
             port: 8000,
             namespace: Some("ctas7".to_string()),
@@ -59,7 +59,7 @@ impl DatabaseRegistry {
         // GLAF Core
         self.register(DatabaseInfo {
             db_id: "glaf-core".to_string(),
-            db_type: "surrealdb".to_string(),
+            db_type: "slotgraph".to_string(),
             host: "localhost".to_string(),
             port: 18019,
             namespace: Some("ctas7".to_string()),
@@ -74,7 +74,7 @@ impl DatabaseRegistry {
         // GLAF Analytics
         self.register(DatabaseInfo {
             db_id: "glaf-analytics".to_string(),
-            db_type: "surrealdb".to_string(),
+            db_type: "slotgraph".to_string(),
             host: "localhost".to_string(),
             port: 18025,
             namespace: Some("ctas7".to_string()),
@@ -177,7 +177,7 @@ impl DatabaseRegistry {
                 ],
                 "workflow_types": ["OSINT", "THREAT", "MEDIA", "STREAM", "GEOSPATIAL", "HD4"],
                 "services_managed": [
-                    "surrealdb", "glaf-core", "neo4j", "supabase", "sledis", "legion-ecs"
+                    "slotgraph", "glaf-core", "neo4j", "supabase", "sledis", "legion-ecs"
                 ]
             })),
             health_endpoint: Some("/health".to_string()),

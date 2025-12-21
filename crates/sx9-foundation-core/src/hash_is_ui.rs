@@ -34,6 +34,7 @@ pub struct AnimationProperties {
 }
 
 impl HashIsUISystem {
+    #[must_use]
     pub fn new() -> Self {
         Self {
             color_lut: HashMap::new(),
@@ -114,6 +115,7 @@ impl HashIsUISystem {
     }
 
     /// Extract visual properties from SCH (positions 1-16)
+    #[must_use]
     pub fn extract_visual_properties(&self, sch: &str) -> VisualProperties {
         if sch.len() < 15 {
             return VisualProperties::default();
@@ -128,6 +130,7 @@ impl HashIsUISystem {
     }
 
     /// Extract animation properties from CUID (positions 17-32)
+    #[must_use]
     pub fn extract_animation_properties(&self, cuid: &str) -> AnimationProperties {
         if cuid.len() < 11 {
             return AnimationProperties::default();
@@ -190,7 +193,7 @@ impl HashIsUISystem {
 
     /// Extract icon style from hash
     fn extract_icon_style(&self, hash_segment: &str) -> String {
-        let styles = vec!["outline", "filled", "gradient", "textured"];
+        let styles = ["outline", "filled", "gradient", "textured"];
         let index = hash_segment.chars().next().unwrap_or('0') as usize % styles.len();
         styles[index].to_string()
     }
@@ -204,14 +207,14 @@ impl HashIsUISystem {
 
     /// Extract easing function from hash
     fn extract_easing(&self, hash_segment: &str) -> String {
-        let easings = vec!["linear", "ease-in", "ease-out", "ease-in-out"];
+        let easings = ["linear", "ease-in", "ease-out", "ease-in-out"];
         let index = hash_segment.chars().next().unwrap_or('0') as usize % easings.len();
         easings[index].to_string()
     }
 
     /// Extract loop behavior from hash
     fn extract_looping(&self, hash_segment: &str) -> String {
-        let behaviors = vec!["none", "infinite", "once", "bounce"];
+        let behaviors = ["none", "infinite", "once", "bounce"];
         let index = hash_segment.chars().next().unwrap_or('0') as usize % behaviors.len();
         behaviors[index].to_string()
     }
