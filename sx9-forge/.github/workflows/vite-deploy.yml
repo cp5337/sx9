@@ -1,0 +1,62 @@
+name: Vite Build & Deploy
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+env:
+  NODE_VERSION: '20'
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Type check
+        run: npm run type-check
+
+      - name: Build with Vite
+        run: npm run build
+        env:
+          NODE_ENV: production
+
+      - name: Generate design tokens for Swift
+        run: |
+          node -e "
+            const fs = require('fs');
+            const tokens = require('./design-tokens.json');
+            
+            let swift = 'import SwiftUI\n\nextension Color {\n';
+            for (const [key, value] of Object.entries(tokens.color)) {
+              if (typeof value.value === 'string') {
+                swift += \`  static let \${key} = Color(hex: \"\${value.value}\")\n\`;
+              }
+            }
+            swift += '}\n';
+            
+            fs.writeFileSync('dist/DesignTokens.swift', swift);
+            console.log('Swift tokens generated');
+          "
+
+      - name: Deploy to Vercel
+        if: github.ref == 'refs/heads/main'
+        uses: amondnet/vercel-action@v25
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+          working-directory: ./dist

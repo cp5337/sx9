@@ -1,0 +1,35 @@
+{
+  "content": ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
+  "theme": {
+    "extend": {
+      "colors": {
+        "primary": "#3b82f6",
+        "accent": "#3b82f6",
+        "success": "#10b981",
+        "warning": "#f59e0b",
+        "error": "#ef4444",
+        "background": {
+          "primary": "#0f1419",
+          "secondary": "#1a1f2e",
+          "tertiary": "#252b3b"
+        },
+        "surface": {
+          "primary": "#1a1f2e",
+          "secondary": "#252b3b",
+          "elevated": "#2d3548"
+        },
+        "text": {
+          "primary": "#e4e4e7",
+          "secondary": "#a1a1aa",
+          "tertiary": "#71717a",
+          "inverse": "#0f1419"
+        },
+        "border": {
+          "primary": "#374151",
+          "secondary": "#4b5563",
+          "focus": "#3b82f6"
+        }
+      }
+    }
+  }
+}
