@@ -5,6 +5,9 @@ use serde::{Deserialize, Serialize};
 use reqwest;
 use tokio;
 
+mod commands;
+use commands::forge::*;
+
 #[tauri::command]
 fn save_to_disk(content: String, filename: String) -> Result<String, String> {
     use std::fs;
@@ -180,7 +183,12 @@ fn main() {
             execute_rust_pattern,
             run_qa_gate,
             create_linear_issue,
-            send_slack_notification
+            send_slack_notification,
+            // Forge commands
+            save_prompt,
+            create_linear_issue_forge,
+            notify_slack,
+            copy_to_clipboard
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
