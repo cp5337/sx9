@@ -1,11 +1,11 @@
 {
-  "productName": "CX9 Template UI",
+  "productName": "SX9 Prompt Forge",
   "version": "1.0.0",
-  "identifier": "com.cx9.template-ui",
+  "identifier": "com.sx9.forge",
   "build": {
     "beforeDevCommand": "npm run dev",
     "beforeBuildCommand": "npm run build",
-    "devUrl": "http://localhost:3000",
+    "devUrl": "http://localhost:5173",
     "frontendDist": "../dist"
   },
   "bundle": {
@@ -16,14 +16,11 @@
   "app": {
     "windows": [
       {
-        "title": "CX9 Template UI",
+        "title": "SX9 Prompt Forge",
         "width": 1400,
         "height": 900,
-        "minWidth": 1200,
-        "minHeight": 700,
         "resizable": true,
-        "fullscreen": false,
-        "theme": "dark"
+        "fullscreen": false
       }
     ],
     "security": {

@@ -2,11 +2,8 @@
 
 use tauri::Manager;
 use serde::{Deserialize, Serialize};
-use reqwest;
-use tokio;
 
 mod commands;
-use commands::forge::*;
 
 #[tauri::command]
 fn save_to_disk(content: String, filename: String) -> Result<String, String> {
@@ -106,7 +103,7 @@ async fn create_linear_issue(
     title: String,
     description: String,
 ) -> Result<serde_json::Value, String> {
-    let client = reqwest::Client::new();
+    let client = sx9_foundation_interface::Client::new();
     
     let query = format!(
         r#"mutation {{
@@ -148,7 +145,7 @@ async fn send_slack_notification(
     channel: String,
     message: String,
 ) -> Result<String, String> {
-    let client = reqwest::Client::new();
+    let client = sx9_foundation_interface::Client::new();
     
     let payload = serde_json::json!({
         "channel": channel,
@@ -184,11 +181,12 @@ fn main() {
             run_qa_gate,
             create_linear_issue,
             send_slack_notification,
-            // Forge commands
-            save_prompt,
-            create_linear_issue_forge,
-            notify_slack,
-            copy_to_clipboard
+            commands::forge::save_prompt,
+            commands::forge::create_linear_issue_forge,
+            commands::forge::notify_slack,
+            commands::forge::copy_to_clipboard,
+            commands::forge::check_leptose,
+            commands::forge::check_chroma,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

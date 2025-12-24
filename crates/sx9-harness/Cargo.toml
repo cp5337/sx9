@@ -1,0 +1,28 @@
+[package]
+name = "sx9-harness"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+serde_yaml = "0.9"
+tokio = { version = "1", features = ["full"] }
+async-nats = "0.35"
+reqwest = { version = "0.12", features = ["json"] }
+thiserror = "1"
+tracing = "0.1"
+anyhow = "1"
+chrono = "0.4"
+
+# Internal dependencies
+sx9-glaf-core = { path = "../sx9-glaf-core" }
+sx9-foundation-interface = { path = "../sx9-foundation-interface" }
+
+# QA gate dependencies
+regex = "1"
+walkdir = "2"
+lazy_static = "1.4"
+
+[dev-dependencies]
+tokio-test = "0.4"

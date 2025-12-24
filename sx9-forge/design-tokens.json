@@ -1,6 +1,7 @@
 {
   "color": {
     "primary": { "value": "#3b82f6" },
+    "secondary": { "value": "#8b5cf6" },
     "accent": { "value": "#3b82f6" },
     "success": { "value": "#10b981" },
     "warning": { "value": "#f59e0b" },
@@ -18,7 +19,8 @@
     "text": {
       "primary": { "value": "#e4e4e7" },
       "secondary": { "value": "#a1a1aa" },
-      "tertiary": { "value": "#71717a" }
+      "tertiary": { "value": "#71717a" },
+      "inverse": { "value": "#ffffff" }
     },
     "border": {
       "primary": { "value": "#374151" },
@@ -43,7 +45,9 @@
       "lg": { "value": 16 },
       "xl": { "value": 18 },
       "2xl": { "value": 20 },
-      "3xl": { "value": 24 }
+      "3xl": { "value": 24 },
+      "4xl": { "value": 30 },
+      "5xl": { "value": 36 }
     },
     "fontWeight": {
       "regular": { "value": 400 },
@@ -61,6 +65,19 @@
     "sm": { "value": 4 },
     "md": { "value": 8 },
     "lg": { "value": 12 },
+    "xl": { "value": 16 },
     "full": { "value": 9999 }
+  },
+  "shadow": {
+    "sm": { "value": "0 1px 2px 0 rgba(0, 0, 0, 0.05)" },
+    "md": { "value": "0 4px 6px -1px rgba(0, 0, 0, 0.1)" },
+    "lg": { "value": "0 10px 15px -3px rgba(0, 0, 0, 0.1)" },
+    "xl": { "value": "0 20px 25px -5px rgba(0, 0, 0, 0.1)" }
+  },
+  "breakpoints": {
+    "mobile": { "value": 640 },
+    "tablet": { "value": 768 },
+    "desktop": { "value": 1024 },
+    "wide": { "value": 1280 }
   }
 }

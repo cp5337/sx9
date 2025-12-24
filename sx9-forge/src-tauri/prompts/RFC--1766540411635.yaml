@@ -1,0 +1,33 @@
+# SX9-PROMPT v4.0
+# Generated: 2025-12-24T01:39:09.943Z
+
+header:
+  title: ""
+  rfc: RFC-
+  phase: PLAN
+
+utilization:
+  harness: Build & Implement
+  persona: FORGE
+  model: Claude Sonnet 4.5
+  temperature: 0.2
+  mode: SUPERVISED
+
+mission:
+  objective: ""
+
+integration:
+  linear:
+    team: ""
+    create_issue: true
+  slack:
+    channel: "#all-synaptixops"
+    enabled: true
+
+context:
+  sources:
+    memory: true
+    linear: true
+    drive: false
+    filesystem: true
+    web: false

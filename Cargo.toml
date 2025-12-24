@@ -46,7 +46,7 @@ members = [
     "crates/sx9-threat-simulator",
 
     # Vertical 3: Dev Center
-    "crates/sx9-smart-crate-orchestrator",
+    "crates/sx9-smart-crate-orchestrator", "crates/sx9-harness",
 ]
 resolver = "2"
 

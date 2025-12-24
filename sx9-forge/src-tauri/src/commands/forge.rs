@@ -7,10 +7,9 @@
 //! - Slack notifications
 //! - Clipboard operations
 
-use serde::{Deserialize, Serialize};
+use serde::Serialize;
 use std::fs;
 use std::path::PathBuf;
-use tauri::Manager;
 
 // ============================================================================
 // RESPONSE TYPES
@@ -51,9 +50,19 @@ pub async fn save_prompt(
     content: String,
     workdir: String,
 ) -> Result<SavePromptResult, String> {
-    // Get the prompts directory (relative to app data or specified workdir)
+    // Get the prompts directory
     let base_path = if workdir.starts_with('/') || workdir.starts_with('~') {
-        PathBuf::from(shellexpand::tilde(&workdir).to_string())
+        // Expand tilde manually
+        let expanded = if workdir.starts_with("~/") {
+            if let Some(home) = std::env::var("HOME").ok() {
+                PathBuf::from(home).join(&workdir[2..])
+            } else {
+                PathBuf::from(&workdir)
+            }
+        } else {
+            PathBuf::from(&workdir)
+        };
+        expanded
     } else {
         // Default to current directory + workdir
         std::env::current_dir()
@@ -89,11 +98,13 @@ pub async fn save_prompt(
 
 /// Create a Linear issue via their GraphQL API
 #[tauri::command]
-pub async fn create_linear_issue(
+pub async fn create_linear_issue_forge(
     title: String,
     description: String,
     team_id: String,
 ) -> Result<LinearIssueResult, String> {
+    use sx9_foundation_interface::{Client, Result as InterfaceResult};
+    
     // Get Linear API key from environment
     let api_key = match std::env::var("LINEAR_API_KEY") {
         Ok(key) => key,
@@ -136,8 +147,8 @@ pub async fn create_linear_issue(
         "variables": variables,
     });
 
-    // Make the request
-    let client = reqwest::Client::new();
+    // Make the request using foundation interface
+    let client = Client::new();
     let response = client
         .post("https://api.linear.app/graphql")
         .header("Authorization", api_key)
@@ -202,6 +213,8 @@ pub async fn notify_slack(
     channel: String,
     message: String,
 ) -> Result<SlackNotifyResult, String> {
+    use sx9_foundation_interface::Client;
+    
     // Get Slack webhook URL from environment
     let webhook_url = match std::env::var("SLACK_WEBHOOK_URL") {
         Ok(url) => url,
@@ -219,7 +232,7 @@ pub async fn notify_slack(
         "unfurl_links": false,
     });
 
-    let client = reqwest::Client::new();
+    let client = Client::new();
     let response = client
         .post(&webhook_url)
         .header("Content-Type", "application/json")
@@ -251,14 +264,13 @@ pub async fn notify_slack(
 /// Copy text to system clipboard
 #[tauri::command]
 pub async fn copy_to_clipboard(
-    app: tauri::AppHandle,
+    _app: tauri::AppHandle,
     content: String,
-) -> Result<bool, String> {
-    // Use Tauri's clipboard API
-    match app.clipboard().write_text(&content) {
-        Ok(_) => Ok(true),
-        Err(e) => Err(format!("Clipboard error: {}", e)),
-    }
+) -> Result<(), String> {
+    // TODO: Implement clipboard functionality with tauri-plugin-clipboard
+    // For now, just log the content
+    println!("Would copy to clipboard: {}", content);
+    Ok(())
 }
 
 // ============================================================================
@@ -290,20 +302,3 @@ pub async fn check_chroma() -> Result<ServiceCheckResult, String> {
     Ok(ServiceCheckResult { ready: false })
 }
 
-// ============================================================================
-// PLUGIN REGISTRATION
-// ============================================================================
-
-/// Register all Forge commands with Tauri
-pub fn init<R: tauri::Runtime>() -> tauri::plugin::TauriPlugin<R> {
-    tauri::plugin::Builder::new("forge")
-        .invoke_handler(tauri::generate_handler![
-            save_prompt,
-            create_linear_issue,
-            notify_slack,
-            copy_to_clipboard,
-            check_leptose,
-            check_chroma,
-        ])
-        .build()
-}
