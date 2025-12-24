@@ -1,0 +1,75 @@
+# SX9 Linear Agent Configuration
+
+# Linear API Key (get from https://linear.app/settings/api)
+linear_api_key = "lin_api_..."
+
+# Slack Bot Token (get from https://api.slack.com/apps)
+slack_bot_token = "xoxb-..."
+
+# Serena MCP Endpoint
+serena_endpoint = "http://localhost:8000"
+
+# Linear Team ID
+team_id = "your-team-id"
+
+# Linear Project ID (optional, will create if not specified)
+project_id = ""
+
+# Slack Channel for Notifications
+slack_channel = "#sx9-dev"
+
+# Agent Settings
+[agent]
+# Poll interval for checking Linear issues (seconds)
+poll_interval = 60
+
+# Maximum concurrent tasks
+max_concurrent_tasks = 3
+
+# Auto-assign issues to agent
+auto_assign = true
+
+# Security Settings
+[security]
+# Allowed commands (whitelist)
+allowed_commands = [
+    "cargo",
+    "git",
+    "npm",
+    "pnpm",
+    "rustc",
+    "rustfmt",
+    "clippy"
+]
+
+# Allowed file paths (relative to project root)
+allowed_paths = [
+    "src/",
+    "crates/",
+    "tests/",
+    "Cargo.toml",
+    "package.json"
+]
+
+# Forbidden patterns
+forbidden_patterns = [
+    "rm -rf",
+    "sudo",
+    "/etc/",
+    "/var/",
+    "~/.ssh"
+]
+
+# QA Gates
+[qa]
+# Enable static analysis
+enable_static_gate = true
+
+# Enable architecture compliance
+enable_arch_gate = true
+
+# Enable pattern matching
+enable_pattern_gate = true
+
+# Minimum quality score (0.0-1.0)
+min_quality_score = 0.7

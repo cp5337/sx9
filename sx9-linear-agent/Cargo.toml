@@ -1,0 +1,44 @@
+[package]
+name = "sx9-linear-agent"
+version = "0.1.0"
+edition = "2021"
+authors = ["Charles H. Faulkner III"]
+
+[dependencies]
+# Async runtime
+tokio = { version = "1.35", features = ["full"] }
+async-trait = "0.1"
+
+# HTTP & API clients
+reqwest = { version = "0.11", features = ["json"] }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+
+# Linear API
+graphql_client = "0.13"
+
+# MCP (Model Context Protocol)
+# Note: Add actual MCP crate when available
+# mcp-sdk = "0.1"
+
+# Slack
+slack-morphism = "1.0"
+
+# Configuration
+toml = "0.8"
+config = "0.13"
+
+# Logging
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+
+# Error handling
+anyhow = "1.0"
+thiserror = "1.0"
+
+# Security
+secrecy = "0.8"
+
+[dev-dependencies]
+tokio-test = "0.4"
+mockito = "1.2"
