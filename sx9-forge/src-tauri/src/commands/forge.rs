@@ -103,7 +103,7 @@ pub async fn create_linear_issue_forge(
     description: String,
     team_id: String,
 ) -> Result<LinearIssueResult, String> {
-    use sx9_foundation_interface::{Client, Result as InterfaceResult};
+    use sx9_foundation_interface::Client;
     
     // Get Linear API key from environment
     let api_key = match std::env::var("LINEAR_API_KEY") {
@@ -264,12 +264,15 @@ pub async fn notify_slack(
 /// Copy text to system clipboard
 #[tauri::command]
 pub async fn copy_to_clipboard(
-    _app: tauri::AppHandle,
+    app: tauri::AppHandle,
     content: String,
 ) -> Result<(), String> {
-    // TODO: Implement clipboard functionality with tauri-plugin-clipboard
-    // For now, just log the content
-    println!("Would copy to clipboard: {}", content);
+    use tauri_plugin_clipboard_manager::ClipboardExt;
+
+    app.clipboard()
+        .write_text(&content)
+        .map_err(|e| format!("Failed to copy to clipboard: {}", e))?;
+
     Ok(())
 }
 
@@ -289,16 +292,54 @@ pub struct ServiceCheckResult {
 /// Check if Leptose inference service is available
 #[tauri::command]
 pub async fn check_leptose() -> Result<ServiceCheckResult, String> {
-    // TODO: Implement actual Leptose health check
-    // For now, return disconnected (service not running)
-    Ok(ServiceCheckResult { ready: false })
+    use sx9_foundation_interface::Client;
+    use std::time::Duration;
+
+    // Get Leptose URL from env or use default
+    let leptose_url = std::env::var("LEPTOSE_URL")
+        .unwrap_or_else(|_| "http://localhost:11434".to_string());
+
+    let client = Client::new();
+    let health_url = format!("{}/api/tags", leptose_url);
+
+    // Attempt health check with 2 second timeout
+    match tokio::time::timeout(
+        Duration::from_secs(2),
+        client.get(&health_url).send(),
+    )
+    .await
+    {
+        Ok(Ok(response)) => Ok(ServiceCheckResult {
+            ready: response.status().is_success(),
+        }),
+        _ => Ok(ServiceCheckResult { ready: false }),
+    }
 }
 
 /// Check if ChromaDB vector database is available
 #[tauri::command]
 pub async fn check_chroma() -> Result<ServiceCheckResult, String> {
-    // TODO: Implement actual ChromaDB health check
-    // For now, return disconnected (service not running)
-    Ok(ServiceCheckResult { ready: false })
+    use sx9_foundation_interface::Client;
+    use std::time::Duration;
+
+    // Get ChromaDB URL from env or use default
+    let chroma_url = std::env::var("CHROMADB_URL")
+        .unwrap_or_else(|_| "http://localhost:8000".to_string());
+
+    let client = Client::new();
+    let health_url = format!("{}/api/v1/heartbeat", chroma_url);
+
+    // Attempt health check with 2 second timeout
+    match tokio::time::timeout(
+        Duration::from_secs(2),
+        client.get(&health_url).send(),
+    )
+    .await
+    {
+        Ok(Ok(response)) => Ok(ServiceCheckResult {
+            ready: response.status().is_success(),
+        }),
+        _ => Ok(ServiceCheckResult { ready: false }),
+    }
 }
 

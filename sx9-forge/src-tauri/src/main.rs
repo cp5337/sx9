@@ -164,6 +164,7 @@ async fn send_slack_notification(
 
 fn main() {
     tauri::Builder::default()
+        .plugin(tauri_plugin_clipboard_manager::init())
         .setup(|app| {
             #[cfg(debug_assertions)]
             {

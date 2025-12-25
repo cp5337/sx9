@@ -174,22 +174,6 @@ export const PromptForgeScreen: React.FC = () => {
     showFeedback(`Mission: ${action}`);
   }, [showFeedback]);
 
-  const handleDeploy = useCallback((action: string) => {
-    if (action === "execute") {
-      generate();
-    } else if (action === "schedule") {
-      showFeedback("Scheduling not yet implemented");
-    } else if (action === "draft") {
-      invoke("save_prompt", {
-        filename: `draft-${rfc || "prompt"}-${Date.now()}.yaml`,
-        content: output,
-        workdir: "drafts",
-      })
-        .then(() => showFeedback("Draft saved"))
-        .catch(() => showFeedback("Save failed"));
-    }
-  }, [generate, rfc, output, showFeedback]);
-
   const handleSettings = useCallback((action: string) => {
     showFeedback(`Settings: ${action}`);
   }, [showFeedback]);
@@ -214,13 +198,7 @@ export const PromptForgeScreen: React.FC = () => {
   // Legacy harness state for backward compatibility
   const harness = `${harnessMode} & Implement`;
 
-  useEffect(() => {
-    setTimestamp(new Date().toISOString());
-    dispatch(connectLeptose());
-    dispatch(connectChromaDB());
-  }, [dispatch]);
-
-  // Generate YAML
+  // Generate YAML - must be before handlers that use it
   const output = useMemo(
     () => `# SX9-PROMPT v4.0
 # Generated: ${timestamp || "Loading..."}
@@ -274,6 +252,12 @@ context:
       timestamp,
     ]
   );
+
+  useEffect(() => {
+    setTimestamp(new Date().toISOString());
+    dispatch(connectLeptose());
+    dispatch(connectChromaDB());
+  }, [dispatch]);
 
   // Copy to clipboard via Tauri
   const copy = useCallback(async () => {
@@ -351,6 +335,22 @@ context:
     slackChannel,
     enableSlack,
   ]);
+
+  const handleDeploy = useCallback((action: string) => {
+    if (action === "execute") {
+      generate();
+    } else if (action === "schedule") {
+      showFeedback("Scheduling not yet implemented");
+    } else if (action === "draft") {
+      invoke("save_prompt", {
+        filename: `draft-${rfc || "prompt"}-${Date.now()}.yaml`,
+        content: output,
+        workdir: "drafts",
+      })
+        .then(() => showFeedback("Draft saved"))
+        .catch(() => showFeedback("Save failed"));
+    }
+  }, [generate, rfc, output, showFeedback]);
 
   return (
     <div style={S.container}>
