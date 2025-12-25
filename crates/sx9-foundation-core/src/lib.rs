@@ -52,6 +52,9 @@ pub mod cte_integration;
 // Code Watchdog
 pub mod code_watchdog;
 
+// Smart Crate Heartbeat System (RFC-9141 Dual-Heartbeat Zero-Trust)
+pub mod heartbeat;
+
 // KeyVault and Secrets Management
 pub mod keyvault;
 pub mod secrets_watchdog;
@@ -83,6 +86,11 @@ pub use code_watchdog::CodeWatchdog;
 pub use frontend_bridge::FrontendBridge;
 pub use primitives::{Primitive, PrimitiveCategory, TacticalInstruction, ALL_PRIMITIVES};
 pub use ui_manifest::UIManifest;
+// Smart Crate Heartbeat System exports
+pub use heartbeat::{
+    GlobalHeartbeatState, HeartbeatConfig, HeartbeatRegistry, HeartbeatValidation,
+    HealthStatus, LocalHeartbeat, SmartCrateHeartbeat, FOUNDATION_CORE_TOKEN,
+};
 
 /// CTAS-7 version constants
 pub const VERSION: &str = env!("CARGO_PKG_VERSION");

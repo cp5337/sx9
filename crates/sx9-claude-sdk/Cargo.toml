@@ -1,0 +1,63 @@
+[package]
+name = "sx9-claude-sdk"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+authors.workspace = true
+description = "Native Rust Claude API client for SX9 autonomous agent SDK"
+repository = "https://github.com/synaptix9/sx9"
+keywords = ["claude", "anthropic", "ai", "sdk", "agent"]
+categories = ["api-bindings", "asynchronous"]
+
+# SX9 Smart Crate Metadata v7.3.1
+[package.metadata.smart_crate]
+generation = "2.0"
+sx9_version = "7.3.1"
+foundation_tier = "sdk"
+service_port = 18700
+trivariate_hash_enabled = true
+integration_points = ["sx9-foundation-core", "sx9-foundation-data", "sx9-foundation-daemon"]
+domain = "ai-sdk"
+
+[package.metadata.sx9]
+crate_type = "integration"
+mission = "ClaudeAPIGateway"
+security_level = "Production"
+orchestrator_compatible = true
+
+[dependencies]
+# Foundation crates - canonical dependency source (5 pillars)
+sx9-foundation-core = { path = "../sx9-foundation-core" }
+sx9-foundation-data = { path = "../sx9-foundation-data", features = ["embedded-db"] }
+sx9-foundation-daemon = { path = "../sx9-foundation-daemon" }  # HTTP/comms
+
+# Core dependencies (re-exported from foundation for direct use)
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+tokio = { version = "1.0", features = ["full"] }
+async-trait = "0.1"
+reqwest = { version = "0.12", features = ["json", "stream"] }
+futures = "0.3"
+chrono = { version = "0.4", features = ["serde"] }
+
+# SSE streaming
+eventsource-stream = "0.2"
+pin-project-lite = "0.2"
+
+# Secrets handling
+secrecy = { version = "0.8", features = ["serde"] }
+
+# Workspace deps
+thiserror.workspace = true
+tracing = "0.1"
+
+[dev-dependencies]
+tokio-test = "0.4"
+mockito = "1.2"
+wiremock = "0.6"
+
+[features]
+default = []
+openai = []      # Future: OpenAI provider
+gemini = []      # Future: Gemini provider
+mcp = []         # MCP transport support

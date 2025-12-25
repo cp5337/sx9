@@ -1,11 +1,19 @@
-//! CTAS-7 Foundation Data v7.2
+//! SX9 Foundation Data
 //!
-//! Core data management and persistence layer for CTAS-7 v7.2 systems.
+//! Core data management and persistence layer for SX9 systems.
 //! Provides unified data access, trivariate hashing, and storage abstraction.
 //!
-//! This service consolidates common data processing dependencies including
-//! serialization, parsing, CSV handling, regex operations, and data validation
-//! to reduce complexity and improve performance across the system.
+//! ## Modules
+//!
+//! - **sledis**: Redis-protocol-compatible cache layer (RFC-9005)
+//! - **hash**: Trivariate hashing (RFC-9001)
+//! - **persistence**: Persistence management
+//! - **storage**: Storage abstraction
+//!
+//! ## RFC References
+//!
+//! - RFC-9001: Trivariate Hashing Standard
+//! - RFC-9005: Unified Schema Specification
 
 use anyhow::Result;
 use chrono::{DateTime, Utc};
@@ -18,16 +26,34 @@ use std::time::{Duration, Instant};
 use tracing::{debug, error, info};
 use uuid::Uuid;
 
-// CTAS-7 v7.2 Foundation Data modules
-pub mod ctas_sled_kvs;
+// SX9 Foundation Data modules
+pub mod ctas_sled_kvs;  // TODO: Rename to sx9_sled_kvs
 pub mod hash;
 pub mod persistence;
 pub mod storage;
+
+// Sledis: Redis-protocol cache layer (RFC-9005)
+#[cfg(feature = "sledis")]
+pub mod sledis;
+
+// Vector Store: LanceDB-based vector storage (RFC-9005 §3.1)
+pub mod vector;
+
+#[cfg(feature = "vector-db")]
+pub use vector::{VectorDocument, VectorQueryResult, VectorStore};
 
 pub use ctas_sled_kvs::*;
 pub use hash::*;
 pub use persistence::*;
 pub use storage::*;
+
+// Re-export sled for crates that need direct KVS/cache access
+#[cfg(feature = "embedded-db")]
+pub use sled;
+
+// Re-export sledis types
+#[cfg(feature = "sledis")]
+pub use sledis::{SledisEntry, SledisError, SledisServer, SledisStore, SledisValue};
 
 /// CTAS-7 v7.2 Foundation Data Manager
 #[derive(Debug, Clone)]

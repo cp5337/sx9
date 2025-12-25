@@ -219,6 +219,34 @@ pub mod health {
     }
 }
 
+/// Smart Crate Heartbeat subjects (RFC-9141 Zero-Trust)
+/// Core NATS for local heartbeat (~50µs), distributed pub/sub pattern.
+pub mod heartbeat {
+    pub const PREFIX: &str = "sx9.heartbeat";
+
+    /// Local heartbeat broadcast (crates publish here)
+    pub const LOCAL: &str = "sx9.heartbeat.local";
+
+    /// Global aggregated state (orchestrator publishes here)
+    pub const GLOBAL: &str = "sx9.heartbeat.global";
+
+    /// Unauthorized crate alert (CRITICAL - zero-trust violation)
+    pub const ALERT_UNAUTHORIZED: &str = "sx9.heartbeat.alert.unauthorized";
+
+    /// Missing heartbeat alert (WARNING - crate may be down)
+    pub const ALERT_MISSING: &str = "sx9.heartbeat.alert.missing";
+
+    /// Per-crate heartbeat subject pattern
+    /// Crates publish to: sx9.heartbeat.crate.{name}
+    /// Orchestrator subscribes to: sx9.heartbeat.crate.*
+    pub fn for_crate(crate_name: &str) -> String {
+        format!("sx9.heartbeat.crate.{}", crate_name)
+    }
+
+    /// Wildcard subscription for orchestrator
+    pub const CRATE_WILDCARD: &str = "sx9.heartbeat.crate.*";
+}
+
 /// Gateway subjects (JetStream - request durability)
 pub mod gateway {
     pub const PREFIX: &str = "sx9.gateway";
@@ -625,6 +653,7 @@ pub fn is_core_nats_subject(subject: &str) -> bool {
         || subject.starts_with("sx9.plasma.")
         || subject.starts_with("sx9.mux.")
         || subject.starts_with("sx9.health.heartbeat")
+        || subject.starts_with("sx9.heartbeat.") // Smart crate heartbeats (RFC-9141)
 }
 
 #[cfg(test)]

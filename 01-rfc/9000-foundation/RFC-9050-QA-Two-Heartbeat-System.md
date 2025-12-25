@@ -367,8 +367,59 @@ pub struct HealthNetwork {
 
 ---
 
-## References
+## Related RFCs
 
+- **RFC-9051**: Smart Crate Zero-Trust Heartbeat (NATS-based dependency enforcement)
 - RFC-9024/9025: Dual H1/H2 Architecture
 - RFC-9400: NATS Architecture
 - RFC-9301: TCR Triad
+
+---
+
+## Addendum: Three-Heartbeat Ecosystem
+
+As of v7.3.1, SX9 uses three complementary heartbeat systems:
+
+```
+┌─────────────────────────────────────────────────────────────────────────┐
+│                    SX9 HEARTBEAT ECOSYSTEM                               │
+├─────────────────────────────────────────────────────────────────────────┤
+│                                                                          │
+│  ┌─────────────────────┐                                                │
+│  │   RFC-9051          │  LAYER 0: Zero-Trust Dependency               │
+│  │   NATS Pub/Sub      │  • Compile-time token check                   │
+│  │   ~50µs             │  • Foundation-core enforcement                │
+│  └──────────┬──────────┘  • Prerequisite for all other gates           │
+│             │                                                           │
+│             ▼                                                           │
+│  ┌─────────────────────┐  ┌─────────────────────┐                      │
+│  │   RFC-9050          │  │   RFC-9050          │                      │
+│  │   HEARTBEAT α       │  │   HEARTBEAT β       │                      │
+│  │   Quality (17053)   │  │   Security (17054)  │                      │
+│  │   UDP Multicast     │  │   UDP Multicast     │                      │
+│  └──────────┬──────────┘  └──────────┬──────────┘                      │
+│             │                        │                                  │
+│             └────────────┬───────────┘                                  │
+│                          │                                              │
+│                          ▼                                              │
+│             ┌─────────────────────┐                                    │
+│             │   SmartCrate AND    │                                    │
+│             │   Gate (RFC-9050)   │                                    │
+│             └──────────┬──────────┘                                    │
+│                        │                                                │
+│                        ▼                                                │
+│  ┌─────────────────────────────────────────────────────────────────┐   │
+│  │                      RFC-9141                                    │   │
+│  │   Static (Cold Truth)  │  Semantic (Warm Annotation)            │   │
+│  │   In-process QA        │  Intent alignment                      │   │
+│  └─────────────────────────────────────────────────────────────────┘   │
+│                                                                          │
+└─────────────────────────────────────────────────────────────────────────┘
+```
+
+| Layer | RFC | Transport | Latency | Focus |
+|-------|-----|-----------|---------|-------|
+| 0 | RFC-9051 | NATS pub/sub | ~50µs | Dependency enforcement |
+| 1 | RFC-9050 α | UDP multicast | ~30s interval | Quality metrics |
+| 1 | RFC-9050 β | UDP multicast | ~30s interval | Security metrics |
+| 2 | RFC-9141 | In-process | Variable | Static + Semantic QA |

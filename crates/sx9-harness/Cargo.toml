@@ -19,6 +19,7 @@ reqwest = { version = "0.12", default-features = false, features = ["rustls-tls"
 
 # NATS messaging (not in foundation)
 async-nats = "0.35"
+futures = "0.3"
 
 # QA gate dependencies (not in foundation)
 regex = "1"

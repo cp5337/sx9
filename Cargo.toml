@@ -47,6 +47,9 @@ members = [
 
     # Vertical 3: Dev Center
     "crates/sx9-smart-crate-orchestrator", "crates/sx9-harness",
+
+    # Agent SDK
+    "crates/sx9-claude-sdk",
 ]
 resolver = "2"
 
@@ -97,5 +100,8 @@ clap = { version = "4.0", features = ["derive"] }
 
 # Futures
 futures-util = { version = "0.3", features = ["sink"] }
+
+# Time
+chrono = { version = "0.4", features = ["serde"] }
 
 

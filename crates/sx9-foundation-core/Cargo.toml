@@ -130,28 +130,27 @@ crypto-signing = ["ed25519-dalek"]
 # Full foundation integration
 full = ["foundation-core", "async-runtime", "networking", "security", "data-handling", "diagnostics", "interface", "neural-mux", "unified-neural-mux", "database", "unicode-assembly", "xsd-integration", "templates", "crypto-signing"]
 
-# Smart Crate System metadata
-[package.metadata.ctas7]
+# SX9 Smart Crate Metadata v7.3.1
+[package.metadata.sx9]
 crate_type = "foundation"
 mission = "DependencyUnification"
 security_level = "Production"
 orchestrator_compatible = true
 cannibalization_protected = true
 xsd_symbols = ["\\u{E500}", "\\u{E320}", "\\u{E000}"]
-assembly_language_version = "7.3.1"
 neural_mux_priority = "high"
 port_range_start = 18101
 port_range_end = 18120
 database_pool_size = 20
 
-# SLSA Provenance metadata (Smart Crate System)
-[package.metadata.slsa]
-build_type = "hermetic"
-builder_id = "ctas7-smart-crate-orchestrator"
-reproducible = true
-
-# Smart Crate System integration
 [package.metadata.smart_crate]
+generation = "2.0"
+sx9_version = "7.3.1"
+foundation_tier = "core-foundation"
+trivariate_hash_enabled = true
+integration_points = ["all-sx9-crates"]
+domain = "core"
+environmental_masks = ["WX", "TF", "OB", "JU", "TH"]
 template_version = "7.3.1"
 orchestrator_version = "7.3.1"
 autonomous_deployment = false
@@ -159,10 +158,12 @@ threat_hunting_enabled = true
 neural_mux_integration = true
 unicode_compression_enabled = true
 trivariate_hash_support = true
-emoji_status_enabled = true
-database_connection_pool = true
-xsd_orchestrator_type = "crate"
-assembly_language_linkup = true
+
+# SLSA Provenance metadata
+[package.metadata.slsa]
+build_type = "hermetic"
+builder_id = "sx9-smart-crate-orchestrator"
+reproducible = true
 
 # Clean up - these are already defined above
 

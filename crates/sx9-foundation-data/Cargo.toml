@@ -10,7 +10,7 @@ keywords = ["ctas7", "foundation", "data", "persistence", "trivariate-hash"]
 categories = ["database", "data-structures"]
 
 [lib]
-name = "ctas7_foundation_data"
+name = "sx9_foundation_data"
 crate-type = ["rlib"]
 
 [dependencies]
@@ -42,29 +42,47 @@ sx9-foundation-core = { path = "../sx9-foundation-core" }
 sled = { version = "0.34", optional = true }
 sqlx = { version = "0.7", features = ["runtime-tokio-rustls", "postgres", "chrono", "uuid"], optional = true }
 
+# Vector database (RFC-9005 §3.1)
+lancedb = { version = "0.13", optional = true }
+arrow-array = { version = "53", optional = true }
+arrow-schema = { version = "53", optional = true }
+
+# Path expansion (for sledis)
+shellexpand = { version = "3.1", optional = true }
+
+# Thiserror for custom errors
+thiserror = "1.0"
+
 [features]
 default = ["embedded-db"]
 embedded-db = ["sled"]
+sledis = ["embedded-db", "shellexpand"]
 postgres = ["sqlx"]
-full = ["embedded-db", "postgres"]
+vector-db = ["lancedb", "arrow-array", "arrow-schema"]
+full = ["embedded-db", "postgres", "sledis", "vector-db"]
 
 [dev-dependencies]
 tokio-test = "0.4"
 criterion = "0.5"
 futures = "0.3"
 
-# CTAS-7 Smart Crate Metadata - v7.2 Compliant
+# SX9 Smart Crate Metadata v7.3.1
 [package.metadata.smart_crate]
 generation = "2.0"
-ctas7_certified = true
-ctas7_version = "7.3.1"
+sx9_version = "7.3.1"
 foundation_tier = "data-foundation"
 service_port = 18400
 real_time = true
-integration_points = ["ctas-foundation-manifold", "all-ctas7-crates"]
+integration_points = ["sx9-foundation-core", "all-sx9-crates"]
 domain = "data"
 environmental_masks = ["WX", "TF", "OB", "JU", "TH"]
 trivariate_hash_enabled = true
 manifold_integration = true
 data_persistence = true
+
+[package.metadata.sx9]
+crate_type = "foundation"
+mission = "DataUnification"
+security_level = "Production"
+orchestrator_compatible = true
 
