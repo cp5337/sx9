@@ -24,7 +24,17 @@ pub mod lineage;
 // Re-exports
 pub use types::*;
 pub use executor::Executor;
-pub use gates::{StaticGate, ArchGate, PatternGate};
+pub use gates::{
+    HeartbeatGate, StaticGate, SemanticGate, ArchGate, PatternGate,
+    SemanticConfig, SemanticConfigBuilder, EnforcementMode, DriftThresholds, TierEnforcement,
+    // Quality Certification
+    QualityCertification, CertificationLevel, GateSummary, DriftMetrics,
+    // Cognitix Metrics
+    CognitixLifetimeMetrics, CognitixBadge, CertificationCounts,
+    // Degradation Tracking
+    CertificationDelta, DeltaDirection, DegradationCause, UpdateTrigger,
+    CertificationTrend, TrendHealth, TrendDirection,
+};
 pub use agents::{AgentRegistry, Agent, AiProvider};
 pub use tasks::{TaskId, Task, TaskGraph, TASKS};
 pub use linear::{LinearGateway, LinearIssue, LinearWebhook};

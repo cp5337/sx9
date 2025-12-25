@@ -26,16 +26,18 @@
 //! ┌─────────────────────────────────────────────────────────────────┐
 //! │                 EXISTING SX9 INFRASTRUCTURE                      │
 //! │                                                                  │
-//! │  Supabase │ SurrealDB │ Sled │ Sledis │ NATS │ sx9-atlas-bus   │
+//! │  Supabase │ Neon │ Sled │ Sledis │ NATS │ sx9-atlas-bus      │
 //! └─────────────────────────────────────────────────────────────────┘
 //! ```
 
 pub mod glaf_client;
 pub mod handlers;
+pub mod licensing;
 pub mod protocol;
 pub mod server;
 pub mod state;
 
+pub use licensing::{LicenseTier, Subscription, ComponentMeta, LicenseValidation};
 pub use protocol::{Database, WsMessage, WsResponse};
 pub use server::{run_gateway, DEFAULT_PORT};
 pub use state::GatewayState;

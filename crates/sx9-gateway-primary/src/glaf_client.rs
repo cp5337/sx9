@@ -1,7 +1,7 @@
 //! GLAF Client - HTTP client to GLAF Graph Server
 //!
 //! Purpose: Data analytics, graph queries, analytic workbench
-//! Server: ctas7-glaf-graph-server (port 18050)
+//! Server: sx9-glaf-graph-server (port 18050)
 
 use anyhow::Result;
 use reqwest::Client;

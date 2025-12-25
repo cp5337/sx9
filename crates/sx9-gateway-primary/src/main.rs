@@ -1,7 +1,7 @@
 //! SX9 Gateway - Unified API surface for the SYNAPTIX9 cognitive engine
 //!
 //! This binary starts the WebSocket gateway that exposes:
-//! - Database queries (Supabase, SurrealDB, Sled, Sledis)
+//! - Database queries (Supabase, Neon, Sled, Sledis)
 //! - Graph operations (GLAF, fusion nodes)
 //! - Workflow control (Forge, sx9-atlas-bus)
 //! - PlasmaState monitoring (SDT gate, crystal resonance)

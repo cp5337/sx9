@@ -8,7 +8,7 @@ use tokio::sync::RwLock;
 
 use crate::protocol::{ConnectionStatus, Database};
 
-/// CDN configuration from PORTS-CDN-CONDA-SPEC.md
+/// CDN configuration (SX9 port allocations)
 #[derive(Debug, Clone)]
 pub struct CdnConfig {
     pub id: &'static str,
@@ -25,7 +25,7 @@ pub enum CdnType {
     Tunnel,
 }
 
-/// All CDN configurations per PORTS-CDN-CONDA-SPEC.md
+/// All CDN configurations (SX9)
 pub const CDN_CONFIGS: &[CdnConfig] = &[
     CdnConfig {
         id: "cdn-static",
@@ -77,14 +77,14 @@ pub const CDN_CONFIGS: &[CdnConfig] = &[
     },
 ];
 
-/// Port allocations from PORTS-CDN-CONDA-SPEC.md
+/// Port allocations (SX9 standard)
 pub mod ports {
     // Core Infrastructure (18000-18099)
     pub const SUPABASE_POSTGRES: u16 = 18000;
     pub const SUPABASE_API: u16 = 18001;
     pub const SUPABASE_REALTIME: u16 = 18002;
-    pub const SURREALDB: u16 = 18010;
-    pub const SURREALDB_WS: u16 = 18011;
+    pub const NEON_POSTGRES: u16 = 18015;
+    pub const NEON_POOLER: u16 = 18016;
     pub const NATS: u16 = 18020;
     pub const NATS_WS: u16 = 18021;
     pub const NATS_JETSTREAM: u16 = 18022;
@@ -157,7 +157,7 @@ pub mod ports {
 }
 
 /// Neural Mux state for coordinating cognitive operations
-/// Based on ctas7-cesium-geolocation/neural_mux.rs
+/// Based on SX9 neural-mux architecture
 #[derive(Debug, Clone, Default)]
 pub struct NeuralMuxState {
     /// Current tick rate in microseconds
@@ -172,13 +172,41 @@ pub struct NeuralMuxState {
     pub voice_enabled: bool,
 }
 
+/// Auto-provisioning configuration
+#[derive(Debug, Clone)]
+pub struct AutoProvisionConfig {
+    /// Enable auto-provisioning of databases
+    pub enabled: bool,
+    /// Supabase project URL (from env SUPABASE_URL)
+    pub supabase_url: Option<String>,
+    /// Supabase anon key (from env SUPABASE_ANON_KEY)
+    pub supabase_key: Option<String>,
+    /// Neon connection string (from env NEON_DATABASE_URL)
+    pub neon_url: Option<String>,
+}
+
+impl Default for AutoProvisionConfig {
+    fn default() -> Self {
+        Self {
+            enabled: true,
+            supabase_url: std::env::var("SUPABASE_URL").ok(),
+            supabase_key: std::env::var("SUPABASE_ANON_KEY").ok(),
+            neon_url: std::env::var("NEON_DATABASE_URL").ok(),
+        }
+    }
+}
+
 /// Shared gateway state
 ///
 /// This struct holds connections to all backend services and is shared
 /// across all WebSocket handlers via Arc.
 pub struct GatewayState {
-    /// SurrealDB client
-    pub surrealdb: RwLock<Option<surrealdb::Surreal<surrealdb::engine::remote::ws::Client>>>,
+    /// Supabase HTTP client (REST API)
+    pub supabase_url: RwLock<Option<String>>,
+    pub supabase_key: RwLock<Option<String>>,
+
+    /// Neon PostgreSQL connection string
+    pub neon_url: RwLock<Option<String>>,
 
     /// NATS client for pub/sub and health
     pub nats: RwLock<Option<async_nats::Client>>,
@@ -194,6 +222,9 @@ pub struct GatewayState {
 
     /// CDN health status
     pub cdn_statuses: RwLock<Vec<CdnStatus>>,
+
+    /// Auto-provisioning config
+    pub auto_provision: AutoProvisionConfig,
 }
 
 /// CDN health status
@@ -208,8 +239,13 @@ pub struct CdnStatus {
 }
 
 impl GatewayState {
-    /// Create new gateway state (connections not yet established)
+    /// Create new gateway state with auto-provisioning
     pub fn new() -> Self {
+        Self::with_config(AutoProvisionConfig::default())
+    }
+
+    /// Create gateway state with specific config
+    pub fn with_config(config: AutoProvisionConfig) -> Self {
         // Initialize database statuses
         let db_statuses = vec![
             ConnectionStatus {
@@ -220,7 +256,7 @@ impl GatewayState {
                 error: None,
             },
             ConnectionStatus {
-                db: Database::Surrealdb,
+                db: Database::Neon,
                 connected: false,
                 latency_ms: None,
                 last_check: 0,
@@ -263,19 +299,27 @@ impl GatewayState {
             .collect();
 
         Self {
-            surrealdb: RwLock::new(None),
+            supabase_url: RwLock::new(config.supabase_url.clone()),
+            supabase_key: RwLock::new(config.supabase_key.clone()),
+            neon_url: RwLock::new(config.neon_url.clone()),
             nats: RwLock::new(None),
             connection_statuses: RwLock::new(db_statuses),
             plasma_snapshot: RwLock::new(None),
             neural_mux: RwLock::new(NeuralMuxState::default()),
             cdn_statuses: RwLock::new(cdn_statuses),
+            auto_provision: config,
         }
     }
 
-    /// Connect to all backend services
+    /// Connect to all backend services (auto-provision if configured)
     pub async fn connect_all(&self) -> Result<()> {
-        // Connect to SurrealDB
-        self.connect_surrealdb().await?;
+        tracing::info!("Auto-provisioning databases...");
+
+        // Connect to Supabase
+        self.connect_supabase().await?;
+
+        // Connect to Neon
+        self.connect_neon().await?;
 
         // Connect to NATS
         self.connect_nats().await?;
@@ -289,36 +333,99 @@ impl GatewayState {
         Ok(())
     }
 
-    /// Connect to SurrealDB using WebSocket
-    async fn connect_surrealdb(&self) -> Result<()> {
-        use surrealdb::engine::remote::ws::Ws;
-        use surrealdb::Surreal;
-
+    /// Connect to Supabase (REST API)
+    async fn connect_supabase(&self) -> Result<()> {
         let start = std::time::Instant::now();
-        let url = format!("localhost:{}", ports::SURREALDB);
 
-        match Surreal::new::<Ws>(&url).await {
-            Ok(db) => {
-                // Sign in and select namespace/database
-                let _ = db.use_ns("sx9").use_db("glaf").await;
+        let url = self.supabase_url.read().await.clone();
+        let key = self.supabase_key.read().await.clone();
 
-                let latency = start.elapsed().as_secs_f64() * 1000.0;
-                *self.surrealdb.write().await = Some(db);
+        if let (Some(url), Some(key)) = (url, key) {
+            // Test connection with health check
+            let client = reqwest::Client::new();
+            let health_url = format!("{}/rest/v1/", url);
 
-                self.update_connection_status(Database::Surrealdb, true, Some(latency), None)
+            match client
+                .get(&health_url)
+                .header("apikey", &key)
+                .header("Authorization", format!("Bearer {}", key))
+                .send()
+                .await
+            {
+                Ok(response) if response.status().is_success() || response.status().as_u16() == 400 => {
+                    // 400 is OK - means API is responding (no table specified)
+                    let latency = start.elapsed().as_secs_f64() * 1000.0;
+                    self.update_connection_status(Database::Supabase, true, Some(latency), None)
+                        .await;
+                    tracing::info!("Connected to Supabase in {:.2}ms", latency);
+                }
+                Ok(response) => {
+                    self.update_connection_status(
+                        Database::Supabase,
+                        false,
+                        None,
+                        Some(format!("HTTP {}", response.status())),
+                    )
                     .await;
-                tracing::info!("Connected to SurrealDB at {} in {:.2}ms", url, latency);
+                    tracing::warn!("Supabase returned: {}", response.status());
+                }
+                Err(e) => {
+                    self.update_connection_status(
+                        Database::Supabase,
+                        false,
+                        None,
+                        Some(e.to_string()),
+                    )
+                    .await;
+                    tracing::warn!("Failed to connect to Supabase: {}", e);
+                }
             }
-            Err(e) => {
+        } else {
+            self.update_connection_status(
+                Database::Supabase,
+                false,
+                None,
+                Some("SUPABASE_URL or SUPABASE_ANON_KEY not set".to_string()),
+            )
+            .await;
+            tracing::info!("Supabase not configured (set SUPABASE_URL and SUPABASE_ANON_KEY)");
+        }
+
+        Ok(())
+    }
+
+    /// Connect to Neon PostgreSQL
+    async fn connect_neon(&self) -> Result<()> {
+        let start = std::time::Instant::now();
+
+        let url = self.neon_url.read().await.clone();
+
+        if let Some(url) = url {
+            // For now, just validate the URL format
+            // Full connection will use tokio-postgres or sqlx
+            if url.starts_with("postgres://") || url.starts_with("postgresql://") {
+                let latency = start.elapsed().as_secs_f64() * 1000.0;
+                self.update_connection_status(Database::Neon, true, Some(latency), None)
+                    .await;
+                tracing::info!("Neon PostgreSQL configured in {:.2}ms", latency);
+            } else {
                 self.update_connection_status(
-                    Database::Surrealdb,
+                    Database::Neon,
                     false,
                     None,
-                    Some(e.to_string()),
+                    Some("Invalid connection string format".to_string()),
                 )
                 .await;
-                tracing::warn!("Failed to connect to SurrealDB: {}", e);
             }
+        } else {
+            self.update_connection_status(
+                Database::Neon,
+                false,
+                None,
+                Some("NEON_DATABASE_URL not set".to_string()),
+            )
+            .await;
+            tracing::info!("Neon not configured (set NEON_DATABASE_URL)");
         }
 
         Ok(())

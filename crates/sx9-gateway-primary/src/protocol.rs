@@ -10,10 +10,15 @@ use uuid::Uuid;
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "lowercase")]
 pub enum Database {
+    /// Supabase (PostgreSQL + realtime)
     Supabase,
-    Surrealdb,
+    /// Neon (serverless PostgreSQL)
+    Neon,
+    /// Sled (embedded key-value)
     Sled,
+    /// Sledis (Redis-compatible layer over Sled)
     Sledis,
+    /// NATS (messaging/pubsub)
     Nats,
 }
 
@@ -21,7 +26,7 @@ impl Database {
     pub fn default_port(&self) -> u16 {
         match self {
             Database::Supabase => 18000,
-            Database::Surrealdb => 18010,
+            Database::Neon => 18015,
             Database::Sled => 18400,
             Database::Sledis => 18401,
             Database::Nats => 18020,
@@ -31,11 +36,16 @@ impl Database {
     pub fn brand_color(&self) -> &'static str {
         match self {
             Database::Supabase => "#3ecf8e",
-            Database::Surrealdb => "#ff00a0",
+            Database::Neon => "#00e599",
             Database::Sled => "#ff6b35",
             Database::Sledis => "#dc382d",
             Database::Nats => "#4222ff",
         }
+    }
+
+    /// Check if this database supports auto-provisioning
+    pub fn supports_auto_provision(&self) -> bool {
+        matches!(self, Database::Supabase | Database::Neon | Database::Sled)
     }
 }
 
@@ -160,6 +170,34 @@ pub enum WsMessage {
 
     /// Ping (keepalive)
     Ping,
+
+    // ═══════════════════════════════════════════════════════════════════
+    // LICENSING & MARKETPLACE
+    // Feature gating, subscription validation, component access
+    // ═══════════════════════════════════════════════════════════════════
+    /// Validate license and get accessible components/features
+    ValidateLicense {
+        /// API key or org identifier
+        api_key: String,
+    },
+
+    /// Check access to a specific component
+    CheckComponentAccess {
+        api_key: String,
+        component_id: String,
+    },
+
+    /// Check access to a specific feature
+    CheckFeatureAccess {
+        api_key: String,
+        feature_id: String,
+    },
+
+    /// Get all available components (with tier requirements)
+    GetComponents,
+
+    /// Get component details
+    GetComponent { component_id: String },
 }
 
 /// Messages from Gateway → UI
@@ -217,6 +255,48 @@ pub enum WsResponse {
     Pong { server_time: u64 },
 
     // ═══════════════════════════════════════════════════════════════════
+    // LICENSING RESPONSES
+    // ═══════════════════════════════════════════════════════════════════
+    /// License validation result
+    LicenseValidation {
+        valid: bool,
+        tier: String,
+        tier_level: u8,
+        days_remaining: Option<i64>,
+        accessible_components: Vec<String>,
+        accessible_features: Vec<String>,
+        warning: Option<String>,
+    },
+
+    /// Component access check result
+    ComponentAccess {
+        granted: bool,
+        component_id: String,
+        required_tier: String,
+        current_tier: String,
+        reason: Option<String>,
+    },
+
+    /// Feature access check result
+    FeatureAccess {
+        granted: bool,
+        feature_id: String,
+        required_tier: String,
+        current_tier: String,
+        reason: Option<String>,
+    },
+
+    /// Component catalog
+    Components {
+        components: Vec<ComponentInfo>,
+    },
+
+    /// Single component detail
+    ComponentDetail {
+        component: ComponentInfo,
+    },
+
+    // ═══════════════════════════════════════════════════════════════════
     // ERROR RESPONSES
     // ═══════════════════════════════════════════════════════════════════
     /// Error response
@@ -225,6 +305,37 @@ pub enum WsResponse {
         message: String,
         details: Option<serde_json::Value>,
     },
+}
+
+/// Component info for marketplace
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct ComponentInfo {
+    pub id: String,
+    pub name: String,
+    pub description: String,
+    pub category: String,
+    pub required_tier: String,
+    pub version: String,
+    pub wasm_size: Option<u64>,
+    pub requires_heartbeat: bool,
+    pub icon: String,
+    pub capabilities: Vec<String>,
+    /// Current user's access status
+    pub access_status: ComponentAccessStatus,
+}
+
+/// Component access status for current user
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(rename_all = "lowercase")]
+pub enum ComponentAccessStatus {
+    /// User can access (tier met)
+    Available,
+    /// Already loaded/installed
+    Loaded,
+    /// Requires upgrade (tier not met)
+    Upgrade,
+    /// Requires heartbeat validation first
+    PendingHeartbeat,
 }
 
 /// Subscription event types

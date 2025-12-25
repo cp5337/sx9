@@ -1,10 +1,13 @@
 //! WebSocket message handlers
 //!
 //! Each handler maps a WsMessage to the appropriate SX9 backend.
+//! Includes licensing handlers with dual heartbeat integration.
 
 use anyhow::Result;
+use std::collections::HashSet;
 use std::time::Instant;
 
+use crate::licensing::{default_components, LicenseTier, Subscription};
 use crate::protocol::*;
 use crate::state::{ports, SharedState};
 
@@ -61,6 +64,25 @@ pub async fn handle_message(msg: WsMessage, state: SharedState) -> Result<WsResp
                 .unwrap()
                 .as_millis() as u64,
         }),
+
+        // ═══════════════════════════════════════════════════════════════════
+        // LICENSING OPERATIONS (with dual heartbeat)
+        // ═══════════════════════════════════════════════════════════════════
+        WsMessage::ValidateLicense { api_key } => handle_validate_license(api_key, state).await,
+
+        WsMessage::CheckComponentAccess {
+            api_key,
+            component_id,
+        } => handle_check_component_access(api_key, component_id, state).await,
+
+        WsMessage::CheckFeatureAccess {
+            api_key,
+            feature_id,
+        } => handle_check_feature_access(api_key, feature_id, state).await,
+
+        WsMessage::GetComponents => handle_get_components(state).await,
+
+        WsMessage::GetComponent { component_id } => handle_get_component(component_id, state).await,
     }
 }
 
@@ -71,18 +93,30 @@ pub async fn handle_message(msg: WsMessage, state: SharedState) -> Result<WsResp
 async fn handle_query(
     db: Database,
     query: String,
-    _params: Option<serde_json::Value>,
+    params: Option<serde_json::Value>,
     state: SharedState,
 ) -> Result<WsResponse> {
     let start = Instant::now();
 
     match db {
-        Database::Surrealdb => {
-            let surreal_guard = state.surrealdb.read().await;
-            if let Some(ref surreal) = *surreal_guard {
-                match surreal.query(&query).await {
-                    Ok(mut response) => {
-                        let rows: Vec<serde_json::Value> = response.take(0).unwrap_or_default();
+        Database::Supabase => {
+            let url = state.supabase_url.read().await.clone();
+            let key = state.supabase_key.read().await.clone();
+
+            if let (Some(url), Some(key)) = (url, key) {
+                let client = reqwest::Client::new();
+                // Supabase REST API query (table name in query, params as filters)
+                let query_url = format!("{}/rest/v1/{}", url, query);
+
+                match client
+                    .get(&query_url)
+                    .header("apikey", &key)
+                    .header("Authorization", format!("Bearer {}", key))
+                    .send()
+                    .await
+                {
+                    Ok(response) if response.status().is_success() => {
+                        let rows: Vec<serde_json::Value> = response.json().await.unwrap_or_default();
                         Ok(WsResponse::QueryResult {
                             db,
                             rows,
@@ -90,6 +124,11 @@ async fn handle_query(
                             cached: false,
                         })
                     }
+                    Ok(response) => Ok(WsResponse::Error {
+                        code: "QUERY_ERROR".to_string(),
+                        message: format!("HTTP {}", response.status()),
+                        details: None,
+                    }),
                     Err(e) => Ok(WsResponse::Error {
                         code: "QUERY_ERROR".to_string(),
                         message: e.to_string(),
@@ -99,10 +138,19 @@ async fn handle_query(
             } else {
                 Ok(WsResponse::Error {
                     code: "NOT_CONNECTED".to_string(),
-                    message: "SurrealDB not connected".to_string(),
+                    message: "Supabase not configured".to_string(),
                     details: None,
                 })
             }
+        }
+
+        Database::Neon => {
+            // Neon queries require tokio-postgres - placeholder for now
+            Ok(WsResponse::Error {
+                code: "NOT_IMPLEMENTED".to_string(),
+                message: "Neon PostgreSQL queries require tokio-postgres (coming soon)".to_string(),
+                details: Some(serde_json::json!({ "query": query, "params": params })),
+            })
         }
 
         // TODO: Implement other database handlers
@@ -144,167 +192,34 @@ async fn handle_unsubscribe(
 // GRAPH HANDLERS
 // ═══════════════════════════════════════════════════════════════════════════
 
-async fn handle_get_graph(filter: GraphFilter, state: SharedState) -> Result<WsResponse> {
-    // Build SurrealQL query based on filter
-    let mut query = String::from("SELECT * FROM entity");
-
-    if let Some(ref node_type) = filter.node_type {
-        query.push_str(&format!(" WHERE type = '{}'", node_type));
-    }
-
-    if filter.fusion_only {
-        query.push_str(" WHERE fusion_score IS NOT NULL");
-    }
-
-    query.push_str(" FETCH edges");
-
-    let surreal_guard = state.surrealdb.read().await;
-    if let Some(surreal) = surreal_guard.as_ref() {
-        match surreal.query(&query).await {
-            Ok(mut response) => {
-                let entities: Vec<serde_json::Value> = response.take(0).unwrap_or_default();
-
-                // Transform to GraphNode/GraphEdge format
-                let nodes: Vec<GraphNode> = entities
-                    .iter()
-                    .filter_map(|e| {
-                        Some(GraphNode {
-                            id: e.get("id")?.as_str()?.to_string(),
-                            label: e
-                                .get("name")
-                                .and_then(|n| n.as_str())
-                                .unwrap_or("")
-                                .to_string(),
-                            node_type: e
-                                .get("type")
-                                .and_then(|t| t.as_str())
-                                .unwrap_or("default")
-                                .to_string(),
-                            shape: if e.get("fusion_score").is_some() {
-                                "nonagon"
-                            } else {
-                                "circle"
-                            }
-                            .to_string(),
-                            color: if e.get("fusion_score").is_some() {
-                                "#00ffff"
-                            } else {
-                                Database::Surrealdb.brand_color()
-                            }
-                            .to_string(),
-                            size: 1.0,
-                            trivariate_hash: e
-                                .get("trivariate_hash")
-                                .and_then(|h| h.as_str())
-                                .map(String::from),
-                            source_db: Database::Surrealdb,
-                            properties: e.clone(),
-                        })
-                    })
-                    .collect();
-
-                // Extract edges from the fetched data
-                let edges: Vec<GraphEdge> = vec![]; // TODO: Parse edges from response
-
-                Ok(WsResponse::GraphData { nodes, edges })
-            }
-            Err(e) => Ok(WsResponse::Error {
-                code: "GRAPH_ERROR".to_string(),
-                message: e.to_string(),
-                details: None,
-            }),
-        }
-    } else {
-        Ok(WsResponse::Error {
-            code: "NOT_CONNECTED".to_string(),
-            message: "SurrealDB not connected".to_string(),
-            details: None,
-        })
-    }
+async fn handle_get_graph(_filter: GraphFilter, _state: SharedState) -> Result<WsResponse> {
+    // Graph queries now go through Supabase or GLAF in-memory graph
+    // TODO: Implement via Supabase PostgREST or sx9-glaf-core
+    Ok(WsResponse::Error {
+        code: "NOT_IMPLEMENTED".to_string(),
+        message: "Graph queries require GLAF integration (coming soon)".to_string(),
+        details: None,
+    })
 }
 
-async fn handle_get_fusion_nodes(threshold: f32, state: SharedState) -> Result<WsResponse> {
-    let query = format!(
-        "SELECT * FROM fusion_node WHERE fusion_score >= {} ORDER BY fusion_score DESC",
-        threshold
-    );
-
-    let surreal_guard = state.surrealdb.read().await;
-    if let Some(surreal) = surreal_guard.as_ref() {
-        match surreal.query(&query).await {
-            Ok(mut response) => {
-                let raw: Vec<serde_json::Value> = response.take(0).unwrap_or_default();
-
-                let nodes: Vec<FusionNode> = raw
-                    .iter()
-                    .filter_map(|n| {
-                        Some(FusionNode {
-                            id: n.get("id")?.as_str()?.to_string(),
-                            trivariate_hash: n.get("trivariate_hash")?.as_str()?.to_string(),
-                            fusion_score: n.get("fusion_score")?.as_f64()? as f32,
-                            fusion_method: n
-                                .get("fusion_method")
-                                .and_then(|m| m.as_str())
-                                .unwrap_or("hash")
-                                .to_string(),
-                            sources: vec![], // TODO: Parse sources
-                            created_at: n.get("created_at").and_then(|t| t.as_u64()).unwrap_or(0),
-                            last_correlated: n
-                                .get("last_correlated")
-                                .and_then(|t| t.as_u64())
-                                .unwrap_or(0),
-                        })
-                    })
-                    .collect();
-
-                Ok(WsResponse::FusionNodes { nodes })
-            }
-            Err(e) => Ok(WsResponse::Error {
-                code: "FUSION_ERROR".to_string(),
-                message: e.to_string(),
-                details: None,
-            }),
-        }
-    } else {
-        Ok(WsResponse::Error {
-            code: "NOT_CONNECTED".to_string(),
-            message: "SurrealDB not connected".to_string(),
-            details: None,
-        })
-    }
+async fn handle_get_fusion_nodes(_threshold: f32, _state: SharedState) -> Result<WsResponse> {
+    // Fusion nodes are stored in Supabase or GLAF
+    // TODO: Query via PostgREST or sx9-glaf-core
+    Ok(WsResponse::Error {
+        code: "NOT_IMPLEMENTED".to_string(),
+        message: "Fusion queries require GLAF integration (coming soon)".to_string(),
+        details: None,
+    })
 }
 
-async fn handle_expand_node(node_id: String, depth: u32, state: SharedState) -> Result<WsResponse> {
-    let query = format!(
-        "SELECT ->relates_to->(entity WHERE true LIMIT {}) AS neighbors FROM entity:{}",
-        depth * 10,
-        node_id
-    );
-
-    let surreal_guard = state.surrealdb.read().await;
-    if let Some(surreal) = surreal_guard.as_ref() {
-        match surreal.query(&query).await {
-            Ok(mut response) => {
-                let _raw: Vec<serde_json::Value> = response.take(0).unwrap_or_default();
-                // TODO: Transform to graph format
-                Ok(WsResponse::GraphData {
-                    nodes: vec![],
-                    edges: vec![],
-                })
-            }
-            Err(e) => Ok(WsResponse::Error {
-                code: "EXPAND_ERROR".to_string(),
-                message: e.to_string(),
-                details: None,
-            }),
-        }
-    } else {
-        Ok(WsResponse::Error {
-            code: "NOT_CONNECTED".to_string(),
-            message: "SurrealDB not connected".to_string(),
-            details: None,
-        })
-    }
+async fn handle_expand_node(_node_id: String, _depth: u32, _state: SharedState) -> Result<WsResponse> {
+    // Node expansion via GLAF graph traversal
+    // TODO: Implement via sx9-glaf-core
+    Ok(WsResponse::Error {
+        code: "NOT_IMPLEMENTED".to_string(),
+        message: "Node expansion requires GLAF integration (coming soon)".to_string(),
+        details: None,
+    })
 }
 
 async fn handle_run_correlation(
@@ -408,15 +323,32 @@ async fn handle_test_connection(db: Database, state: SharedState) -> Result<WsRe
     let start = Instant::now();
 
     let (connected, error) = match db {
-        Database::Surrealdb => {
-            let surreal_guard = state.surrealdb.read().await;
-            if let Some(surreal) = surreal_guard.as_ref() {
-                match surreal.query("INFO FOR DB").await {
-                    Ok(_) => (true, None),
+        Database::Supabase => {
+            let url = state.supabase_url.read().await.clone();
+            let key = state.supabase_key.read().await.clone();
+            if let (Some(url), Some(key)) = (url, key) {
+                let client = reqwest::Client::new();
+                match client
+                    .get(format!("{}/rest/v1/", url))
+                    .header("apikey", &key)
+                    .send()
+                    .await
+                {
+                    Ok(r) if r.status().is_success() || r.status().as_u16() == 400 => (true, None),
+                    Ok(r) => (false, Some(format!("HTTP {}", r.status()))),
                     Err(e) => (false, Some(e.to_string())),
                 }
             } else {
-                (false, Some("Not connected".to_string()))
+                (false, Some("Not configured".to_string()))
+            }
+        }
+        Database::Neon => {
+            let url = state.neon_url.read().await.clone();
+            if url.is_some() {
+                // URL configured = "connected" for now (full pg test requires tokio-postgres)
+                (true, None)
+            } else {
+                (false, Some("Not configured".to_string()))
             }
         }
         Database::Nats => {
@@ -427,7 +359,13 @@ async fn handle_test_connection(db: Database, state: SharedState) -> Result<WsRe
                 (false, Some("Not connected".to_string()))
             }
         }
-        _ => (false, Some("Not implemented".to_string())),
+        Database::Sled | Database::Sledis => {
+            // Sled is embedded, check if port is listening
+            match tokio::net::TcpStream::connect(format!("localhost:{}", db.default_port())).await {
+                Ok(_) => (true, None),
+                Err(_) => (false, Some("Service not running".to_string())),
+            }
+        }
     };
 
     Ok(WsResponse::Connections {
@@ -441,5 +379,349 @@ async fn handle_test_connection(db: Database, state: SharedState) -> Result<WsRe
                 .as_secs(),
             error,
         }],
+    })
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// LICENSING HANDLERS (with dual heartbeat integration)
+// ═══════════════════════════════════════════════════════════════════════════
+
+/// Validate license and return accessible components/features
+/// Integrates dual heartbeat check for zero-trust validation
+async fn handle_validate_license(api_key: String, _state: SharedState) -> Result<WsResponse> {
+    // Run dual heartbeat check first (zero-trust requirement)
+    let heartbeat_passed = run_dual_heartbeat().await;
+
+    // Look up subscription by API key
+    // TODO: Query from Supabase subscriptions table
+    let subscription = lookup_subscription(&api_key).await;
+
+    match subscription {
+        Some(sub) if sub.is_valid() && heartbeat_passed => {
+            let components = default_components();
+            let accessible_components: Vec<String> = components
+                .iter()
+                .filter(|c| sub.can_access_component(&c.id, c.required_tier))
+                .map(|c| c.id.clone())
+                .collect();
+
+            // Features are component capabilities
+            let accessible_features: Vec<String> = components
+                .iter()
+                .filter(|c| sub.can_access_component(&c.id, c.required_tier))
+                .flat_map(|c| c.capabilities.clone())
+                .collect::<HashSet<_>>()
+                .into_iter()
+                .collect();
+
+            let warning = sub.days_remaining().and_then(|days| {
+                if days < 7 {
+                    Some(format!("License expires in {} days", days))
+                } else if days < 30 {
+                    Some(format!("{} days remaining", days))
+                } else {
+                    None
+                }
+            });
+
+            Ok(WsResponse::LicenseValidation {
+                valid: true,
+                tier: sub.tier.display_name().to_lowercase(),
+                tier_level: sub.tier as u8,
+                days_remaining: sub.days_remaining(),
+                accessible_components,
+                accessible_features,
+                warning,
+            })
+        }
+        Some(sub) if !heartbeat_passed => {
+            Ok(WsResponse::LicenseValidation {
+                valid: false,
+                tier: sub.tier.display_name().to_lowercase(),
+                tier_level: sub.tier as u8,
+                days_remaining: sub.days_remaining(),
+                accessible_components: vec![],
+                accessible_features: vec![],
+                warning: Some("Heartbeat validation failed - zero-trust check required".to_string()),
+            })
+        }
+        Some(_) => {
+            Ok(WsResponse::LicenseValidation {
+                valid: false,
+                tier: "expired".to_string(),
+                tier_level: 0,
+                days_remaining: Some(0),
+                accessible_components: vec![],
+                accessible_features: vec![],
+                warning: Some("License expired".to_string()),
+            })
+        }
+        None => {
+            // Invalid API key - return free tier access
+            let components = default_components();
+            let free_components: Vec<String> = components
+                .iter()
+                .filter(|c| c.required_tier == LicenseTier::Free)
+                .map(|c| c.id.clone())
+                .collect();
+
+            Ok(WsResponse::LicenseValidation {
+                valid: true,
+                tier: "free".to_string(),
+                tier_level: 0,
+                days_remaining: None,
+                accessible_components: free_components,
+                accessible_features: vec!["filtering".to_string(), "search".to_string()],
+                warning: None,
+            })
+        }
+    }
+}
+
+/// Check if user can access a specific component
+async fn handle_check_component_access(
+    api_key: String,
+    component_id: String,
+    _state: SharedState,
+) -> Result<WsResponse> {
+    let subscription = lookup_subscription(&api_key).await;
+    let components = default_components();
+
+    let component = components.iter().find(|c| c.id == component_id);
+
+    match (subscription, component) {
+        (Some(sub), Some(comp)) if sub.is_valid() => {
+            let granted = sub.can_access_component(&comp.id, comp.required_tier);
+
+            // Check heartbeat requirement
+            let heartbeat_ok = if comp.requires_heartbeat {
+                run_dual_heartbeat().await
+            } else {
+                true
+            };
+
+            Ok(WsResponse::ComponentAccess {
+                granted: granted && heartbeat_ok,
+                component_id,
+                required_tier: comp.required_tier.display_name().to_lowercase(),
+                current_tier: sub.tier.display_name().to_lowercase(),
+                reason: if !granted {
+                    Some(format!("Requires {} tier", comp.required_tier.display_name()))
+                } else if !heartbeat_ok {
+                    Some("Heartbeat validation failed".to_string())
+                } else {
+                    None
+                },
+            })
+        }
+        (None, Some(comp)) => {
+            // No subscription - check if free tier
+            let granted = comp.required_tier == LicenseTier::Free;
+            Ok(WsResponse::ComponentAccess {
+                granted,
+                component_id,
+                required_tier: comp.required_tier.display_name().to_lowercase(),
+                current_tier: "free".to_string(),
+                reason: if !granted {
+                    Some(format!("Requires {} tier", comp.required_tier.display_name()))
+                } else {
+                    None
+                },
+            })
+        }
+        (_, None) => {
+            Ok(WsResponse::Error {
+                code: "COMPONENT_NOT_FOUND".to_string(),
+                message: format!("Component '{}' not found", component_id),
+                details: None,
+            })
+        }
+        (Some(_), _) => {
+            Ok(WsResponse::Error {
+                code: "LICENSE_EXPIRED".to_string(),
+                message: "License has expired".to_string(),
+                details: None,
+            })
+        }
+    }
+}
+
+/// Check if user can access a specific feature
+async fn handle_check_feature_access(
+    api_key: String,
+    feature_id: String,
+    _state: SharedState,
+) -> Result<WsResponse> {
+    let subscription = lookup_subscription(&api_key).await;
+    let components = default_components();
+
+    // Find components that provide this feature
+    let providing_components: Vec<_> = components
+        .iter()
+        .filter(|c| c.capabilities.contains(&feature_id))
+        .collect();
+
+    if providing_components.is_empty() {
+        return Ok(WsResponse::Error {
+            code: "FEATURE_NOT_FOUND".to_string(),
+            message: format!("Feature '{}' not found", feature_id),
+            details: None,
+        });
+    }
+
+    // Find the lowest tier that provides this feature
+    let min_tier = providing_components
+        .iter()
+        .map(|c| c.required_tier)
+        .min()
+        .unwrap_or(LicenseTier::Free);
+
+    match subscription {
+        Some(sub) if sub.is_valid() => {
+            let granted = sub.tier.can_access(min_tier);
+            Ok(WsResponse::FeatureAccess {
+                granted,
+                feature_id,
+                required_tier: min_tier.display_name().to_lowercase(),
+                current_tier: sub.tier.display_name().to_lowercase(),
+                reason: if !granted {
+                    Some(format!("Requires {} tier", min_tier.display_name()))
+                } else {
+                    None
+                },
+            })
+        }
+        None => {
+            let granted = min_tier == LicenseTier::Free;
+            Ok(WsResponse::FeatureAccess {
+                granted,
+                feature_id,
+                required_tier: min_tier.display_name().to_lowercase(),
+                current_tier: "free".to_string(),
+                reason: if !granted {
+                    Some(format!("Requires {} tier", min_tier.display_name()))
+                } else {
+                    None
+                },
+            })
+        }
+        Some(_) => {
+            Ok(WsResponse::FeatureAccess {
+                granted: false,
+                feature_id,
+                required_tier: min_tier.display_name().to_lowercase(),
+                current_tier: "expired".to_string(),
+                reason: Some("License expired".to_string()),
+            })
+        }
+    }
+}
+
+/// Get all available components with access status for current user
+async fn handle_get_components(_state: SharedState) -> Result<WsResponse> {
+    let components = default_components();
+
+    let component_infos: Vec<ComponentInfo> = components
+        .into_iter()
+        .map(|c| ComponentInfo {
+            id: c.id,
+            name: c.name,
+            description: c.description,
+            category: c.category,
+            required_tier: c.required_tier.display_name().to_lowercase(),
+            version: c.version,
+            wasm_size: c.wasm_size,
+            requires_heartbeat: c.requires_heartbeat,
+            icon: c.icon,
+            capabilities: c.capabilities,
+            access_status: ComponentAccessStatus::Available, // TODO: Check user's actual access
+        })
+        .collect();
+
+    Ok(WsResponse::Components {
+        components: component_infos,
+    })
+}
+
+/// Get a specific component's details
+async fn handle_get_component(component_id: String, _state: SharedState) -> Result<WsResponse> {
+    let components = default_components();
+
+    if let Some(c) = components.into_iter().find(|c| c.id == component_id) {
+        Ok(WsResponse::ComponentDetail {
+            component: ComponentInfo {
+                id: c.id,
+                name: c.name,
+                description: c.description,
+                category: c.category,
+                required_tier: c.required_tier.display_name().to_lowercase(),
+                version: c.version,
+                wasm_size: c.wasm_size,
+                requires_heartbeat: c.requires_heartbeat,
+                icon: c.icon,
+                capabilities: c.capabilities,
+                access_status: ComponentAccessStatus::Available,
+            },
+        })
+    } else {
+        Ok(WsResponse::Error {
+            code: "COMPONENT_NOT_FOUND".to_string(),
+            message: format!("Component '{}' not found", component_id),
+            details: None,
+        })
+    }
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// HELPER FUNCTIONS
+// ═══════════════════════════════════════════════════════════════════════════
+
+/// Run dual heartbeat check (local + global)
+/// Returns true if both heartbeats pass
+async fn run_dual_heartbeat() -> bool {
+    // Try to run heartbeat gate if sx9-harness is available
+    #[cfg(feature = "heartbeat")]
+    {
+        use sx9_harness::gates::HeartbeatGate;
+        let gate = HeartbeatGate::new();
+        match gate.run().await {
+            Ok(report) => report.passed,
+            Err(_) => true, // Fail open for development
+        }
+    }
+
+    #[cfg(not(feature = "heartbeat"))]
+    {
+        // No heartbeat gate - assume passed for development
+        true
+    }
+}
+
+/// Look up subscription by API key
+/// TODO: Query from Supabase when connected
+async fn lookup_subscription(api_key: &str) -> Option<Subscription> {
+    // Development mode: recognize test API keys
+    let tier = match api_key {
+        "sk_test_free" | "free" => Some(LicenseTier::Free),
+        "sk_test_pro" | "pro" => Some(LicenseTier::Pro),
+        "sk_test_enterprise" | "enterprise" => Some(LicenseTier::Enterprise),
+        "sk_test_government" | "government" | "gov" => Some(LicenseTier::Government),
+        _ if api_key.starts_with("sk_live_") => {
+            // TODO: Validate against Supabase
+            Some(LicenseTier::Pro)
+        }
+        _ => None,
+    };
+
+    tier.map(|t| Subscription {
+        id: format!("sub_{}", api_key),
+        org_id: "dev".to_string(),
+        tier: t,
+        started_at: 0,
+        expires_at: None, // Never expires for dev
+        active: true,
+        seats: None,
+        feature_overrides: HashSet::new(),
+        component_overrides: HashSet::new(),
     })
 }

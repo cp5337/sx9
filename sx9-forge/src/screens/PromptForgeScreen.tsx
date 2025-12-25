@@ -29,7 +29,9 @@ import {
   Play,
   RefreshCw,
   CheckCircle,
+  Package,
 } from "lucide-react";
+import MyComponents from "../components/MyComponents";
 import {
   selectLeptoseStatus,
   selectChromaStatus,
@@ -136,6 +138,9 @@ export const PromptForgeScreen: React.FC = () => {
   // Phase 2: Integration Controls
   const [linearTeam, setLinearTeam] = useState("");
   const [createLinearIssue, setCreateLinearIssue] = useState(true);
+
+  // Components panel
+  const [showComponents, setShowComponents] = useState(false);
   const [slackChannel, setSlackChannel] = useState("#all-synaptixops");
   const [enableSlack, setEnableSlack] = useState(true);
   const [contextSources, setContextSources] = useState<{
@@ -310,6 +315,10 @@ export const PromptForgeScreen: React.FC = () => {
   }, [showFeedback]);
 
   const handleSettings = useCallback((action: string) => {
+    if (action === "components") {
+      setShowComponents(true);
+      return;
+    }
     showFeedback(`Settings: ${action}`);
   }, [showFeedback]);
 
@@ -663,6 +672,18 @@ context:
                 ))
               )}
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* COMPONENTS PANEL (slide-out from right) */}
+      {showComponents && (
+        <div style={S.componentsPanelOverlay} onClick={() => setShowComponents(false)}>
+          <div
+            style={S.componentsPanel}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <MyComponents onClose={() => setShowComponents(false)} />
           </div>
         </div>
       )}
@@ -1197,6 +1218,9 @@ const LeftContent: React.FC<{
         <div style={{ padding: 12 }}>
           <label style={S.label}>Forge Settings</label>
           <div style={S.options}>
+            <button style={S.optBtn} onClick={() => onSettings("components")}>
+              <span style={{ marginRight: 8 }}>📦</span>License & Components
+            </button>
             <button style={S.optBtn} onClick={() => onSettings("api")}>API Configuration</button>
             <button style={S.optBtn} onClick={() => onSettings("templates")}>Default Templates</button>
             <button style={S.optBtn} onClick={() => onSettings("shortcuts")}>Keyboard Shortcuts</button>
@@ -1732,6 +1756,28 @@ const S: Record<string, React.CSSProperties> = {
   templateDate: {
     fontSize: 11,
     color: C.text3,
+  },
+
+  // Components panel (slide-out)
+  componentsPanelOverlay: {
+    position: "fixed" as const,
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    background: "rgba(0, 0, 0, 0.5)",
+    display: "flex",
+    justifyContent: "flex-end",
+    zIndex: 1000,
+  },
+  componentsPanel: {
+    width: 480,
+    maxWidth: "90vw",
+    height: "100%",
+    background: C.bg,
+    borderLeft: `1px solid ${C.border}`,
+    boxShadow: "-4px 0 24px rgba(0, 0, 0, 0.3)",
+    animation: "slideIn 0.2s ease-out",
   },
 };
 

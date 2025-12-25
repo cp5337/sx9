@@ -40,9 +40,9 @@ sx9-plasma-defender = { path = "../sx9-plasma-defender", optional = true }
 sx9-atlas-daemon = { path = "../sx9-atlas-daemon", optional = true }
 sx9-plasma-ecs = { path = "../sx9-plasma-ecs", optional = true }
 
-# Database clients
-surrealdb = { version = "2.0", features = ["protocol-ws"] }
+# Database clients (Supabase via REST, Neon via tokio-postgres)
 # supabase-rs = "0.3"  # TODO: Add when available
+# tokio-postgres = "0.7"  # For Neon direct connections
 
 # Messaging
 async-nats = "0.35"
