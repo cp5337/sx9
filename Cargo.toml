@@ -48,6 +48,9 @@ members = [
     # Vertical 3: Dev Center
     "crates/sx9-smart-crate-orchestrator", "crates/sx9-harness",
 
+    # Agent System
+    "sx9-linear-agent",
+
     # Agent SDK
     "crates/sx9-claude-sdk",
 ]

@@ -16,6 +16,11 @@ impl SlackMCP {
         })
     }
 
+    /// Send message to Slack channel (alias for post_message)
+    pub async fn send_message(&self, channel: &str, message: &str) -> Result<()> {
+        self.post_message(channel, message).await
+    }
+
     /// Post message to Slack channel
     pub async fn post_message(&self, channel: &str, message: &str) -> Result<()> {
         let payload = serde_json::json!({
