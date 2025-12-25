@@ -1,0 +1,7 @@
+{
+  "nvnn_parse_mean_ns": 2500,
+  "lineage_scan_per_marker_mean_ns": 8000,
+  "drift_eval_mean_ns": 12000,
+  "nats_subject_build_mean_ns": 1500,
+  "linear_gate_eval_mean_ns": 6000
+}

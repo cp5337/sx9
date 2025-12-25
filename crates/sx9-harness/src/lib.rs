@@ -5,6 +5,7 @@
 //! - QA gates (static, architecture, pattern)
 //! - State management and validation
 //! - NATS integration for distributed execution
+//! - Linear Gateway Service (RFC-9030)
 
 pub mod types;
 pub mod executor;
@@ -14,8 +15,17 @@ pub mod validators;
 pub mod reducer;
 pub mod selectors;
 pub mod gates;
+pub mod nats;
+pub mod agents;
+pub mod tasks;
+pub mod linear;
+pub mod lineage;
 
 // Re-exports
 pub use types::*;
 pub use executor::Executor;
 pub use gates::{StaticGate, ArchGate, PatternGate};
+pub use agents::{AgentRegistry, Agent, AiProvider};
+pub use tasks::{TaskId, Task, TaskGraph, TASKS};
+pub use linear::{LinearGateway, LinearIssue, LinearWebhook};
+pub use lineage::{LineageTracker, LineageMarker, LineageAnalysis};

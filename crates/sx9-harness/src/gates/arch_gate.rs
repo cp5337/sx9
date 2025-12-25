@@ -3,6 +3,7 @@
 //! Checks ECS layer compliance and forbidden patterns
 
 use crate::types::{ArchReport, Violation};
+use sx9_foundation_core::data::Utc;
 use std::path::Path;
 
 pub struct ArchGate;
@@ -20,7 +21,7 @@ impl ArchGate {
         
         Ok(ArchReport {
             schema_version: "1.0".to_string(),
-            loadset_id: format!("arch-{}", chrono::Utc::now().format("%Y%m%d-%H%M%S")),
+            loadset_id: format!("arch-{}", Utc::now().format("%Y%m%d-%H%M%S")),
             score: 100,
             ecs_layer: None,
             bevy_free: true,

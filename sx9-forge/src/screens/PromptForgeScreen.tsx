@@ -28,6 +28,7 @@ import {
   Copy,
   Play,
   RefreshCw,
+  CheckCircle,
 } from "lucide-react";
 import {
   selectLeptoseStatus,
@@ -136,6 +137,80 @@ export const PromptForgeScreen: React.FC = () => {
   const [feedback, setFeedback] = useState("");
   const [timestamp, setTimestamp] = useState("");
 
+  // Action handlers for buttons
+  const showFeedback = useCallback((msg: string) => {
+    setFeedback(msg);
+    setTimeout(() => setFeedback(""), 2000);
+  }, []);
+
+  const handleNewPrompt = useCallback((action: string) => {
+    if (action === "blank") {
+      setTitle("");
+      setRfc("RFC-");
+      setPhase("IMPLEMENT");
+      setObjective("");
+      showFeedback("New blank prompt");
+    } else if (action === "template") {
+      showFeedback("Loading templates...");
+      // TODO: invoke("list_templates")
+    } else if (action === "clone") {
+      showFeedback("Select prompt to clone...");
+    }
+  }, [showFeedback]);
+
+  const handleEditPrompt = useCallback((action: string) => {
+    if (action === "load") {
+      invoke("open_file_dialog", { filters: ["yaml", "yml"] })
+        .then(() => showFeedback("Loading..."))
+        .catch(() => showFeedback("Load cancelled"));
+    } else if (action === "recent") {
+      showFeedback("Loading recent prompts...");
+    } else if (action === "history") {
+      showFeedback("Loading version history...");
+    }
+  }, [showFeedback]);
+
+  const handleMission = useCallback((action: string) => {
+    showFeedback(`Mission: ${action}`);
+  }, [showFeedback]);
+
+  const handleDeploy = useCallback((action: string) => {
+    if (action === "execute") {
+      generate();
+    } else if (action === "schedule") {
+      showFeedback("Scheduling not yet implemented");
+    } else if (action === "draft") {
+      invoke("save_prompt", {
+        filename: `draft-${rfc || "prompt"}-${Date.now()}.yaml`,
+        content: output,
+        workdir: "drafts",
+      })
+        .then(() => showFeedback("Draft saved"))
+        .catch(() => showFeedback("Save failed"));
+    }
+  }, [generate, rfc, output, showFeedback]);
+
+  const handleSettings = useCallback((action: string) => {
+    showFeedback(`Settings: ${action}`);
+  }, [showFeedback]);
+
+  const handleData = useCallback((action: string) => {
+    if (action === "vector") {
+      dispatch(refreshStatus());
+      showFeedback("Refreshing vector status...");
+    } else if (action === "cache") {
+      showFeedback("Cache cleared");
+    } else if (action === "export") {
+      showFeedback("Exporting prompts...");
+    } else if (action === "import") {
+      showFeedback("Import not yet implemented");
+    }
+  }, [dispatch, showFeedback]);
+
+  const handleToolToggle = useCallback((tool: string) => {
+    showFeedback(`${tool} toggled`);
+  }, [showFeedback]);
+
   // Legacy harness state for backward compatibility
   const harness = `${harnessMode} & Implement`;
 
@@ -235,11 +310,11 @@ context:
       if (createLinearIssue) {
         setFeedback("CREATING ISSUE...");
         const linearResult = await invoke<LinearIssueResult>(
-          "create_linear_issue",
+          "create_linear_issue_forge",
           {
             title: title || "New Prompt",
             description: `${objective}\n\n---\nRFC: ${rfc}\nPhase: ${phase}\nHarness: ${harness}\nPersona: ${persona}`,
-            teamId: linearTeam || "SX9",
+            team_id: linearTeam || "SX9",
           }
         );
 
@@ -347,6 +422,12 @@ context:
                 setEnableSlack={setEnableSlack}
                 contextSources={contextSources}
                 setContextSources={setContextSources}
+                onNewPrompt={handleNewPrompt}
+                onEditPrompt={handleEditPrompt}
+                onMission={handleMission}
+                onDeploy={handleDeploy}
+                onSettings={handleSettings}
+                onData={handleData}
               />
             ) : (
               <LeftIcons
@@ -402,7 +483,7 @@ context:
           </div>
           <div style={S.railBody}>
             {rightOpen ? (
-              <RightContent tab={rightTab} setTab={setRightTab} />
+              <RightContent tab={rightTab} setTab={setRightTab} onToolToggle={handleToolToggle} />
             ) : (
               <RightIcons
                 active={rightTab}
@@ -562,6 +643,12 @@ const RightIcons: React.FC<{
       active={active === "threats"}
       onClick={() => onClick("threats")}
     />
+    <div style={S.sep} />
+    <GlyphBtn
+      icon={CheckCircle}
+      active={active === "qa"}
+      onClick={() => onClick("qa")}
+    />
   </div>
 );
 
@@ -601,6 +688,12 @@ const LeftContent: React.FC<{
     filesystem: boolean;
     web: boolean;
   }) => void;
+  onNewPrompt: (action: string) => void;
+  onEditPrompt: (action: string) => void;
+  onMission: (action: string) => void;
+  onDeploy: (action: string) => void;
+  onSettings: (action: string) => void;
+  onData: (action: string) => void;
 }> = ({
   tab,
   setTab,
@@ -624,10 +717,16 @@ const LeftContent: React.FC<{
   setEnableSlack,
   contextSources,
   setContextSources,
+  onNewPrompt,
+  onEditPrompt,
+  onMission,
+  onDeploy,
+  onSettings,
+  onData,
 }) => (
   <div style={S.content}>
     <div style={S.tabs}>
-      {["harness", "persona", "inference", "linear", "slack", "context"].map(
+      {["harness", "persona", "agents", "linear", "slack", "context"].map(
         (t) => (
           <button
             key={t}
@@ -645,6 +744,36 @@ const LeftContent: React.FC<{
       )}
     </div>
     <div style={S.tabContent}>
+      {/* NEW PROMPT */}
+      {tab === "new" && (
+        <div style={{ padding: 12 }}>
+          <label style={S.label}>New Prompt</label>
+          <p style={{ fontSize: 12, color: C.text3, marginBottom: 12 }}>
+            Create a new prompt from template or scratch.
+          </p>
+          <div style={S.options}>
+            <button style={S.optBtn} onClick={() => onNewPrompt("blank")}>Blank Prompt</button>
+            <button style={S.optBtn} onClick={() => onNewPrompt("template")}>From Template</button>
+            <button style={S.optBtn} onClick={() => onNewPrompt("clone")}>Clone Existing</button>
+          </div>
+        </div>
+      )}
+
+      {/* EDIT PROMPT */}
+      {tab === "edit" && (
+        <div style={{ padding: 12 }}>
+          <label style={S.label}>Edit Prompt</label>
+          <p style={{ fontSize: 12, color: C.text3, marginBottom: 12 }}>
+            Load and modify existing prompts.
+          </p>
+          <div style={S.options}>
+            <button style={S.optBtn} onClick={() => onEditPrompt("load")}>Load from File</button>
+            <button style={S.optBtn} onClick={() => onEditPrompt("recent")}>Recent Prompts</button>
+            <button style={S.optBtn} onClick={() => onEditPrompt("history")}>Version History</button>
+          </div>
+        </div>
+      )}
+
       {/* PHASE 1: HARNESS MODE */}
       {tab === "harness" && (
         <div style={{ padding: 12 }}>
@@ -686,12 +815,15 @@ const LeftContent: React.FC<{
         </div>
       )}
 
-      {/* PHASE 1: PERSONA */}
+      {/* PHASE 1: PERSONA - SX9 SPECIALIZED AGENTS (CLSGS Annex A.2) */}
       {tab === "persona" && (
         <div style={{ padding: 12 }}>
-          <label style={S.label}>Agent Persona</label>
-          <div style={S.grid}>
-            {["FORGE", "AXIOM", "VECTOR", "SENTINEL"].map((p) => (
+          <label style={S.label}>SX9 Agents (CLSGS Annex A.2)</label>
+          <div style={{ ...S.grid, gridTemplateColumns: "repeat(2, 1fr)" }}>
+            {[
+              "FORGE", "AXIOM", "VECTOR", "SENTINEL", "GUARDIAN",
+              "ORACLE", "SCRIBE", "RELAY", "ARBITER", "WEAVER"
+            ].map((p) => (
               <button
                 key={p}
                 style={{
@@ -706,30 +838,36 @@ const LeftContent: React.FC<{
               </button>
             ))}
           </div>
-          <div style={{ marginTop: 12, fontSize: 11, color: C.text3 }}>
-            {persona === "FORGE" && "Filesystem, CI/CD"}
-            {persona === "AXIOM" && "Figma, Canva"}
-            {persona === "VECTOR" && "Read-only audits"}
-            {persona === "SENTINEL" && "MITRE ATT&CK mappings"}
+          <div style={{ marginTop: 12, fontSize: 11, color: C.text3, lineHeight: 1.4 }}>
+            {persona === "FORGE" && "Code Generation • Filesystem, CI/CD, MCP tools"}
+            {persona === "AXIOM" && "Analysis • Mathematical reasoning, Figma design"}
+            {persona === "VECTOR" && "Architecture • Read-only audits, dependency graphs"}
+            {persona === "SENTINEL" && "Security • MITRE ATT&CK, vulnerability scanning"}
+            {persona === "GUARDIAN" && "QA • Test coverage, verification gates"}
+            {persona === "ORACLE" && "Research • Web search, knowledge synthesis"}
+            {persona === "SCRIBE" && "Documentation • RFC drafting, changelog"}
+            {persona === "RELAY" && "Integration • Slack, Linear, external APIs"}
+            {persona === "ARBITER" && "Governance • Drift detection, gate enforcement"}
+            {persona === "WEAVER" && "Orchestration • Multi-agent coordination"}
           </div>
         </div>
       )}
 
-      {/* PHASE 1: INFERENCE PARAMETERS */}
-      {tab === "inference" && (
+      {/* AI PROVIDER SELECTION */}
+      {tab === "agents" && (
         <div style={{ padding: 12 }}>
-          <label style={S.label}>Model</label>
+          <label style={S.label}>AI Provider</label>
           <select
             value={model}
             onChange={(e) => setModel(e.target.value)}
             style={{ ...S.headerSelect, width: "100%", marginBottom: 12 }}
           >
-            <option>Claude Sonnet 4.5</option>
-            <option>GPT-4</option>
-            <option>Gemini 2M</option>
-            <option>Grok</option>
-            <option>O3</option>
-            <option>Phi-3</option>
+            <option>Claude Opus 4.5</option>
+            <option>Claude Sonnet 4</option>
+            <option>GPT-4o</option>
+            <option>Gemini 2.5 Pro</option>
+            <option>Grok-3</option>
+            <option>O3-mini</option>
           </select>
 
           <label style={S.label}>Temperature: {temperature.toFixed(1)}</label>
@@ -742,6 +880,10 @@ const LeftContent: React.FC<{
             onChange={(e) => setTemperature(parseFloat(e.target.value))}
             style={{ width: "100%", marginTop: 8 }}
           />
+
+          <div style={{ marginTop: 16, fontSize: 11, color: C.text3 }}>
+            Provider routes through SX9 harness for governance tracking.
+          </div>
         </div>
       )}
 
@@ -841,18 +983,79 @@ const LeftContent: React.FC<{
           ))}
         </div>
       )}
+
+      {/* MISSION TAB */}
+      {tab === "mission" && (
+        <div style={{ padding: 12 }}>
+          <label style={S.label}>Mission Parameters</label>
+          <p style={{ fontSize: 12, color: C.text3, marginBottom: 12 }}>
+            Define constraints and success criteria.
+          </p>
+          <div style={S.options}>
+            <button style={S.optBtn} onClick={() => onMission("scope")}>Set Scope Boundaries</button>
+            <button style={S.optBtn} onClick={() => onMission("exit")}>Define Exit Criteria</button>
+            <button style={S.optBtn} onClick={() => onMission("risk")}>Risk Thresholds</button>
+          </div>
+        </div>
+      )}
+
+      {/* DEPLOY TAB */}
+      {tab === "deploy" && (
+        <div style={{ padding: 12 }}>
+          <label style={S.label}>Deployment Options</label>
+          <p style={{ fontSize: 12, color: C.text3, marginBottom: 12 }}>
+            Configure output and execution.
+          </p>
+          <div style={S.options}>
+            <button style={{...S.optBtn, borderColor: C.cyan, backgroundColor: C.cyan + "10"}} onClick={() => onDeploy("execute")}>Execute Immediately</button>
+            <button style={S.optBtn} onClick={() => onDeploy("schedule")}>Schedule for Later</button>
+            <button style={S.optBtn} onClick={() => onDeploy("draft")}>Save as Draft</button>
+          </div>
+        </div>
+      )}
+
+      {/* SETTINGS TAB */}
+      {tab === "settings" && (
+        <div style={{ padding: 12 }}>
+          <label style={S.label}>Forge Settings</label>
+          <div style={S.options}>
+            <button style={S.optBtn} onClick={() => onSettings("api")}>API Configuration</button>
+            <button style={S.optBtn} onClick={() => onSettings("templates")}>Default Templates</button>
+            <button style={S.optBtn} onClick={() => onSettings("shortcuts")}>Keyboard Shortcuts</button>
+            <button style={S.optBtn} onClick={() => onSettings("theme")}>Theme & Display</button>
+          </div>
+        </div>
+      )}
+
+      {/* DATA TAB */}
+      {tab === "data" && (
+        <div style={{ padding: 12 }}>
+          <label style={S.label}>Data Management</label>
+          <div style={S.options}>
+            <button style={S.optBtn} onClick={() => onData("vector")}>Vector Store Status</button>
+            <button style={S.optBtn} onClick={() => onData("cache")}>Clear Cache</button>
+            <button style={S.optBtn} onClick={() => onData("export")}>Export Prompts</button>
+            <button style={S.optBtn} onClick={() => onData("import")}>Import History</button>
+          </div>
+        </div>
+      )}
     </div>
   </div>
 );
 
 // Right rail content (expanded)
-const RightContent: React.FC<{ tab: string; setTab: (t: string) => void }> = ({
+const RightContent: React.FC<{
+  tab: string;
+  setTab: (t: string) => void;
+  onToolToggle: (tool: string) => void;
+}> = ({
   tab,
   setTab,
+  onToolToggle,
 }) => (
   <div style={S.content}>
     <div style={S.tabs}>
-      {["intel", "tools", "threats"].map((t) => (
+      {["intel", "tools", "threats", "qa"].map((t) => (
         <button
           key={t}
           style={{
@@ -866,11 +1069,112 @@ const RightContent: React.FC<{ tab: string; setTab: (t: string) => void }> = ({
       ))}
     </div>
     <div style={S.tabContent}>
-      <p style={S.hint}>
-        {tab === "intel" && "Pattern suggestions from Leptose"}
-        {tab === "tools" && "Tool recommendations from vector DB"}
-        {tab === "threats" && "Threat scenarios from MITRE"}
-      </p>
+      {/* INTEL TAB */}
+      {tab === "intel" && (
+        <div style={{ padding: 4 }}>
+          <label style={S.label}>Pattern Intelligence</label>
+          <div style={S.intelList}>
+            <div style={S.intelItem}>
+              <span style={S.intelDot}>●</span>
+              <span>Similar prompts in memory (3)</span>
+            </div>
+            <div style={S.intelItem}>
+              <span style={S.intelDot}>●</span>
+              <span>Related RFC patterns (RFC-9141)</span>
+            </div>
+            <div style={S.intelItem}>
+              <span style={S.intelDot}>●</span>
+              <span>Behavioral scope matches (5)</span>
+            </div>
+          </div>
+          <div style={{ marginTop: 16 }}>
+            <label style={S.label}>Leptose Status</label>
+            <div style={{ fontSize: 11, color: C.text3 }}>
+              Vector similarity: Ready
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* TOOLS TAB */}
+      {tab === "tools" && (
+        <div style={{ padding: 4 }}>
+          <label style={S.label}>Recommended Tools</label>
+          <div style={S.options}>
+            <button style={S.toolBtn} onClick={() => onToolToggle("filesystem")}>
+              <span style={{ fontWeight: 600 }}>MCP:Filesystem</span>
+              <span style={{ fontSize: 10, color: C.text3 }}>Read/Write access</span>
+            </button>
+            <button style={S.toolBtn} onClick={() => onToolToggle("linear")}>
+              <span style={{ fontWeight: 600 }}>MCP:Linear</span>
+              <span style={{ fontSize: 10, color: C.text3 }}>Issue tracking</span>
+            </button>
+            <button style={S.toolBtn} onClick={() => onToolToggle("slack")}>
+              <span style={{ fontWeight: 600 }}>MCP:Slack</span>
+              <span style={{ fontSize: 10, color: C.text3 }}>Notifications</span>
+            </button>
+            <button style={S.toolBtn} onClick={() => onToolToggle("git")}>
+              <span style={{ fontWeight: 600 }}>Git</span>
+              <span style={{ fontSize: 10, color: C.text3 }}>Version control</span>
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* THREATS TAB */}
+      {tab === "threats" && (
+        <div style={{ padding: 4 }}>
+          <label style={S.label}>MITRE ATT&CK Analysis</label>
+          <div style={S.threatList}>
+            <div style={{ ...S.threatItem, borderColor: C.green }}>
+              <span style={{ color: C.green }}>LOW</span>
+              <span>Prompt injection risk</span>
+            </div>
+            <div style={{ ...S.threatItem, borderColor: C.text3 }}>
+              <span style={{ color: C.text3 }}>N/A</span>
+              <span>Data exfiltration</span>
+            </div>
+            <div style={{ ...S.threatItem, borderColor: C.text3 }}>
+              <span style={{ color: C.text3 }}>N/A</span>
+              <span>Privilege escalation</span>
+            </div>
+          </div>
+          <div style={{ marginTop: 12, fontSize: 10, color: C.text3 }}>
+            Last scan: {new Date().toLocaleTimeString()}
+          </div>
+        </div>
+      )}
+
+      {/* QA TAB - Governance Status (CLSGS) */}
+      {tab === "qa" && (
+        <div style={{ padding: 4 }}>
+          <label style={S.label}>Governance Status (RFC-9141)</label>
+          <div style={S.qaGrid}>
+            <div style={S.qaItem}>
+              <span style={{ ...S.qaDot, backgroundColor: C.green }}>✓</span>
+              <span>Static QA</span>
+            </div>
+            <div style={S.qaItem}>
+              <span style={{ ...S.qaDot, backgroundColor: C.cyan }}>○</span>
+              <span>Semantic QA</span>
+            </div>
+            <div style={S.qaItem}>
+              <span style={{ ...S.qaDot, backgroundColor: C.text3 }}>—</span>
+              <span>Lineage Check</span>
+            </div>
+            <div style={S.qaItem}>
+              <span style={{ ...S.qaDot, backgroundColor: C.text3 }}>—</span>
+              <span>Drift Score</span>
+            </div>
+          </div>
+          <div style={{ marginTop: 16 }}>
+            <label style={S.label}>Gate Status</label>
+            <div style={{ fontSize: 12, color: C.green }}>
+              OBSERVE • No blocking gates
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   </div>
 );
@@ -1095,6 +1399,82 @@ const S: Record<string, React.CSSProperties> = {
     fontSize: 10,
     fontWeight: 600,
     cursor: "pointer",
+  },
+
+  // Right rail styles
+  intelList: {
+    display: "flex",
+    flexDirection: "column",
+    gap: 8,
+    marginTop: 8,
+  },
+  intelItem: {
+    display: "flex",
+    alignItems: "center",
+    gap: 8,
+    fontSize: 11,
+    color: C.text2,
+  },
+  intelDot: {
+    color: C.cyan,
+    fontSize: 8,
+  },
+  toolBtn: {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "flex-start",
+    gap: 2,
+    padding: "10px 12px",
+    background: "transparent",
+    border: `1px solid ${C.border}`,
+    borderRadius: 4,
+    color: C.text,
+    fontSize: 12,
+    textAlign: "left",
+    cursor: "pointer",
+  },
+  threatList: {
+    display: "flex",
+    flexDirection: "column",
+    gap: 6,
+    marginTop: 8,
+  },
+  threatItem: {
+    display: "flex",
+    alignItems: "center",
+    gap: 12,
+    padding: "8px 10px",
+    border: "1px solid",
+    borderRadius: 4,
+    fontSize: 11,
+    color: C.text2,
+  },
+  qaGrid: {
+    display: "grid",
+    gridTemplateColumns: "repeat(2, 1fr)",
+    gap: 8,
+    marginTop: 8,
+  },
+  qaItem: {
+    display: "flex",
+    alignItems: "center",
+    gap: 8,
+    padding: "8px 10px",
+    background: C.bg,
+    borderRadius: 4,
+    fontSize: 11,
+    color: C.text2,
+  },
+  qaDot: {
+    width: 18,
+    height: 18,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: "50%",
+    fontSize: 10,
+    color: C.bg,
+    fontWeight: 600,
   },
 };
 

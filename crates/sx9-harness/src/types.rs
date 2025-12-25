@@ -1,104 +1,285 @@
-//! Type definitions for sx9-harness
-//!
-//! Converted from TypeScript types in forge-unified-v5
+//! sx9-harness/src/types.rs
+//! Recovered from conversations - TypeScript → Rust mapping reference
 
 use serde::{Deserialize, Serialize};
-use std::collections::HashMap;
+use sx9_foundation_core::data::{Uuid, DateTime, Utc};
 
-// ============================================================================
-// Connection Status Types
-// ============================================================================
+/// Harness execution modes
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+pub enum HarnessMode {
+    /// Fully autonomous execution
+    Autonomous,
+    /// Research and analysis mode
+    Research,
+    /// Code generation and building
+    Build,
+    /// Security analysis and testing
+    Security,
+    /// Planning and design mode
+    Planning,
+}
 
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
-#[serde(rename_all = "lowercase")]
-pub enum ConnectionStatus {
-    Offline,
-    Connecting,
-    Ready,
-    Querying,
-    Error,
+/// Agent personas
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+pub enum Persona {
+    /// Factory code generation
+    Forge,
+    /// Mathematical analysis
+    Axiom,
+    /// Strategic planning
+    Vector,
+    /// Security operations
+    Sentinel,
+    /// Quality assurance
+    Guardian,
+}
+
+/// Model selection for inference
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub enum Model {
+    Sonnet,
+    Opus,
+    Haiku,
+    Custom(String),
+}
+
+/// Inference parameters
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct InferenceParams {
+    pub model: Model,
+    pub temperature: f32,
+    pub max_tokens: u32,
+    pub top_p: f32,
+}
+
+impl Default for InferenceParams {
+    fn default() -> Self {
+        Self {
+            model: Model::Sonnet,
+            temperature: 0.0,
+            max_tokens: 8192,
+            top_p: 1.0,
+        }
+    }
+}
+
+/// Context source configuration
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct ContextSources {
+    pub memory: bool,
+    pub linear: bool,
+    pub drive: bool,
+    pub filesystem: bool,
+    pub web: bool,
+}
+
+impl Default for ContextSources {
+    fn default() -> Self {
+        Self {
+            memory: true,
+            linear: true,
+            drive: false,
+            filesystem: true,
+            web: false,
+        }
+    }
+}
+
+/// Mission definition
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct Mission {
+    pub id: Uuid,
+    pub title: String,
+    pub description: String,
+    pub harness: HarnessMode,
+    pub persona: Persona,
+    pub inference: InferenceParams,
+    pub context_sources: ContextSources,
+    pub linear_issue_id: Option<String>,
+    pub slack_channel: Option<String>,
+    pub created_at: DateTime<Utc>,
+    pub updated_at: DateTime<Utc>,
+}
+
+/// Execution state
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub enum ExecutionState {
+    Pending,
+    Running,
+    Paused,
+    Completed,
+    Failed(String),
+}
+
+/// Session tracking
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct Session {
+    pub id: Uuid,
+    pub mission_id: Uuid,
+    pub state: ExecutionState,
+    pub messages: Vec<Message>,
+    pub artifacts: Vec<Artifact>,
+    pub started_at: DateTime<Utc>,
+    pub ended_at: Option<DateTime<Utc>>,
+}
+
+/// Message in session
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct Message {
+    pub id: Uuid,
+    pub role: MessageRole,
+    pub content: String,
+    pub timestamp: DateTime<Utc>,
+}
+
+#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
+pub enum MessageRole {
+    User,
+    Assistant,
+    System,
+    Tool,
+}
+
+/// Artifact produced during execution
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct Artifact {
+    pub id: Uuid,
+    pub name: String,
+    pub artifact_type: ArtifactType,
+    pub path: Option<String>,
+    pub content: Option<String>,
+}
+
+#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
+pub enum ArtifactType {
+    Code,
+    Document,
+    Data,
+    Image,
+}
+
+/// QA Report structure
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct QaReport {
+    pub crate_name: String,
+    pub grade: Grade,
+    pub score: u8,
+    pub dimensions: Dimensions,
+    pub refactor_directives: Vec<RefactorDirective>,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+pub enum Grade {
+    A,
+    B,
+    C,
+    D,
+    F,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct LeptoseConnection {
-    pub status: ConnectionStatus,
-    pub last_query: Option<i64>,
-    pub latency_ms: Option<u32>,
+pub struct Dimensions {
+    pub structure: DimensionScore,
+    pub complexity: DimensionScore,
+    pub pattern: DimensionScore,
+    pub architecture: DimensionScore,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct DimensionScore {
+    pub score: u8,
+    pub issues: Vec<String>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct RefactorDirective {
+    pub file: String,
+    pub line: u32,
+    pub issue: String,
+    pub directive: String,
+}
+
+/// Redux-style action for state management
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub enum Action {
+    StartMission(Mission),
+    PauseMission(Uuid),
+    ResumeMission(Uuid),
+    CompleteMission(Uuid),
+    FailMission(Uuid, String),
+    AddMessage(Uuid, Message),
+    AddArtifact(Uuid, Artifact),
+    UpdateQa(Uuid, QaReport),
+    SetLinearIssue(Uuid, String),
+    SendSlackNotification(Uuid, String),
+}
+
+/// Application state
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
+pub struct AppState {
+    pub missions: std::collections::HashMap<Uuid, Mission>,
+    pub sessions: std::collections::HashMap<Uuid, Session>,
+    pub active_mission: Option<Uuid>,
+    pub qa_reports: std::collections::HashMap<Uuid, QaReport>,
+}
+
+// ========================================================================
+// Gate Types (required by gates/*)
+// ========================================================================
+
+/// Executor configuration
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct ExecutorConfig {
+    pub harness_mode: HarnessMode,
+    pub persona: Persona,
+    pub inference: InferenceParams,
+    pub timeout_secs: u64,
+    pub max_retries: u32,
+}
+
+impl Default for ExecutorConfig {
+    fn default() -> Self {
+        Self {
+            harness_mode: HarnessMode::Build,
+            persona: Persona::Forge,
+            inference: InferenceParams::default(),
+            timeout_secs: 300,
+            max_retries: 3,
+        }
+    }
+}
+
+/// Execution result
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct ExecutionResult {
+    pub success: bool,
+    pub output: Option<String>,
     pub error: Option<String>,
+    pub duration_ms: u64,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct ChromaDBConnection {
-    pub status: ConnectionStatus,
-    pub collections: Vec<String>,
-    pub last_query: Option<i64>,
-    pub latency_ms: Option<u32>,
-    pub error: Option<String>,
-}
-
-// ============================================================================
-// Query Result Types
-// ============================================================================
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct PatternSuggestion {
-    pub interview_id: String,
-    pub pattern: String,
-    pub similarity: f32,
-    pub voice_narrative: String,
-    pub metadata: Option<PatternMetadata>,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct PatternMetadata {
-    pub created_at: Option<String>,
-    pub forge_version: Option<String>,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct ToolRecommendation {
-    pub tool_name: String,
-    pub category: String,
-    pub entropy: f32,  // TETH entropy score
-    pub similarity: f32,
-    pub why_relevant: String,
-    pub capabilities: Option<Vec<String>>,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct ThreatScenario {
-    pub scenario_id: String,
-    pub apt_group: String,
-    pub techniques: Vec<String>,
-    pub tools_used: Vec<String>,
-    pub detection_rules: Vec<String>,
-    pub description: Option<String>,
-}
-
-// ============================================================================
-// QA Gate Types
-// ============================================================================
-
+/// Static analysis finding
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Finding {
     pub id: String,
     pub severity: Severity,
-    pub score: f32,
     pub message: String,
-    pub file: Option<String>,
-    pub line: Option<usize>,
+    pub file: String,
+    pub line: u32,
+    pub column: Option<u32>,
+    pub rule: String,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(rename_all = "lowercase")]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 pub enum Severity {
-    Low,
-    Medium,
-    High,
-    Critical,
+    Error,
+    Warning,
+    Info,
+    Hint,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+/// Static analysis report
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct StaticReport {
     pub schema_version: String,
     pub loadset_id: String,
@@ -107,7 +288,17 @@ pub struct StaticReport {
     pub findings: Vec<Finding>,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+/// Architecture violation
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct Violation {
+    pub rule: String,
+    pub description: String,
+    pub file: String,
+    pub severity: Severity,
+}
+
+/// Architecture analysis report
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ArchReport {
     pub schema_version: String,
     pub loadset_id: String,
@@ -118,32 +309,4 @@ pub struct ArchReport {
     pub rune_valid: bool,
     pub slot_valid: bool,
     pub violations: Vec<Violation>,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct Violation {
-    pub code: String,
-    pub severity: String,
-    pub file: String,
-    pub line: usize,
-    pub message: String,
-}
-
-// ============================================================================
-// Executor Types
-// ============================================================================
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct ExecutorConfig {
-    pub max_retries: u32,
-    pub timeout_ms: u64,
-    pub nats_url: Option<String>,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct ExecutionResult {
-    pub success: bool,
-    pub output: Option<String>,
-    pub error: Option<String>,
-    pub duration_ms: u64,
 }
