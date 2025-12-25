@@ -191,6 +191,7 @@ fn main() {
             commands::forge::check_chroma,
             commands::forge::open_file_dialog,
             commands::forge::list_templates,
+            commands::forge::read_file_by_path,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

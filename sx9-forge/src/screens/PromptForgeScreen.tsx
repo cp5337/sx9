@@ -86,6 +86,25 @@ interface SlackNotifyResult {
   error?: string;
 }
 
+interface OpenFileResult {
+  success: boolean;
+  path?: string;
+  content?: string;
+  error?: string;
+}
+
+interface TemplateInfo {
+  name: string;
+  path: string;
+  modified: number;
+}
+
+interface ListTemplatesResult {
+  success: boolean;
+  templates: TemplateInfo[];
+  error?: string;
+}
+
 // ============================================================================
 // MAIN COMPONENT
 // ============================================================================
@@ -137,38 +156,154 @@ export const PromptForgeScreen: React.FC = () => {
   const [feedback, setFeedback] = useState("");
   const [timestamp, setTimestamp] = useState("");
 
+  // Templates
+  const [templates, setTemplates] = useState<TemplateInfo[]>([]);
+  const [showTemplates, setShowTemplates] = useState(false);
+  const [loadedFilePath, setLoadedFilePath] = useState<string | null>(null);
+
+  // Helper to parse loaded YAML content and populate form
+  const loadPromptFromYaml = useCallback((content: string, filePath?: string) => {
+    try {
+      // Simple YAML parsing for our known structure
+      const lines = content.split('\n');
+      let currentSection = '';
+
+      for (const line of lines) {
+        const trimmed = line.trim();
+
+        // Extract values from YAML
+        if (trimmed.startsWith('title:')) {
+          setTitle(trimmed.replace('title:', '').trim().replace(/"/g, ''));
+        } else if (trimmed.startsWith('rfc:')) {
+          setRfc(trimmed.replace('rfc:', '').trim());
+        } else if (trimmed.startsWith('phase:')) {
+          setPhase(trimmed.replace('phase:', '').trim());
+        } else if (trimmed.startsWith('objective:')) {
+          setObjective(trimmed.replace('objective:', '').trim().replace(/"/g, ''));
+        } else if (trimmed.startsWith('harness:')) {
+          const mode = trimmed.replace('harness:', '').trim().split(' ')[0];
+          setHarnessMode(mode);
+        } else if (trimmed.startsWith('persona:')) {
+          setPersona(trimmed.replace('persona:', '').trim());
+        } else if (trimmed.startsWith('model:')) {
+          setModel(trimmed.replace('model:', '').trim());
+        } else if (trimmed.startsWith('temperature:')) {
+          const temp = parseFloat(trimmed.replace('temperature:', '').trim());
+          if (!isNaN(temp)) setTemperature(temp);
+        } else if (trimmed.startsWith('team:')) {
+          setLinearTeam(trimmed.replace('team:', '').trim().replace(/"/g, ''));
+        } else if (trimmed.startsWith('channel:')) {
+          setSlackChannel(trimmed.replace('channel:', '').trim().replace(/"/g, ''));
+        }
+      }
+
+      if (filePath) {
+        setLoadedFilePath(filePath);
+      }
+      return true;
+    } catch (e) {
+      console.error('Failed to parse YAML:', e);
+      return false;
+    }
+  }, []);
+
   // Action handlers for buttons
   const showFeedback = useCallback((msg: string) => {
     setFeedback(msg);
     setTimeout(() => setFeedback(""), 2000);
   }, []);
 
-  const handleNewPrompt = useCallback((action: string) => {
+  const handleNewPrompt = useCallback(async (action: string) => {
     if (action === "blank") {
       setTitle("");
       setRfc("RFC-");
       setPhase("IMPLEMENT");
       setObjective("");
+      setLoadedFilePath(null);
       showFeedback("New blank prompt");
     } else if (action === "template") {
       showFeedback("Loading templates...");
-      // TODO: invoke("list_templates")
+      try {
+        const result = await invoke<ListTemplatesResult>("list_templates");
+        if (result.success && result.templates.length > 0) {
+          setTemplates(result.templates);
+          setShowTemplates(true);
+          showFeedback(`Found ${result.templates.length} templates`);
+        } else if (result.templates.length === 0) {
+          showFeedback("No templates found. Add .yaml files to ~/Documents/CX9/templates/");
+        } else {
+          showFeedback(result.error || "Failed to load templates");
+        }
+      } catch (e) {
+        showFeedback("Failed to load templates");
+      }
     } else if (action === "clone") {
       showFeedback("Select prompt to clone...");
     }
   }, [showFeedback]);
 
-  const handleEditPrompt = useCallback((action: string) => {
+  const handleEditPrompt = useCallback(async (action: string) => {
     if (action === "load") {
-      invoke("open_file_dialog", { filters: ["yaml", "yml"] })
-        .then(() => showFeedback("Loading..."))
-        .catch(() => showFeedback("Load cancelled"));
+      try {
+        const result = await invoke<OpenFileResult>("open_file_dialog", {
+          filters: ["yaml", "yml"],
+        });
+        if (result.success && result.content) {
+          if (loadPromptFromYaml(result.content, result.path)) {
+            const fileName = result.path?.split('/').pop() || 'file';
+            showFeedback(`Loaded: ${fileName}`);
+          } else {
+            showFeedback("Failed to parse prompt file");
+          }
+        } else if (!result.success && result.error === "No file selected") {
+          // User cancelled - no feedback needed
+        } else {
+          showFeedback(result.error || "Failed to load file");
+        }
+      } catch (e) {
+        showFeedback("Load cancelled");
+      }
     } else if (action === "recent") {
-      showFeedback("Loading recent prompts...");
+      // Load recent from templates directory
+      try {
+        const result = await invoke<ListTemplatesResult>("list_templates");
+        if (result.success && result.templates.length > 0) {
+          // Get the 5 most recent
+          const recent = result.templates.slice(0, 5);
+          setTemplates(recent);
+          setShowTemplates(true);
+          showFeedback("Recent prompts loaded");
+        } else {
+          showFeedback("No recent prompts found");
+        }
+      } catch (e) {
+        showFeedback("Failed to load recent");
+      }
     } else if (action === "history") {
-      showFeedback("Loading version history...");
+      showFeedback("Version history coming soon");
     }
-  }, [showFeedback]);
+  }, [showFeedback, loadPromptFromYaml]);
+
+  const handleSelectTemplate = useCallback(async (template: TemplateInfo) => {
+    try {
+      setShowTemplates(false);
+      showFeedback("Loading template...");
+      const result = await invoke<OpenFileResult>("read_file_by_path", {
+        path: template.path,
+      });
+      if (result.success && result.content) {
+        if (loadPromptFromYaml(result.content, result.path)) {
+          showFeedback(`Loaded: ${template.name}`);
+        } else {
+          showFeedback("Failed to parse template");
+        }
+      } else {
+        showFeedback(result.error || "Failed to load template");
+      }
+    } catch (e) {
+      showFeedback("Failed to load template");
+    }
+  }, [showFeedback, loadPromptFromYaml]);
 
   const handleMission = useCallback((action: string) => {
     showFeedback(`Mission: ${action}`);
@@ -497,6 +632,41 @@ context:
         </div>
       </div>
 
+      {/* TEMPLATE PICKER MODAL */}
+      {showTemplates && (
+        <div style={S.modalOverlay} onClick={() => setShowTemplates(false)}>
+          <div style={S.modal} onClick={(e) => e.stopPropagation()}>
+            <div style={S.modalHeader}>
+              <span style={S.modalTitle}>Select Template</span>
+              <button style={S.modalClose} onClick={() => setShowTemplates(false)}>×</button>
+            </div>
+            <div style={S.modalBody}>
+              {templates.length === 0 ? (
+                <div style={S.emptyState}>
+                  <p>No templates found.</p>
+                  <p style={{ fontSize: 12, color: C.text3 }}>
+                    Add .yaml files to ~/Documents/CX9/templates/
+                  </p>
+                </div>
+              ) : (
+                templates.map((t) => (
+                  <button
+                    key={t.path}
+                    style={S.templateItem}
+                    onClick={() => handleSelectTemplate(t)}
+                  >
+                    <span style={S.templateName}>{t.name}</span>
+                    <span style={S.templateDate}>
+                      {new Date(t.modified * 1000).toLocaleDateString()}
+                    </span>
+                  </button>
+                ))
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* STATUS BAR */}
       <footer style={S.status}>
         <Dot color={leptose.status === "ready" ? C.green : C.text3} />
@@ -507,6 +677,14 @@ context:
         <div style={S.divider} />
         <span style={S.shortCode}>{rfc.slice(-4) || "----"}</span>
         <div style={{ flex: 1 }} />
+        {loadedFilePath && (
+          <>
+            <span style={{ ...S.statusText, color: C.cyan }}>
+              {loadedFilePath.split('/').pop()}
+            </span>
+            <div style={S.divider} />
+          </>
+        )}
         <span style={S.statusText}>{feedback || "READY"}</span>
         <IconBtn
           icon={RefreshCw}
@@ -1475,6 +1653,85 @@ const S: Record<string, React.CSSProperties> = {
     fontSize: 10,
     color: C.bg,
     fontWeight: 600,
+  },
+
+  // Modal styles
+  modalOverlay: {
+    position: "fixed",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    background: "rgba(0, 0, 0, 0.7)",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    zIndex: 1000,
+  },
+  modal: {
+    width: 400,
+    maxHeight: "60vh",
+    background: C.bg2,
+    borderRadius: 8,
+    border: `1px solid ${C.border}`,
+    overflow: "hidden",
+  },
+  modalHeader: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
+    padding: "12px 16px",
+    borderBottom: `1px solid ${C.border}`,
+  },
+  modalTitle: {
+    fontSize: 14,
+    fontWeight: 600,
+    color: C.text,
+  },
+  modalClose: {
+    width: 28,
+    height: 28,
+    background: "transparent",
+    border: "none",
+    color: C.text2,
+    fontSize: 20,
+    cursor: "pointer",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  modalBody: {
+    padding: 16,
+    overflowY: "auto",
+    maxHeight: "calc(60vh - 60px)",
+  },
+  emptyState: {
+    textAlign: "center",
+    padding: 24,
+    color: C.text2,
+    fontSize: 14,
+  },
+  templateItem: {
+    width: "100%",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
+    padding: "12px 14px",
+    marginBottom: 8,
+    background: C.bg,
+    border: `1px solid ${C.border}`,
+    borderRadius: 6,
+    cursor: "pointer",
+    transition: "background 0.15s",
+  },
+  templateName: {
+    fontSize: 13,
+    fontWeight: 500,
+    color: C.text,
+  },
+  templateDate: {
+    fontSize: 11,
+    color: C.text3,
   },
 };
 

@@ -417,6 +417,25 @@ pub struct ListTemplatesResult {
     pub error: Option<String>,
 }
 
+/// Read a file by its full path
+#[tauri::command]
+pub async fn read_file_by_path(path: String) -> Result<OpenFileResult, String> {
+    match std::fs::read_to_string(&path) {
+        Ok(content) => Ok(OpenFileResult {
+            success: true,
+            path: Some(path),
+            content: Some(content),
+            error: None,
+        }),
+        Err(e) => Ok(OpenFileResult {
+            success: false,
+            path: Some(path),
+            content: None,
+            error: Some(format!("Failed to read file: {}", e)),
+        }),
+    }
+}
+
 /// List available prompt templates from the templates directory
 #[tauri::command]
 pub async fn list_templates() -> Result<ListTemplatesResult, String> {
