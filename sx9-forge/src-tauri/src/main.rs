@@ -165,6 +165,7 @@ async fn send_slack_notification(
 fn main() {
     tauri::Builder::default()
         .plugin(tauri_plugin_clipboard_manager::init())
+        .plugin(tauri_plugin_dialog::init())
         .setup(|app| {
             #[cfg(debug_assertions)]
             {
@@ -188,6 +189,8 @@ fn main() {
             commands::forge::copy_to_clipboard,
             commands::forge::check_leptose,
             commands::forge::check_chroma,
+            commands::forge::open_file_dialog,
+            commands::forge::list_templates,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

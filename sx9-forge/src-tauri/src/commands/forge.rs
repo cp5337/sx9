@@ -343,3 +343,158 @@ pub async fn check_chroma() -> Result<ServiceCheckResult, String> {
     }
 }
 
+// ============================================================================
+// FILE DIALOG AND TEMPLATES
+// ============================================================================
+
+#[derive(Debug, Serialize)]
+pub struct OpenFileResult {
+    pub success: bool,
+    pub path: Option<String>,
+    pub content: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub error: Option<String>,
+}
+
+/// Open a file dialog to select a YAML prompt file
+#[tauri::command]
+pub async fn open_file_dialog(
+    app: tauri::AppHandle,
+    filters: Vec<String>,
+) -> Result<OpenFileResult, String> {
+    use tauri_plugin_dialog::DialogExt;
+
+    // Build file filter from extensions
+    let filter_name = "Prompt Files";
+    let extensions: Vec<&str> = filters.iter().map(|s| s.as_str()).collect();
+
+    let file_path = app
+        .dialog()
+        .file()
+        .add_filter(filter_name, &extensions)
+        .blocking_pick_file();
+
+    match file_path {
+        Some(path) => {
+            let path_str = path.to_string();
+            // Read the file content
+            match std::fs::read_to_string(&path_str) {
+                Ok(content) => Ok(OpenFileResult {
+                    success: true,
+                    path: Some(path_str),
+                    content: Some(content),
+                    error: None,
+                }),
+                Err(e) => Ok(OpenFileResult {
+                    success: false,
+                    path: Some(path_str),
+                    content: None,
+                    error: Some(format!("Failed to read file: {}", e)),
+                }),
+            }
+        }
+        None => Ok(OpenFileResult {
+            success: false,
+            path: None,
+            content: None,
+            error: Some("No file selected".to_string()),
+        }),
+    }
+}
+
+#[derive(Debug, Serialize)]
+pub struct TemplateInfo {
+    pub name: String,
+    pub path: String,
+    pub modified: u64,
+}
+
+#[derive(Debug, Serialize)]
+pub struct ListTemplatesResult {
+    pub success: bool,
+    pub templates: Vec<TemplateInfo>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub error: Option<String>,
+}
+
+/// List available prompt templates from the templates directory
+#[tauri::command]
+pub async fn list_templates() -> Result<ListTemplatesResult, String> {
+    use std::time::UNIX_EPOCH;
+
+    // Get templates directory (~/Documents/CX9/templates or ~/CX9/templates)
+    let templates_dir = if let Some(docs) = dirs::document_dir() {
+        docs.join("CX9").join("templates")
+    } else if let Some(home) = dirs::home_dir() {
+        home.join("CX9").join("templates")
+    } else {
+        return Ok(ListTemplatesResult {
+            success: false,
+            templates: vec![],
+            error: Some("Could not determine templates directory".to_string()),
+        });
+    };
+
+    // Create directory if it doesn't exist
+    if !templates_dir.exists() {
+        if let Err(e) = std::fs::create_dir_all(&templates_dir) {
+            return Ok(ListTemplatesResult {
+                success: false,
+                templates: vec![],
+                error: Some(format!("Failed to create templates directory: {}", e)),
+            });
+        }
+    }
+
+    // Read directory entries
+    let entries = match std::fs::read_dir(&templates_dir) {
+        Ok(entries) => entries,
+        Err(e) => {
+            return Ok(ListTemplatesResult {
+                success: false,
+                templates: vec![],
+                error: Some(format!("Failed to read templates directory: {}", e)),
+            });
+        }
+    };
+
+    let mut templates: Vec<TemplateInfo> = Vec::new();
+
+    for entry in entries.flatten() {
+        let path = entry.path();
+
+        // Only include .yaml and .yml files
+        if let Some(ext) = path.extension() {
+            if ext == "yaml" || ext == "yml" {
+                let name = path
+                    .file_stem()
+                    .and_then(|s| s.to_str())
+                    .unwrap_or("unknown")
+                    .to_string();
+
+                let modified = entry
+                    .metadata()
+                    .ok()
+                    .and_then(|m| m.modified().ok())
+                    .and_then(|t| t.duration_since(UNIX_EPOCH).ok())
+                    .map(|d| d.as_secs())
+                    .unwrap_or(0);
+
+                templates.push(TemplateInfo {
+                    name,
+                    path: path.to_string_lossy().to_string(),
+                    modified,
+                });
+            }
+        }
+    }
+
+    // Sort by modified time (newest first)
+    templates.sort_by(|a, b| b.modified.cmp(&a.modified));
+
+    Ok(ListTemplatesResult {
+        success: true,
+        templates,
+        error: None,
+    })
+}

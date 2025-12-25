@@ -7,4 +7,6 @@ pub use forge::{
     copy_to_clipboard,
     check_leptose,
     check_chroma,
+    open_file_dialog,
+    list_templates,
 };
