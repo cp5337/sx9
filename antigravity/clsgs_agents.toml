@@ -8,6 +8,7 @@ description = "Filesystem, CI/CD, MCP tools"
 behavioral_scope = { role = "WORKER", action = "IMPLEMENT", constraint = "BOUNDED", object = "CODE" }
 tools = [ "filesystem", "git", "ci_cd", "mcp" ]
 mcp_servers = [ "v0-mcp", "figma" ]
+elite_augment = "volkov"  # Natasha Volkov - AI/ML specialist
 
 [agents.AXIOM]
 role = "Analysis"
@@ -15,6 +16,7 @@ description = "Mathematical reasoning, Figma design"
 behavioral_scope = { role = "SERVICE", action = "ANALYZE", constraint = "BOUNDED", object = "DATA" }
 tools = [ "figma", "math_engine", "visualization" ]
 mcp_servers = [ "figma" ]
+elite_augment = "wei"  # Dr. Sarah Wei - Economic/blockchain analysis
 
 [agents.VECTOR]
 role = "Architecture"
@@ -22,6 +24,7 @@ description = "Read-only audits, dependency graphs"
 behavioral_scope = { role = "SERVICE", action = "AUDIT", constraint = "READ_ONLY", object = "ARCHITECTURE" }
 tools = [ "lsp", "dependency_graph", "static_analysis" ]
 mcp_servers = []
+elite_augment = "carter"  # Rebecca Carter - Cloud infrastructure
 
 [agents.SENTINEL]
 role = "Security"
@@ -29,6 +32,7 @@ description = "MITRE ATT&CK, vulnerability scanning"
 behavioral_scope = { role = "GUARDIAN", action = "PROTECT", constraint = "BOUNDED", object = "SYSTEM" }
 tools = [ "sbom", "vulnerability_scan", "mitre_mapping" ]
 mcp_servers = []
+elite_augment = "reyes"  # Sofia Reyes - Counter-narcotics/cartel networks
 
 [agents.GUARDIAN]
 role = "QA"
@@ -36,6 +40,7 @@ description = "Test coverage, verification gates"
 behavioral_scope = { role = "SERVICE", action = "VERIFY", constraint = "BOUNDED", object = "QUALITY" }
 tools = [ "test_runner", "coverage", "qa_gates" ]
 mcp_servers = []
+elite_augment = "hayes"  # Commander Hayes - EOD/kinetic verification
 
 [agents.ORACLE]
 role = "Research"
@@ -43,6 +48,7 @@ description = "Web search, knowledge synthesis"
 behavioral_scope = { role = "SERVICE", action = "RESEARCH", constraint = "READ_ONLY", object = "KNOWLEDGE" }
 tools = [ "web_search", "web_fetch", "summarization" ]
 mcp_servers = []
+elite_augment = "thompson"  # Sarah Thompson - Digital forensics/legal
 
 [agents.SCRIBE]
 role = "Documentation"
@@ -50,6 +56,7 @@ description = "RFC drafting, changelog"
 behavioral_scope = { role = "WORKER", action = "DOCUMENT", constraint = "BOUNDED", object = "DOCUMENTATION" }
 tools = [ "markdown", "rfc_template", "changelog" ]
 mcp_servers = []
+elite_augment = "mitchell"  # James Mitchell - Financial systems/banking intel
 
 [agents.RELAY]
 role = "Integration"
@@ -57,6 +64,7 @@ description = "Slack, Linear, external APIs"
 behavioral_scope = { role = "SERVICE", action = "INTEGRATE", constraint = "BOUNDED", object = "EXTERNAL" }
 tools = [ "slack", "linear", "api_client" ]
 mcp_servers = [ "vercel" ]
+elite_augment = "rashid"  # Omar Al-Rashid - MENA regional integration
 
 [agents.ARBITER]
 role = "Governance"
@@ -64,6 +72,7 @@ description = "Drift detection, gate enforcement"
 behavioral_scope = { role = "GUARDIAN", action = "GOVERN", constraint = "ENFORCING", object = "COMPLIANCE" }
 tools = [ "drift_detector", "gate_enforcer", "lineage_tracker" ]
 mcp_servers = []
+elite_augment = "morgan"  # David Morgan - Economic warfare/sanctions
 
 [agents.WEAVER]
 role = "Orchestration"
@@ -71,6 +80,7 @@ description = "Multi-agent coordination"
 behavioral_scope = { role = "CONTROLLER", action = "ORCHESTRATE", constraint = "BOUNDED", object = "AGENTS" }
 tools = [ "task_graph", "agent_dispatch", "nats" ]
 mcp_servers = []
+elite_augment = "asante"  # Kwame Asante - African stability/orchestration
 
 # N-V-N-N Pattern Reference (RFC-9141 Section 4)
 # NOUN-VERB-NOUN-NOUN where:

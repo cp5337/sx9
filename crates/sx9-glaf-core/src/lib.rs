@@ -15,8 +15,8 @@ pub mod types;
 pub use types::*;
 
 pub use convergence::{
-    calculate_operational_convergence, calculate_semantic_convergence, ConvergenceEvent,
-    ConvergenceMonitor,
+    calculate_dual_convergence, calculate_operational_convergence, calculate_semantic_convergence,
+    ConvergenceEvent, ConvergenceMethod, ConvergenceMonitor, DualConvergenceResult,
 };
 pub use glaf_core::GLAFCore;
 pub use hawkes::{calculate_intensity, HawkesIntensity};

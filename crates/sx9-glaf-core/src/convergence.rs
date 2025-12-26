@@ -100,15 +100,70 @@ pub async fn calculate_semantic_convergence(glaf_core: &crate::glaf_core::GLAFCo
     phase_result.transition_probability
 }
 
+/// Convergence method recommendation
+#[derive(Debug, Clone, Copy, PartialEq, Serialize, Deserialize)]
+pub enum ConvergenceMethod {
+    Simple,
+    Weighted,
+    Either,
+}
+
+/// Dual convergence calculation result (RFC-9024/9025)
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct DualConvergenceResult {
+    pub simple: f64,         // (h1 + h2) / 2.0
+    pub weighted: f64,       // 0.6 * h1 + 0.4 * h2
+    pub delta: f64,          // |simple - weighted|
+    pub recommendation: ConvergenceMethod,
+    pub is_converged: bool,
+    pub threshold: f64,
+}
+
+/// Calculate dual convergence scores (RFC-9024/9025)
+///
+/// H1 = Operational (Dopamine, fast path)
+/// H2 = Semantic (Serotonin, slow path)
+///
+/// Runs BOTH formulas and compares - if delta > 0.1,
+/// weighted formula is likely catching an edge case.
+pub fn calculate_dual_convergence(h1: f64, h2: f64) -> DualConvergenceResult {
+    let simple = (h1 + h2) / 2.0;
+    let weighted = 0.6 * h1 + 0.4 * h2;  // RFC-9024 60/40 weighting
+    let delta = (simple - weighted).abs();
+    let threshold = 0.75;
+
+    // If delta > 0.1, weighted likely catching edge case
+    let recommendation = if delta > 0.1 {
+        ConvergenceMethod::Weighted
+    } else {
+        ConvergenceMethod::Either
+    };
+
+    DualConvergenceResult {
+        simple,
+        weighted,
+        delta,
+        recommendation,
+        is_converged: h1 >= threshold && h2 >= threshold,
+        threshold,
+    }
+}
+
 /// Recommend action based on convergence scores
 fn recommend_action(h1: f64, h2: f64) -> String {
-    let combined = (h1 + h2) / 2.0;
+    let result = calculate_dual_convergence(h1, h2);
 
-    if combined > 0.90 {
+    // Use weighted when delta is significant, otherwise simple
+    let score = match result.recommendation {
+        ConvergenceMethod::Weighted => result.weighted,
+        _ => result.simple,
+    };
+
+    if score > 0.90 {
         "ACT_NOW".to_string()
-    } else if combined > 0.75 {
+    } else if score > 0.75 {
         "PROCEED".to_string()
-    } else if combined > 0.50 {
+    } else if score > 0.50 {
         "COLLECT_MORE".to_string()
     } else {
         "HUNT".to_string()
