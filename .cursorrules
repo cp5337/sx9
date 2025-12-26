@@ -1,0 +1,84 @@
+# SX9 Antigravity Agent Rules for Cursor
+# Part of multi-model mesh (Claude, Gemini, Codex, Grok)
+
+## Framework Requirements (CRITICAL - DO NOT IGNORE)
+
+This is a **Vite + React + Tauri** project. NOT Next.js.
+
+### Stack
+- Framework: Vite 6
+- UI: React 18 + React Native Web
+- Desktop: Tauri 2 (Rust backend)
+- Styling: Tailwind CSS 4
+- Icons: lucide-react
+- State: Redux Toolkit + Zustand
+
+### BANNED PATTERNS (Next.js)
+❌ "use client" or "use server" directives
+❌ next/image, next/link, next/router
+❌ getServerSideProps, getStaticProps
+❌ App Router (page.tsx, layout.tsx, loading.tsx)
+❌ Server Components or Server Actions
+❌ @vercel/analytics
+
+### REQUIRED PATTERNS
+✅ Standard React functional components
+✅ import { Icon } from "lucide-react"
+✅ import { invoke } from "@tauri-apps/api/core"
+✅ Tailwind classes or React.CSSProperties
+
+## CLSGS Agent System (RFC-9141)
+
+When working on code, identify which agent role applies:
+
+| Agent | Role | Scope |
+|-------|------|-------|
+| FORGE | Code Generation | WORKER IMPLEMENT BOUNDED CODE |
+| AXIOM | Analysis | SERVICE ANALYZE BOUNDED DATA |
+| VECTOR | Architecture | SERVICE AUDIT READ_ONLY ARCHITECTURE |
+| SENTINEL | Security | GUARDIAN PROTECT BOUNDED SYSTEM |
+| GUARDIAN | QA | SERVICE VERIFY BOUNDED QUALITY |
+| ORACLE | Research | SERVICE RESEARCH READ_ONLY KNOWLEDGE |
+| SCRIBE | Documentation | WORKER DOCUMENT BOUNDED DOCUMENTATION |
+| RELAY | Integration | SERVICE INTEGRATE BOUNDED EXTERNAL |
+| ARBITER | Governance | GUARDIAN GOVERN ENFORCING COMPLIANCE |
+| WEAVER | Orchestration | CONTROLLER ORCHESTRATE BOUNDED AGENTS |
+
+## Governance Gates (RFC-9142)
+
+Before making changes, consider drift score:
+- **OBSERVE** (drift < 0.3): Log, proceed normally
+- **WARN** (drift 0.3-0.7): Advisory, explain reasoning
+- **HALT** (drift > 0.7): Stop, request human review
+
+## Key Directories
+
+```
+sx9-forge/src/           # Tauri React frontend
+crates/sx9-harness/      # Rust agent harness
+antigravity/             # Agent boot configs
+01-rfc/                  # RFC documentation
+```
+
+## Color Palette
+
+```typescript
+const C = {
+  bg: "#0F172A",      // slate-900
+  bg2: "#1E293B",     // slate-800
+  text: "#F8FAFC",    // slate-50
+  cyan: "#22D3EE",    // cyan-400
+  green: "#22C55E",   // green-500
+  red: "#EF4444",     // red-500
+};
+```
+
+## Mesh Coordination
+
+This workspace is part of a multi-model mesh. Other terminals may have:
+- Claude Code (primary orchestrator)
+- Gemini via aider (long context research)
+- Codex/GPT-4o via aider (code generation)
+- Grok via aider (real-time data)
+
+Handoffs use YAML state serialization. Check antigravity/multi_model_mesh.toml for routing.

@@ -1,0 +1,252 @@
+# FILE: antigravity/multi_model_mesh.toml
+# Multi-Model AI Mesh Configuration
+# Enables Claude, Gemini, Codex, Grok to work as coordinated agents
+
+[mesh]
+name = "sx9-cognitive-mesh"
+version = "1.0.0"
+coordinator = "WEAVER"  # CLSGS agent that orchestrates
+
+# Primary Providers
+[providers.claude]
+enabled = true
+models = ["claude-opus-4-5", "claude-sonnet-4"]
+interface = "claude_code"
+mcp_bridge = "antigravity"
+role = "primary"
+capabilities = ["code_generation", "analysis", "planning", "mcp_tools"]
+
+[providers.gemini]
+enabled = true
+models = ["gemini-2.5-pro", "gemini-2.5-flash"]
+interface = "terminal"
+api_env = "GOOGLE_API_KEY"
+role = "secondary"
+capabilities = ["long_context", "multimodal", "research"]
+# Integration via aider or direct API
+terminal_command = "aider --model gemini/gemini-2.5-pro"
+
+[providers.codex]
+enabled = true
+models = ["gpt-4o", "o3-mini", "codex"]
+interface = "terminal"
+api_env = "OPENAI_API_KEY"
+role = "secondary"
+capabilities = ["code_generation", "completion", "reasoning"]
+terminal_command = "aider --model gpt-4o"
+
+[providers.grok]
+enabled = true
+models = ["grok-3", "grok-3-mini"]
+interface = "terminal"
+api_env = "XAI_API_KEY"
+role = "secondary"
+capabilities = ["real_time", "unfiltered", "code_generation"]
+terminal_command = "aider --model xai/grok-3"
+
+# IDE Integrations
+[ide.cursor]
+enabled = true
+config_path = "~/.cursor/settings.json"
+mcp_support = true
+agent_mode = true
+# Cursor reads from .cursorrules
+rules_file = ".cursorrules"
+
+[ide.vscode]
+enabled = true
+config_path = "~/.vscode/settings.json"
+copilot = true
+continue_dev = true
+
+[ide.windsurf]
+enabled = true
+config_path = "~/.windsurf/settings.json"
+cascade = true
+
+# Mesh Communication
+[mesh.nats]
+enabled = true
+subjects_prefix = "sx9.mesh"
+agent_announce = "sx9.mesh.agent.announce"
+task_dispatch = "sx9.mesh.task.dispatch"
+result_collect = "sx9.mesh.result.collect"
+handoff = "sx9.mesh.handoff"
+
+# Agent Role Mapping (which provider handles which CLSGS agent)
+[mesh.agent_routing]
+# Default routing - can be overridden per task
+FORGE = { primary = "claude", fallback = "codex" }
+AXIOM = { primary = "claude", fallback = "gemini" }  # Gemini good for math
+VECTOR = { primary = "claude", fallback = "codex" }
+SENTINEL = { primary = "claude", fallback = "claude" }  # Security stays in Claude
+GUARDIAN = { primary = "claude", fallback = "codex" }
+ORACLE = { primary = "gemini", fallback = "grok" }  # Research benefits from long context
+SCRIBE = { primary = "claude", fallback = "gemini" }
+RELAY = { primary = "claude", fallback = "claude" }
+ARBITER = { primary = "claude", fallback = "claude" }  # Governance stays in Claude
+WEAVER = { primary = "claude", fallback = "claude" }  # Orchestration stays in Claude
+
+# Handoff Protocol
+[mesh.handoff]
+# How agents hand off work between providers
+state_format = "yaml"  # Serialize state as YAML for handoff
+include_context = true
+max_context_tokens = 32000
+governance_check = true  # Run through ARBITER on handoff
+
+[mesh.handoff.triggers]
+context_overflow = "switch_to_gemini"  # Gemini has 2M context
+speed_critical = "switch_to_flash"     # Use faster models
+security_task = "enforce_claude"       # Security stays in Claude
+
+# Terminal Integration Scripts
+[terminals]
+# These scripts launch AI assistants in new terminals
+
+[terminals.gemini]
+name = "Gemini Terminal"
+command = '''
+export GOOGLE_API_KEY="${GOOGLE_API_KEY}"
+cd "${PROJECT_ROOT}"
+aider --model gemini/gemini-2.5-pro --no-auto-commits
+'''
+
+[terminals.codex]
+name = "OpenAI/Codex Terminal"
+command = '''
+export OPENAI_API_KEY="${OPENAI_API_KEY}"
+cd "${PROJECT_ROOT}"
+aider --model gpt-4o --no-auto-commits
+'''
+
+[terminals.grok]
+name = "Grok Terminal"
+command = '''
+export XAI_API_KEY="${XAI_API_KEY}"
+cd "${PROJECT_ROOT}"
+aider --model xai/grok-3 --no-auto-commits
+'''
+
+# Slack @mention Integration
+[slack]
+enabled = true
+bot_token_env = "SLACK_BOT_TOKEN"
+app_token_env = "SLACK_APP_TOKEN"
+default_channel = "#all-synaptixops"
+
+# Agent @mentions in Slack
+[slack.mentions]
+# @forge, @axiom, etc. trigger specific agents
+FORGE = { trigger = "@forge", response_style = "code_focused" }
+AXIOM = { trigger = "@axiom", response_style = "analytical" }
+VECTOR = { trigger = "@vector", response_style = "architectural" }
+SENTINEL = { trigger = "@sentinel", response_style = "security_focused" }
+GUARDIAN = { trigger = "@guardian", response_style = "qa_focused" }
+ORACLE = { trigger = "@oracle", response_style = "research" }
+SCRIBE = { trigger = "@scribe", response_style = "documentation" }
+RELAY = { trigger = "@relay", response_style = "integration" }
+ARBITER = { trigger = "@arbiter", response_style = "governance" }
+WEAVER = { trigger = "@weaver", response_style = "orchestration" }
+
+# Elite Persona @mentions (H2 Semantic Layer)
+[slack.mentions.elite]
+volkov = { trigger = "@volkov", response_style = "ai_specialist", persona = "Natasha Volkov" }
+rashid = { trigger = "@rashid", response_style = "mena_cultural", persona = "Omar Al-Rashid" }
+hayes = { trigger = "@hayes", response_style = "kinetic_ops", persona = "Commander Hayes" }
+asante = { trigger = "@asante", response_style = "african_stability", persona = "Kwame Asante" }
+reyes = { trigger = "@reyes", response_style = "cartel_networks", persona = "Sofia Reyes" }
+wei = { trigger = "@wei", response_style = "economic_warfare", persona = "Dr. Sarah Wei" }
+mitchell = { trigger = "@mitchell", response_style = "financial_intel", persona = "James Mitchell" }
+carter = { trigger = "@carter", response_style = "infrastructure", persona = "Rebecca Carter" }
+morgan = { trigger = "@morgan", response_style = "economic_impact", persona = "David Morgan" }
+thompson = { trigger = "@thompson", response_style = "domestic_legal", persona = "Sarah Thompson" }
+rodriguez = { trigger = "@rodriguez", response_style = "cia_humint", persona = "Maria Rodriguez" }
+petrov = { trigger = "@petrov", response_style = "sigint_comms", persona = "Alex Petrov" }
+
+[slack.commands]
+# Slash commands
+"/sx9-status" = "get_mesh_status"
+"/sx9-agents" = "list_agents"
+"/sx9-switch" = "switch_agent"
+"/sx9-gate" = "check_governance_gate"
+"/sx9-elite" = "list_elite_personas"
+"/sx9-persona" = "switch_persona"
+
+# Linear @mention Integration
+[linear]
+enabled = true
+api_key_env = "LINEAR_API_KEY"
+team_id = "SX9"
+
+# Agent assignment via @mentions in issue descriptions/comments
+[linear.mentions]
+# @forge in issue assigns to FORGE agent
+FORGE = { trigger = "@forge", label = "agent:forge", auto_assign = true }
+AXIOM = { trigger = "@axiom", label = "agent:axiom", auto_assign = true }
+VECTOR = { trigger = "@vector", label = "agent:vector", auto_assign = true }
+SENTINEL = { trigger = "@sentinel", label = "agent:sentinel", auto_assign = true }
+GUARDIAN = { trigger = "@guardian", label = "agent:guardian", auto_assign = true }
+ORACLE = { trigger = "@oracle", label = "agent:oracle", auto_assign = true }
+SCRIBE = { trigger = "@scribe", label = "agent:scribe", auto_assign = true }
+RELAY = { trigger = "@relay", label = "agent:relay", auto_assign = true }
+ARBITER = { trigger = "@arbiter", label = "agent:arbiter", auto_assign = true }
+WEAVER = { trigger = "@weaver", label = "agent:weaver", auto_assign = true }
+
+# Elite Persona @mentions for Linear (H2 Semantic Layer)
+[linear.mentions.elite]
+volkov = { trigger = "@volkov", label = "persona:volkov", auto_assign = true }
+rashid = { trigger = "@rashid", label = "persona:rashid", auto_assign = true }
+hayes = { trigger = "@hayes", label = "persona:hayes", auto_assign = true }
+asante = { trigger = "@asante", label = "persona:asante", auto_assign = true }
+reyes = { trigger = "@reyes", label = "persona:reyes", auto_assign = true }
+wei = { trigger = "@wei", label = "persona:wei", auto_assign = true }
+mitchell = { trigger = "@mitchell", label = "persona:mitchell", auto_assign = true }
+carter = { trigger = "@carter", label = "persona:carter", auto_assign = true }
+morgan = { trigger = "@morgan", label = "persona:morgan", auto_assign = true }
+thompson = { trigger = "@thompson", label = "persona:thompson", auto_assign = true }
+rodriguez = { trigger = "@rodriguez", label = "persona:rodriguez", auto_assign = true }
+petrov = { trigger = "@petrov", label = "persona:petrov", auto_assign = true }
+
+[linear.webhooks]
+# Webhook events that trigger agent actions
+issue_created = "route_to_agent"
+issue_updated = "check_mentions"
+comment_added = "parse_mentions"
+status_changed = "update_qa_signal"
+
+[linear.intent_anchors]
+# CLSGS Annex A.3 - Intent Anchors
+enabled = true
+auto_create = true
+link_to_code = true
+
+# Cursor Integration
+[cursor]
+# .cursorrules file content to sync with Antigravity
+rules_template = '''
+# SX9 Antigravity Agent Rules for Cursor
+
+## Framework Requirements (CRITICAL)
+- Use Vite 6 + React 18 + Tauri 2
+- DO NOT use Next.js patterns (no "use client", no next/image, etc.)
+- Use lucide-react for icons
+- Use Tailwind CSS 4 for styling
+
+## CLSGS Agent System
+When working on code, identify which agent role applies:
+- FORGE: Code generation, filesystem operations
+- VECTOR: Architecture audits, read-only analysis
+- GUARDIAN: Test coverage, verification
+- SENTINEL: Security scanning
+
+## Governance Gates
+- OBSERVE: Log all actions (drift < 0.3)
+- WARN: Advisory on changes (drift 0.3-0.7)
+- HALT: Block on critical issues (drift > 0.7)
+
+## File Naming
+- Components: PascalCase.tsx
+- Hooks: useCamelCase.ts
+- Utils: camelCase.ts
+'''

@@ -1,0 +1,99 @@
+# FILE: antigravity/harness_bridge.toml
+# Bridges Antigravity boot system with sx9-harness Rust runtime
+# Authority: RFC-9140, RFC-9141, RFC-9142
+
+[harness]
+crate = "sx9-harness"
+path = "../crates/sx9-harness"
+version = "0.1.0"
+
+# NATS subjects for inter-agent communication
+[harness.nats]
+prefix = "sx9.forge"
+governance_drift = "sx9.forge.governance.drift.detected"
+static_qa = "sx9.forge.qa.static"
+semantic_qa = "sx9.forge.qa.semantic"
+lineage_event = "sx9.forge.lineage.event"
+gate_decision = "sx9.forge.governance.gate"
+
+# Agent Registry (maps to crates/sx9-harness/src/agents/registry.rs)
+[harness.registry]
+auto_register = true
+behavioral_scope_required = true
+
+# Map Antigravity agents to harness agent_id format
+[harness.registry.mappings]
+FORGE = { agent_id = "forge-001", crate_module = "agents::forge" }
+AXIOM = { agent_id = "axiom-001", crate_module = "agents::axiom" }
+VECTOR = { agent_id = "vector-001", crate_module = "agents::vector" }
+SENTINEL = { agent_id = "sentinel-001", crate_module = "agents::sentinel" }
+GUARDIAN = { agent_id = "guardian-001", crate_module = "agents::guardian" }
+ORACLE = { agent_id = "oracle-001", crate_module = "agents::oracle" }
+SCRIBE = { agent_id = "scribe-001", crate_module = "agents::scribe" }
+RELAY = { agent_id = "relay-001", crate_module = "agents::relay" }
+ARBITER = { agent_id = "arbiter-001", crate_module = "agents::arbiter" }
+WEAVER = { agent_id = "weaver-001", crate_module = "agents::weaver" }
+
+# Linear Integration (maps to crates/sx9-harness/src/linear/)
+[harness.linear]
+gateway = "crates/sx9-harness/src/linear/gateway.rs"
+dispatch = "crates/sx9-harness/src/linear/dispatch.rs"
+intent_anchors = true
+qa_signals = true
+
+# Lineage Tracking (maps to crates/sx9-harness/src/lineage/)
+[harness.lineage]
+tracker = "crates/sx9-harness/src/lineage/tracker.rs"
+nvnn_parser = true
+annotation_loss_detection = true
+drift_scoring = true
+
+# Governance Gates (maps to crates/sx9-harness/src/gates/)
+[harness.gates]
+pattern_gate = "crates/sx9-harness/src/gates/pattern_gate.rs"
+heartbeat_gate = "crates/sx9-harness/src/gates/heartbeat_gate.rs"
+semantic_gate = "crates/sx9-harness/src/gates/semantic/"
+
+[harness.gates.thresholds]
+observe = 0.0
+warn = 0.3
+halt = 0.7
+
+# Forge UI Integration
+[forge_ui]
+screen = "sx9-forge/src/screens/PromptForgeScreen.tsx"
+tauri_commands = "sx9-forge/src-tauri/src/commands/forge.rs"
+
+[forge_ui.state_sync]
+# How Tauri commands map to harness operations
+save_prompt = { harness = "tasks::create", qa = "static_heartbeat" }
+create_linear_issue = { harness = "linear::dispatch", qa = "intent_anchor" }
+refresh_status = { harness = "nats::heartbeat_emitter", qa = "governance_check" }
+
+# MCP Tool Routing
+[mcp_routing]
+# Route MCP tool calls through harness for governance tracking
+v0 = { gate = "semantic", drift_check = true }
+figma = { gate = "observe", drift_check = false }
+vercel = { gate = "observe", drift_check = false }
+filesystem = { gate = "pattern", drift_check = true }
+linear = { gate = "observe", drift_check = false }
+slack = { gate = "observe", drift_check = false }
+
+# Boot Sequence Hooks
+[boot_hooks]
+pre_agent_init = [
+  "harness::registry::ensure_initialized",
+  "harness::nats::connect",
+]
+post_agent_init = [
+  "harness::gates::heartbeat_gate::start",
+  "harness::lineage::tracker::init",
+]
+on_task_start = [
+  "harness::qa::static_pass",
+]
+on_task_complete = [
+  "harness::qa::semantic_pass",
+  "harness::lineage::commit_analysis",
+]
