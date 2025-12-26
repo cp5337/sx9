@@ -10,21 +10,18 @@
 //! - Free-space optical (FSO) link analysis
 //! - Custom MEO satellite positioning
 
-// Engineered Solution: Integration with Foundation Core
-// Use shared types from the Foundation Orbital crate to prevent split-brain
-// data structures (RFC-9001/RFC-9003 Compliance).
-pub use sx9_foundation_orbital::{
-    FsoLinkQuality as FsoLinkQualityCore, // Rename if needed to adapt
-    GroundStation,
-    GroundStationNetwork,
-    OrbitalElements,
-    SatelliteState,
-};
+// Local orbital types (self-contained implementation)
+pub mod ground_station;
+pub use ground_station::{GroundStation, GroundStationNetwork, StationPosition};
 
-// Local modules that extend the foundation
+// Local modules
 pub mod config;
+pub mod constants;
+pub mod constellation;
+pub mod coordinates;
 pub mod error;
 pub mod fso_analysis;
+pub mod orbit;
 pub mod propagator;
 pub mod satellite_simulator;
 pub mod visibility;
@@ -32,19 +29,17 @@ pub mod visibility;
 // Re-exports
 pub use config::{
     load_constellation_config, save_constellation_config, ConstellationConfig as Config,
+    ConstellationConfig, ConstellationType,
 };
-pub use config::{ConstellationConfig, ConstellationType};
-pub use constellation::Constellation; // Keep local constellation logic as it differs
-pub use coordinates::{CoordinateSystem, GeodeticPosition, Position3D};
-pub use error::{OrbitalMechanicsError, Result};
+pub use constellation::Constellation;
+pub use coordinates::{CoordinateSystem, Position3D};
 pub use error::{OrbitalMechanicsError, Result};
 pub use fso_analysis::{FsoAnalyzer, FsoLinkQuality};
-pub use propagator::{OrbitalPropagator, PropagatorType};
-pub use propagator::{OrbitalPropagator, PropagatorType};
-pub use satellite_simulator::{
-    LiveSatellite, MeoEnvironmentalConditions, ObstructionWarning, SatelliteSimulator,
-    SatelliteUnicodePacket, SimulationStatistics,
+pub use orbit::{
+    GeodeticPosition, LookAngles, OrbitClassification, OrbitalElements, OrbitalElementsRad,
+    SatelliteOrbit, SatelliteState,
 };
+pub use propagator::{OrbitalPropagator, PropagatorType};
 pub use satellite_simulator::{
     LiveSatellite, MeoEnvironmentalConditions, ObstructionWarning, SatelliteSimulator,
     SatelliteUnicodePacket, SimulationStatistics,

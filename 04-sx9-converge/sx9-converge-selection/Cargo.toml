@@ -1,5 +1,5 @@
 [package]
-name = "converge-selection"
+name = "sx9-converge-selection"
 version = "0.1.0"
 edition = "2021"
 license = "Apache-2.0"
