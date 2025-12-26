@@ -113,3 +113,14 @@ The project uses an AI-first coding approach with static analysis harness (see `
 - **01-rfc/** - RFC documents (aligned with Smart Crate v7.3.1)
 - **math-documents/** - Mathematical foundations
 - **0X-sx9-ontology-master/** - Ontology and conceptual models
+
+## Session Memory (CRITICAL - READ ON EVERY SESSION START)
+
+**ALWAYS read `.forge/MEMORY.md` at the start of every session.** This file contains:
+- Two major work bodies that span all verticals
+- Crate build status (what's broken)
+- RFC implementation status
+- Known data losses
+- Invariants that must not be broken
+
+The memory file is the source of truth for session continuity.
