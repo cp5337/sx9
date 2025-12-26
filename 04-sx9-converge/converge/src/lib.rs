@@ -27,6 +27,7 @@
 pub mod model;
 pub mod window;
 pub mod detector;
+pub mod tov;
 
 // Re-exports for convenience
 pub use model::{
@@ -36,3 +37,7 @@ pub use model::{
 };
 pub use window::{EventWindow, WindowSet, MAX_EVENTS_PER_WINDOW, MAX_WINDOW_MS};
 pub use detector::{ConvergeDetector, DetectorConfig, DetectorStats, CONVERGENCE_THRESHOLD};
+pub use tov::{
+    DecayRate, EEI, PersistenceCondition, RefreshTrigger, RefreshTriggerType,
+    TovBlock, TovGate, TovGateStats, HALF_LIFE_SECS, VALIDITY_SECS,
+};

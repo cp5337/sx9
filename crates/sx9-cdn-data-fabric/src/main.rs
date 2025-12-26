@@ -216,7 +216,7 @@ async fn execute_query(
 
     // Route to appropriate adapter based on db_type
     let result = match db_info.db_type.as_str() {
-        "surrealdb" => adapters::surreal::execute(&db_info, &req.query).await,
+        "supabase" => adapters::supabase::execute(&db_info, &req.query).await,
         "postgres" => adapters::postgres::execute(&db_info, &req.query).await,
         "neo4j" => adapters::neo4j::execute(&db_info, &req.query).await,
         _ => Err(anyhow::anyhow!("Unsupported database type")),
@@ -252,12 +252,13 @@ async fn get_graph(
     let db_info = state.registry.get(&db_id).ok_or(StatusCode::NOT_FOUND)?;
 
     let limit = params.limit.unwrap_or(100);
+    // PostgREST query format for Supabase
     let query = match &params.label {
-        Some(label) => format!("SELECT * FROM {} LIMIT {}", label, limit),
-        None => format!("SELECT * FROM any_table LIMIT {}", limit),
+        Some(label) => format!("{}?select=*&limit={}", label, limit),
+        None => format!("node_interviews?select=*&limit={}", limit),
     };
 
-    let result = adapters::surreal::execute(&db_info, &query)
+    let result = adapters::supabase::execute(&db_info, &query)
         .await
         .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
 
@@ -271,8 +272,8 @@ async fn get_table(
 ) -> Result<Json<serde_json::Value>, StatusCode> {
     let db_info = state.registry.get(&db_id).ok_or(StatusCode::NOT_FOUND)?;
 
-    let query = format!("SELECT * FROM {} LIMIT 1000", table);
-    let result = adapters::surreal::execute(&db_info, &query)
+    let query = format!("{}?select=*&limit=1000", table);
+    let result = adapters::supabase::execute(&db_info, &query)
         .await
         .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
 

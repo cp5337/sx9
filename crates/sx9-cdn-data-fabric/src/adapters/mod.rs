@@ -7,7 +7,8 @@ pub mod neo4j;
 pub mod network_flow;
 pub mod postgres;
 pub mod slotgraph;
-pub mod surreal;
+pub mod supabase;  // Replaces SurrealDB - PostgREST API, no heavy SDK
+// pub mod surreal;  // DEPRECATED: ~100 crate deps, replaced by supabase
 
 use crate::registry::DatabaseInfo;
 use serde_json::Value;

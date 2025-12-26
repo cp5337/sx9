@@ -96,7 +96,7 @@ reqwest = { version = "0.12", features = ["json"] }
 async-nats = "0.35"
 
 # Database
-surrealdb = { version = "2.0", features = ["protocol-ws"] }
+# surrealdb = { version = "2.0", features = ["protocol-ws"] }  # DEPRECATED: Use HTTP API, Rust crate is ~100 deps
 
 # ECS
 legion = "0.4"           # Hot path (H2 operational)
