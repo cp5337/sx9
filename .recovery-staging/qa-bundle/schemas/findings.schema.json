@@ -1,0 +1,118 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "properties": {
+    "loadset_id": {
+      "type": "string"
+    },
+    "provenance": {
+      "properties": {
+        "generated_utc": {
+          "type": "string"
+        },
+        "input_hash": {
+          "type": "string"
+        },
+        "models": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "output_hash": {
+          "type": "string"
+        },
+        "prompt_hash": {
+          "type": "string"
+        },
+        "tools": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "prompt_hash",
+        "input_hash",
+        "output_hash",
+        "tools",
+        "models",
+        "generated_utc"
+      ],
+      "type": "object"
+    },
+    "schema_version": {
+      "const": "1.0",
+      "type": "string"
+    },
+    "scope": {
+      "properties": {
+        "commit": {
+          "type": "string"
+        },
+        "path_scope": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "repo": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "repo",
+        "commit",
+        "path_scope"
+      ],
+      "type": "object"
+    },
+    "signals": {
+      "items": {
+        "properties": {
+          "evidence": {
+            "type": "object"
+          },
+          "explanation": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "score": {
+            "maximum": 1.0,
+            "minimum": 0.0,
+            "type": "number"
+          },
+          "severity": {
+            "enum": [
+              "low",
+              "medium",
+              "high",
+              "critical"
+            ],
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "severity",
+          "score",
+          "explanation",
+          "evidence"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    }
+  },
+  "required": [
+    "schema_version",
+    "loadset_id",
+    "scope",
+    "signals",
+    "provenance"
+  ],
+  "title": "SX9 Findings",
+  "type": "object"
+}

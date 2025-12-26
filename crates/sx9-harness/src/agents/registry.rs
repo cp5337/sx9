@@ -184,6 +184,173 @@ pub fn default_agents() -> Vec<Agent> {
             last_seen: Some(now),
         },
 
+        // ORACLE - Research and information agent (CLSGS Annex A.2)
+        Agent {
+            id: Uuid::new_v4(),
+            name: "Oracle".to_string(),
+            handle: "oracle".to_string(),
+            description: "Research and knowledge synthesis".to_string(),
+            avatar_url: Some("https://sx9.dev/avatars/oracle.png".to_string()),
+            provider: AiProvider::Gemini, // Long context for research
+            model: "gemini-2.5-pro".to_string(),
+            capabilities: vec![
+                AgentCapability::Research,
+                AgentCapability::Analysis,
+                AgentCapability::Documentation,
+            ],
+            trigger_keywords: vec![
+                "research".to_string(),
+                "investigate".to_string(),
+                "find".to_string(),
+                "discover".to_string(),
+                "learn".to_string(),
+            ],
+            behavioral_scope: Some(BehavioralScope {
+                role: "Researcher".to_string(),
+                action: "research".to_string(),
+                constraint: "read_only".to_string(),
+                object: "knowledge".to_string(),
+            }),
+            linear: None,
+            slack: None,
+            status: AgentStatus::Available,
+            registered_at: now,
+            last_seen: Some(now),
+        },
+
+        // SCRIBE - Documentation agent (CLSGS Annex A.2)
+        Agent {
+            id: Uuid::new_v4(),
+            name: "Scribe".to_string(),
+            handle: "scribe".to_string(),
+            description: "Documentation and technical writing".to_string(),
+            avatar_url: Some("https://sx9.dev/avatars/scribe.png".to_string()),
+            provider: AiProvider::Claude,
+            model: "claude-3-5-sonnet-20241022".to_string(),
+            capabilities: vec![
+                AgentCapability::Documentation,
+                AgentCapability::CodeReview,
+            ],
+            trigger_keywords: vec![
+                "document".to_string(),
+                "docs".to_string(),
+                "readme".to_string(),
+                "explain".to_string(),
+                "write".to_string(),
+            ],
+            behavioral_scope: Some(BehavioralScope {
+                role: "Writer".to_string(),
+                action: "document".to_string(),
+                constraint: "bounded".to_string(),
+                object: "documentation".to_string(),
+            }),
+            linear: None,
+            slack: None,
+            status: AgentStatus::Available,
+            registered_at: now,
+            last_seen: Some(now),
+        },
+
+        // RELAY - Integration agent (CLSGS Annex A.2)
+        Agent {
+            id: Uuid::new_v4(),
+            name: "Relay".to_string(),
+            handle: "relay".to_string(),
+            description: "External integration and API connections".to_string(),
+            avatar_url: Some("https://sx9.dev/avatars/relay.png".to_string()),
+            provider: AiProvider::Claude,
+            model: "claude-3-5-sonnet-20241022".to_string(),
+            capabilities: vec![
+                AgentCapability::Infrastructure,
+                AgentCapability::CodeGeneration,
+            ],
+            trigger_keywords: vec![
+                "integrate".to_string(),
+                "api".to_string(),
+                "connect".to_string(),
+                "webhook".to_string(),
+                "external".to_string(),
+            ],
+            behavioral_scope: Some(BehavioralScope {
+                role: "Integrator".to_string(),
+                action: "integrate".to_string(),
+                constraint: "bounded".to_string(),
+                object: "external_service".to_string(),
+            }),
+            linear: None,
+            slack: None,
+            status: AgentStatus::Available,
+            registered_at: now,
+            last_seen: Some(now),
+        },
+
+        // ARBITER - Governance agent (CLSGS Annex A.2)
+        Agent {
+            id: Uuid::new_v4(),
+            name: "Arbiter".to_string(),
+            handle: "arbiter".to_string(),
+            description: "Governance and compliance enforcement".to_string(),
+            avatar_url: Some("https://sx9.dev/avatars/arbiter.png".to_string()),
+            provider: AiProvider::Claude,
+            model: "claude-3-5-sonnet-20241022".to_string(),
+            capabilities: vec![
+                AgentCapability::Security,
+                AgentCapability::CodeReview,
+                AgentCapability::Analysis,
+            ],
+            trigger_keywords: vec![
+                "governance".to_string(),
+                "compliance".to_string(),
+                "policy".to_string(),
+                "drift".to_string(),
+                "gate".to_string(),
+            ],
+            behavioral_scope: Some(BehavioralScope {
+                role: "Governor".to_string(),
+                action: "govern".to_string(),
+                constraint: "enforcing".to_string(),
+                object: "compliance".to_string(),
+            }),
+            linear: None,
+            slack: None,
+            status: AgentStatus::Available,
+            registered_at: now,
+            last_seen: Some(now),
+        },
+
+        // WEAVER - Orchestration agent (CLSGS Annex A.2)
+        Agent {
+            id: Uuid::new_v4(),
+            name: "Weaver".to_string(),
+            handle: "weaver".to_string(),
+            description: "Multi-agent orchestration and coordination".to_string(),
+            avatar_url: Some("https://sx9.dev/avatars/weaver.png".to_string()),
+            provider: AiProvider::Claude,
+            model: "claude-3-5-sonnet-20241022".to_string(),
+            capabilities: vec![
+                AgentCapability::Planning,
+                AgentCapability::Analysis,
+            ],
+            trigger_keywords: vec![
+                "orchestrate".to_string(),
+                "coordinate".to_string(),
+                "handoff".to_string(),
+                "delegate".to_string(),
+                "mesh".to_string(),
+            ],
+            behavioral_scope: Some(BehavioralScope {
+                role: "Orchestrator".to_string(),
+                action: "orchestrate".to_string(),
+                constraint: "bounded".to_string(),
+                object: "agent_mesh".to_string(),
+            }),
+            linear: None,
+            slack: None,
+            status: AgentStatus::Available,
+            registered_at: now,
+            last_seen: Some(now),
+        },
+
         // Multi-provider agents for @ mention routing
 
         // CLAUDE - Direct Anthropic access
@@ -540,8 +707,10 @@ mod tests {
     #[test]
     fn test_default_agents_count() {
         let agents = default_agents();
-        // 5 persona agents + 5 provider agents
-        assert_eq!(agents.len(), 10);
+        // 10 CLSGS persona agents + 5 provider agents = 15 total
+        // Persona: Forge, Axiom, Vector, Sentinel, Guardian, Oracle, Scribe, Relay, Arbiter, Weaver
+        // Provider: Claude, GPT, Gemini, Grok, Cursor
+        assert_eq!(agents.len(), 15);
     }
 
     #[test]
@@ -590,7 +759,7 @@ mod tests {
         let registry = AgentRegistry::new();
         let members = registry.export_for_linear("team-123");
 
-        assert_eq!(members.len(), 10);
+        assert_eq!(members.len(), 15);
         assert!(members.iter().all(|m| m.is_bot));
         assert!(members.iter().all(|m| m.team_id == "team-123"));
     }

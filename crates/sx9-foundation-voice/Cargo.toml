@@ -64,5 +64,5 @@ audio_playback = ["rodio", "symphonia"]
 elevenlabs_api = ["synthesis"]
 
 [lib]
-name = "foundation_voice"
+name = "sx9_foundation_voice"
 path = "src/lib.rs"

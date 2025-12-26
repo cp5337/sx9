@@ -21,9 +21,26 @@ uuid.workspace = true
 tracing.workspace = true
 
 # Additional dependencies not in workspace
-chrono = { version = "0.4", features = ["serde"] }
+chrono.workspace = true
 async-nats = "0.33"
 futures-util = "0.3"
 petgraph = "0.6"
 bytes = "1.0"
+
+# Vector database - LanceDB (Rust-native)
+# Using latest stable version with compatible arrow
+lancedb = "0.17"
+arrow-array = "54"
+arrow-schema = "54"
+
+# Async utilities
+async-trait = "0.1"
+futures = "0.3"
+
+# Path expansion
+shellexpand = "3.1"
+
+[features]
+default = []
+chromadb = []  # Legacy ChromaDB support (shells to Python)
 

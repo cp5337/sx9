@@ -1,0 +1,6 @@
+[codespell]
+# Strictly skip sensitive and generated directories
+skip = ./.git,./.gemini,./antigravity,./node_modules,./dist,./build,./target,*/target,**/target,./tools/abe,./tools/vault,*.lock,*.png,*.jpg,*.svg,*.pdf,*.min.js,*.map
+ignore-words-list = crate,ser,dne,mut,nd,te,ue,ba,fo,ot,thist,files',covert,mater,inout,statics
+count = 
+quiet-level = 3

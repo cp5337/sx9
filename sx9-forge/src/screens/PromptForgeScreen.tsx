@@ -29,7 +29,6 @@ import {
   Play,
   RefreshCw,
   CheckCircle,
-  Package,
 } from "lucide-react";
 import MyComponents from "../components/MyComponents";
 import {
@@ -171,7 +170,6 @@ export const PromptForgeScreen: React.FC = () => {
     try {
       // Simple YAML parsing for our known structure
       const lines = content.split('\n');
-      let currentSection = '';
 
       for (const line of lines) {
         const trimmed = line.trim();

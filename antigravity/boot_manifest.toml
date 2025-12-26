@@ -1,5 +1,6 @@
 # FILE: config/boot/manifest.toml
 # MASTER BOOT REGISTRY
+# Updated: 2025-12-26 (CLSGS Integration)
 
 default_mode = "DEVELOPMENT"
 
@@ -7,13 +8,16 @@ default_mode = "DEVELOPMENT"
 description = "Standard Software Engineering Mode"
 brain = "soft_dev_brain.toml"
 identity = "agent_identity.toml"
-tools = [ "vault", "abe" ]
+agents = "clsgs_agents.toml"
+tools = [ "vault", "abe", "v0-mcp", "figma", "vercel" ]
 environment = "IDE"
+qa_doctrine = "RFC-9141"
 
 [modes.CYBER_RECON]
 description = "Cyber Reconnaissance Mode (Vantage Point)"
-brain = "cyber_recon_brain.yaml" 
+brain = "cyber_recon_brain.yaml"
 identity = "agent_identity.toml"
+agents = "clsgs_agents.toml"
 filter = "thalmic_gate.json"
 environment = "HEADLESS"
 
@@ -21,20 +25,52 @@ environment = "HEADLESS"
 description = "Headless Architecture Guardrail"
 brain = "soft_dev_brain.toml"
 identity = "agent_identity.toml"
+agents = "clsgs_agents.toml"
 environment = "CLI"
+
+[modes.FORGE_UI]
+description = "SX9 Prompt Forge Desktop Mode"
+brain = "soft_dev_brain.toml"
+identity = "agent_identity.toml"
+agents = "clsgs_agents.toml"
+tools = [ "v0-mcp", "figma", "vercel", "filesystem" ]
+environment = "TAURI"
+stack = { framework = "Vite", ui = "React+RNW", desktop = "Tauri2" }
 
 [boot_logic]
 strategy = "dynamic_injection"
 target = "# ANTIGRAVITY AGENT BOOT SEQUENCE"
+harness_bridge = "harness_bridge.toml"
+
+[mcp_servers]
+v0 = { command = "node", args = ["/Users/cp5337/Developer/v0-mcp/dist/main.js"] }
+figma = { plugin = "figma@claude-plugins-official" }
+vercel = { command = "npx", args = ["-y", "vercel-mcp"] }
+
 [verticals]
   [verticals.devops]
     description = "Infrastructure, CI/CD, and Secrets Management"
     context_prefix = "DEVOPS_OPS"
-  
+    agents = [ "FORGE", "RELAY" ]
+
   [verticals.ctas]
     description = "Cyber Tactical Operations and Threat Intelligence"
     context_prefix = "CTAS_INTEL"
-  
+    agents = [ "SENTINEL", "ORACLE" ]
+
   [verticals.orbital]
     description = "Telemetry, Physics Engines, and Remote Sensing"
     context_prefix = "ORBITAL_TELEMETRY"
+    agents = [ "AXIOM", "VECTOR" ]
+
+  [verticals.governance]
+    description = "QA, Compliance, and Drift Detection"
+    context_prefix = "GOVERNANCE_QA"
+    agents = [ "GUARDIAN", "ARBITER" ]
+
+# CLSGS Reference (RFC-9141, RFC-9142, Annex A)
+[clsgs]
+dual_heartbeat = { static_qa = true, semantic_qa = true }
+governance_gates = [ "OBSERVE", "WARN", "HALT" ]
+lineage_tracking = true
+drift_scoring = true

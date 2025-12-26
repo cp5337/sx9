@@ -53,6 +53,9 @@ members = [
 
     # Agent SDK
     "crates/sx9-claude-sdk",
+
+    # Language Server
+    "crates/sx9-lsp",
 ]
 resolver = "2"
 

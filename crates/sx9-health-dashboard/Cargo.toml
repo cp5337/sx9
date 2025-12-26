@@ -1,0 +1,48 @@
+[package]
+name = "sx9-health-dashboard"
+version = "0.1.0"
+edition = "2021"
+description = "SX9 Health Dashboard - Dual heartbeat monitoring and metrics (port 18108)"
+license = "MIT"
+
+[[bin]]
+name = "sx9-health-dashboard"
+path = "src/main.rs"
+
+[dependencies]
+# Web framework
+axum = { version = "0.7", features = ["ws"] }
+tower = "0.4"
+tower-http = { version = "0.5", features = ["cors", "trace"] }
+
+# Async runtime
+tokio = { version = "1.0", features = ["full"] }
+
+# Serialization
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+
+# HTTP client for health checks
+reqwest = { version = "0.12", features = ["json"] }
+
+# SX9 ecosystem
+sx9-foundation-core = { path = "../sx9-foundation-core" }
+
+# Prometheus metrics
+# prometheus = "0.13"
+
+# CLI
+clap = { version = "4.0", features = ["derive"] }
+
+# Logging
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+
+# Utils
+anyhow = "1.0"
+
+[package.metadata.sx9]
+crate_type = "service"
+mission = "HealthMonitoring"
+security_level = "Production"
+port = 18108

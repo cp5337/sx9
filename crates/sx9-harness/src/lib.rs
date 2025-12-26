@@ -20,6 +20,7 @@ pub mod agents;
 pub mod tasks;
 pub mod linear;
 pub mod lineage;
+pub mod security;
 
 // Re-exports
 pub use types::*;
@@ -35,7 +36,20 @@ pub use gates::{
     CertificationDelta, DeltaDirection, DegradationCause, UpdateTrigger,
     CertificationTrend, TrendHealth, TrendDirection,
 };
-pub use agents::{AgentRegistry, Agent, AiProvider};
+pub use agents::{
+    AgentRegistry, Agent, AiProvider,
+    // Skill system
+    Skill, SkillRegistry, SkillCategory, SkillSlo, SkillInput, SkillOutput,
+    SkillContext, SkillArtifact, SkillExecutor, SkillExecutionError,
+};
 pub use tasks::{TaskId, Task, TaskGraph, TASKS};
 pub use linear::{LinearGateway, LinearIssue, LinearWebhook};
 pub use lineage::{LineageTracker, LineageMarker, LineageAnalysis};
+pub use security::{
+    SbomGenerator, SbomFormat, SoftwareBom,
+    SecretsScan, SecretFinding, SecretType,
+    DependencyAudit, AuditFinding,
+    ContainerScan, ContainerFinding,
+    ComplianceChecker, ComplianceReport, CatoStatus,
+    Severity, SecurityPipelineResult, run_security_pipeline,
+};

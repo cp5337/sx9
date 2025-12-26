@@ -1,0 +1,40 @@
+# SX9-PROMPT v4.0
+# Generated: 2025-12-23T07:34:46.889356Z
+
+header:
+  title: "Semantic Intent Similarity (Sub-Agent)"
+  rfc: RFC-9112
+  phase: IMPLEMENT
+
+utilization:
+  harness: Build & Implement
+  persona: FORGE
+  mode: SUPERVISED
+
+mission:
+  objective: >
+    Compute semantic similarity (tokens/comments/identifiers) between code symbols and canonical block intent. Output semantic scores and intent tags.
+
+constraints:
+  code_write: false
+  output_format: "toml"
+  determinism:
+    temperature: 0.0
+    top_p: 1.0
+  safety:
+    no_speculation: true
+    no_prose: true
+
+io:
+  inputs:
+    - repo_path
+    - canonical_registry_path
+    - static_outputs_path
+    - semantic_outputs_path
+  outputs:
+    - semantic.intent.scores.toml
+
+success_criteria:
+  - "No code modifications performed"
+  - "Outputs validate against schemas"
+  - "All findings include evidence"

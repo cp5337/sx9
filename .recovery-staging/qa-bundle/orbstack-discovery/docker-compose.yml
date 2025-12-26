@@ -1,0 +1,28 @@
+version: "3.9"
+services:
+  canonical-discovery:
+    image: sx9/canonical-agent:latest
+    container_name: sx9_canonical_discovery
+    volumes:
+      - ../work/repo:/repo:ro
+      - ../sx9-canonical:/canonical:ro
+      - ../work/static:/static:ro
+      - ../work/semantic:/semantic:ro
+      - ../work/discovery:/outputs
+      - ../work/glaf:/glaf
+    environment:
+      MODE: SUPERVISED
+      OUTPUT_MATCHES: /outputs/pattern.matches.json
+      OUTPUT_GRAPH_DELTA: /outputs/graph.delta.json
+    command: >
+      sh -c "
+      /sx9/bin/sx9-discover-patterns /repo /canonical /static /semantic > /outputs/pattern.matches.json &&
+      /sx9/bin/sx9-emit-graph-delta /outputs/pattern.matches.json > /outputs/graph.delta.json
+      "
+  qdrant:
+    image: qdrant/qdrant:latest
+    container_name: sx9_qdrant
+    ports:
+      - "6333:6333"
+    volumes:
+      - ../work/qdrant:/qdrant/storage

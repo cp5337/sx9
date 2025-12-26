@@ -1,0 +1,325 @@
+{
+  "name": "SX9 Universal Rail System",
+  "description": "Design system for three-rail layout across SX9 applications",
+  "version": "1.0.0",
+
+  "tokens": {
+    "colors": {
+      "dark": {
+        "background": {
+          "header": "#0f172a",
+          "rail": "#1e293b",
+          "canvas": "#020617",
+          "card": "#1e293b80",
+          "elevated": "#334155"
+        },
+        "border": {
+          "default": "#334155",
+          "subtle": "#33415580"
+        },
+        "interactive": {
+          "active": "#06b6d433",
+          "hover": "#33415580",
+          "focus": "#06b6d4"
+        },
+        "status": {
+          "success": "#34d399",
+          "warning": "#fbbf24",
+          "error": "#f87171",
+          "info": "#22d3ee",
+          "pending": "#64748b"
+        },
+        "text": {
+          "primary": "#f8fafc",
+          "secondary": "#94a3b8",
+          "muted": "#64748b"
+        },
+        "accent": {
+          "cyan": "#06b6d4",
+          "emerald": "#10b981"
+        }
+      }
+    },
+
+    "spacing": {
+      "micro": 4,
+      "tight": 8,
+      "base": 12,
+      "standard": 16,
+      "relaxed": 24,
+      "section": 32
+    },
+
+    "sizing": {
+      "header": {
+        "height": 56
+      },
+      "statusBar": {
+        "height": 32
+      },
+      "actionRail": {
+        "expanded": 240,
+        "collapsed": 56
+      },
+      "contextRail": {
+        "expanded": 320,
+        "collapsed": 56
+      },
+      "canvas": {
+        "minWidth": 480
+      },
+      "tab": {
+        "height": 44,
+        "iconSize": 20,
+        "badgeSize": 18
+      }
+    },
+
+    "breakpoints": {
+      "desktop": 1440,
+      "laptop": 1024,
+      "tablet": 768,
+      "mobile": 390
+    },
+
+    "radius": {
+      "none": 0,
+      "sm": 4,
+      "md": 8,
+      "lg": 12,
+      "full": 9999
+    },
+
+    "typography": {
+      "fontFamily": "Inter, -apple-system, sans-serif",
+      "fontSize": {
+        "xs": 11,
+        "sm": 12,
+        "base": 14,
+        "lg": 16,
+        "xl": 18,
+        "2xl": 24
+      },
+      "fontWeight": {
+        "normal": 400,
+        "medium": 500,
+        "semibold": 600,
+        "bold": 700
+      }
+    }
+  },
+
+  "components": {
+    "header": {
+      "height": 56,
+      "zones": [
+        { "name": "A", "width": 200, "content": "Logo + App Name", "align": "left" },
+        { "name": "B", "width": "flex", "content": "Context Title / Breadcrumbs", "align": "center" },
+        { "name": "C", "width": 400, "content": "Search + Actions + User", "align": "right" }
+      ],
+      "padding": { "horizontal": 16, "vertical": 8 }
+    },
+
+    "actionRail": {
+      "width": { "expanded": 240, "collapsed": 56 },
+      "sections": [
+        {
+          "name": "tabs",
+          "position": "top",
+          "maxItems": 6,
+          "itemHeight": 44,
+          "states": ["default", "hover", "active", "disabled"]
+        },
+        {
+          "name": "content",
+          "position": "middle",
+          "scrollable": true
+        },
+        {
+          "name": "footer",
+          "position": "bottom",
+          "pinned": true,
+          "items": ["settings", "help"]
+        }
+      ],
+      "padding": 16
+    },
+
+    "contextRail": {
+      "width": { "expanded": 320, "collapsed": 56 },
+      "sections": [
+        {
+          "name": "tabs",
+          "position": "top",
+          "maxItems": 4,
+          "itemHeight": 44
+        },
+        {
+          "name": "primary",
+          "position": "upper",
+          "background": "elevated",
+          "content": "Status indicators, gauges, scores"
+        },
+        {
+          "name": "secondary",
+          "position": "middle",
+          "scrollable": true,
+          "content": "Metadata, history, details"
+        },
+        {
+          "name": "actions",
+          "position": "bottom",
+          "pinned": true
+        }
+      ],
+      "padding": 16
+    },
+
+    "statusBar": {
+      "height": 32,
+      "zones": [
+        { "name": "A", "width": 300, "content": "State indicators", "align": "left" },
+        { "name": "B", "width": "flex", "content": "Status messages", "align": "center" },
+        { "name": "C", "width": 300, "content": "Metrics", "align": "right" }
+      ],
+      "padding": { "horizontal": 16, "vertical": 4 }
+    },
+
+    "railTab": {
+      "height": 44,
+      "iconSize": 20,
+      "padding": { "horizontal": 12, "vertical": 12 },
+      "gap": 12,
+      "radius": 8,
+      "states": {
+        "default": { "background": "transparent", "text": "secondary" },
+        "hover": { "background": "hover", "text": "primary" },
+        "active": { "background": "active", "text": "primary", "indicator": "accent" },
+        "disabled": { "background": "transparent", "text": "muted", "opacity": 0.5 }
+      },
+      "badge": {
+        "size": 18,
+        "radius": "full",
+        "background": "accent",
+        "text": "primary",
+        "fontSize": 11
+      }
+    },
+
+    "driftGauge": {
+      "width": "100%",
+      "height": 80,
+      "elements": [
+        { "name": "score", "fontSize": 32, "fontWeight": "bold" },
+        { "name": "bar", "height": 8, "radius": 4 },
+        { "name": "label", "fontSize": 12 }
+      ],
+      "thresholds": {
+        "observe": { "max": 0.3, "color": "success" },
+        "warn": { "max": 0.6, "color": "warning" },
+        "gate": { "max": 0.8, "color": "error" },
+        "escalate": { "max": 1.0, "color": "error" }
+      }
+    },
+
+    "qaGateGrid": {
+      "columns": 2,
+      "gap": 8,
+      "cell": {
+        "height": 48,
+        "radius": 8,
+        "padding": 8
+      },
+      "icons": {
+        "passed": "✓",
+        "failed": "✗",
+        "running": "◐",
+        "pending": "○"
+      }
+    }
+  },
+
+  "layouts": {
+    "desktop": {
+      "width": 1440,
+      "height": 900,
+      "actionRail": "expanded",
+      "contextRail": "expanded"
+    },
+    "laptop": {
+      "width": 1280,
+      "height": 800,
+      "actionRail": "collapsed",
+      "contextRail": "collapsed"
+    },
+    "tablet": {
+      "width": 1024,
+      "height": 768,
+      "actionRail": "overlay",
+      "contextRail": "overlay"
+    },
+    "mobile": {
+      "width": 390,
+      "height": 844,
+      "actionRail": "modal",
+      "contextRail": "modal"
+    }
+  },
+
+  "figmaFrames": [
+    {
+      "name": "1. Master Layout",
+      "width": 1440,
+      "height": 900,
+      "description": "Full desktop layout with all rails expanded"
+    },
+    {
+      "name": "2. Laptop - Collapsed",
+      "width": 1280,
+      "height": 800,
+      "description": "Rails collapsed to icons"
+    },
+    {
+      "name": "3. Tablet - Overlay",
+      "width": 1024,
+      "height": 768,
+      "description": "Rails as slide-in overlays"
+    },
+    {
+      "name": "4. Mobile - Modal",
+      "width": 390,
+      "height": 844,
+      "description": "Rails as full-screen modals"
+    },
+    {
+      "name": "5. Components - Action Rail",
+      "width": 600,
+      "height": 800,
+      "description": "Action rail in all states"
+    },
+    {
+      "name": "6. Components - Context Rail",
+      "width": 700,
+      "height": 800,
+      "description": "Context rail with all sections"
+    },
+    {
+      "name": "7. Components - Tabs & Controls",
+      "width": 800,
+      "height": 400,
+      "description": "All tab states and interactive elements"
+    },
+    {
+      "name": "8. Application - Forge",
+      "width": 1440,
+      "height": 900,
+      "description": "Prompt Forge with real content"
+    },
+    {
+      "name": "9. Application - Ops Main",
+      "width": 1440,
+      "height": 900,
+      "description": "Operations dashboard with real content"
+    }
+  ]
+}

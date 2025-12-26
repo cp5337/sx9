@@ -1,0 +1,13 @@
+version: "3.9"
+services:
+  sx9-semantic:
+    image: sx9/semantic:latest
+    container_name: sx9_semantic
+    volumes:
+      - ../work/repo:/repo:ro
+      - ../work/static:/static:ro
+      - ../work/semantic:/outputs
+    command: >
+      sh -c "
+      /sx9/bin/sx9-semantic /repo /static > /outputs/semantic.toml
+      "

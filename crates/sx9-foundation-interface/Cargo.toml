@@ -51,8 +51,6 @@ futures = "0.3"
 reqwest = { version = "0.11", features = ["json"] }
 
 [features]
-
-# CTAS-7 Smart Crate Features (Gold Disk Integration)
 default = ["foundation-integration"]
 foundation-integration = ["dep:sx9-foundation-core"]
 smart-crate = ["foundation-integration"]
@@ -60,3 +58,20 @@ neural-mux = ["foundation-integration"]
 hash-engine = ["foundation-integration"]
 unicode-assembly = ["foundation-integration"]
 tesla-grade = ["foundation-integration", "neural-mux", "hash-engine"]
+
+# SX9 Smart Crate Metadata v7.3.1
+[package.metadata.smart_crate]
+generation = "2.0"
+sx9_version = "7.3.1"
+foundation_tier = "interface-foundation"
+service_port = 18300
+trivariate_hash_enabled = true
+integration_points = ["sx9-foundation-core", "all-sx9-crates"]
+domain = "interface"
+environmental_masks = ["CLI", "HTTP", "WS"]
+
+[package.metadata.sx9]
+crate_type = "foundation"
+mission = "InterfaceUnification"
+security_level = "Production"
+orchestrator_compatible = true

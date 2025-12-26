@@ -1,6 +1,6 @@
 [package]
 name = "sx9-foundation-daemon"
-version = "0.1.0"
+version = "7.3.1"
 edition = "2021"
 authors = ["Synaptix9 Engineering Team"]
 description = "Synaptix9 ATLAS (Autonomous Task & Lifecycle Automation System) - Enterprise PM2 replacement with HFT optimization and OrbStack integration"
@@ -99,4 +99,22 @@ tokio-test = "0.4"
 criterion = { version = "0.5", features = ["html_reports"] }
 tempfile = "3.8"
 assert_cmd = "2.0"
+
+# SX9 Smart Crate Metadata v7.3.1
+[package.metadata.smart_crate]
+generation = "2.0"
+sx9_version = "7.3.1"
+foundation_tier = "daemon-foundation"
+service_port = 18600
+trivariate_hash_enabled = true
+integration_points = ["sx9-foundation-core", "sx9-foundation-data", "all-sx9-crates"]
+domain = "daemon"
+environmental_masks = ["SVC", "NATS", "GRPC", "HTTP"]
+real_time = true
+
+[package.metadata.sx9]
+crate_type = "foundation"
+mission = "CommsUnification"
+security_level = "Production"
+orchestrator_compatible = true
 

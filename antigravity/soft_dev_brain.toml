@@ -48,3 +48,39 @@ action = "Optimize & Clean"
 [hd4_phase_logic.VERIFICATION]
 trigger = "Refactor Complete"
 action = "Run Test Suite"
+
+# CLSGS Dual-Heartbeat QA (RFC-9141)
+[qa_doctrine]
+authority = "RFC-9141"
+
+[qa_doctrine.static_heartbeat]
+description = "Lightning Pass: Syntax, types, imports, annotations"
+frequency = "per_commit"
+tools = [ "tsc", "cargo_check", "eslint" ]
+gate_on_fail = "HALT"
+
+[qa_doctrine.semantic_heartbeat]
+description = "Deep Pass: Behavioral drift, N-V-N-N scope validation"
+frequency = "per_pr"
+tools = [ "drift_scorer", "lineage_tracker" ]
+gate_on_fail = "WARN"
+
+[qa_doctrine.governance_gates]
+observe = { threshold = 0.0, action = "log" }
+warn = { threshold = 0.3, action = "advisory" }
+halt = { threshold = 0.7, action = "block" }
+
+# V0 Framework Override (Vite+React+Tauri, NOT Next.js)
+[v0_config]
+framework = "Vite"
+ui_library = "React 18"
+desktop = "Tauri 2"
+styling = "Tailwind CSS 4"
+icons = "lucide-react"
+state = [ "Redux Toolkit", "Zustand" ]
+cross_platform = "react-native-web"
+
+[v0_config.banned_patterns]
+next_js = [ "use client", "use server", "next/image", "next/link", "getServerSideProps" ]
+server_components = true
+app_router = true

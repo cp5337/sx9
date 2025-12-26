@@ -1,0 +1,16 @@
+version: "3.9"
+services:
+  sx9-static-qa:
+    image: sx9/static-qa:latest
+    container_name: sx9_static_qa
+    read_only: true
+    network_mode: none
+    volumes:
+      - ../work/repo:/repo:ro
+      - ../work/static:/outputs
+    command: >
+      sh -c "
+      /sx9/bin/sx9-ast /repo > /outputs/ast.json &&
+      /sx9/bin/sx9-mccabe /repo > /outputs/mccabe.json &&
+      /sx9/bin/sx9-rules /repo > /outputs/rules.json
+      "

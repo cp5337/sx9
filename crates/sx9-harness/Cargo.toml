@@ -26,6 +26,15 @@ regex = "1"
 walkdir = "2"
 lazy_static = "1.4"
 
+# Security module dependencies (SBOM, compliance)
+uuid = { version = "1", features = ["v4"] }
+chrono = { version = "0.4", features = ["serde"] }
+toml = "0.8"
+
+# Agent/Skill system dependencies
+async-trait = "0.1"
+thiserror = "1.0"
+
 [dev-dependencies]
 tokio-test = "0.4"
 anyhow = "1"

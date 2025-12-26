@@ -164,3 +164,7 @@ nats-data/
 
 # Tauri prompts (if generated)
 **/prompts/*.generated.md
+
+# API Vault - never commit keys
+tools/vault/*.json
+tools/vault/keys/

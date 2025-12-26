@@ -1,0 +1,51 @@
+#!/usr/bin/env python3
+"""Validate SX9 outputs against JSON Schemas.
+
+Usage:
+  sx9-validate <bundle_root> <outputs_dir>
+
+Validates:
+- pattern.matches.json
+- graph.delta.json
+- findings.json (optional)
+"""
+import json, sys, os
+from jsonschema import Draft202012Validator
+
+def load(p):
+    with open(p,'r',encoding='utf-8') as f:
+        return json.load(f)
+
+def validate(schema_path, data_path):
+    schema = load(schema_path)
+    data = load(data_path)
+    v = Draft202012Validator(schema)
+    errors = sorted(v.iter_errors(data), key=lambda e: e.path)
+    if errors:
+        print(f"❌ Validation failed: {data_path}")
+        for e in errors:
+            print("  -", list(e.path), e.message)
+        return False
+    print(f"✅ Valid: {data_path}")
+    return True
+
+def main(root, outdir):
+    schemas = os.path.join(root, "schemas")
+    ok = True
+    pm = os.path.join(outdir, "pattern.matches.json")
+    if os.path.exists(pm):
+        ok &= validate(os.path.join(schemas,"pattern.matches.schema.json"), pm)
+    gd = os.path.join(outdir, "graph.delta.json")
+    if os.path.exists(gd):
+        ok &= validate(os.path.join(schemas,"graph.delta.schema.json"), gd)
+    fj = os.path.join(outdir, "findings.json")
+    if os.path.exists(fj):
+        ok &= validate(os.path.join(schemas,"findings.schema.json"), fj)
+    if not ok:
+        sys.exit(2)
+
+if __name__=="__main__":
+    if len(sys.argv)!=3:
+        print(__doc__)
+        sys.exit(1)
+    main(sys.argv[1], sys.argv[2])

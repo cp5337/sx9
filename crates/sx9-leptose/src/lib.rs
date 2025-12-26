@@ -51,17 +51,29 @@
 //! - `ctas7-command-center/ctas7-intelligence-generator/` - OSINT machine
 //! - `graph-db/` - TypeScript GLAF UI and threat intel
 
-pub mod chromadb_client;
 pub mod config;
 pub mod engine;
 pub mod graph;
+pub mod lancedb_client;
 pub mod nats_bridge;
 
-pub use chromadb_client::ChromaDbClient;
+// Legacy ChromaDB support (feature-gated)
+#[cfg(feature = "chromadb")]
+pub mod chromadb_client;
+
+// Primary exports - LanceDB is the default vector store
+pub use lancedb_client::{
+    collections, EeiSatisfiers, LanceDbClient, LanceDbConfig, LanceDbStats, VectorDocument,
+    VectorQueryResult, EMBEDDING_DIM,
+};
+
 pub use config::LeptoseConfig;
 pub use engine::LeptoseEngine;
 pub use graph::KnowledgeGraph;
 pub use nats_bridge::NatsBridge;
+
+#[cfg(feature = "chromadb")]
+pub use chromadb_client::ChromaDbClient;
 
 use thiserror::Error;
 

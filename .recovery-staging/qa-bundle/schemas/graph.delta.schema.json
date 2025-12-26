@@ -1,0 +1,97 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "properties": {
+    "edges": {
+      "items": {
+        "properties": {
+          "confidence": {
+            "maximum": 1.0,
+            "minimum": 0.0,
+            "type": "number"
+          },
+          "dst": {
+            "type": "string"
+          },
+          "op": {
+            "enum": [
+              "upsert",
+              "delete"
+            ],
+            "type": "string"
+          },
+          "properties": {
+            "type": "object"
+          },
+          "src": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "src",
+          "dst",
+          "type",
+          "op"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "loadset_id": {
+      "type": "string"
+    },
+    "nodes": {
+      "items": {
+        "properties": {
+          "confidence": {
+            "maximum": 1.0,
+            "minimum": 0.0,
+            "type": "number"
+          },
+          "id": {
+            "type": "string"
+          },
+          "label": {
+            "type": "string"
+          },
+          "op": {
+            "enum": [
+              "upsert",
+              "delete"
+            ],
+            "type": "string"
+          },
+          "properties": {
+            "type": "object"
+          }
+        },
+        "required": [
+          "id",
+          "label",
+          "op",
+          "properties"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "provenance": {
+      "type": "object"
+    },
+    "schema_version": {
+      "const": "1.0",
+      "type": "string"
+    }
+  },
+  "required": [
+    "schema_version",
+    "loadset_id",
+    "nodes",
+    "edges",
+    "provenance"
+  ],
+  "title": "GLAF Graph Delta",
+  "type": "object"
+}

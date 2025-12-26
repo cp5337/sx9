@@ -1,15 +1,31 @@
-//! Dual Heartbeat Gate
+//! Dual Heartbeat Gate (RFC-9141)
 //!
 //! Implements zero-trust verification via dual heartbeat pattern:
-//! 1. Local heartbeat: Direct HTTP checks to individual services
-//! 2. Global heartbeat: HealthNetwork status with hash integrity
+//! 1. Local heartbeat: Direct HTTP checks + foundation-core validation
+//! 2. Global heartbeat: Registry validation with hash integrity (NATS pub/sub)
 //!
 //! This gate MUST pass before other QA gates run.
+//!
+//! ## Zero-Trust Enforcement
+//! - All crates MUST depend on sx9-foundation-core
+//! - Missing foundation-core = UNAUTHORIZED = gate fails
+//! - Missing heartbeats trigger alerts (not blocking)
+//!
+//! ## Non-Blocking Design
+//! - Local validation: Compile-time token check (0µs)
+//! - Global check: Uses cached state from NATS subscription
+//! - No central registry lock - eventual consistency
 //!
 //! Part of the SX9 zero-trust architecture.
 
 use serde::{Deserialize, Serialize};
 use std::time::Duration;
+
+// Import from foundation-core (canonical source)
+use sx9_foundation_core::heartbeat::FOUNDATION_CORE_TOKEN;
+
+// Compile-time assertion: This crate has foundation-core
+sx9_foundation_core::assert_has_foundation_core!();
 
 /// Dual heartbeat verification result
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -59,6 +75,8 @@ pub struct GlobalHeartbeat {
     pub healthy_nodes: u32,
     /// Critical failures
     pub critical_failures: u32,
+    /// Unauthorized crates detected (missing foundation-core)
+    pub unauthorized_crates: Vec<String>,
 }
 
 /// Service configuration for local heartbeat
@@ -224,8 +242,10 @@ impl HeartbeatGate {
         #[cfg(feature = "health-network")]
         {
             if let Some(health_state) = sx9_foundation_core::health_network::get_global_health_state() {
+                // Any unauthorized crates = ecosystem unhealthy
+                let has_unauthorized = !health_state.unauthorized_crates.is_empty();
                 return GlobalHeartbeat {
-                    passed: matches!(
+                    passed: !has_unauthorized && matches!(
                         health_state.ecosystem_health,
                         sx9_foundation_core::health_network::HealthLevel::Healthy
                     ),
@@ -234,6 +254,7 @@ impl HeartbeatGate {
                     active_nodes: health_state.active_nodes,
                     healthy_nodes: health_state.healthy_nodes,
                     critical_failures: health_state.critical_failures,
+                    unauthorized_crates: health_state.unauthorized_crates.clone(),
                 };
             }
         }
@@ -247,18 +268,40 @@ impl HeartbeatGate {
             active_nodes: 1,
             healthy_nodes: 1,
             critical_failures: 0,
+            unauthorized_crates: Vec::new(),
         }
     }
 
     /// Calculate zero-trust score based on heartbeat results
+    ///
+    /// Score breakdown:
+    /// - Local heartbeat health: 40 points max
+    /// - Global heartbeat health: 60 points max
+    ///   - Base: 30 points
+    ///   - Hash integrity: 20 points
+    ///   - Node health ratio: 10 points
+    /// - Unauthorized crates: -50 points per crate (SEVERE penalty)
     fn calculate_zero_trust_score(&self, local: &LocalHeartbeat, global: &GlobalHeartbeat) -> u8 {
-        let mut score = 0u8;
+        let mut score: i16 = 0;
+
+        // CRITICAL: Unauthorized crates are severe violations
+        // Each unauthorized crate incurs a massive penalty
+        let unauthorized_penalty = (global.unauthorized_crates.len() as i16) * 50;
+        if unauthorized_penalty > 0 {
+            // Log the violation for alerting
+            for crate_name in &global.unauthorized_crates {
+                eprintln!(
+                    "🚨 ZERO-TRUST VIOLATION: {} running without foundation-core",
+                    crate_name
+                );
+            }
+        }
 
         // Local heartbeat: up to 40 points
         if local.passed {
             let healthy_ratio = local.services.iter().filter(|s| s.healthy).count() as f64
                 / local.services.len().max(1) as f64;
-            score += (healthy_ratio * 40.0) as u8;
+            score += (healthy_ratio * 40.0) as i16;
         }
 
         // Global heartbeat: up to 60 points
@@ -273,11 +316,20 @@ impl HeartbeatGate {
             // Node health ratio: 10 points
             if global.active_nodes > 0 {
                 let health_ratio = global.healthy_nodes as f64 / global.active_nodes as f64;
-                score += (health_ratio * 10.0) as u8;
+                score += (health_ratio * 10.0) as i16;
             }
         }
 
-        score.min(100)
+        // Apply unauthorized penalty (can drive score to 0)
+        score = score.saturating_sub(unauthorized_penalty);
+
+        // Clamp to 0-100
+        score.clamp(0, 100) as u8
+    }
+
+    /// Check if foundation-core token is valid (compile-time proof)
+    pub fn foundation_token() -> &'static str {
+        FOUNDATION_CORE_TOKEN
     }
 }
 

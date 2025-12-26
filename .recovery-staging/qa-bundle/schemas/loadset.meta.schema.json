@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "properties": {
+    "constraints": {
+      "type": "object"
+    },
+    "created_utc": {
+      "type": "string"
+    },
+    "deterministic": {
+      "type": "boolean"
+    },
+    "hashes": {
+      "type": "object"
+    },
+    "id": {
+      "type": "string"
+    },
+    "inputs": {
+      "type": "object"
+    },
+    "outputs": {
+      "type": "object"
+    },
+    "prompts": {
+      "type": "object"
+    },
+    "purpose": {
+      "type": "string"
+    },
+    "source": {
+      "type": "object"
+    },
+    "version": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "id",
+    "version",
+    "created_utc",
+    "purpose",
+    "deterministic",
+    "source",
+    "prompts",
+    "inputs",
+    "outputs",
+    "constraints",
+    "hashes"
+  ],
+  "title": "SX9 Loadset Meta",
+  "type": "object"
+}

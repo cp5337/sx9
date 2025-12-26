@@ -52,4 +52,21 @@ default = ["financial", "orbital"]
 financial = ["dep:rust_decimal"]
 orbital = ["dep:sgp4"]
 symbolic = ["dep:rustfft", "dep:ndarray"]
-hft = ["dep:rayon"]  # RFC-9001: crossbeam removed for performance
+hft = ["dep:rayon"]
+
+# SX9 Smart Crate Metadata v7.3.1
+[package.metadata.smart_crate]
+generation = "2.0"
+sx9_version = "7.3.1"
+foundation_tier = "math-foundation"
+service_port = 18500
+trivariate_hash_enabled = true
+integration_points = ["sx9-foundation-core", "all-sx9-crates"]
+domain = "math"
+environmental_masks = ["LA", "ST", "FN", "OR"]
+
+[package.metadata.sx9]
+crate_type = "foundation"
+mission = "MathUnification"
+security_level = "Production"
+orchestrator_compatible = true

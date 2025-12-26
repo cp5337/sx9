@@ -1,0 +1,75 @@
+{
+  "blocks": [
+    {
+      "category": "validation",
+      "constraints": [
+        "deterministic",
+        "no_io",
+        "no_logging",
+        "no_config",
+        "single_responsibility"
+      ],
+      "id": "USER_VALIDATE_INPUT_SECURITY",
+      "language": "rust"
+    },
+    {
+      "category": "persistence",
+      "constraints": [
+        "deterministic",
+        "no_io",
+        "no_logging",
+        "no_config",
+        "single_responsibility"
+      ],
+      "id": "SYSTEM_WRITE_IDEMPOTENT_RECORD",
+      "language": "rust"
+    },
+    {
+      "category": "concurrency",
+      "constraints": [
+        "deterministic",
+        "no_io",
+        "no_logging",
+        "no_config",
+        "single_responsibility"
+      ],
+      "id": "WORKER_PROCESS_TASK_BOUNDED",
+      "language": "rust"
+    },
+    {
+      "category": "security",
+      "constraints": [
+        "deterministic",
+        "no_io",
+        "no_logging",
+        "no_config",
+        "single_responsibility"
+      ],
+      "id": "SERVICE_ROTATE_TOKEN_SECURE",
+      "language": "rust"
+    },
+    {
+      "category": "lifecycle",
+      "constraints": [
+        "deterministic",
+        "no_io",
+        "no_logging",
+        "no_config",
+        "single_responsibility"
+      ],
+      "id": "RESOURCE_CLOSE_GRACEFUL",
+      "language": "rust"
+    },
+    {
+      "category": "design",
+      "constraints": [
+        "deterministic",
+        "declares_side_effects"
+      ],
+      "id": "SERVICE_ADAPTER_IO_WRAPPER",
+      "language": "rust"
+    }
+  ],
+  "generated_utc": "2025-12-23T07:34:46Z",
+  "schema_version": "1.0"
+}

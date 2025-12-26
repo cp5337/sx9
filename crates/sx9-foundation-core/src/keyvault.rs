@@ -1,9 +1,9 @@
-//! CTAS-7 KeyVault: Persistent, Reliable API Key Storage
+//! SX9 KeyVault: Persistent, Reliable API Key Storage
 //!
 //! NO MORE LOST KEYS. This vault:
 //! - Uses Sled embedded database for persistence
 //! - Falls back to encrypted file if Sled fails
-//! - Stores in ~/.ctas7/keyvault/ (survives restarts)
+//! - Stores in ~/.sx9/keyvault/ (survives restarts)
 //! - Integrates with macOS Keychain when available
 //! - Auto-backup on every write
 
@@ -53,11 +53,11 @@ pub struct KeyVault {
 }
 
 impl KeyVault {
-    /// Get the standard vault directory (~/.ctas7/keyvault)
+    /// Get the standard vault directory (~/.sx9/keyvault)
     pub fn default_vault_dir() -> PathBuf {
         dirs::home_dir()
             .unwrap_or_else(|| PathBuf::from("."))
-            .join(".ctas7")
+            .join(".sx9")
             .join("keyvault")
     }
 

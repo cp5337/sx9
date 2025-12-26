@@ -166,6 +166,7 @@ fn main() {
     tauri::Builder::default()
         .plugin(tauri_plugin_clipboard_manager::init())
         .plugin(tauri_plugin_dialog::init())
+        .menu(tauri::menu::Menu::default)
         .setup(|app| {
             #[cfg(debug_assertions)]
             {

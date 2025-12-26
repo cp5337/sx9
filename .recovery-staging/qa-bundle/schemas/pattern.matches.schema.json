@@ -1,0 +1,91 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "properties": {
+    "loadset_id": {
+      "type": "string"
+    },
+    "matches": {
+      "items": {
+        "properties": {
+          "candidates": {
+            "items": {
+              "properties": {
+                "confidence": {
+                  "maximum": 1.0,
+                  "minimum": 0.0,
+                  "type": "number"
+                },
+                "pattern_id": {
+                  "type": "string"
+                },
+                "semantic_score": {
+                  "maximum": 1.0,
+                  "minimum": 0.0,
+                  "type": "number"
+                },
+                "structural_score": {
+                  "maximum": 1.0,
+                  "minimum": 0.0,
+                  "type": "number"
+                },
+                "violations": {
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array"
+                }
+              },
+              "required": [
+                "pattern_id",
+                "confidence",
+                "structural_score",
+                "semantic_score",
+                "violations"
+              ],
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "classification": {
+            "enum": [
+              "NO_MATCH",
+              "PARTIAL_MATCH",
+              "STRONG_MATCH",
+              "AMBIGUOUS"
+            ],
+            "type": "string"
+          },
+          "file": {
+            "type": "string"
+          },
+          "symbol": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "file",
+          "symbol",
+          "classification",
+          "candidates"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "provenance": {
+      "type": "object"
+    },
+    "schema_version": {
+      "const": "1.0",
+      "type": "string"
+    }
+  },
+  "required": [
+    "schema_version",
+    "loadset_id",
+    "matches",
+    "provenance"
+  ],
+  "title": "SX9 Canonical Pattern Matches",
+  "type": "object"
+}

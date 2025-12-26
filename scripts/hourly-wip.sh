@@ -1,36 +1,44 @@
 #!/bin/bash
-# Hourly WIP Commit Script
+# SX9 Hourly WIP Commit Script
 # Location: /Users/cp5337/Developer/sx9/scripts/hourly-wip.sh
 # Purpose: Automatically commit work-in-progress every hour for recovery safety
+#
+# Commits on ANY branch (including feature branches) to prevent work loss.
 
 set -e
 
-cd /Users/cp5337/Developer/sx9
+REPO_PATH="/Users/cp5337/Developer/sx9"
+LOG_FILE="/Users/cp5337/sx9-wip-commits.log"
 
-# Check if there are changes
+cd "$REPO_PATH"
+
+# Get current branch
+CURRENT_BRANCH=$(git branch --show-current)
+
+# Check if there are changes (staged, unstaged, or untracked)
 if [[ -z $(git status --porcelain) ]]; then
-  echo "No changes to commit"
+  echo "[$(date '+%Y-%m-%d %H:%M:%S')] No changes on branch: $CURRENT_BRANCH" >> "$LOG_FILE"
   exit 0
 fi
 
-# Get current timestamp
 TIMESTAMP=$(date +"%Y-%m-%d %H:%M:%S")
-HOUR=$(date +"%H")
+CHANGED_FILES=$(git status --porcelain | wc -l | tr -d ' ')
 
-# Add all changes
+# Add all changes including untracked
 git add -A
 
-# Create WIP commit
-git commit -m "WIP: Hourly auto-commit at ${TIMESTAMP}
+# Commit with --no-verify for speed
+git commit --no-verify -m "WIP: Hourly auto-commit at ${TIMESTAMP}
 
-Automated hourly backup commit for recovery safety.
-Hour: ${HOUR}:00
+Branch: ${CURRENT_BRANCH}
+Files: ${CHANGED_FILES}
 
-Changes:
 $(git status --short | head -20)
 "
 
-# Push to remote
-git push origin main
-
-echo "✅ Hourly WIP committed and pushed at ${TIMESTAMP}"
+# Push to current branch (not hardcoded)
+if git push origin "$CURRENT_BRANCH" 2>&1; then
+  echo "[${TIMESTAMP}] ✅ Pushed to ${CURRENT_BRANCH} (${CHANGED_FILES} files)" >> "$LOG_FILE"
+else
+  echo "[${TIMESTAMP}] ⚠️ Committed locally, push failed for ${CURRENT_BRANCH}" >> "$LOG_FILE"
+fi

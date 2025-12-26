@@ -1,0 +1,40 @@
+# SX9-PROMPT v4.0
+# Generated: 2025-12-23T07:34:46.889356Z
+
+header:
+  title: "Canonical Constraint Validation (Sub-Agent)"
+  rfc: RFC-9112
+  phase: IMPLEMENT
+
+utilization:
+  harness: Build & Implement
+  persona: ADDIE
+  mode: SUPERVISED
+
+mission:
+  objective: >
+    Validate candidate matches against canonical constraints (no_io/no_logging/no_config/etc). Output violation lists and adjusted confidence.
+
+constraints:
+  code_write: false
+  output_format: "json"
+  determinism:
+    temperature: 0.0
+    top_p: 1.0
+  safety:
+    no_speculation: true
+    no_prose: true
+
+io:
+  inputs:
+    - repo_path
+    - canonical_registry_path
+    - static_outputs_path
+    - semantic_outputs_path
+  outputs:
+    - constraint.violations.json
+
+success_criteria:
+  - "No code modifications performed"
+  - "Outputs validate against schemas"
+  - "All findings include evidence"

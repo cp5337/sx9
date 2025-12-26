@@ -119,6 +119,22 @@ impl Default for NeuralMuxConfig {
                     transport_profile: TransportProfile::Internal,
                     context_awareness: false,
                 },
+                // Heartbeat operations (U+E600-E6FF) - RFC-9141 Zero-Trust
+                OperationRoute {
+                    unicode_range: (0xE600, 0xE6FF),
+                    target_processor: "heartbeat_processor".to_string(),
+                    priority: Priority::Critical,
+                    transport_profile: TransportProfile::Internal,
+                    context_awareness: true,
+                },
+                // QA Gate operations (U+E700-E7FF) - RFC-9141
+                OperationRoute {
+                    unicode_range: (0xE700, 0xE7FF),
+                    target_processor: "qa_gate_processor".to_string(),
+                    priority: Priority::High,
+                    transport_profile: TransportProfile::Internal,
+                    context_awareness: true,
+                },
             ],
             load_balancing_enabled: true,
             quantum_enhancement: false, // Future capability
