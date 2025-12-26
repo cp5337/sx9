@@ -1,38 +1,16 @@
-/******************************************************************************************
-      📍 منصة تحليل الأمان الجغرافي MKT KSA – تطوير منصور بن خالد
-* 📄 رخصة Apache 2.0 – يسمح بالاستخدام والتعديل بشرط النسبة وعدم تقديم ضمانات.
-* MKT KSA Geolocation Security – Developed by Mansour Bin Khalid (KSA 🇸🇦)
-* Licensed under Apache 2.0 – https://www.apache.org/licenses/LICENSE-2.0
-* © 2025 All rights reserved.
-
-     اسم الملف: weather_val.rs
-    المسار:    src/core/weather_val.rs
-    دور الملف:
-    محرك تجميع وتدقيق بيانات الطقس. يقوم بجلب البيانات من عدة مصادر
-    متوازية، مقارنتها، وتوفير نتيجة موحدة وموثوقة. مصمم ليكون
-    مرنًا، قابلاً للاختبار، وجاهزًا للتكامل مع أي مزود خدمة طقس.
-    المهام الأساسية:
-    1.  تعريف واجهة موحدة لمزودي خدمة الطقس (`WeatherProvider`).
-    2.  توفير محرك (`WeatherEngine`) يقوم بالتنسيق بين المزودين.
-    3.  جلب البيانات على التوازي لتحقيق أقصى سرعة.
-    4.  تدقيق ومقارنة النتائج لضمان الدقة والموثوقية.
-    5.  توفير تطبيق افتراضي جاهز للعمل (`OpenMeteoProvider`).
-    --------------------------------------------------------------
-    File Name: weather_val.rs
-    Path:     src/core/weather_val.rs
-
-    File Role:
-    A weather data aggregation and validation engine. It fetches data from
-    multiple parallel sources, compares them, and provides a unified,
-    reliable result. Designed to be flexible, testable, and ready to
-    integrate with any weather provider.
-    Main Tasks:
-    1.  Define a standard interface for weather providers (`WeatherProvider`).
-    2.  Provide an engine (`WeatherEngine`) to orchestrate providers.
-    3.  Fetch data in parallel for maximum speed.
-    4.  Validate and compare results to ensure accuracy and reliability.
-    5.  Provide a default, ready-to-use implementation (`OpenMeteoProvider`).
-******************************************************************************************/
+//! SX9 Weather Validation Engine
+//!
+//! Multi-provider weather data aggregation for FSO ground station suitability.
+//!
+//! Providers:
+//! - Open-Meteo (free, global coverage)
+//! - WeatherAPI.com (requires WEATHER_API_KEY env var)
+//! - NOAA (free, US coverage only)
+//!
+//! Features:
+//! - Parallel fetching from all providers
+//! - Cross-validation and averaging of results
+//! - FSO suitability scoring for LaserLight ground stations
 
 use crate::utils::precision::avg_f32;
 use async_trait::async_trait;
@@ -42,7 +20,6 @@ use std::sync::Arc;
 use thiserror::Error;
 
 // ================================================================
-// الأخطاء المخصصة للوحدة
 // Custom Module Errors
 // ================================================================
 #[derive(Debug, Error)]
@@ -56,11 +33,9 @@ pub enum WeatherError {
 }
 
 // ================================================================
-// نماذج البيانات الأساسية
 // Core Data Models
 // ================================================================
 
-/// يمثل بيانات الطقس الموحدة من أي مزود.
 /// Represents unified weather data from any provider.
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct WeatherData {
@@ -72,22 +47,18 @@ pub struct WeatherData {
 }
 
 // ================================================================
-// واجهة (Trait) لمزودي خدمة الطقس
 // Trait for Weather Providers
 // ================================================================
 #[async_trait]
 pub trait WeatherProvider: Send + Sync {
-    /// يجلب بيانات الطقس لموقع جغرافي معين.
     /// Fetches weather data for a specific geographic location.
     async fn get_weather(&self, latitude: f64, longitude: f64)
         -> Result<WeatherData, WeatherError>;
-    /// اسم المزود للتعريف به.
     /// The name of the provider for identification.
     fn provider_name(&self) -> &'static str;
 }
 
 // ================================================================
-// محرك تجميع الطقس (WeatherEngine)
 // The Weather Aggregation Engine
 // ================================================================
 pub struct WeatherEngine {
@@ -95,14 +66,12 @@ pub struct WeatherEngine {
 }
 
 impl WeatherEngine {
-    /// إنشاء محرك جديد مع قائمة من مزودي الخدمة.
     /// Creates a new engine with a list of providers.
     #[must_use]
     pub fn new(providers: Vec<Arc<dyn WeatherProvider>>) -> Self {
         Self { providers }
     }
 
-    /// يجلب ويدقق بيانات الطقس من جميع المزودين المتاحين.
     /// Fetches and validates weather data from all available providers.
     ///
     /// # Errors
@@ -117,7 +86,6 @@ impl WeatherEngine {
             return Err(WeatherError::NoReliableData);
         }
 
-        // استدعاء جميع المزودين على التوازي
         // Call all providers in parallel
         let futures = self
             .providers
@@ -125,7 +93,6 @@ impl WeatherEngine {
             .map(|p| p.get_weather(latitude, longitude));
         let results = join_all(futures).await;
 
-        // تصفية النتائج الناجحة فقط
         // Filter for successful results only
         let successful_results: Vec<WeatherData> =
             results.into_iter().filter_map(Result::ok).collect();
@@ -134,8 +101,7 @@ impl WeatherEngine {
             return Err(WeatherError::NoReliableData);
         }
 
-        // منطق التدقيق والمقارنة (هنا نستخدم المتوسط)
-        // Validation and comparison logic (here we use an average)
+        // Validation and comparison logic (using average)
         let avg_temp = avg_f32(
             &successful_results
                 .iter()
@@ -161,7 +127,6 @@ impl WeatherEngine {
                 .collect::<Vec<_>>(),
         );
 
-        // اختيار رمز الطقس الأكثر شيوعًا
         // Choose the most common weather code
         let weather_code = successful_results
             .iter()
@@ -179,11 +144,9 @@ impl WeatherEngine {
 }
 
 // ================================================================
-// تطبيق افتراضي جاهز للعمل (OpenMeteo)
-// Default Ready-to-use Implementation (OpenMeteo)
+// Open-Meteo Provider (Free, No Key Required)
 // ================================================================
 
-/// مزود خدمة الطقس يستخدم Open-Meteo API.
 /// A weather provider that uses the Open-Meteo API.
 pub struct OpenMeteoProvider {
     client: reqwest::Client,
@@ -204,19 +167,16 @@ impl OpenMeteoProvider {
     }
 }
 
-// هياكل لفك تشفير استجابة Open-Meteo
-// Structs to deserialize the Open-Meteo response
 #[derive(Deserialize)]
 struct OpenMeteoResponse {
     current_weather: OpenMeteoCurrent,
 }
+
 #[derive(Deserialize)]
 struct OpenMeteoCurrent {
     temperature: f32,
     windspeed: f32,
     weathercode: u32,
-    // ملاحظة: Open-Meteo لا يوفر الرطوبة وهطول الأمطار في `current_weather` مباشرة
-    // Note: Open-Meteo doesn't provide humidity/precipitation directly in `current_weather`
 }
 
 #[async_trait]
@@ -251,9 +211,9 @@ impl WeatherProvider for OpenMeteoProvider {
 
         Ok(WeatherData {
             temperature_celsius: api_response.current_weather.temperature,
-            humidity_percent: 50.0, // قيمة افتراضية / placeholder
+            humidity_percent: 50.0, // placeholder - Open-Meteo doesn't provide in current_weather
             wind_speed_kmh: api_response.current_weather.windspeed,
-            precipitation_mm: 0.0, // قيمة افتراضية / placeholder
+            precipitation_mm: 0.0, // placeholder
             weather_code: api_response.current_weather.weathercode,
         })
     }
@@ -264,14 +224,346 @@ impl WeatherProvider for OpenMeteoProvider {
 }
 
 // ================================================================
-// اختبارات شاملة (محدثة بالكامل)
-// Comprehensive Tests (Fully Updated)
+// WeatherAPI.com Provider (Requires API Key)
+// ================================================================
+
+/// WeatherAPI.com provider - commercial weather data with full metrics
+pub struct WeatherApiProvider {
+    client: reqwest::Client,
+    api_key: String,
+}
+
+impl WeatherApiProvider {
+    #[must_use]
+    pub fn new(api_key: String) -> Self {
+        Self {
+            client: reqwest::Client::new(),
+            api_key,
+        }
+    }
+
+    /// Create from environment variable WEATHER_API_KEY
+    pub fn from_env() -> Option<Self> {
+        std::env::var("WEATHER_API_KEY")
+            .ok()
+            .map(|key| Self::new(key))
+    }
+}
+
+#[derive(Deserialize)]
+struct WeatherApiResponse {
+    current: WeatherApiCurrent,
+}
+
+#[derive(Deserialize)]
+struct WeatherApiCurrent {
+    temp_c: f32,
+    humidity: f32,
+    wind_kph: f32,
+    precip_mm: f32,
+    condition: WeatherApiCondition,
+}
+
+#[derive(Deserialize)]
+struct WeatherApiCondition {
+    code: u32,
+}
+
+#[async_trait]
+impl WeatherProvider for WeatherApiProvider {
+    async fn get_weather(
+        &self,
+        latitude: f64,
+        longitude: f64,
+    ) -> Result<WeatherData, WeatherError> {
+        let url = format!(
+            "https://api.weatherapi.com/v1/current.json?key={}&q={},{}",
+            self.api_key, latitude, longitude
+        );
+
+        let response = self
+            .client
+            .get(&url)
+            .send()
+            .await
+            .map_err(|e| WeatherError::FetchError(e.to_string()))?;
+
+        if !response.status().is_success() {
+            return Err(WeatherError::FetchError(format!(
+                "WeatherAPI returned status: {}",
+                response.status()
+            )));
+        }
+
+        let api_response = response
+            .json::<WeatherApiResponse>()
+            .await
+            .map_err(|e| WeatherError::ParseError(e.to_string()))?;
+
+        Ok(WeatherData {
+            temperature_celsius: api_response.current.temp_c,
+            humidity_percent: api_response.current.humidity,
+            wind_speed_kmh: api_response.current.wind_kph,
+            precipitation_mm: api_response.current.precip_mm,
+            weather_code: api_response.current.condition.code,
+        })
+    }
+
+    fn provider_name(&self) -> &'static str {
+        "WeatherAPI.com"
+    }
+}
+
+// ================================================================
+// NOAA Provider (Public API - No Key Required)
+// ================================================================
+
+/// NOAA Weather API provider - US government weather data
+pub struct NoaaProvider {
+    client: reqwest::Client,
+}
+
+impl Default for NoaaProvider {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
+impl NoaaProvider {
+    #[must_use]
+    pub fn new() -> Self {
+        Self {
+            client: reqwest::Client::builder()
+                .user_agent("SX9-WeatherEngine/1.0 (contact@synaptix9.com)")
+                .build()
+                .unwrap_or_else(|_| reqwest::Client::new()),
+        }
+    }
+
+    /// Get the grid point for a lat/lon (required by NOAA API)
+    async fn get_grid_point(&self, latitude: f64, longitude: f64) -> Result<(String, i32, i32), WeatherError> {
+        let url = format!(
+            "https://api.weather.gov/points/{:.4},{:.4}",
+            latitude, longitude
+        );
+
+        let response = self
+            .client
+            .get(&url)
+            .send()
+            .await
+            .map_err(|e| WeatherError::FetchError(e.to_string()))?;
+
+        if !response.status().is_success() {
+            return Err(WeatherError::FetchError(format!(
+                "NOAA points API returned status: {}",
+                response.status()
+            )));
+        }
+
+        let json: serde_json::Value = response
+            .json()
+            .await
+            .map_err(|e| WeatherError::ParseError(e.to_string()))?;
+
+        let props = json.get("properties").ok_or_else(|| {
+            WeatherError::ParseError("Missing properties in NOAA response".to_string())
+        })?;
+
+        let grid_id = props.get("gridId")
+            .and_then(|v| v.as_str())
+            .ok_or_else(|| WeatherError::ParseError("Missing gridId".to_string()))?
+            .to_string();
+
+        let grid_x = props.get("gridX")
+            .and_then(|v| v.as_i64())
+            .ok_or_else(|| WeatherError::ParseError("Missing gridX".to_string()))? as i32;
+
+        let grid_y = props.get("gridY")
+            .and_then(|v| v.as_i64())
+            .ok_or_else(|| WeatherError::ParseError("Missing gridY".to_string()))? as i32;
+
+        Ok((grid_id, grid_x, grid_y))
+    }
+}
+
+#[async_trait]
+impl WeatherProvider for NoaaProvider {
+    async fn get_weather(
+        &self,
+        latitude: f64,
+        longitude: f64,
+    ) -> Result<WeatherData, WeatherError> {
+        // NOAA only covers US territory
+        if latitude < 18.0 || latitude > 72.0 || longitude < -180.0 || longitude > -66.0 {
+            return Err(WeatherError::FetchError(
+                "NOAA API only covers US territory".to_string()
+            ));
+        }
+
+        let (grid_id, grid_x, grid_y) = self.get_grid_point(latitude, longitude).await?;
+
+        let url = format!(
+            "https://api.weather.gov/gridpoints/{}/{},{}/forecast",
+            grid_id, grid_x, grid_y
+        );
+
+        let response = self
+            .client
+            .get(&url)
+            .send()
+            .await
+            .map_err(|e| WeatherError::FetchError(e.to_string()))?;
+
+        if !response.status().is_success() {
+            return Err(WeatherError::FetchError(format!(
+                "NOAA forecast API returned status: {}",
+                response.status()
+            )));
+        }
+
+        let json: serde_json::Value = response
+            .json()
+            .await
+            .map_err(|e| WeatherError::ParseError(e.to_string()))?;
+
+        // Extract first period from forecast
+        let periods = json
+            .get("properties")
+            .and_then(|p| p.get("periods"))
+            .and_then(|p| p.as_array())
+            .ok_or_else(|| WeatherError::ParseError("Missing forecast periods".to_string()))?;
+
+        let period = periods.first().ok_or_else(|| {
+            WeatherError::ParseError("Empty forecast periods".to_string())
+        })?;
+
+        let temp_f = period.get("temperature")
+            .and_then(|v| v.as_f64())
+            .unwrap_or(70.0) as f32;
+
+        let humidity = period.get("relativeHumidity")
+            .and_then(|h| h.get("value"))
+            .and_then(|v| v.as_f64())
+            .unwrap_or(50.0) as f32;
+
+        let wind_str = period.get("windSpeed")
+            .and_then(|v| v.as_str())
+            .unwrap_or("0 mph");
+        let wind_mph: f32 = wind_str
+            .split_whitespace()
+            .next()
+            .and_then(|s| s.parse().ok())
+            .unwrap_or(0.0);
+
+        // Convert F to C and mph to km/h
+        let temp_c = (temp_f - 32.0) * 5.0 / 9.0;
+        let wind_kmh = wind_mph * 1.60934;
+
+        // Map NOAA short forecast to weather code
+        let short_forecast = period.get("shortForecast")
+            .and_then(|v| v.as_str())
+            .unwrap_or("");
+        let weather_code = match short_forecast.to_lowercase().as_str() {
+            s if s.contains("sunny") || s.contains("clear") => 1,
+            s if s.contains("cloudy") => 3,
+            s if s.contains("rain") => 61,
+            s if s.contains("snow") => 71,
+            s if s.contains("thunder") => 95,
+            _ => 0,
+        };
+
+        Ok(WeatherData {
+            temperature_celsius: temp_c,
+            humidity_percent: humidity,
+            wind_speed_kmh: wind_kmh,
+            precipitation_mm: 0.0, // NOAA forecast doesn't give current precip
+            weather_code,
+        })
+    }
+
+    fn provider_name(&self) -> &'static str {
+        "NOAA"
+    }
+}
+
+// ================================================================
+// FSO Suitability Scoring for Ground Stations
+// ================================================================
+
+/// FSO (Free Space Optical) weather suitability criteria
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct FsoSuitability {
+    /// Clear sky days per year (target: >270)
+    pub clear_sky_days: u16,
+    /// Fog days per year (target: <20)
+    pub fog_days: u16,
+    /// Overall FSO suitability score (0.0 - 1.0)
+    pub score: f64,
+    /// Weather conditions suitable for FSO right now
+    pub current_viable: bool,
+}
+
+impl WeatherData {
+    /// Calculate FSO suitability from current weather conditions
+    pub fn fso_suitability(&self) -> FsoSuitability {
+        // FSO viability based on current conditions
+        let current_viable = self.weather_code < 50  // No precipitation
+            && self.humidity_percent < 85.0
+            && self.wind_speed_kmh < 50.0;
+
+        // Estimate annual metrics from current conditions (simplified)
+        let clear_score = if self.weather_code <= 3 { 0.9 } else { 0.5 };
+        let humidity_score = 1.0 - (self.humidity_percent as f64 / 100.0);
+        let precip_score = if self.precipitation_mm < 0.1 { 1.0 } else { 0.3 };
+
+        let score = (clear_score + humidity_score + precip_score) / 3.0;
+
+        FsoSuitability {
+            clear_sky_days: (score * 300.0) as u16,
+            fog_days: ((1.0 - score) * 50.0) as u16,
+            score,
+            current_viable,
+        }
+    }
+}
+
+// ================================================================
+// Factory: Create Engine with All 3 Providers
+// ================================================================
+
+impl WeatherEngine {
+    /// Create engine with all available providers (Open-Meteo, WeatherAPI, NOAA)
+    /// WeatherAPI requires WEATHER_API_KEY environment variable
+    #[must_use]
+    pub fn with_all_providers() -> Self {
+        let mut providers: Vec<Arc<dyn WeatherProvider>> = vec![
+            Arc::new(OpenMeteoProvider::new()),
+        ];
+
+        // Add WeatherAPI if key is available
+        if let Some(weather_api) = WeatherApiProvider::from_env() {
+            providers.push(Arc::new(weather_api));
+        }
+
+        // Add NOAA (always available for US locations)
+        providers.push(Arc::new(NoaaProvider::new()));
+
+        Self::new(providers)
+    }
+
+    /// Get provider count for diagnostics
+    pub fn provider_count(&self) -> usize {
+        self.providers.len()
+    }
+}
+
+// ================================================================
+// Tests
 // ================================================================
 #[cfg(test)]
 mod tests {
     use super::*;
-
-    // --- Mock Providers for Precise Testing ---
 
     struct MockSunnyProvider;
     #[async_trait]
@@ -282,7 +574,7 @@ mod tests {
                 humidity_percent: 40.0,
                 wind_speed_kmh: 10.0,
                 precipitation_mm: 0.0,
-                weather_code: 1, // Sunny
+                weather_code: 1,
             })
         }
         fn provider_name(&self) -> &'static str {
@@ -299,7 +591,7 @@ mod tests {
                 humidity_percent: 80.0,
                 wind_speed_kmh: 20.0,
                 precipitation_mm: 5.0,
-                weather_code: 61, // Rainy
+                weather_code: 61,
             })
         }
         fn provider_name(&self) -> &'static str {
@@ -311,9 +603,7 @@ mod tests {
     #[async_trait]
     impl WeatherProvider for MockErrorProvider {
         async fn get_weather(&self, _: f64, _: f64) -> Result<WeatherData, WeatherError> {
-            Err(WeatherError::FetchError(
-                "Simulated provider failure".to_string(),
-            ))
+            Err(WeatherError::FetchError("Simulated failure".to_string()))
         }
         fn provider_name(&self) -> &'static str {
             "Error"
@@ -324,9 +614,7 @@ mod tests {
     async fn test_engine_with_single_provider() {
         let providers: Vec<Arc<dyn WeatherProvider>> = vec![Arc::new(MockSunnyProvider)];
         let engine = WeatherEngine::new(providers);
-
         let result = engine.fetch_and_validate(0.0, 0.0).await.unwrap();
-
         assert!((result.temperature_celsius - 25.0).abs() < f32::EPSILON);
     }
 
@@ -335,14 +623,9 @@ mod tests {
         let providers: Vec<Arc<dyn WeatherProvider>> =
             vec![Arc::new(MockSunnyProvider), Arc::new(MockRainyProvider)];
         let engine = WeatherEngine::new(providers);
-
         let result = engine.fetch_and_validate(0.0, 0.0).await.unwrap();
-
-        // Temperature should be the average of 25.0 and 15.0
         assert!((result.temperature_celsius - 20.0).abs() < f32::EPSILON);
-        // Humidity should be the average of 40.0 and 80.0
         assert!((result.humidity_percent - 60.0).abs() < f32::EPSILON);
-        // Weather code should be the one from the rainy provider (higher number)
         assert_eq!(result.weather_code, 61);
     }
 
@@ -350,13 +633,10 @@ mod tests {
     async fn test_engine_handles_failing_provider() {
         let providers: Vec<Arc<dyn WeatherProvider>> = vec![
             Arc::new(MockSunnyProvider),
-            Arc::new(MockErrorProvider), // This one will fail
+            Arc::new(MockErrorProvider),
         ];
         let engine = WeatherEngine::new(providers);
-
         let result = engine.fetch_and_validate(0.0, 0.0).await.unwrap();
-
-        // The result should be based only on the successful provider
         assert!((result.temperature_celsius - 25.0).abs() < f32::EPSILON);
     }
 
@@ -365,9 +645,22 @@ mod tests {
         let providers: Vec<Arc<dyn WeatherProvider>> =
             vec![Arc::new(MockErrorProvider), Arc::new(MockErrorProvider)];
         let engine = WeatherEngine::new(providers);
-
         let result = engine.fetch_and_validate(0.0, 0.0).await;
-
         assert!(matches!(result, Err(WeatherError::NoReliableData)));
+    }
+
+    #[test]
+    fn test_fso_suitability() {
+        let sunny = WeatherData {
+            temperature_celsius: 25.0,
+            humidity_percent: 30.0,
+            wind_speed_kmh: 10.0,
+            precipitation_mm: 0.0,
+            weather_code: 1,
+        };
+        let fso = sunny.fso_suitability();
+        assert!(fso.current_viable);
+        assert!(fso.score > 0.7);
+        assert!(fso.clear_sky_days > 200);
     }
 }
