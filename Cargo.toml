@@ -42,8 +42,7 @@ members = [
     # Vertical 1: Orbital
     "crates/sx9-orbital-simulator",
 
-    # Vertical 2: Ops Main
-    "crates/sx9-threat-simulator",
+    # Vertical 2: Ops Main (sx9-threat-simulator moved to archive - needs ctas7 rename)
 
     # Vertical 3: Dev Center
     "crates/sx9-smart-crate-orchestrator", "crates/sx9-harness",
