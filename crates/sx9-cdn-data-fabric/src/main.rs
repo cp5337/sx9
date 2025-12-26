@@ -19,6 +19,7 @@ use tracing::{info, warn, Level};
 use tracing_subscriber::FmtSubscriber;
 
 mod adapters;
+mod ground_stations;
 mod registry;
 mod router;
 mod transform;
