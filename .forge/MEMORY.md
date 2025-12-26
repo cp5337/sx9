@@ -63,11 +63,14 @@
 ### DISCONNECTED (Built but not wired)
 | Component | RFC | Status |
 |-----------|-----|--------|
-| Memory System | RFC-9060 | `.forge/` never created |
+| Memory System | RFC-9060 | `.forge/` created, needs session hook |
 | sx9-claude-sdk | RFC-9145 | Built, not wired to Claude sessions |
 | sx9-harness agents | - | Registry exists, not invoked |
 | NATS subjects | RFC-9400 | Defined, daemon not connected |
 | Linear agent | RFC-9030 | Built, not running |
+| IACDashboard controls | - | `apps/sx9-ops-main/src/components/glaf/IACDashboard.tsx` - Play/Stop buttons not wired |
+| CrateLeaderboard UI | - | Backend in `crate_leaderboard.rs`, no frontend cards |
+| Dual Heartbeat UI | RFC-9141 | `sx9-harness/gates/heartbeat_gate.rs` built, no dashboard integration |
 
 ---
 
@@ -94,6 +97,27 @@
 |------|--------|
 | ctas7-command-center | ~15 Rust crates with Cesium integration |
 | GEE needle extractor | Python script for cable landing coords |
+
+---
+
+## App / Task Domain Architecture
+
+| App | Repo | Tasks | Port |
+|-----|------|-------|------|
+| **Forge** | `sx9/sx9-forge` | Dev tasks | - |
+| **ops-main** | `sx9/apps/sx9-ops-main` | CTAS tasks (threat/security) | 5173 |
+| **orbital** | `sx9/crates/sx9-orbital-simulator` | Orbital tasks (space domain) | - |
+| **development-center** | `sx9-development-center` (SEPARATE REPO) | Legacy crate management | 5174 |
+
+### Key Components in development-center (DO NOT LOSE)
+- `SmartCrateControl.tsx` - 950-line dashboard with crate cards, Docker status, health checks
+- `TacticalHUD.tsx` - tactical display
+- `CTASCrateManagement.tsx` - crate management
+
+### Gateway Endpoints (port 18600)
+- `/health` - basic connection status
+- `/qa/heartbeat` - dual heartbeat from sx9-harness
+- `/ws` - WebSocket for real-time
 
 ---
 

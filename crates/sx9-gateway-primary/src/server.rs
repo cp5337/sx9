@@ -22,6 +22,9 @@ use crate::handlers::handle_message;
 use crate::protocol::{WsMessage, WsResponse};
 use crate::state::{GatewayState, SharedState};
 
+// QA system - dual heartbeat
+use sx9_harness::gates::heartbeat_gate::HeartbeatGate;
+
 /// Default gateway port
 pub const DEFAULT_PORT: u16 = 18600;
 
@@ -50,6 +53,7 @@ pub async fn run_gateway(port: Option<u16>) -> anyhow::Result<()> {
     let app = Router::new()
         .route("/ws", get(ws_handler))
         .route("/health", get(health_handler))
+        .route("/qa/heartbeat", get(qa_heartbeat_handler))
         .with_state(shared_state)
         .layer(
             CorsLayer::new()
@@ -78,6 +82,18 @@ async fn health_handler(State(state): State<SharedState>) -> impl IntoResponse {
         "connected_backends": connected_count,
         "total_backends": statuses.len(),
     }))
+}
+
+/// QA Dual Heartbeat endpoint - returns full harness health report
+async fn qa_heartbeat_handler() -> impl IntoResponse {
+    let gate = HeartbeatGate::new();
+    match gate.run().await {
+        Ok(report) => axum::Json(serde_json::json!(report)),
+        Err(e) => axum::Json(serde_json::json!({
+            "error": e,
+            "passed": false
+        })),
+    }
 }
 
 /// WebSocket upgrade handler
