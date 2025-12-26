@@ -67,7 +67,26 @@
 | sx9-claude-sdk | RFC-9145 | Built, not wired to Claude sessions |
 | sx9-harness agents | - | Registry exists, not invoked |
 | NATS subjects | RFC-9400 | Defined, daemon not connected |
-| Linear agent | RFC-9030 | Built, not running |
+
+### sx9-linear-agent (READY TO DEPLOY)
+**Status:** Compiles, full Rust implementation, better than Python demo
+**Location:** `sx9-linear-agent/`
+
+| Component | File | Status |
+|-----------|------|--------|
+| Linear GraphQL | `src/linear/client.rs` | ✅ Complete |
+| Agent Loop | `src/agent/agent_loop.rs` | ✅ Complete |
+| Slack MCP | `src/mcp/slack.rs` | ✅ Complete |
+| Serena MCP | `src/mcp/serena.rs` | ✅ Complete |
+| QA Gates | `agent_loop.rs:228` | ⚠️ Placeholder → wire to sx9-harness |
+| PR Creation | `agent_loop.rs:342` | ⚠️ Placeholder → wire to git |
+
+**To deploy:**
+1. `cd sx9-linear-agent && cargo build --release`
+2. Set `LINEAR_API_KEY`, `SLACK_BOT_TOKEN`, `SERENA_ENDPOINT`
+3. Run: `./target/release/sx9-linear-agent`
+
+**Reference:** [coleam00/Linear-Coding-Agent-Harness](https://github.com/coleam00/Linear-Coding-Agent-Harness)
 | IACDashboard controls | - | `apps/sx9-ops-main/src/components/glaf/IACDashboard.tsx` - Play/Stop buttons not wired |
 | CrateLeaderboard UI | - | Backend in `crate_leaderboard.rs`, no frontend cards |
 | Dual Heartbeat UI | RFC-9141 | `sx9-harness/gates/heartbeat_gate.rs` built, no dashboard integration |
