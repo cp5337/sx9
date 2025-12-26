@@ -55,6 +55,11 @@ members = [
 
     # Language Server
     "crates/sx9-lsp",
+
+    # CONVERGE Sensor (RFC-93XX family)
+    "04-sx9-converge/converge",
+    "04-sx9-converge/converge-geometry",
+    "04-sx9-converge/converge-selection",
 ]
 resolver = "2"
 
@@ -94,8 +99,8 @@ async-nats = "0.35"
 surrealdb = { version = "2.0", features = ["protocol-ws"] }
 
 # ECS
-legion = "0.4"
-apecs = "0.3"
+legion = "0.4"           # Hot path (H2 operational)
+apecs = "0.8"            # Async path (H1 semantic, deterministic)
 
 # WASM
 wasmtime = { version = "20.0", features = ["async"] }

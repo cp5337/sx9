@@ -11,11 +11,16 @@ hot-path = []
 sim = []
 
 [dependencies]
+# Foundation crate - brings in all core deps via re-exports
+sx9-foundation-core = { path = "../../crates/sx9-foundation-core" }
+
+# Serde needed directly for derive macros (re-exports don't work for proc-macros)
+serde.workspace = true
+
+# ECS and parallelism (not in foundation-core)
 crossbeam = "0.8"
-legion = "0.4"
-apecs = "0.3"
-serde = { version = "1.0", features = ["derive"] }
-thiserror = "1.0"
+legion = "0.4"           # Hot path (H2 operational)
+apecs = "0.8"            # Async path (H1 semantic, deterministic arbiter)
 
 [package.metadata.smart_crate]
 class = "analytic.sensor.convergence"
