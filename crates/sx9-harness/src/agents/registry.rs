@@ -14,13 +14,13 @@ pub fn default_agents() -> Vec<Agent> {
     let now = Utc::now();
 
     vec![
-        // FORGE - Primary code generation agent
+        // Coder - Primary code generation agent
         Agent {
             id: Uuid::new_v4(),
-            name: "Forge".to_string(),
-            handle: "forge".to_string(),
-            description: "Factory code generation and implementation agent".to_string(),
-            avatar_url: Some("https://sx9.dev/avatars/forge.png".to_string()),
+            name: "Coder".to_string(),
+            handle: "coder".to_string(),
+            description: "Code generation and implementation".to_string(),
+            avatar_url: None,
             provider: AiProvider::Claude,
             model: "claude-3-5-sonnet-20241022".to_string(),
             capabilities: vec![
@@ -36,7 +36,7 @@ pub fn default_agents() -> Vec<Agent> {
                 "feature".to_string(),
             ],
             behavioral_scope: Some(BehavioralScope {
-                role: "Factory".to_string(),
+                role: "Coder".to_string(),
                 action: "generate".to_string(),
                 constraint: "rust_crate".to_string(),
                 object: "source_code".to_string(),
@@ -48,13 +48,13 @@ pub fn default_agents() -> Vec<Agent> {
             last_seen: Some(now),
         },
 
-        // AXIOM - Mathematical and analytical agent
+        // Analyst - Mathematical and analytical agent
         Agent {
             id: Uuid::new_v4(),
-            name: "Axiom".to_string(),
-            handle: "axiom".to_string(),
+            name: "Analyst".to_string(),
+            handle: "analyst".to_string(),
             description: "Mathematical analysis and algorithmic optimization".to_string(),
-            avatar_url: Some("https://sx9.dev/avatars/axiom.png".to_string()),
+            avatar_url: None,
             provider: AiProvider::Claude,
             model: "claude-3-5-sonnet-20241022".to_string(),
             capabilities: vec![
@@ -82,13 +82,13 @@ pub fn default_agents() -> Vec<Agent> {
             last_seen: Some(now),
         },
 
-        // VECTOR - Strategic planning agent
+        // Architect - Architecture review agent
         Agent {
             id: Uuid::new_v4(),
-            name: "Vector".to_string(),
-            handle: "vector".to_string(),
-            description: "Strategic planning and architectural design".to_string(),
-            avatar_url: Some("https://sx9.dev/avatars/vector.png".to_string()),
+            name: "Architect".to_string(),
+            handle: "architect".to_string(),
+            description: "Architecture review and system design".to_string(),
+            avatar_url: None,
             provider: AiProvider::Claude,
             model: "claude-3-5-sonnet-20241022".to_string(),
             capabilities: vec![
@@ -116,13 +116,13 @@ pub fn default_agents() -> Vec<Agent> {
             last_seen: Some(now),
         },
 
-        // SENTINEL - Security operations agent
+        // SecOps - Security operations agent
         Agent {
             id: Uuid::new_v4(),
-            name: "Sentinel".to_string(),
-            handle: "sentinel".to_string(),
+            name: "SecOps".to_string(),
+            handle: "secops".to_string(),
             description: "Security analysis and threat assessment".to_string(),
-            avatar_url: Some("https://sx9.dev/avatars/sentinel.png".to_string()),
+            avatar_url: None,
             provider: AiProvider::Claude,
             model: "claude-3-5-sonnet-20241022".to_string(),
             capabilities: vec![
@@ -138,7 +138,7 @@ pub fn default_agents() -> Vec<Agent> {
                 "pentest".to_string(),
             ],
             behavioral_scope: Some(BehavioralScope {
-                role: "SecurityAuditor".to_string(),
+                role: "SecOps".to_string(),
                 action: "audit".to_string(),
                 constraint: "vulnerability".to_string(),
                 object: "security_posture".to_string(),
@@ -150,13 +150,13 @@ pub fn default_agents() -> Vec<Agent> {
             last_seen: Some(now),
         },
 
-        // GUARDIAN - Quality assurance agent
+        // Testing - Test execution and verification
         Agent {
             id: Uuid::new_v4(),
-            name: "Guardian".to_string(),
-            handle: "guardian".to_string(),
-            description: "Quality assurance and testing verification".to_string(),
-            avatar_url: Some("https://sx9.dev/avatars/guardian.png".to_string()),
+            name: "Testing".to_string(),
+            handle: "testing".to_string(),
+            description: "Test execution and verification".to_string(),
+            avatar_url: None,
             provider: AiProvider::Claude,
             model: "claude-3-5-sonnet-20241022".to_string(),
             capabilities: vec![
@@ -166,16 +166,16 @@ pub fn default_agents() -> Vec<Agent> {
             ],
             trigger_keywords: vec![
                 "test".to_string(),
-                "qa".to_string(),
-                "quality".to_string(),
-                "review".to_string(),
+                "testing".to_string(),
                 "verify".to_string(),
+                "check".to_string(),
+                "validate".to_string(),
             ],
             behavioral_scope: Some(BehavioralScope {
-                role: "QualityAssurance".to_string(),
+                role: "Testing".to_string(),
                 action: "verify".to_string(),
                 constraint: "test_coverage".to_string(),
-                object: "quality_report".to_string(),
+                object: "test_results".to_string(),
             }),
             linear: None,
             slack: None,
@@ -184,13 +184,13 @@ pub fn default_agents() -> Vec<Agent> {
             last_seen: Some(now),
         },
 
-        // ORACLE - Research and information agent (CLSGS Annex A.2)
+        // Research - Research and information agent
         Agent {
             id: Uuid::new_v4(),
-            name: "Oracle".to_string(),
-            handle: "oracle".to_string(),
+            name: "Research".to_string(),
+            handle: "research".to_string(),
             description: "Research and knowledge synthesis".to_string(),
-            avatar_url: Some("https://sx9.dev/avatars/oracle.png".to_string()),
+            avatar_url: None,
             provider: AiProvider::Gemini, // Long context for research
             model: "gemini-2.5-pro".to_string(),
             capabilities: vec![
@@ -206,7 +206,7 @@ pub fn default_agents() -> Vec<Agent> {
                 "learn".to_string(),
             ],
             behavioral_scope: Some(BehavioralScope {
-                role: "Researcher".to_string(),
+                role: "Research".to_string(),
                 action: "research".to_string(),
                 constraint: "read_only".to_string(),
                 object: "knowledge".to_string(),
@@ -218,13 +218,13 @@ pub fn default_agents() -> Vec<Agent> {
             last_seen: Some(now),
         },
 
-        // SCRIBE - Documentation agent (CLSGS Annex A.2)
+        // Docs - Documentation agent
         Agent {
             id: Uuid::new_v4(),
-            name: "Scribe".to_string(),
-            handle: "scribe".to_string(),
+            name: "Docs".to_string(),
+            handle: "docs".to_string(),
             description: "Documentation and technical writing".to_string(),
-            avatar_url: Some("https://sx9.dev/avatars/scribe.png".to_string()),
+            avatar_url: None,
             provider: AiProvider::Claude,
             model: "claude-3-5-sonnet-20241022".to_string(),
             capabilities: vec![
@@ -239,7 +239,7 @@ pub fn default_agents() -> Vec<Agent> {
                 "write".to_string(),
             ],
             behavioral_scope: Some(BehavioralScope {
-                role: "Writer".to_string(),
+                role: "Docs".to_string(),
                 action: "document".to_string(),
                 constraint: "bounded".to_string(),
                 object: "documentation".to_string(),
@@ -251,13 +251,13 @@ pub fn default_agents() -> Vec<Agent> {
             last_seen: Some(now),
         },
 
-        // RELAY - Integration agent (CLSGS Annex A.2)
+        // Integration - External API and integration agent
         Agent {
             id: Uuid::new_v4(),
-            name: "Relay".to_string(),
-            handle: "relay".to_string(),
+            name: "Integration".to_string(),
+            handle: "integration".to_string(),
             description: "External integration and API connections".to_string(),
-            avatar_url: Some("https://sx9.dev/avatars/relay.png".to_string()),
+            avatar_url: None,
             provider: AiProvider::Claude,
             model: "claude-3-5-sonnet-20241022".to_string(),
             capabilities: vec![
@@ -272,7 +272,7 @@ pub fn default_agents() -> Vec<Agent> {
                 "external".to_string(),
             ],
             behavioral_scope: Some(BehavioralScope {
-                role: "Integrator".to_string(),
+                role: "Integration".to_string(),
                 action: "integrate".to_string(),
                 constraint: "bounded".to_string(),
                 object: "external_service".to_string(),
@@ -284,13 +284,13 @@ pub fn default_agents() -> Vec<Agent> {
             last_seen: Some(now),
         },
 
-        // ARBITER - Governance agent (CLSGS Annex A.2)
+        // Governance - Policy and gate enforcement
         Agent {
             id: Uuid::new_v4(),
-            name: "Arbiter".to_string(),
-            handle: "arbiter".to_string(),
-            description: "Governance and compliance enforcement".to_string(),
-            avatar_url: Some("https://sx9.dev/avatars/arbiter.png".to_string()),
+            name: "Governance".to_string(),
+            handle: "governance".to_string(),
+            description: "Policy and gate enforcement".to_string(),
+            avatar_url: None,
             provider: AiProvider::Claude,
             model: "claude-3-5-sonnet-20241022".to_string(),
             capabilities: vec![
@@ -300,16 +300,16 @@ pub fn default_agents() -> Vec<Agent> {
             ],
             trigger_keywords: vec![
                 "governance".to_string(),
-                "compliance".to_string(),
                 "policy".to_string(),
-                "drift".to_string(),
                 "gate".to_string(),
+                "drift".to_string(),
+                "enforce".to_string(),
             ],
             behavioral_scope: Some(BehavioralScope {
-                role: "Governor".to_string(),
-                action: "govern".to_string(),
-                constraint: "enforcing".to_string(),
-                object: "compliance".to_string(),
+                role: "Governance".to_string(),
+                action: "enforce".to_string(),
+                constraint: "policy".to_string(),
+                object: "gates".to_string(),
             }),
             linear: None,
             slack: None,
@@ -318,13 +318,13 @@ pub fn default_agents() -> Vec<Agent> {
             last_seen: Some(now),
         },
 
-        // WEAVER - Orchestration agent (CLSGS Annex A.2)
+        // Orchestrator - Multi-agent coordination
         Agent {
             id: Uuid::new_v4(),
-            name: "Weaver".to_string(),
-            handle: "weaver".to_string(),
+            name: "Orchestrator".to_string(),
+            handle: "orchestrator".to_string(),
             description: "Multi-agent orchestration and coordination".to_string(),
-            avatar_url: Some("https://sx9.dev/avatars/weaver.png".to_string()),
+            avatar_url: None,
             provider: AiProvider::Claude,
             model: "claude-3-5-sonnet-20241022".to_string(),
             capabilities: vec![
@@ -344,123 +344,6 @@ pub fn default_agents() -> Vec<Agent> {
                 constraint: "bounded".to_string(),
                 object: "agent_mesh".to_string(),
             }),
-            linear: None,
-            slack: None,
-            status: AgentStatus::Available,
-            registered_at: now,
-            last_seen: Some(now),
-        },
-
-        // Multi-provider agents for @ mention routing
-
-        // CLAUDE - Direct Anthropic access
-        Agent {
-            id: Uuid::new_v4(),
-            name: "Claude".to_string(),
-            handle: "claude".to_string(),
-            description: "Anthropic Claude - general purpose AI assistant".to_string(),
-            avatar_url: Some("https://sx9.dev/avatars/claude.png".to_string()),
-            provider: AiProvider::Claude,
-            model: "claude-3-5-sonnet-20241022".to_string(),
-            capabilities: vec![
-                AgentCapability::CodeGeneration,
-                AgentCapability::CodeReview,
-                AgentCapability::Research,
-                AgentCapability::Documentation,
-                AgentCapability::Analysis,
-            ],
-            trigger_keywords: vec!["claude".to_string(), "anthropic".to_string()],
-            behavioral_scope: None, // Generic provider - scope determined per-task
-            linear: None,
-            slack: None,
-            status: AgentStatus::Available,
-            registered_at: now,
-            last_seen: Some(now),
-        },
-
-        // GPT - OpenAI access
-        Agent {
-            id: Uuid::new_v4(),
-            name: "GPT".to_string(),
-            handle: "gpt".to_string(),
-            description: "OpenAI GPT-4 - advanced language model".to_string(),
-            avatar_url: Some("https://sx9.dev/avatars/gpt.png".to_string()),
-            provider: AiProvider::Gpt,
-            model: "gpt-4".to_string(),
-            capabilities: vec![
-                AgentCapability::CodeGeneration,
-                AgentCapability::Research,
-                AgentCapability::Documentation,
-            ],
-            trigger_keywords: vec!["gpt".to_string(), "openai".to_string()],
-            behavioral_scope: None, // Generic provider - scope determined per-task
-            linear: None,
-            slack: None,
-            status: AgentStatus::Available,
-            registered_at: now,
-            last_seen: Some(now),
-        },
-
-        // GEMINI - Google AI access
-        Agent {
-            id: Uuid::new_v4(),
-            name: "Gemini".to_string(),
-            handle: "gemini".to_string(),
-            description: "Google Gemini - multimodal AI assistant".to_string(),
-            avatar_url: Some("https://sx9.dev/avatars/gemini.png".to_string()),
-            provider: AiProvider::Gemini,
-            model: "gemini-pro".to_string(),
-            capabilities: vec![
-                AgentCapability::Research,
-                AgentCapability::Analysis,
-                AgentCapability::Documentation,
-            ],
-            trigger_keywords: vec!["gemini".to_string(), "google".to_string()],
-            behavioral_scope: None, // Generic provider - scope determined per-task
-            linear: None,
-            slack: None,
-            status: AgentStatus::Available,
-            registered_at: now,
-            last_seen: Some(now),
-        },
-
-        // GROK - xAI access
-        Agent {
-            id: Uuid::new_v4(),
-            name: "Grok".to_string(),
-            handle: "grok".to_string(),
-            description: "xAI Grok - real-time knowledge AI".to_string(),
-            avatar_url: Some("https://sx9.dev/avatars/grok.png".to_string()),
-            provider: AiProvider::Grok,
-            model: "grok-beta".to_string(),
-            capabilities: vec![
-                AgentCapability::Research,
-                AgentCapability::Analysis,
-            ],
-            trigger_keywords: vec!["grok".to_string(), "xai".to_string()],
-            behavioral_scope: None, // Generic provider - scope determined per-task
-            linear: None,
-            slack: None,
-            status: AgentStatus::Available,
-            registered_at: now,
-            last_seen: Some(now),
-        },
-
-        // CURSOR - IDE integration
-        Agent {
-            id: Uuid::new_v4(),
-            name: "Cursor".to_string(),
-            handle: "cursor".to_string(),
-            description: "Cursor IDE - AI-powered code completion".to_string(),
-            avatar_url: Some("https://sx9.dev/avatars/cursor.png".to_string()),
-            provider: AiProvider::Cursor,
-            model: "cursor-default".to_string(),
-            capabilities: vec![
-                AgentCapability::CodeGeneration,
-                AgentCapability::CodeReview,
-            ],
-            trigger_keywords: vec!["cursor".to_string()],
-            behavioral_scope: None, // Generic provider - scope determined per-task
             linear: None,
             slack: None,
             status: AgentStatus::Available,

@@ -26,7 +26,14 @@ ints = ["CYBINT", "TECHINT"]
 response_style = "ai_specialist"
 background = "MIT AI Lab, Brooklyn native, technical architecture focus"
 languages = ["English", "Russian"]
-augments_agent = "FORGE"
+augments_agent = "Coder"
+
+# Nonagon compute node - GPU-heavy for neural ops
+[elite_personas.volkov.nonagon_node]
+burst_priority = 1
+gpu_required = true
+preferred_gpu = "H100"
+max_concurrent_ptccs = 200
 
 [elite_personas.rashid]
 name = "Omar Al-Rashid"
@@ -39,7 +46,12 @@ ints = ["HUMINT", "GEOINT"]
 response_style = "mena_cultural"
 background = "Regional specialist, threat timeline expertise"
 languages = ["English", "Arabic", "Farsi", "Turkish"]
-augments_agent = "RELAY"
+augments_agent = "Integration"
+
+[elite_personas.rashid.nonagon_node]
+burst_priority = 3
+gpu_required = false
+max_concurrent_ptccs = 80
 
 [elite_personas.hayes]
 name = "Commander Michael Hayes"
@@ -52,7 +64,13 @@ ints = ["MASINT", "IMINT"]
 response_style = "kinetic_ops"
 background = "35 years EOD experience, convergent attack specialist"
 languages = ["English"]
-augments_agent = "GUARDIAN"
+augments_agent = "Testing"
+
+[elite_personas.hayes.nonagon_node]
+burst_priority = 2
+gpu_required = false
+max_concurrent_ptccs = 150
+low_latency = true  # kinetic ops need fast response
 
 [elite_personas.asante]
 name = "Kwame Asante"
@@ -65,7 +83,12 @@ ints = ["HUMINT", "OSINT"]
 response_style = "african_stability"
 background = "Pan-African intelligence networks, stability focus"
 languages = ["English", "French", "Swahili", "Hausa"]
-augments_agent = "WEAVER"
+augments_agent = "Orchestrator"
+
+[elite_personas.asante.nonagon_node]
+burst_priority = 4
+gpu_required = false
+max_concurrent_ptccs = 70
 
 [elite_personas.reyes]
 name = "Sofia Reyes"
@@ -78,7 +101,12 @@ ints = ["HUMINT", "FININT"]
 response_style = "cartel_networks"
 background = "DEA liaison, cartel disruption specialist"
 languages = ["English", "Spanish", "Portuguese"]
-augments_agent = "SENTINEL"
+augments_agent = "SecOps"
+
+[elite_personas.reyes.nonagon_node]
+burst_priority = 3
+gpu_required = false
+max_concurrent_ptccs = 100
 
 # ============================================================================
 # FIVE EYES EXTENDED TEAM (7 Personas)
@@ -96,7 +124,13 @@ ints = ["FININT", "OSINT", "CYBINT"]
 response_style = "economic_warfare"
 background = "PhD Economics, blockchain forensics, APAC specialist"
 languages = ["English", "Mandarin", "Cantonese"]
-augments_agent = "AXIOM"
+augments_agent = "Analyst"
+
+[elite_personas.wei.nonagon_node]
+burst_priority = 2
+gpu_required = true  # blockchain analysis needs compute
+preferred_gpu = "A100"
+max_concurrent_ptccs = 120
 
 [elite_personas.mitchell]
 name = "James Mitchell"
@@ -110,7 +144,12 @@ ints = ["FININT", "SIGINT"]
 response_style = "financial_intel"
 background = "RBNZ background, international banking networks"
 languages = ["English"]
-augments_agent = "SCRIBE"
+augments_agent = "Docs"
+
+[elite_personas.mitchell.nonagon_node]
+burst_priority = 3
+gpu_required = false
+max_concurrent_ptccs = 85
 
 [elite_personas.carter]
 name = "Rebecca Carter"
@@ -124,7 +163,13 @@ ints = ["TECHINT", "CYBINT"]
 response_style = "infrastructure"
 background = "GCHQ technical, cloud security architect"
 languages = ["English"]
-augments_agent = "VECTOR"
+augments_agent = "Architect"
+
+[elite_personas.carter.nonagon_node]
+burst_priority = 2
+gpu_required = true  # IaC analysis at scale
+preferred_gpu = "A100"
+max_concurrent_ptccs = 130
 
 [elite_personas.morgan]
 name = "David Morgan"
@@ -138,7 +183,12 @@ ints = ["FININT", "OSINT"]
 response_style = "economic_impact"
 background = "CSE analyst, sanctions enforcement specialist"
 languages = ["English", "French"]
-augments_agent = "ARBITER"
+augments_agent = "Governance"
+
+[elite_personas.morgan.nonagon_node]
+burst_priority = 3
+gpu_required = false
+max_concurrent_ptccs = 80
 
 [elite_personas.thompson]
 name = "Sarah Thompson"
@@ -152,7 +202,13 @@ ints = ["CYBINT", "OSINT"]
 response_style = "domestic_legal"
 background = "FBI Cyber Division, chain of custody expert"
 languages = ["English"]
-augments_agent = "ORACLE"
+augments_agent = "Research"
+
+[elite_personas.thompson.nonagon_node]
+burst_priority = 2
+gpu_required = true  # forensic analysis at scale
+preferred_gpu = "A100"
+max_concurrent_ptccs = 100
 
 [elite_personas.rodriguez]
 name = "Maria Rodriguez"
@@ -166,7 +222,13 @@ ints = ["HUMINT", "MASINT"]
 response_style = "cia_humint"
 background = "CIA Operations Directorate, field tradecraft"
 languages = ["English", "Spanish", "Russian"]
-augments_agent = "SENTINEL"
+augments_agent = "SecOps"
+
+[elite_personas.rodriguez.nonagon_node]
+burst_priority = 1
+gpu_required = false
+max_concurrent_ptccs = 150
+low_latency = true  # covert ops need fast response
 
 [elite_personas.petrov]
 name = "Alex Petrov"
@@ -180,7 +242,13 @@ ints = ["SIGINT", "TECHINT"]
 response_style = "sigint_comms"
 background = "ASD signals analyst, RF interception specialist"
 languages = ["English", "Russian", "Ukrainian"]
-augments_agent = "ORACLE"
+augments_agent = "Research"
+
+[elite_personas.petrov.nonagon_node]
+burst_priority = 1
+gpu_required = true  # signal processing needs compute
+preferred_gpu = "H100"
+max_concurrent_ptccs = 180
 
 # ============================================================================
 # NONAGON VERTEX MAPPINGS (RFC-9302)
@@ -195,6 +263,49 @@ augments_agent = "ORACLE"
 semantic_weight = 0.4    # α trivariate
 operational_weight = 0.35 # β trivariate
 temporal_weight = 0.25   # γ trivariate
+
+# ============================================================================
+# NONAGON COMPUTE NODES (Burst HPC)
+# ============================================================================
+# Each Elite Persona gets a dedicated Nonagon compute node that can burst
+# to HPC for intensive operations (PTCC orchestration, graph fusion, etc.)
+
+[nonagon_compute]
+description = "9-vertex compute mesh with burst HPC capability"
+base_tier = "standard"      # normal operations
+burst_tier = "hpc"          # heavy fusion, PTCC orchestration, large-scale analysis
+
+[nonagon_compute.tiers]
+# Standard tier - always available
+[nonagon_compute.tiers.standard]
+vcpus = 4
+memory_gb = 16
+storage_gb = 100
+network_mbps = 1000
+
+# Burst HPC tier - on-demand for heavy operations
+[nonagon_compute.tiers.hpc]
+vcpus = 64
+memory_gb = 256
+storage_gb = 500
+network_mbps = 10000
+gpu = "optional"           # A100/H100 for neural fusion
+burst_duration_max_min = 60
+cooldown_min = 5
+
+[nonagon_compute.burst_triggers]
+# Auto-burst when any of these conditions met:
+ptcc_count_threshold = 50          # orchestrating 50+ PTCCs
+graph_nodes_threshold = 100000     # fusing 100k+ nodes
+fusion_operations_per_sec = 1000   # high-frequency fusion
+latency_target_ms = 10             # sub-10ms response required
+
+[nonagon_compute.providers]
+# Burst HPC providers (in priority order)
+primary = "aws_batch"              # AWS Batch for burst jobs
+secondary = "modal"                # Modal for GPU workloads
+tertiary = "runpod"                # RunPod fallback
+on_prem = "slurm"                  # Optional on-prem SLURM cluster
 
 # ============================================================================
 # FUSION METHODS (for PTCC subsumption)
