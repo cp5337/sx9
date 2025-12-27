@@ -1,0 +1,46 @@
+A quick syncronization NOTE below are the tasks for this vertical - we are doing a domain adaptation of the agnostic core to create a software factory for Synaptix(9) this is also how we implement a DeveSecops system you layed the software standards for from the DOD material. 
+
+Design
+
+Transform ideas into test-driven engineering concepts.
+
+2. Model
+
+Represent real-world domains as computable structures.
+
+3. Reason
+
+Derive scientific decisions from structured context.
+
+4. Build
+
+Use engineering concepts to create functional systems.
+
+5. Integrate
+
+Used combined technologies to achieve expected outcomes. 
+
+6. Validate
+
+Verify system behavior against defined standards and outcomes.
+
+7. Operate
+
+Deploy systems in real conditions to solve problemsk.
+
+8. Learn
+
+Adapt system behavior using observed outcomes.
+
+9. Govern
+
+Implement a traceable Devsecops system.
+
+10. Retire
+
+Use an evolutionary process to replace capablites in a timely manner.
+
+We worked on these previosly.  The main tasks that will be nodes for the graph are these -which will beget node interviews etc aligning with all RFCs and creating others as we have been for FORGE. Child tasks fill below these and task decompose into semantic and operational aspects of tool chains etc. Where CTAS has Hunt, Detect, Disrupt, Disable, Dominate.  We have found that our industrial counteparts to HD4 are: Plan, Build, Insert, Operate, Maintain, Retire.  
+
+
+KEY POINT: DUE TO RECOVERY WE ARE SIMULTANEOUSLY BUILDING FORGE INFRASTRUCTURE AND CTAS RELATED SYSTEMS _ THEY ARE INTERELATED.  Here's why - if we had not lost data FORGE would get the prompts to build the remaining tool and persona architectures, finish glaf, apply SDT and Crystal tunings, build the gallery in CTAS main, create the executable gallery items that allow us to sell or deploy tool chains and components etc. We would have been using linear and voice by now.  Sooo I am trying to sort of simul-multi-task to close the gap. When thats done we can adapt to the other IDEs and restablish the separation of concerns. 
