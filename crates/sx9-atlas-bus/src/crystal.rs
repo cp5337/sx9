@@ -13,8 +13,58 @@
 //! ## Resonance Score
 //! Returns 0.0 - 1.0 indicating how well the payload "rings" the crystal.
 //! This feeds directly into the SDT gate logic.
+//!
+//! ## Unicode Short Codes (RFC-9026)
+//!
+//! Crystal family runes are in Zone C (1-100ms):
+//! - U+ED00: CRYSTAL_ORBITAL
+//! - U+ED01: CRYSTAL_GROUND_STATION
+//! - U+ED02: CRYSTAL_TAR_PIT
+//! - U+ED03: CRYSTAL_SILENT
+//! - U+ED04: CRYSTAL_ADAPTIVE
+//!
+//! Delta class runes:
+//! - U+ED10: DELTA_NONE (< 2°)
+//! - U+ED11: DELTA_MICRO (2-10°)
+//! - U+ED12: DELTA_SOFT (10-25°)
+//! - U+ED13: DELTA_HARD (25-60°)
+//! - U+ED14: DELTA_CRITICAL (≥ 60°)
 
 use core::sync::atomic::{AtomicU32, AtomicU64, Ordering};
+
+// ============================================================================
+// UNICODE SHORT CODES (RFC-9026 Zone C)
+// ============================================================================
+
+/// Unicode Private Use Area base for Crystal families (U+ED00)
+pub const CRYSTAL_RUNE_BASE: u32 = 0xED00;
+
+/// Crystal family runes
+pub mod crystal_runes {
+    use super::CRYSTAL_RUNE_BASE;
+
+    /// Orbital crystal (U+ED00)
+    pub const ORBITAL: u32 = CRYSTAL_RUNE_BASE + 0x00;
+    /// Ground station crystal (U+ED01)
+    pub const GROUND_STATION: u32 = CRYSTAL_RUNE_BASE + 0x01;
+    /// Tar pit crystal (U+ED02)
+    pub const TAR_PIT: u32 = CRYSTAL_RUNE_BASE + 0x02;
+    /// Silent crystal (U+ED03)
+    pub const SILENT: u32 = CRYSTAL_RUNE_BASE + 0x03;
+    /// Adaptive crystal (U+ED04)
+    pub const ADAPTIVE: u32 = CRYSTAL_RUNE_BASE + 0x04;
+
+    /// Delta class: None (U+ED10)
+    pub const DELTA_NONE: u32 = CRYSTAL_RUNE_BASE + 0x10;
+    /// Delta class: Micro (U+ED11)
+    pub const DELTA_MICRO: u32 = CRYSTAL_RUNE_BASE + 0x11;
+    /// Delta class: Soft (U+ED12)
+    pub const DELTA_SOFT: u32 = CRYSTAL_RUNE_BASE + 0x12;
+    /// Delta class: Hard (U+ED13)
+    pub const DELTA_HARD: u32 = CRYSTAL_RUNE_BASE + 0x13;
+    /// Delta class: Critical (U+ED14)
+    pub const DELTA_CRITICAL: u32 = CRYSTAL_RUNE_BASE + 0x14;
+}
 
 /// Crystal family determines resonance behavior
 #[repr(u8)]
@@ -30,6 +80,30 @@ pub enum CrystalFamily {
     Silent = 3,
     /// Adaptive - learns from traffic patterns
     Adaptive = 4,
+}
+
+impl CrystalFamily {
+    /// Convert to Unicode rune (U+ED00-ED04)
+    #[inline]
+    pub const fn to_rune(self) -> u32 {
+        CRYSTAL_RUNE_BASE + (self as u32)
+    }
+
+    /// Parse from Unicode rune
+    #[inline]
+    pub const fn from_rune(rune: u32) -> Option<Self> {
+        if rune < CRYSTAL_RUNE_BASE || rune > CRYSTAL_RUNE_BASE + 4 {
+            return None;
+        }
+        Some(match rune - CRYSTAL_RUNE_BASE {
+            0 => CrystalFamily::Orbital,
+            1 => CrystalFamily::GroundStation,
+            2 => CrystalFamily::TarPit,
+            3 => CrystalFamily::Silent,
+            4 => CrystalFamily::Adaptive,
+            _ => return None,
+        })
+    }
 }
 
 impl Default for CrystalFamily {
@@ -485,6 +559,29 @@ impl DeltaClass {
             DeltaClass::Hard => 42.5,
             DeltaClass::Critical => 90.0,
         }
+    }
+
+    /// Convert to Unicode rune (U+ED10-ED14)
+    #[inline]
+    pub const fn to_rune(self) -> u32 {
+        CRYSTAL_RUNE_BASE + 0x10 + (self as u32)
+    }
+
+    /// Parse from Unicode rune
+    #[inline]
+    pub const fn from_rune(rune: u32) -> Option<Self> {
+        let base = CRYSTAL_RUNE_BASE + 0x10;
+        if rune < base || rune > base + 4 {
+            return None;
+        }
+        Some(match rune - base {
+            0 => DeltaClass::None,
+            1 => DeltaClass::Micro,
+            2 => DeltaClass::Soft,
+            3 => DeltaClass::Hard,
+            4 => DeltaClass::Critical,
+            _ => return None,
+        })
     }
 }
 

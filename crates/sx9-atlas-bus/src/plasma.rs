@@ -16,6 +16,14 @@
 //!    - Controls command lifetime, supersession, lineage kill
 //!    - Implements holding current and anode drop logic
 //!
+//! ## Unicode Short Codes (RFC-9026)
+//!
+//! SDT state runes are in Zone C (1-100ms):
+//! - U+EC00: SDT_OFF
+//! - U+EC01: SDT_PRIMED
+//! - U+EC02: SDT_CONDUCTING
+//! - U+EC03: SDT_LATCHED
+//!
 //! ```text
 //! ┌─────────────────────────────────────────────────────────────────┐
 //! │                    PLASMA STATE MACHINE                          │
@@ -40,6 +48,27 @@
 use crate::crystal::{Crystal, CrystalFamily, DeltaClass, Polycrystal, PolycrystalResult};
 use core::sync::atomic::{AtomicBool, AtomicU16, AtomicU32, AtomicU64, AtomicU8, Ordering};
 
+// ============================================================================
+// UNICODE SHORT CODES (RFC-9026 Zone C)
+// ============================================================================
+
+/// Unicode Private Use Area base for SDT states (U+EC00)
+pub const SDT_RUNE_BASE: u32 = 0xEC00;
+
+/// SDT state runes
+pub mod sdt_runes {
+    use super::SDT_RUNE_BASE;
+
+    /// SDT Off state (U+EC00)
+    pub const OFF: u32 = SDT_RUNE_BASE + 0x00;
+    /// SDT Primed state (U+EC01)
+    pub const PRIMED: u32 = SDT_RUNE_BASE + 0x01;
+    /// SDT Conducting state (U+EC02)
+    pub const CONDUCTING: u32 = SDT_RUNE_BASE + 0x02;
+    /// SDT Latched state (U+EC03)
+    pub const LATCHED: u32 = SDT_RUNE_BASE + 0x03;
+}
+
 /// SDT (Software-Defined Thyristor) states
 #[repr(u8)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -52,6 +81,29 @@ pub enum SdtState {
     Conducting = 2,
     /// Gate is latched, requires explicit reset
     Latched = 3,
+}
+
+impl SdtState {
+    /// Convert to Unicode rune (U+EC00-EC03)
+    #[inline]
+    pub const fn to_rune(self) -> u32 {
+        SDT_RUNE_BASE + (self as u32)
+    }
+
+    /// Parse from Unicode rune
+    #[inline]
+    pub const fn from_rune(rune: u32) -> Option<Self> {
+        if rune < SDT_RUNE_BASE || rune > SDT_RUNE_BASE + 3 {
+            return None;
+        }
+        Some(match rune - SDT_RUNE_BASE {
+            0 => SdtState::Off,
+            1 => SdtState::Primed,
+            2 => SdtState::Conducting,
+            3 => SdtState::Latched,
+            _ => return None,
+        })
+    }
 }
 
 impl From<u8> for SdtState {
