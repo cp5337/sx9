@@ -23,6 +23,7 @@ members = [
 
     # Foundation v7.3.1
     "crates/sx9-foundation-core",
+    "crates/sx9-voice-bridge",
     "crates/sx9-foundation-daemon",
     "crates/sx9-foundation-data",
     "crates/sx9-foundation-interface",

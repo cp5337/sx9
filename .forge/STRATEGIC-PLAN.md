@@ -118,6 +118,59 @@ Only after Phase 0-2:
 
 ---
 
+## Voice System (RFC-9107)
+
+### sx9-voice-bridge (NEW - Dec 27)
+**Location:** `crates/sx9-voice-bridge/`
+**Status:** ✅ Compiles
+
+| Module | Purpose |
+|--------|---------|
+| `tts.rs` | ElevenLabs TTS API (elevenlabs_tts, tts_with_retry) |
+| `audio.rs` | Audio capture, RMS, WAV encoding |
+| `vad.rs` | Voice Activity Detection (energy-based) |
+| `session.rs` | Voice session management |
+| `voice_mapping.rs` | Agent → Voice ID mapping |
+| `config.rs` | VoiceBridgeConfig, AgentsConfig |
+
+### Voice-Enabled Agents (RFC-9107 §5.2)
+| Agent | Voice ID | Language | Domain |
+|-------|----------|----------|--------|
+| Natasha | EXAVITQu4vr4xnSDxMaL | Russian | Geopolitical Intel |
+| Elena | oWAxZDx7w5VEj9dCyTzz | Spanish | Cartel Operations |
+| Zoe | 21m00Tcm4TlvDq8ikWAM | English | Orbital Control |
+| Cove | pNInz6obpgDQGcFmaJgB | English | Repository Ops |
+| Marcus | VR6AewLTigWG4xSOukaG | English | Neural Mux |
+
+### Integration (TODO)
+- [ ] Wire sx9-foundation-voice to use sx9-voice-bridge
+- [ ] Add MCP server for voice commands
+- [ ] Test ElevenLabs API with real keys
+
+---
+
+## graph-db Analysis (Dec 27)
+
+**Location:** `/Users/cp5337/Developer/graph-db/`
+**Status:** ~75% complete, 40 TypeScript errors
+
+### Key Math Files (Port to Rust consideration)
+| File | Math | Target |
+|------|------|--------|
+| `trivariate.ts` | Dual convergence, Unicode addressing | sx9-glaf-core |
+| `thalamicFilter.ts` | Complexity scoring | sx9-foundation-voice |
+| `legionHotPath.ts` | Nonagon bitmask routing | sx9-glaf-core |
+| `ringBuffer.ts` | SPSC lock-free buffer | crossbeam |
+
+### Forge UI Comparison
+| Metric | graph-db | sx9-forge |
+|--------|----------|-----------|
+| App.tsx | 541 lines ✅ | 1783 lines ❌ |
+| Hooks | 4 custom ✅ | 0 ❌ |
+| Styling | Tailwind ✅ | Inline ❌ |
+
+---
+
 ## Today's Wins (Don't Lose)
 
 - [x] Converge crates renamed to sx9-* prefix
@@ -126,3 +179,8 @@ Only after Phase 0-2:
 - [x] MEMORY.md updated with architecture
 - [x] Found SmartCrateControl in development-center
 - [x] Documented app/task domain mapping
+- [x] Created sx9-voice-bridge crate (ElevenLabs TTS/STT)
+- [x] Wired sx9-linear-agent QA gates to sx9-harness
+- [x] Created tools/run-agent-harness.sh
+- [x] Inventoried graph-db UI and math components
+- [x] Created sx9-converge/IMPLEMENTATION-GAPS.md

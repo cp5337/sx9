@@ -1,0 +1,63 @@
+[package]
+name = "sx9-voice-bridge"
+version = "0.1.0"
+edition = "2021"
+license = "Apache-2.0"
+description = "ElevenLabs TTS/STT Voice Bridge - Full implementation for sx9-foundation-voice (RFC-9107)"
+authors = ["Synaptix9 Engineering <foundation@sx9.dev>"]
+
+[dependencies]
+# Foundation Integration
+sx9-foundation-core = { path = "../sx9-foundation-core" }
+
+# Async Runtime
+tokio = { version = "1.0", features = ["full", "sync"] }
+
+# HTTP Client for ElevenLabs API
+reqwest = { version = "0.11", features = ["json", "stream", "rustls-tls"], default-features = false }
+
+# Serialization
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+
+# Audio Processing
+rodio = { version = "0.17", optional = true }
+symphonia = { version = "0.5", features = ["mp3", "wav"], optional = true }
+cpal = { version = "0.15", optional = true }
+hound = { version = "3.5", optional = true }
+
+# Voice Activity Detection
+webrtc-vad = { version = "0.4", optional = true }
+
+# Utilities
+anyhow = "1.0"
+thiserror = "1.0"
+tracing = "0.1"
+uuid = { version = "1.8", features = ["v4"] }
+chrono = { version = "0.4", features = ["serde"] }
+base64 = "0.22"
+bytes = "1.5"
+futures-util = "0.3"
+
+[dev-dependencies]
+tokio-test = "0.4"
+tempfile = "3.8"
+mockall = "0.12"
+
+[features]
+default = ["tts", "audio_capture", "vad"]
+tts = []
+audio_capture = ["cpal", "hound"]
+audio_playback = ["rodio", "symphonia"]
+vad = ["webrtc-vad"]
+full = ["tts", "audio_capture", "audio_playback", "vad"]
+
+[lib]
+name = "sx9_voice_bridge"
+path = "src/lib.rs"
+
+[package.metadata.smart_crate]
+class = "foundation.voice.bridge"
+rfc = ["9107"]
+deterministic = false
+storage = "none"

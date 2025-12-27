@@ -1687,3 +1687,200 @@ impl ConvergeDetector {
 5. **Phase 5:** `laminar.rs` - More complex matroid
 6. **Phase 6:** `intercept.rs` - Uses enu.rs
 7. **Phase 7:** Integration with ConvergeDetector
+
+---
+
+## 6. GLAF System Status
+
+### 6.1 Overview
+
+GLAF (Graph Learning & Analytics Fabric) spans two repositories:
+
+| Component | Location | Language | Purpose |
+|-----------|----------|----------|---------|
+| **graph-db** | `/Users/cp5337/Developer/graph-db/` | TypeScript/React | GLAF UI & Hot Path |
+| **sx9-glaf-core** | `crates/sx9-glaf-core/` | Rust | Convergence algorithms |
+| **sx9-ops-main** | `apps/sx9-ops-main/src/components/glaf/` | TypeScript/React | OPS integration |
+
+### 6.2 graph-db (External GLAF UI)
+
+**Status:** ~75% Implemented, ~40 TypeScript errors pending
+
+#### Core GLAF Modules (`src/lib/glaf/`)
+
+| File | LOC | Status | Description |
+|------|-----|--------|-------------|
+| `legionHotPath.ts` | 244 | ✅ Complete | Nonagon routing, Crystal tuning, Unicode addressing |
+| `synaptixBridge.ts` | 365 | ✅ Complete | Workflow↔GLAF bridge, execution recording |
+| `apecsLayer.ts` | ~400 | ✅ Complete | Async processing layer |
+| `ringBuffer.ts` | 228 | ✅ Complete | SPSC lock-free ring buffer |
+| `orbital.ts` | 95 | ⚠️ Stub | Satellite data feeds |
+| `plasma.ts` | 53 | ⚠️ Stub | Plasma-ECS integration |
+| `threat_intel.ts` | 53 | ⚠️ Stub | Threat intelligence feeds |
+
+#### Graph Library (`src/lib/graph/`)
+
+| File | LOC | Status | Description |
+|------|-----|--------|-------------|
+| `GraphNode.ts` | 240 | ✅ Complete | Node types, styles, ACOG support |
+| `GraphEdge.ts` | 215 | ✅ Complete | Edge types, markers, animations |
+| `networking.ts` | 410 | ✅ Complete | Network scan visualization |
+| `constants.ts` | 256 | ✅ Complete | Colors, shapes, layouts |
+| `examples.ts` | 405 | ✅ Complete | Demo graph data |
+
+#### TypeScript Fixes Pending
+
+```
+~40 errors total (see TYPESCRIPT_FIXES_PENDING.md):
+- Path alias configuration (@/*)
+- Missing type properties (opacity, type, node_type)
+- Optional property access fixes
+- Backend files exclusion (glaf-intel.ts, neon-graph-api.ts)
+```
+
+### 6.3 sx9-glaf-core (Rust Crate)
+
+**Status:** 85% Implemented
+
+| Module | LOC | Status | Description |
+|--------|-----|--------|-------------|
+| `convergence.rs` | 172 | ✅ Complete | H1/H2 dual convergence, RFC-9024/9025 |
+| `hawkes.rs` | 57 | ✅ Complete | Hawkes process intensity λ(t) |
+| `hmm.rs` | 100 | ✅ Complete | Phase detection (Recon→Staging→Exec→Exfil) |
+| `teth.rs` | 79 | ✅ Complete | Graph entropy H(G) |
+| `matroid.rs` | 83 | ⚠️ Basic | Latent matroid rank (needs full impl) |
+| `glaf_core.rs` | 84 | ✅ Complete | GLAFCore engine, Node/Edge management |
+| `types.rs` | ~100 | ✅ Complete | Node, Edge, NodeChange types |
+| `graph.rs` | ~150 | ✅ Complete | Graph operations |
+| `trivariate.rs` | ~80 | ⚠️ Basic | Hash stub (impl in sx9-hashing-engine) |
+
+#### Key Algorithms Implemented
+
+**Dual Convergence (RFC-9024/9025):**
+```rust
+// Simple: (h1 + h2) / 2.0
+// Weighted: 0.6 * h1 + 0.4 * h2
+// If delta > 0.1, weighted catches edge cases
+```
+
+**Hawkes Process:**
+```rust
+// λ(t) = μ + Σ α × e^(-β(t-tᵢ))
+// Default: μ=0.1, α=0.5, β=1.0
+```
+
+**HMM Phase Transitions:**
+```
+[Recon] → [Staging] → [Execution] → [Exfil]
+   0.6       0.5         0.6         0.9  (stay probability)
+```
+
+---
+
+## 7. UI System Status (sx9-forge)
+
+### 7.1 Architecture
+
+**Location:** `sx9-forge/` (Tauri + React + Vite)
+
+| Component | Status | Description |
+|-----------|--------|-------------|
+| PromptForgeScreen | ✅ 1783 LOC | Main UI screen |
+| Tauri Commands | ✅ Implemented | save_prompt, create_linear_issue, notify_slack |
+| Redux Store | ✅ Connected | Leptose, ChromaDB status |
+| YAML Generation | ✅ Working | Prompt template output |
+| Template Loading | ✅ Working | Load/save YAML prompts |
+
+### 7.2 UI Layout
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│ HEADER: Title | RFC | Phase | [Copy] [Generate]             │
+├─────────────────────────────────────────────────────────────┤
+│ LEFT RAIL  │        CENTER         │      RIGHT RAIL        │
+│ (Actions)  │     (YAML Editor)     │      (Context)         │
+│            │                       │                        │
+│ • harness  │   1│ prompt:          │  Tabs:                 │
+│ • persona  │   2│   title: "..."   │  • intel               │
+│ • agents   │   3│   rfc: RFC-XXXX  │  • tools               │
+│ • linear   │   4│   phase: IMPL    │  • threats             │
+│ • slack    │   5│   harness: ...   │  • qa                  │
+│ • context  │   6│   persona: FORGE │                        │
+│            │   7│   agents: [...]  │  Leptose: [status]     │
+│            │                       │  ChromaDB: [status]    │
+├─────────────────────────────────────────────────────────────┤
+│ STATUS BAR: Feedback message | Timestamp                    │
+└─────────────────────────────────────────────────────────────┘
+```
+
+### 7.3 CLSGS Agents (Annex A.2)
+
+| Agent | Domain | Tools |
+|-------|--------|-------|
+| FORGE | Code Generation | Filesystem, CI/CD, MCP |
+| AXIOM | Analysis | Math reasoning, Figma |
+| VECTOR | Architecture | Read-only audits, deps |
+| SENTINEL | Security | MITRE ATT&CK, vuln scan |
+| GUARDIAN | QA | Test coverage, gates |
+| ORACLE | Research | Web search, synthesis |
+| SCRIBE | Documentation | RFC generation |
+| RELAY | Integration | API bridges |
+| ARBITER | Decision | Conflict resolution |
+| WEAVER | Orchestration | Multi-agent coordination |
+
+### 7.4 Workflow Status
+
+**Current Flow:**
+1. ✅ New/Edit prompt via UI
+2. ✅ Configure harness mode (Build/Review/Deploy)
+3. ✅ Select persona (CLSGS agents)
+4. ✅ Set Linear team and Slack channel
+5. ✅ Generate YAML output
+6. ✅ Save to disk via Tauri command
+7. ✅ Create Linear issue (optional)
+8. ✅ Notify Slack (optional)
+
+**Gaps:**
+- ⚠️ Schedule execution (placeholder only)
+- ⚠️ Direct agent dispatch (manual via YAML)
+- ⚠️ Real-time harness status (mocked)
+
+---
+
+## 8. graph-db Integration Points
+
+### 8.1 Connection to sx9
+
+| graph-db | sx9 Equivalent | Status |
+|----------|----------------|--------|
+| `src/lib/gateway.ts` | `sx9-gateway-primary` | 🔗 Via NeuralMux |
+| `src/lib/vaultClient.ts` | `sx9-foundation-core/keyvault` | 🔗 Via /vault/* |
+| `src/lib/glaf/legionHotPath.ts` | `sx9-glaf-core` | ⚠️ Port to Rust |
+| `src/lib/workflow/executor.ts` | `sx9-harness` | ⚠️ Needs bridge |
+| `src/components/` | `sx9-ops-main/glaf/` | 🔄 Merge required |
+
+### 8.2 Recommended Consolidation
+
+1. **Phase 1:** Port `legionHotPath.ts` → Rust in sx9-glaf-core
+2. **Phase 2:** Wire workflow executor → sx9-harness agents
+3. **Phase 3:** Merge graph-db components → sx9-ops-main/glaf/
+4. **Phase 4:** Unify persistence (Sled → SledIS multi-realm)
+
+---
+
+## 9. Summary: All Implementation Gaps
+
+| Area | Component | Gap | Priority |
+|------|-----------|-----|----------|
+| Geometry | `earth.rs` | Full WGS84 impl | HIGH |
+| Geometry | `enu.rs` | Local tangent plane | HIGH |
+| Geometry | `intercept.rs` | Trajectory intersection | MEDIUM |
+| Selection | `partition.rs` | Partition matroid | HIGH |
+| Selection | `laminar.rs` | Laminar matroid | MEDIUM |
+| Selection | `greedy.rs` | Deterministic greedy | HIGH |
+| GLAF | `matroid.rs` | Full LatentMatroid | MEDIUM |
+| GLAF | `trivariate.rs` | Wire to hashing-engine | LOW |
+| graph-db | TypeScript | 40 type errors | HIGH |
+| graph-db | orbital.ts | Satellite feeds | LOW |
+| UI | Schedule | Cron execution | LOW |
+| UI | Agent dispatch | Direct invocation | MEDIUM |
