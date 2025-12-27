@@ -12,7 +12,7 @@ sim = []
 
 [dependencies]
 # Foundation crate - brings in all core deps via re-exports
-sx9-foundation-core = { path = "../../crates/sx9-foundation-core" }
+sx9-foundation-core = { path = "../crates/sx9-foundation-core" }
 
 # Serde needed directly for derive macros (re-exports don't work for proc-macros)
 serde.workspace = true

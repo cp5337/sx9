@@ -159,12 +159,12 @@ export SERENA_ENDPOINT="http://localhost:8080"
 - sx9-plasma-defender
 - 25+ more crates
 
-### CONVERGE CRATES (in 04-sx9-converge/)
+### CONVERGE CRATES (sx9-converge/)
 | Crate | Location | Status |
 |-------|----------|--------|
-| sx9-converge | `04-sx9-converge/sx9-converge` | Compiles |
-| sx9-converge-geometry | `04-sx9-converge/sx9-converge-geometry` | Compiles |
-| sx9-converge-selection | `04-sx9-converge/sx9-converge-selection` | Compiles |
+| sx9-converge | `sx9-converge/` | Compiles |
+| sx9-converge-geometry | `sx9-converge/geometry/` | Compiles |
+| sx9-converge-selection | `sx9-converge/selection/` | Compiles |
 
 ### DISCONNECTED (Built but not wired)
 | Component | RFC | Status |
@@ -296,7 +296,7 @@ export SERENA_ENDPOINT="http://localhost:8080"
 ```
 sx9/
 ├── 01-rfc/              # 64 RFCs across 8 directories
-├── 04-sx9-converge/     # Geometry/selection crates (COMPILE)
+├── sx9-converge/        # Geometry/selection crates (COMPILE)
 ├── 06-shuttle-folder/   # IGNORED (secrets purged)
 ├── apps/
 │   └── sx9-ops-main/    # OPS vertical (threat dashboard)

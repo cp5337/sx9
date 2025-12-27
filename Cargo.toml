@@ -57,9 +57,9 @@ members = [
     "crates/sx9-lsp",
 
     # CONVERGE Sensor (RFC-93XX family)
-    "04-sx9-converge/sx9-converge",
-    "04-sx9-converge/sx9-converge-geometry",
-    "04-sx9-converge/sx9-converge-selection",
+    "sx9-converge",
+    "sx9-converge/geometry",
+    "sx9-converge/selection",
 ]
 resolver = "2"
 
