@@ -17,6 +17,17 @@ use tracing::{debug, info, warn};
 // Foundation Crate Re-exports (per RFC-9004)
 // ═══════════════════════════════════════════════════════════════════════════
 
+// Third-party re-exports for downstream crates
+pub use anyhow;
+pub use chrono;
+pub use serde;
+pub use serde_json;
+pub use uuid;
+#[cfg(feature = "elastic")]
+pub use tokio;
+#[cfg(feature = "elastic")]
+pub use tracing;
+
 // Core foundation - always available
 pub use sx9_foundation_core as core;
 pub use sx9_foundation_interface as interface;
