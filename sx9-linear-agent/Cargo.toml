@@ -42,6 +42,13 @@ thiserror = "1.0"
 # Security
 secrecy = "0.8"
 
+# Git operations
+git2 = "0.18"
+
+# SX9 internal crates
+sx9-harness = { path = "../crates/sx9-harness" }
+sx9-foundation-core = { path = "../crates/sx9-foundation-core" }
+
 [dev-dependencies]
 tokio-test = "0.4"
 mockito = "1.2"

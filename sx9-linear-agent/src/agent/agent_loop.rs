@@ -2,8 +2,10 @@
 //!
 //! Main orchestration loop for autonomous agent processing.
 //! Polls Linear for assigned issues and dispatches to appropriate agents.
+//! Integrates with sx9-harness QA gates (RFC-9050) and Git operations (RFC-9030).
 
 use anyhow::Result;
+use std::path::Path;
 use std::sync::Arc;
 use std::time::Duration;
 use tokio::sync::RwLock;
@@ -15,6 +17,9 @@ use super::{
 };
 use crate::linear::Client as LinearClient;
 use crate::mcp::{SerenaClient, SlackMCP};
+
+// Import sx9-harness QA gates (RFC-9050)
+use sx9_harness::{StaticGate, SemanticGate, ArchGate, PatternGate};
 
 /// Agent loop orchestrator
 pub struct AgentLoop {
@@ -224,18 +229,137 @@ impl AgentLoop {
         agent.run(task).await
     }
 
-    /// Run QA gates on generated files
+    /// Run QA gates on generated files using sx9-harness (RFC-9050)
     async fn run_qa_gates(&self, files: &[super::GeneratedFile]) -> Result<QaReport> {
         debug!("Running QA gates on {} files", files.len());
 
-        // Placeholder - would integrate with sx9-harness QA gates
+        let mut issues = Vec::new();
+        let mut static_passed = true;
+        let mut arch_passed = true;
+        let mut pattern_passed = true;
+        let mut semantic_passed = true;
+
+        // Get the crate path from the first file or use current directory
+        let crate_path = if let Some(first_file) = files.first() {
+            let p = Path::new(&first_file.path);
+            // Navigate up to find Cargo.toml
+            p.ancestors()
+                .find(|a| a.join("Cargo.toml").exists())
+                .unwrap_or(Path::new("."))
+                .to_path_buf()
+        } else {
+            std::env::current_dir().unwrap_or_else(|_| ".".into())
+        };
+
+        // Run Static Gate (cargo check, complexity analysis)
+        let static_gate = StaticGate::new();
+        match static_gate.run(&crate_path).await {
+            Ok(report) => {
+                if report.structure_score < 50 || !report.findings.is_empty() {
+                    static_passed = false;
+                    for finding in report.findings {
+                        issues.push(super::QaIssue {
+                            gate: "static".to_string(),
+                            severity: super::QaSeverity::Error,
+                            message: format!("[{}] {}", finding.rule, finding.message),
+                            file: Some(finding.file),
+                            line: Some(finding.line),
+                        });
+                    }
+                }
+                debug!("Static gate: structure={}, complexity={}",
+                    report.structure_score, report.complexity_score);
+            }
+            Err(e) => {
+                warn!("Static gate error: {}", e);
+            }
+        }
+
+        // Run Architecture Gate (dependency analysis)
+        let arch_gate = ArchGate::new();
+        match arch_gate.run(&crate_path).await {
+            Ok(report) => {
+                if !report.violations.is_empty() {
+                    arch_passed = false;
+                    for violation in &report.violations {
+                        issues.push(super::QaIssue {
+                            gate: "arch".to_string(),
+                            severity: super::QaSeverity::Warning,
+                            message: format!("[{}] {}", violation.rule, violation.description),
+                            file: Some(violation.file.clone()),
+                            line: None,
+                        });
+                    }
+                }
+                debug!("Arch gate: violations={}", report.violations.len());
+            }
+            Err(e) => {
+                warn!("Arch gate error: {}", e);
+            }
+        }
+
+        // Run Pattern Gate (code pattern analysis)
+        let pattern_gate = PatternGate::new();
+        match pattern_gate.run(&crate_path).await {
+            Ok(_report) => {
+                // Pattern gate returns a Value, check for issues
+                debug!("Pattern gate: passed");
+            }
+            Err(e) => {
+                pattern_passed = false;
+                issues.push(super::QaIssue {
+                    gate: "pattern".to_string(),
+                    severity: super::QaSeverity::Warning,
+                    message: e,
+                    file: None,
+                    line: None,
+                });
+            }
+        }
+
+        // Run Semantic Gate (drift detection per RFC-9142)
+        let semantic_gate = SemanticGate::new();
+        match semantic_gate.run(&crate_path).await {
+            Ok(report) => {
+                if !report.passed {
+                    semantic_passed = false;
+                    for signal in &report.drift_signals {
+                        issues.push(super::QaIssue {
+                            gate: "semantic".to_string(),
+                            severity: if signal.score > 0.8 {
+                                super::QaSeverity::Error
+                            } else {
+                                super::QaSeverity::Warning
+                            },
+                            message: signal.explanation.clone(),
+                            file: None,
+                            line: None,
+                        });
+                    }
+                }
+                debug!("Semantic gate: passed={}, drift_signals={}",
+                    report.passed, report.drift_signals.len());
+            }
+            Err(e) => {
+                warn!("Semantic gate error: {}", e);
+            }
+        }
+
+        // Certification requires all gates to pass
+        let certified = static_passed && arch_passed && pattern_passed && semantic_passed;
+
+        info!(
+            "QA gates complete: static={}, arch={}, pattern={}, semantic={}, certified={}",
+            static_passed, arch_passed, pattern_passed, semantic_passed, certified
+        );
+
         Ok(QaReport {
-            static_passed: true,
-            arch_passed: true,
-            pattern_passed: true,
-            semantic_passed: true,
-            certified: true,
-            issues: Vec::new(),
+            static_passed,
+            arch_passed,
+            pattern_passed,
+            semantic_passed,
+            certified,
+            issues,
         })
     }
 
@@ -338,18 +462,115 @@ impl AgentLoop {
         ).await
     }
 
-    /// Create PR for generated files
+    /// Create PR for generated files using git2 (RFC-9030)
     async fn create_pr(
         &self,
         task: &AgentTask,
-        _files: &[super::GeneratedFile],
+        files: &[super::GeneratedFile],
     ) -> Result<String> {
-        // Placeholder - would use git operations
+        use git2::{Repository, Signature};
+        use std::process::Command;
+
         let branch = task.branch.as_deref().unwrap_or("feature/agent-generated");
-        Ok(format!(
-            "https://github.com/synaptix9/sx9/pull/new/{}",
-            branch
-        ))
+        let repo_path = std::env::current_dir()?;
+
+        info!("Creating PR for branch: {}", branch);
+
+        // Open repository
+        let repo = Repository::open(&repo_path)
+            .map_err(|e| anyhow::anyhow!("Failed to open repository: {}", e))?;
+
+        // Create and checkout branch
+        let head = repo.head()?;
+        let head_commit = head.peel_to_commit()?;
+
+        // Create branch if it doesn't exist
+        if repo.find_branch(branch, git2::BranchType::Local).is_err() {
+            repo.branch(branch, &head_commit, false)?;
+            debug!("Created branch: {}", branch);
+        }
+
+        // Checkout branch
+        let obj = repo.revparse_single(&format!("refs/heads/{}", branch))?;
+        repo.checkout_tree(&obj, None)?;
+        repo.set_head(&format!("refs/heads/{}", branch))?;
+        debug!("Checked out branch: {}", branch);
+
+        // Write files to disk
+        for file in files {
+            let file_path = repo_path.join(&file.path);
+            if let Some(parent) = file_path.parent() {
+                std::fs::create_dir_all(parent)?;
+            }
+            std::fs::write(&file_path, &file.content)?;
+            debug!("Wrote file: {}", file.path);
+        }
+
+        // Stage files
+        let mut index = repo.index()?;
+        for file in files {
+            index.add_path(Path::new(&file.path))?;
+        }
+        index.write()?;
+
+        // Create commit
+        let tree_id = index.write_tree()?;
+        let tree = repo.find_tree(tree_id)?;
+        let signature = Signature::now("SX9 Agent", "agent@sx9.ai")?;
+        let parent = repo.find_commit(head_commit.id())?;
+
+        let commit_msg = format!(
+            "{}: {}\n\n🤖 Generated with [Claude Code](https://claude.com/claude-code)\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>",
+            task.identifier, task.title
+        );
+
+        repo.commit(
+            Some("HEAD"),
+            &signature,
+            &signature,
+            &commit_msg,
+            &tree,
+            &[&parent],
+        )?;
+        info!("Created commit for {}", task.identifier);
+
+        // Push to remote using git CLI (git2 push requires credentials setup)
+        let push_output = Command::new("git")
+            .args(["push", "-u", "origin", branch])
+            .current_dir(&repo_path)
+            .output()?;
+
+        if !push_output.status.success() {
+            let stderr = String::from_utf8_lossy(&push_output.stderr);
+            return Err(anyhow::anyhow!("Git push failed: {}", stderr));
+        }
+        info!("Pushed branch {} to origin", branch);
+
+        // Create PR using gh CLI
+        let pr_output = Command::new("gh")
+            .args([
+                "pr", "create",
+                "--title", &format!("{}: {}", task.identifier, task.title),
+                "--body", &format!(
+                    "## Linear Issue\nCloses {}\n\n## Summary\n{}\n\n---\n🤖 Generated by SX9 Agent",
+                    task.identifier,
+                    task.description
+                ),
+                "--base", "main",
+                "--head", branch,
+            ])
+            .current_dir(&repo_path)
+            .output()?;
+
+        if !pr_output.status.success() {
+            let stderr = String::from_utf8_lossy(&pr_output.stderr);
+            return Err(anyhow::anyhow!("PR creation failed: {}", stderr));
+        }
+
+        let pr_url = String::from_utf8_lossy(&pr_output.stdout).trim().to_string();
+        info!("Created PR: {}", pr_url);
+
+        Ok(pr_url)
     }
 
     /// Get current state

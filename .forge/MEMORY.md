@@ -1,7 +1,34 @@
 # SX9 Session Memory
 
-**Last Updated:** 2025-12-26T22:00:00Z
+**Last Updated:** 2025-12-26T23:30:00Z
 **Session:** forge-tauri-integration
+
+---
+
+## Neo4j Graph Database (OrbStack)
+
+**Container:** `ctas7-neo4j`
+**Runtime:** OrbStack (k8s deprecated 1+ year)
+**Auth:** `neo4j` / `Protected1`
+**Ports:** 7474 (HTTP), 7687 (Bolt)
+
+### Node Counts (VERIFIED)
+| Label | Count |
+|-------|-------|
+| Tool | 2,365 |
+| Term | 2,225 |
+| PTCC | 2,000 |
+| Technique | 1,073 |
+| KaliTool | 347 |
+| CTASTask | 164 |
+| ElitePersona | 12 |
+| HD4Phase | 5 |
+
+**Access:**
+```bash
+docker exec -it ctas7-neo4j cypher-shell -u neo4j -p Protected1
+MATCH (n) RETURN labels(n)[0] as label, count(*) as count ORDER BY count DESC;
+```
 
 ---
 
@@ -168,6 +195,142 @@ export SERENA_ENDPOINT="http://localhost:8080"
 
 ---
 
+## Complete RFC Registry (64 RFCs)
+
+### 9000-CORE (11 RFCs)
+| RFC | Title | Status |
+|-----|-------|--------|
+| 9000 | JSON Metadata Schema | Spec |
+| 9001 | Trivariate Hash | Implemented |
+| 9002 | Entity Types | Spec |
+| 9003 | Graph Entity Schema | Spec |
+| 9005 | Unified Schema Spec | Spec |
+| 9010 | Contextual Security | Spec |
+| 9011 | Compound Unique Hash | Spec |
+| 9015 | Prime Hash Evolution | Spec |
+| 9016 | Short Code Spec | Spec |
+| 9020 | HD4 Framework | Implemented |
+| 9116 | Bootstrap Sequence | Spec |
+
+### 9000-FOUNDATION (14 RFCs)
+| RFC | Title | Status |
+|-----|-------|--------|
+| 9010 | Universal Rail System | Spec |
+| 9010-Figma | Figma Spec | Design |
+| 9010-Layout | Layout Diagram | Design |
+| 9023 | SDT Threat Taxonomy | Spec |
+| 9024 | GLAF Core | Spec |
+| 9025 | Smart Crate Orchestrator | Spec |
+| 9026 | Hourglass-Bernoulli | Implemented |
+| 9050 | Two-Heartbeat QA | Implemented |
+| 9060 | Agent Memory Arch | Spec |
+| 9070 | Agent Routing | Spec |
+| 9200 | ATLAS Mesh Arch | Spec |
+| 9300 | Orbital Ground Stations | Spec |
+| 9400 | Gateway NATS | Spec |
+| 9500 | Orbital Subsystems | Spec |
+
+### 9100-INTEGRATION (14 RFCs)
+| RFC | Title | Status |
+|-----|-------|--------|
+| 9030 | Intent-Based Build | Spec |
+| 9040 | GLAF Analysis | Spec |
+| 9050 | QA Harness | Implemented |
+| 9060 | Agent Memory | Spec |
+| 9070 | Agent Routing | Spec |
+| 9080 | Agent Skills | Spec |
+| 9109 | Plasma Defender | Implemented |
+| 9120 | Prompt Forge v4 | Implemented |
+| 9130 | Unified Pipeline | Spec |
+| 9131 | Intent Compiler | Spec |
+| 9141 | BNE Workflow | Spec |
+| 9142 | Drift Vectors | Spec |
+| 9143 | QA Gate Types | Spec |
+| 9145 | Agent SDK Manual | Spec |
+
+### 9110-FORGE (10 RFCs)
+| RFC | Title | Status |
+|-----|-------|--------|
+| 9120 | Prompt Forge | Implemented |
+| 9130 | Unified Pipeline | Spec |
+| 9131 | Intent Compiler | Spec |
+| 9140 | Dev Sprint Kernel | Spec |
+| 9141 | BNE Workflow | Spec |
+| 9142 | Drift Vectors | Spec |
+| 9143 | QA Gate Types | Spec |
+| 9145 | Agent SDK Manual | Spec |
+| 9150 | Forge UI Spec | Design |
+| 9150-Critical | Critical Analysis | Analysis |
+
+### 9300-COGNITIVE (3 RFCs)
+| RFC | Title | Status |
+|-----|-------|--------|
+| 9023 | SDT Taxonomy | Spec |
+| 9024 | GLAF Core | Spec |
+| 9025 | Smart Crate Orchestrator | Spec |
+
+### 9400-APPLICATION (3 RFCs)
+| RFC | Title | Status |
+|-----|-------|--------|
+| 9150 | Forge UI | Design |
+| 9300 | Orbital Stations | Spec |
+| 9304B | Cognitive Atoms | Spec |
+
+### 9500-PLATFORM (1 RFC)
+| RFC | Title | Status |
+|-----|-------|--------|
+| 9200 | ATLAS Mesh | Spec |
+
+### 9800-OPERATIONAL (3 RFCs)
+| RFC | Title | Status |
+|-----|-------|--------|
+| 9130 | Pipeline | Spec |
+| 9131 | Intent Compiler | Spec |
+| 9876 | Unicode Orchestration | Spec |
+
+---
+
+## Repository Structures
+
+### sx9 (This Repo)
+```
+sx9/
+├── 01-rfc/              # 64 RFCs across 8 directories
+├── 04-sx9-converge/     # Geometry/selection crates (COMPILE)
+├── 06-shuttle-folder/   # IGNORED (secrets purged)
+├── apps/
+│   └── sx9-ops-main/    # OPS vertical (threat dashboard)
+├── crates/              # 33 Rust crates
+├── packages/            # JS workspace
+├── sx9-forge/           # Tauri desktop app
+├── sx9-linear-agent/    # Autonomous agent
+├── tools/
+│   ├── abe/             # IAC tools
+│   ├── forge-backend/   # Port 18350
+│   └── kali-plasma/     # Kali integration
+└── antigravity/         # Elite Personas + CLSGS
+```
+
+### sx9-development-center (Separate Repo)
+```
+sx9-development-center/
+├── src/
+│   ├── components/      # 67 React components
+│   │   ├── SmartCrateControl.tsx  # 950 lines - crate dashboard
+│   │   ├── TacticalHUD.tsx        # Tactical display
+│   │   ├── AgentDesignStudio.tsx  # 30.7KB - agent builder
+│   │   └── ...
+│   ├── services/        # 27 services
+│   └── hooks/           # 13 custom hooks
+├── crates/
+│   ├── sx9-phd-analyzer/
+│   ├── sx9-smart-crate-orchestrator/
+│   └── sx9-forge/
+└── docs/                # 148+ documentation files
+```
+
+---
+
 ## Known Data Losses
 
 | Item | Impact |
@@ -221,8 +384,9 @@ export SERENA_ENDPOINT="http://localhost:8080"
 - Purged secrets from git history (shuttle folder with embedded tokens)
 - Added `06-shuttle-folder/` to .gitignore permanently
 
-### Data Alignment
-- 335 Kali tools ready
+### Data Alignment (VERIFIED)
+- 10 Kali tools in test file (`kali_tools_test_10.json` - header claims 335 but truncated)
+- 347 KaliTool nodes in Neo4j (full set)
 - 164 CTAS tasks ready
 - 5,065 tool-task matches ready
 - 2,000 PTCCs ready
