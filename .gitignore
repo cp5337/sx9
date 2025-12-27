@@ -168,3 +168,6 @@ nats-data/
 # API Vault - never commit keys
 tools/vault/*.json
 tools/vault/keys/
+
+# Shuttle folder - contains duplicate/staging data with potential secrets
+06-shuttle-folder/
