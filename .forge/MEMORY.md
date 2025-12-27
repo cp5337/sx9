@@ -22,7 +22,7 @@
 ### Tool Run System
 | Component | Location | Count |
 |-----------|----------|-------|
-| Kali Tools | `tools/abe/iac/kali_tools_test_10.json` | 335 |
+| Kali Tools | `tools/abe/iac/kali_tools_test_10.json` | 10 (test file; header claims 335 but truncated) |
 | CTAS Tasks | `apps/sx9-ops-main/ctas_tasks/` | 164 |
 | Tool-Task Matches | `archive/glaf-migration/ctas-glaf/import/tools_tasks_matching.json` | 5,065 |
 | PTCCs | same file | 2,000 |
@@ -132,11 +132,12 @@ export SERENA_ENDPOINT="http://localhost:8080"
 - sx9-plasma-defender
 - 25+ more crates
 
-### BROKEN (2 crates)
-| Crate | Issue |
-|-------|-------|
-| converge-geometry | Missing modules: earth, enu, intercept |
-| converge-selection | Missing modules: partition, laminar, greedy |
+### CONVERGE CRATES (in 04-sx9-converge/)
+| Crate | Location | Status |
+|-------|----------|--------|
+| sx9-converge | `04-sx9-converge/sx9-converge` | Compiles |
+| sx9-converge-geometry | `04-sx9-converge/sx9-converge-geometry` | Compiles |
+| sx9-converge-selection | `04-sx9-converge/sx9-converge-selection` | Compiles |
 
 ### DISCONNECTED (Built but not wired)
 | Component | RFC | Status |

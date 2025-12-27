@@ -24,7 +24,7 @@
 
 | Component | Location | Count |
 |-----------|----------|-------|
-| Kali Tools | `tools/abe/iac/kali_tools_test_10.json` | 335 |
+| Kali Tools | `tools/abe/iac/kali_tools_test_10.json` | 10 (test file; header claims 335 but truncated) |
 | CTAS Tasks | `apps/sx9-ops-main/ctas_tasks/` | 164 |
 | Tool-Task Matches | `archive/glaf-migration/ctas-glaf/import/tools_tasks_matching.json` | 5,065 |
 | PTCCs | same file | 2,000 |
@@ -209,11 +209,12 @@ sx9-foundation-core, sx9-foundation-data, sx9-harness, sx9-claude-sdk,
 sx9-gateway-primary, sx9-glaf-core, sx9-orbital-simulator, sx9-cdn-data-fabric,
 sx9-atlas-bus, sx9-plasma-defender, 25+ more
 
-**Broken (2):**
-| Crate | Issue |
-|-------|-------|
-| converge-geometry | Missing: earth, enu, intercept |
-| converge-selection | Missing: partition, laminar, greedy |
+**Converge Crates (in 04-sx9-converge/):**
+| Crate | Location | Status |
+|-------|----------|--------|
+| sx9-converge | `04-sx9-converge/sx9-converge` | Compiles |
+| sx9-converge-geometry | `04-sx9-converge/sx9-converge-geometry` | Compiles |
+| sx9-converge-selection | `04-sx9-converge/sx9-converge-selection` | Compiles |
 
 **Disconnected (Built but not wired):**
 | Component | RFC | Status |
@@ -256,7 +257,7 @@ sx9-atlas-bus, sx9-plasma-defender, 25+ more
 - Aligned Unicode allocations across RFC-9026, kali-plasma, atlas-bus
 
 ### Data Alignment
-- 335 Kali tools ready
+- 10 Kali tools in test file (full 335-tool scrape needed)
 - 164 CTAS tasks ready
 - 5,065 tool-task matches ready
 - 2,000 PTCCs ready
